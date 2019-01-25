@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Facet",
+  "name": "MetalKube Facet - user interface to drive bare metal Kubernetes cluster deployment",
   "icons": [
     {
       "src": "favicon.ico",
