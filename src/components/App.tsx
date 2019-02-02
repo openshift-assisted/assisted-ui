@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Page } from '@patternfly/react-core';
 import { Provider } from 'react-redux';
 
-import Header from './Header';
-import BackgroundImage from './BackgroundImage';
+import Header from './ui/Header';
+import BackgroundImage from './ui/BackgroundImage';
 import ClusterWizard from './ClusterWizard';
 import { store } from '../store';
 
