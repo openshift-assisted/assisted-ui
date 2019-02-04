@@ -2,11 +2,37 @@
 
 User interface for MetalKube
 
+## Getting started
+
+* Install [yarn][1] and [golang][2]
+* Set up your `$GOPATH` (this means selecting a directory on your computer where
+  all your golang code will go, and setting the `GOPATH` environment variable to
+  that path)
+* Clone this repository to your `$GOPATH` directory, i.e.
+  `$GOPATH/src/github.com/metalkube/facet` (create the `src` and `github.com`
+  directories if they don't already exist)
+* `cd` into it
+* Install javascript dependencies with `yarn install`
+* Start the backend server with `go run main.go server`
+* Start the yarn server with `yarn start`
+* Open the UI at `http://localhost:3000`
+
+[1]: https://yarnpkg.com/en/
+[2]: https://golang.org/
+
 ## Running the production server
 
 ```
 $ go run main.go server
 ```
+
+## Running the development server
+
+During development, you can take advantage of using the Golang server.  It
+provides a REST API layer (e.g. `/api/hosts`)
+
+To use it, start the `yarn start` server in one tab, and then start the Golang
+server with `go run main.go server` in another tab.
 
 ## Available Scripts
 
