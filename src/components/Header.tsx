@@ -8,7 +8,7 @@ const Header: React.FunctionComponent = (): React.ReactElement<
   React.ReactNode
 > => (
   <PageHeader
-    logo={<Brand src={logo} alt="RHHI.Next logo" />}
+    logo={<Brand src={logo} alt="MetalKube Facet UI" />}
     // toolbar={PageToolbar}
     avatar={<Avatar src={avatarImg} alt="Avatar image" />}
     // showNavToggle
