@@ -9,11 +9,9 @@ import {
 
 import PageSection from './ui/PageSection';
 
-const toolbarStyle: React.CSSProperties = { justifyContent: 'flex-end' };
-
 const ClusterWizardNav: FC = (): JSX.Element => (
   <PageSection variant={PageSectionVariants.light}>
-    <Toolbar style={toolbarStyle}>
+    <Toolbar>
       <ToolbarGroup>
         <ToolbarItem>
           <Button variant="secondary">Back</Button>
