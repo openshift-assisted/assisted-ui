@@ -1,5 +1,7 @@
-@import './variables';
+@import './pf3variables';
+@import './patternfly3';
 
+@import './variables';
 // Importing just base styles, component styles are included in individual components
 @import '~@patternfly/patternfly-next/patternfly-base';
 @import '~@patternfly/patternfly-next/patternfly-addons';
