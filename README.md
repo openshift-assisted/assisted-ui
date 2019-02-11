@@ -70,6 +70,47 @@ Use "facet [command] --help" for more information about a command.
 
 [3]: https://github.com/rakyll/statik
 
+## Long-running tasks
+
+If you would like to trigger a long-running task from the frontend, we've got
+you covered.  The REST API endpoint that you will create will trigger the
+long-running task, and quickly return with a success message.  The long-running
+task itself will be sent for background processing in a go routine.  The task
+will receive a notification channel where it can send any messages indicating
+its progress or resulting value.  The frontend will receive these notifications
+nearly instantly through a websocket connection.
+
+The REST API endpoint handler will look something like this:
+
+```go
+func LongRunningTaskHandler(notificationChannel chan Notification) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        response := "OK"
+        go performLongTask(notificationChannel)
+        respondWithJson(w, response)
+    }
+}
+```
+
+It's a function which takes a notification channel, and returns a regular HTTP
+handler.  Inside, the `performLongTask` function is actually what performs the
+long-running task.  It also has access to the notification channel.
+
+The expensive task then looks something like this:
+
+```go
+func performLongTask(notificationChannel chan Notification) {
+    n := NewNotification("Started a long running task", RUNNING)
+    notificationChannel <- n
+
+    // Do important work for 10 seconds
+    time.Sleep(10 * time.Second)
+
+    n2 := NewNotification("Finished a long running task", SUCCESS)
+    notificationChannel <- n2
+}
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
