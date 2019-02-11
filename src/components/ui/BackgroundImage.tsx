@@ -18,7 +18,7 @@ const bgImages = {
   [BackgroundImageSrc.sm2x]: pfbg768at2x,
   [BackgroundImageSrc.xs]: pfbg576,
   [BackgroundImageSrc.xs2x]: pfbg576at2x,
-  [BackgroundImageSrc.filter]: pfbgBackgroundFilter
+  [BackgroundImageSrc.filter]: `${pfbgBackgroundFilter}#image_overlay`
 };
 
 const BackgroundImage: React.FunctionComponent = (): React.ReactElement<
