@@ -15,35 +15,31 @@
 package server
 
 import (
-	"github.com/metalkube/facet/pkg/server"
-	"github.com/spf13/cobra"
+	"encoding/json"
+	"fmt"
+	"net/http"
 )
 
-var args struct {
-	port string
+type Host struct {
+	Id string `json:"id"`
 }
 
-// Cmd is the cobra serve command
-var Cmd = &cobra.Command{
-	Use:   "server",
-	Short: "Run the facet server",
-	Long:  "Run the facet server.",
-	Run:   run,
+type ApiResponse struct {
+	Data interface{} `json:"data"`
 }
 
-func init() {
-	flags := Cmd.Flags()
-	flags.StringVar(
-		&args.port,
-		"port",
-		"8080",
-		"The port of the facet server",
-	)
-}
-
-func run(cmd *cobra.Command, argv []string) {
-	s := server.Server{
-		Port: args.port,
+func respondWithJson(w http.ResponseWriter, obj interface{}) {
+	resp := ApiResponse{Data: obj}
+	err := json.NewEncoder(w).Encode(resp)
+	if err != nil {
+		fmt.Fprint(w, err)
 	}
-	s.Start()
+}
+
+func HostsHandler(w http.ResponseWriter, r *http.Request) {
+	hostList := [2]Host{
+		Host{Id: "host-01"},
+		Host{Id: "host-02"},
+	}
+	respondWithJson(w, hostList)
 }
