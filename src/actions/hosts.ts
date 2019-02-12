@@ -5,6 +5,7 @@ import {
   GET_HOSTS_SUCCESS,
   GET_HOSTS_FAILURE
 } from '../constants/hosts';
+import { ReduxAction } from './index';
 import * as hostsApi from '../api/hosts';
 import { Host } from '../models/hosts';
 
@@ -14,13 +15,17 @@ interface HostListApiResponse {
   data: Host[];
 }
 
-export const getHosts = () => action(GET_HOSTS_REQUEST);
-export const getHostsSuccess = (data: HostListApiResponse) =>
-  action(GET_HOSTS_SUCCESS, data);
+export const getHosts = (): ReduxAction<void> => action(GET_HOSTS_REQUEST);
+export const getHostsSuccess = (
+  data: HostListApiResponse
+): ReduxAction<Host[]> => action(GET_HOSTS_SUCCESS, data.data);
 
-export const getHostsFailure = () => action(GET_HOSTS_FAILURE);
+export const getHostsFailure = (): ReduxAction<void> =>
+  action(GET_HOSTS_FAILURE);
 
-export const getHostsAsync = () => (dispatch: redux.Dispatch) => {
+export const getHostsAsync = (): ((dispatch: redux.Dispatch) => void) => (
+  dispatch: redux.Dispatch
+) => {
   dispatch(getHosts());
   hostsApi
     .getHosts()
