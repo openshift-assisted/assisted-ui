@@ -1,9 +1,8 @@
 import { combineReducers } from 'redux';
-import { ActionType } from 'typesafe-actions';
+import { ActionType, getType } from 'typesafe-actions';
 
 import * as hosts from '../actions/hosts';
 import { Host } from '../models/hosts';
-import { GET_HOSTS_REQUEST, GET_HOSTS_SUCCESS } from '../constants/hosts';
 
 export type HostsActions = ActionType<typeof hosts>;
 
@@ -15,9 +14,7 @@ export interface HostsState {
 export default combineReducers<HostsState, HostsActions>({
   hosts: (state = [], action) => {
     switch (action.type) {
-      case GET_HOSTS_REQUEST:
-        return [...state];
-      case GET_HOSTS_SUCCESS:
+      case getType(hosts.fetchHosts.success):
         return [...state, ...action.payload];
       default:
         return state;
@@ -25,9 +22,10 @@ export default combineReducers<HostsState, HostsActions>({
   },
   loading: (state = false, action) => {
     switch (action.type) {
-      case GET_HOSTS_REQUEST:
+      case getType(hosts.fetchHosts.request):
         return true;
-      case GET_HOSTS_SUCCESS:
+      case getType(hosts.fetchHosts.success):
+      case getType(hosts.fetchHosts.failure):
         return false;
       default:
         return state;

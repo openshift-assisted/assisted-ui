@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { getHostsAsync } from '../actions/hosts';
+import { fetchHostsAsync } from '../actions/hosts';
 import { Host } from '../models/hosts';
 import { getHostList, getHostsLoading } from '../selectors/hosts';
 import { RootState } from '../store/rootReducer';
@@ -10,12 +10,12 @@ import { HostsState } from '../reducers/hosts';
 interface Props {
   hosts: Host[];
   loading: boolean;
-  getHosts: () => void;
+  fetchHosts: () => void;
 }
 
 class HostsExample extends Component<Props> {
   componentDidMount(): void {
-    this.props.getHosts();
+    this.props.fetchHosts();
   }
 
   render(): React.ReactNode {
@@ -43,6 +43,6 @@ const mapStateToProps = (state: RootState): HostsState => ({
 export default connect(
   mapStateToProps,
   {
-    getHosts: getHostsAsync
+    fetchHosts: fetchHostsAsync
   }
 )(HostsExample);
