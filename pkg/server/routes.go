@@ -68,7 +68,7 @@ type Notification struct {
 }
 
 func NewNotification(message string, status NotificationStatus) Notification {
-	uuid, _ := uuid.NewV4()
+	uuid := uuid.NewV4()
 	return Notification{
 		Id:        uuid.String(),
 		Message:   message,
