@@ -18,7 +18,7 @@ export default combineReducers<HostsState, HostsActions>({
       case GET_HOSTS_REQUEST:
         return [...state];
       case GET_HOSTS_SUCCESS:
-        return [...state, ...action.payload.data];
+        return [...state, ...action.payload];
       default:
         return state;
     }

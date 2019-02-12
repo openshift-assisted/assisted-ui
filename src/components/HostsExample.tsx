@@ -5,11 +5,12 @@ import { getHostsAsync } from '../actions/hosts';
 import { Host } from '../models/hosts';
 import { getHostList, getHostsLoading } from '../selectors/hosts';
 import { RootState } from '../store/rootReducer';
+import { HostsState } from '../reducers/hosts';
 
 interface Props {
   hosts: Host[];
   loading: boolean;
-  getHosts: () => any;
+  getHosts: () => void;
 }
 
 class HostsExample extends Component<Props> {
@@ -34,7 +35,7 @@ class HostsExample extends Component<Props> {
   }
 }
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: RootState): HostsState => ({
   hosts: getHostList(state.hosts),
   loading: getHostsLoading(state.hosts)
 });
