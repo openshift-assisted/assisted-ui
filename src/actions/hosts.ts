@@ -1,38 +1,23 @@
 import * as redux from 'redux';
-import { action } from 'typesafe-actions';
-import {
-  GET_HOSTS_REQUEST,
-  GET_HOSTS_SUCCESS,
-  GET_HOSTS_FAILURE
-} from '../constants/hosts';
-import { ReduxAction } from './index';
-import * as hostsApi from '../api/hosts';
+import { createAsyncAction } from 'typesafe-actions';
+import { getHosts } from '../api/hosts';
 import { Host } from '../models/hosts';
 
-// NOTE: this is just an example for now
+export const fetchHosts = createAsyncAction(
+  'GET_HOSTS_REQUEST',
+  'GET_HOSTS_SUCCESS',
+  'GET_HOSTS_FAILURE'
+)<void, Host[], Error>();
 
-interface HostListApiResponse {
-  data: Host[];
-}
-
-export const getHosts = (): ReduxAction<void> => action(GET_HOSTS_REQUEST);
-export const getHostsSuccess = (
-  data: HostListApiResponse
-): ReduxAction<Host[]> => action(GET_HOSTS_SUCCESS, data.data);
-
-export const getHostsFailure = (): ReduxAction<void> =>
-  action(GET_HOSTS_FAILURE);
-
-export const getHostsAsync = (): ((dispatch: redux.Dispatch) => void) => (
+export const fetchHostsAsync = (): ((dispatch: redux.Dispatch) => void) => (
   dispatch: redux.Dispatch
 ) => {
-  dispatch(getHosts());
-  hostsApi
-    .getHosts()
+  dispatch(fetchHosts.request());
+  getHosts()
     .then(response => {
-      dispatch(getHostsSuccess(response.data));
+      dispatch(fetchHosts.success(response.data.data));
     })
     .catch(() => {
-      dispatch(getHostsFailure());
+      dispatch(fetchHosts.failure(Error('Failed to fetch hosts')));
     });
 };
