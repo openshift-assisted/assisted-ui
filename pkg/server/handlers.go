@@ -49,3 +49,18 @@ func LongRunningTaskHandler(notificationChannel chan common.Notification) http.H
 		RespondWithJson(w, response)
 	}
 }
+
+func BootstrapVMHandler(notificationChannel chan common.Notification) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "", http.StatusMethodNotAllowed)
+			return
+		}
+
+		go integration.CreateBootstrapVM(notificationChannel)
+
+		RespondWithJson(w, "Request accepted")
+
+	}
+
+}
