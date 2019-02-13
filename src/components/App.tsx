@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import Header from './ui/Header';
 import BackgroundImage from './ui/BackgroundImage';
 import ClusterWizard from './ClusterWizard';
+import HostsExample from './HostsExample';
 import { store } from '../store';
 
 class App extends Component {
@@ -14,6 +15,7 @@ class App extends Component {
         <BackgroundImage />
         <Page header={<Header />}>
           <ClusterWizard />
+          <HostsExample />
         </Page>
       </Provider>
     );
