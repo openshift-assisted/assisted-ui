@@ -17,11 +17,17 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 )
 
 type Host struct {
-	Id string `json:"id"`
+	Name   string `json:"name"`
+	Ip     net.IP `json:"ip"`
+	Cpu    int    `json:"cpu"`
+	Memory int    `json:"memory"`
+	Disk   int    `json:"disk"`
+	Type   string `json:"type"`
 }
 
 type ApiResponse struct {
@@ -38,8 +44,22 @@ func respondWithJson(w http.ResponseWriter, obj interface{}) {
 
 func HostsHandler(w http.ResponseWriter, r *http.Request) {
 	hostList := [2]Host{
-		Host{Id: "host-01"},
-		Host{Id: "host-02"},
+		Host{
+			Name:   "host-01",
+			Ip:     net.ParseIP("192.168.10.1"),
+			Cpu:    25,
+			Memory: 128,
+			Disk:   1024,
+			Type:   "Master",
+		},
+		Host{
+			Name:   "host-02",
+			Ip:     net.ParseIP("192.168.10.2"),
+			Cpu:    25,
+			Memory: 128,
+			Disk:   1024,
+			Type:   "Master",
+		},
 	}
 	respondWithJson(w, hostList)
 }
