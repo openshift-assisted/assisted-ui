@@ -37,6 +37,39 @@ server with `go run main.go server` in another tab.
 The development server will recognize non static asset requests (e.g. `fetch('/api/hosts')`),
 and will proxy it to API server (`http://localhost:8080/api/hosts`) as a fallback.
 
+## Production build
+
+You can compile the production executable by running:
+
+```
+$ ./build.sh
+```
+
+This uses the [statik][3] utility to bundle all of the static assets from
+`./build/` into a golang source file.  It then compiles the project into a
+single binary, and places it into `bin/`.
+
+You can use the binary directly:
+
+```
+./bin/facet -h
+facet server
+
+Usage:
+  facet [command]
+
+Available Commands:
+  help        Help about any command
+  server      Run the facet server
+
+Flags:
+  -h, --help   help for facet
+
+Use "facet [command] --help" for more information about a command.
+```
+
+[3]: https://github.com/rakyll/statik
+
 ## Available Scripts
 
 In the project directory, you can run:

@@ -17,6 +17,8 @@ package server
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	_ "github.com/metalkube/facet/statik"
+	"github.com/rakyll/statik/fs"
 	"net/http"
 )
 
@@ -40,9 +42,15 @@ func (s *Server) Start() {
 	api.Use(jsonMiddleware)
 	api.HandleFunc("/hosts", HostsHandler)
 
-	// Serving the build/ directory from the / root of the app
-	staticFileDirectory := http.Dir("./build/")
-	staticFileHandler := http.StripPrefix("/", http.FileServer(staticFileDirectory))
+	// Attempt to get the statik-built bundle
+	statikFS, err := fs.New()
+
+	if err != nil {
+		// Statik data isn't present, serve files from './build'
+		statikFS = http.Dir("./build/")
+	}
+
+	staticFileHandler := http.StripPrefix("/", http.FileServer(statikFS))
 	router.PathPrefix("/").Handler(staticFileHandler).Methods("GET")
 
 	fmt.Println("Server started at http://localhost:" + s.Port)
