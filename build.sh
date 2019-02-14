@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+eval "$(go env)"
+
 [ -f $GOPATH/bin/statik ] || {
     echo "I require the statik program but it's not installed.  Aborting.";
     echo "You can install it with 'go get github.com/rakyll/statik'";
