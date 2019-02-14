@@ -1058,6 +1058,11 @@
   resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-2.10.6.tgz#496c83e1a54257d3929df58a40e42410af35968d"
   integrity sha512-XAvmPEEINfTrj5nKXcOFxyuFVtUOR6/IG4ZsmwwuECgf9lhDnsqpZyxSzIzhtrL+IivRQrswd8rc5wREF0+N4Q==
 
+"@patternfly/react-icons@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-3.0.0.tgz#fe5f79b9b883168c0fc25af1997243759967e6e5"
+  integrity sha512-jX+gK/NpgJAl3GeZKlIIZKP/8dlBY2Ny8j4IUvU6FaETBl/tfOlZyNbgjNBwLBuzZvHQRVKa8UV/3bY+Hzmhfg==
+
 "@patternfly/react-styles@^2.3.0":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-2.3.0.tgz#e6041a22c8ad11f622e6ca280075aaf482879d7e"
