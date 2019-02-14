@@ -12,7 +12,7 @@ set -ex
 
 yarn build
 $GOPATH/bin/statik -f -src build
-go build main.go
+go build -tags "libvirt release" main.go
 mkdir -p bin
 mv main bin/facet
 git checkout statik/statik.go

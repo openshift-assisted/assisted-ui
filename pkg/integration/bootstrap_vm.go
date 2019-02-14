@@ -19,6 +19,11 @@ import (
 	"github.com/metalkube/facet/pkg/common"
 	"log"
 	"os/exec"
+
+	"github.com/openshift/installer/pkg/asset"
+	assetstore "github.com/openshift/installer/pkg/asset/store"
+	targetassets "github.com/openshift/installer/pkg/asset/targets"
+	"github.com/pkg/errors"
 )
 
 const (
@@ -46,4 +51,42 @@ func CreateBootstrapVM(notificationChannel chan common.Notification) {
 	log.Print("Bootstrap VM booted")
 	n = common.NewNotification("Bootstrap VM booted", common.SUCCESS)
 	notificationChannel <- n
+}
+
+// CreateIgnitionConfigs tries to replicate the runTargetCmd function from
+// openshift/installer and uses the IgnitionConfigs assets
+// https://github.com/openshift/installer/blob/1886b7d7fef12d6a4ab21b289824a14b56643d28/cmd/openshift-install/create.go#L149
+//
+// Given a directory which contains an install-config.yaml file, this runs the
+// equivalent of:
+//
+//   $ openshift-install --dir directory create ignition-configs
+func CreateIgnitionConfigs(directory string) error {
+
+	targets := targetassets.IgnitionConfigs
+
+	assetStore, err := assetstore.NewStore(directory)
+	if err != nil {
+		return errors.Wrapf(err, "failed to create asset store")
+	}
+
+	for _, a := range targets {
+		err := assetStore.Fetch(a)
+		if err != nil {
+			err = errors.Wrapf(err, "failed to fetch %s", a.Name())
+		}
+
+		if err2 := asset.PersistToFile(a, directory); err2 != nil {
+			err2 = errors.Wrapf(err2, "failed to write asset (%s) to disk", a.Name())
+			if err != nil {
+				return err
+			}
+			return err2
+		}
+
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

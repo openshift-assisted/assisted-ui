@@ -103,3 +103,14 @@ func BootstrapVMHandler(notificationChannel chan common.Notification) http.Handl
 	}
 
 }
+
+func CreateIgnitionConfigsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// TODO: Remove the hardcoded "ocp" value
+	integration.CreateIgnitionConfigs("ocp")
+	RespondWithJson(w, "OK")
+}

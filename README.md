@@ -45,7 +45,7 @@ For further details about the MetalKube architecture, see
 ## Running the production server
 
 ```
-$ go run main.go server
+$ go run -tags "libvirt release" main.go server
 ```
 
 ## Running the development server
@@ -54,7 +54,7 @@ During development, you can take advantage of using the Golang server. It
 provides a REST API layer (e.g. `/api/hosts`)
 
 To use it, start the `yarn start` server in one tab, and then start the Golang
-server with `go run main.go server` in another tab.
+server with `go run -tags "libvirt release" main.go server` in another tab.
 
 The development server will recognize non static asset requests (e.g.
 `fetch('/api/hosts')`), and will proxy it to API server

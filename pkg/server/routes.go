@@ -29,6 +29,7 @@ func ApiRouter(router *mux.Router, notificationChannel chan common.Notification)
 	router.HandleFunc("/long", LongRunningTaskHandler(notificationChannel))
 	router.HandleFunc("/bootstrap-vm", BootstrapVMHandler(notificationChannel))
 	router.HandleFunc("/cluster-definition", CreateClusterDefinition).Methods("POST")
+	router.HandleFunc("/create-ignition-configs", CreateIgnitionConfigsHandler)
 }
 
 func CreateRouter(notificationChannel chan common.Notification, websocketWorker *WebsocketWorker) *mux.Router {
