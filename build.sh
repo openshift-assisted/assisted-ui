@@ -11,7 +11,7 @@ eval "$(go env)"
 set -ex
 
 yarn build
-statik -f -src build
+$GOPATH/bin/statik -f -src build
 go build main.go
 mkdir -p bin
 mv main bin/facet
