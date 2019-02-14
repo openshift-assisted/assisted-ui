@@ -2,6 +2,7 @@ import React, { FC, Fragment } from 'react';
 import { Table, TableHeader, TableBody } from '@patternfly/react-table';
 import { Bullseye } from '@patternfly/react-core';
 import { HostTableRows } from '../models/hosts';
+import HostsEmptyState from './HostsEmptyState';
 
 interface Props {
   hostRows: HostTableRows;
@@ -42,9 +43,10 @@ const HostsTable: FC<Props> = ({
     <Fragment>
       <Table rows={hostRows} cells={columns} aria-label="Hosts table">
         <TableHeader />
-        {!loadingHosts && <TableBody />}
+        {!loadingHosts && !!hostRows.length && <TableBody />}
       </Table>
       {loadingHosts && <Bullseye>Loading...</Bullseye>}
+      {!loadingHosts && !hostRows.length && <HostsEmptyState />}
     </Fragment>
   );
 };
