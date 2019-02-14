@@ -69,7 +69,7 @@ class CreateClusterForm extends Component<{}, CreateClusterFormState> {
     return (
       <PageSection variant={PageSectionVariants.light} isMain>
         <Grid gutter="md">
-          <GridItem span={12} md={10} lg={6}>
+          <GridItem span={12} lg={10} xl={6}>
             <TextContent>
               <Text component="h1">Define Cluster</Text>
             </TextContent>
