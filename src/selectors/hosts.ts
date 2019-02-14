@@ -1,5 +1,5 @@
 import { HostsState } from '../reducers/hosts';
-import { Host } from '../models/hosts';
 
-export const getHostList = (state: HostsState): Host[] => state.hosts;
+export const getHostTableRows = (state: HostsState): string[][] =>
+  state.hosts.map(host => Object.values(host));
 export const getHostsLoading = (state: HostsState): boolean => state.loading;

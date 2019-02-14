@@ -14,10 +14,6 @@ export const fetchHostsAsync = (): ((dispatch: redux.Dispatch) => void) => (
 ) => {
   dispatch(fetchHosts.request());
   getHosts()
-    .then(response => {
-      dispatch(fetchHosts.success(response.data.data));
-    })
-    .catch(() => {
-      dispatch(fetchHosts.failure(Error('Failed to fetch hosts')));
-    });
+    .then(response => dispatch(fetchHosts.success(response.data.data)))
+    .catch(() => dispatch(fetchHosts.failure(Error('Failed to fetch hosts'))));
 };
