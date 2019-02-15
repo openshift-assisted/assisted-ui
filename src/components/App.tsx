@@ -6,7 +6,6 @@ import Header from './ui/Header';
 import BackgroundImage from './ui/BackgroundImage';
 import ClusterWizard from './ClusterWizard';
 import ClusterWizardSteps from './ClusterWizardSteps';
-// import HostsExample from './HostsExample';
 import { store } from '../store';
 import { WizardStep } from '../models/wizardStep';
 
@@ -29,7 +28,6 @@ class App extends Component {
           // isManagedSidebar
         >
           <ClusterWizard currentStep={currentStep} />
-          {/* <HostsExample /> */}
         </Page>
       </Provider>
     );

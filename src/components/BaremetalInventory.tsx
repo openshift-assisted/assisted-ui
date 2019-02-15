@@ -56,8 +56,8 @@ class BaremetalInventory extends Component<Props> {
 const mapStateToProps = (
   state: RootState
 ): { hostRows: string[][]; loading: boolean } => ({
-  hostRows: getHostTableRows(state.hosts),
-  loading: getHostsLoading(state.hosts)
+  hostRows: getHostTableRows(state),
+  loading: getHostsLoading(state)
 });
 
 export default connect(
