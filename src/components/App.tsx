@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Page, PageSidebar } from '@patternfly/react-core';
+import { Page } from '@patternfly/react-core';
 import { Provider } from 'react-redux';
 
 import Header from './ui/Header';
@@ -18,11 +18,7 @@ class App extends Component {
         <BackgroundImage />
         <Page
           header={<Header />}
-          sidebar={
-            <PageSidebar
-              nav={<ClusterWizardSteps currentStep={currentStep} />}
-            />
-          }
+          sidebar={<ClusterWizardSteps currentStep={currentStep} />}
           // TODO(jtomasek): enable this to automatically hide sidebar in mobile
           // view. This requires update to Page.d.ts and Page.js in @patternfly/react-core
           // isManagedSidebar
