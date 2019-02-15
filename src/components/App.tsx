@@ -8,10 +8,12 @@ import ClusterWizard from './ClusterWizard';
 import ClusterWizardSteps from './ClusterWizardSteps';
 // import HostsExample from './HostsExample';
 import { store } from '../store';
+import { WizardStep } from '../models/wizardStep';
 
 class App extends Component {
   render(): JSX.Element {
-    const currentStep = 1;
+    // TODO(jtomasek): This will eventually get passed in as prop from app state
+    const currentStep: WizardStep = WizardStep.AddHosts;
     return (
       <Provider store={store}>
         <BackgroundImage />
@@ -19,14 +21,14 @@ class App extends Component {
           header={<Header />}
           sidebar={
             <PageSidebar
-              nav={<ClusterWizardSteps currentStepIndex={currentStep} />}
+              nav={<ClusterWizardSteps currentStep={currentStep} />}
             />
           }
           // TODO(jtomasek): enable this to automatically hide sidebar in mobile
           // view. This requires update to Page.d.ts and Page.js in @patternfly/react-core
           // isManagedSidebar
         >
-          <ClusterWizard currentStepIndex={currentStep} />
+          <ClusterWizard currentStep={currentStep} />
           {/* <HostsExample /> */}
         </Page>
       </Provider>

@@ -1,12 +1,14 @@
 import React, { FC } from 'react';
 import { Nav, NavList, NavItem } from '@patternfly/react-core';
 
+import { WizardStep } from '../models/wizardStep';
+
 interface ClusterWizardStepsProps {
-  currentStepIndex: number;
+  currentStep: WizardStep;
 }
 
 const ClusterWizardSteps: FC<ClusterWizardStepsProps> = ({
-  currentStepIndex
+  currentStep
 }: ClusterWizardStepsProps): JSX.Element => (
   <Nav
     onToggle={() => {}}
@@ -18,7 +20,7 @@ const ClusterWizardSteps: FC<ClusterWizardStepsProps> = ({
         id="cluster-wizard-steps-cluster-setup"
         to="#"
         itemId={0}
-        isActive={currentStepIndex === 0}
+        isActive={currentStep === WizardStep.ClusterSetup}
       >
         1. Cluster setup
       </NavItem>
@@ -26,7 +28,7 @@ const ClusterWizardSteps: FC<ClusterWizardStepsProps> = ({
         id="cluster-wizard-steps-add-hosts"
         to="#"
         itemId={1}
-        isActive={currentStepIndex === 1}
+        isActive={currentStep === WizardStep.AddHosts}
       >
         2. Add hosts
       </NavItem>
@@ -34,7 +36,7 @@ const ClusterWizardSteps: FC<ClusterWizardStepsProps> = ({
         id="cluster-wizard-steps-results"
         to="#"
         itemId={2}
-        isActive={currentStepIndex === 2}
+        isActive={currentStep === WizardStep.Results}
       >
         3. Results
       </NavItem>
