@@ -15,10 +15,11 @@
 package server
 
 import (
-	"fmt"
+	"encoding/json"
 	"github.com/gorilla/mux"
 	_ "github.com/metalkube/facet/statik"
 	"github.com/rakyll/statik/fs"
+	"log"
 	"net/http"
 )
 
@@ -34,13 +35,32 @@ func jsonMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func respondWithJson(w http.ResponseWriter, obj interface{}) {
+	resp := ApiResponse{Data: obj}
+	err := json.NewEncoder(w).Encode(resp)
+	if err != nil {
+		log.Fatal(err)
+		respondWithJson(w, "FAIL")
+	}
+}
+
 func (s *Server) Start() {
 	router := mux.NewRouter()
+
+	notificationChannel := make(chan Notification, 5)
 
 	// API router; add new routes here
 	api := router.PathPrefix("/api").Subrouter()
 	api.Use(jsonMiddleware)
 	api.HandleFunc("/hosts", HostsHandler)
+	api.HandleFunc("/long", LongRunningTaskHandler(notificationChannel))
+
+	websocketWorker := NewWebsocketWorker(notificationChannel)
+	go websocketWorker.Run()
+
+	router.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		ServeWS(websocketWorker, w, r)
+	})
 
 	// Attempt to get the statik-built bundle
 	statikFS, err := fs.New()
@@ -53,7 +73,12 @@ func (s *Server) Start() {
 	staticFileHandler := http.StripPrefix("/", http.FileServer(statikFS))
 	router.PathPrefix("/").Handler(staticFileHandler).Methods("GET")
 
-	fmt.Println("Server started at http://localhost:" + s.Port)
-	http.ListenAndServe(":"+s.Port, router)
+	log.Print("Server started at http://localhost:" + s.Port)
+	err = http.ListenAndServe(":"+s.Port, router)
+
+	if err != nil {
+		log.Fatal("Failed to start server")
+		log.Fatal(err)
+	}
 
 }
