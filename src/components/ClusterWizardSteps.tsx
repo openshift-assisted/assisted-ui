@@ -1,7 +1,9 @@
 import React, { FC } from 'react';
 import { PageSidebar, Nav, NavList, NavItem } from '@patternfly/react-core';
+import { connect } from 'react-redux';
 
 import { WizardStep } from '../models/wizardStep';
+import { RootState } from '../store/rootReducer';
 
 interface ClusterWizardStepsProps {
   currentStep: WizardStep;
@@ -47,4 +49,7 @@ const ClusterWizardSteps: FC<ClusterWizardStepsProps> = ({
   return <PageSidebar nav={nav} />;
 };
 
-export default ClusterWizardSteps;
+const mapStateToProps = (state: RootState): { currentStep: WizardStep } => ({
+  currentStep: state.clusterWizard.step
+});
+export default connect(mapStateToProps)(ClusterWizardSteps);
