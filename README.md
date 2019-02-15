@@ -1,6 +1,28 @@
 # Facet
 
-User interface for MetalKube
+Facet is the central integration point for doing a MetalKube deployment of
+OpenShift.  It’s the one command you run on a provisioning host to kick off the
+deployment.  It performs the following functions:
+
+ - Implements the day 1 provisioning API.  In other words, this API provides
+   what is necessary to get the masters providing the control plane up and
+   running.  From that point, the Machine API and the corresponding MetalKube
+   components will take over provisioning the rest of the cluster.
+
+ - Uses an embedded HTTP server to serve the day 1 UI, which will be the
+   primary client of this API.
+
+ - Will do provisioning host configuration validation at startup.
+
+ - Will launch the Ironic containers using podman on the provisioning host.
+
+ - Will download the current images of RHCOS that are needed for deployment.
+   (for the bootstrap VM and bare metal hosts)
+
+ - Will run the installer, launch the bootstrap VM, and drive Ironic APIs.
+
+For further details about the MetalKube architecture, see
+[http://github.com/metalkube/metalkube-docs].
 
 ## Getting started
 
