@@ -16,7 +16,7 @@ import HostsTable from './HostsTable';
 
 interface Props {
   hostRows: string[][];
-  loading: boolean;
+  loadingHosts: boolean;
   fetchHosts: () => void;
 }
 
@@ -26,7 +26,7 @@ class BaremetalInventory extends Component<Props> {
   }
 
   render(): JSX.Element {
-    const { hostRows } = this.props;
+    const { hostRows, loadingHosts } = this.props;
     return (
       <Fragment>
         <PageSection variant={PageSectionVariants.darker}>
@@ -46,7 +46,7 @@ class BaremetalInventory extends Component<Props> {
           isMain
           style={{ padding: 0 }}
         >
-          <HostsTable hostRows={hostRows} />
+          <HostsTable hostRows={hostRows} loadingHosts={loadingHosts} />
         </PageSection>
       </Fragment>
     );
@@ -55,9 +55,9 @@ class BaremetalInventory extends Component<Props> {
 
 const mapStateToProps = (
   state: RootState
-): { hostRows: string[][]; loading: boolean } => ({
+): { hostRows: string[][]; loadingHosts: boolean } => ({
   hostRows: getHostTableRows(state),
-  loading: getHostsLoading(state)
+  loadingHosts: getHostsLoading(state)
 });
 
 export default connect(
