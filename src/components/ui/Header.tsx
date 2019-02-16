@@ -9,7 +9,7 @@ const Header: React.FunctionComponent = (): React.ReactElement<
   <PageHeader
     logo={<Brand src={logo} alt="MetalKube Facet UI" />}
     // toolbar={PageToolbar}
-    avatar={<Avatar src={avatarImg} alt="Avatar image" />}
+    //avatar={<Avatar src={avatarImg} alt="Avatar image" />}
     // showNavToggle
     // onNavToggle={this.onNavToggle}
   />
