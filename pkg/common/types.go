@@ -61,3 +61,8 @@ func NewNotification(message string, status NotificationStatus) Notification {
 		Timestamp: time.Now(),
 	}
 }
+
+func NewNotificationChannel() chan Notification {
+	return make(chan Notification, 10)
+
+}

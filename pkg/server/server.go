@@ -48,7 +48,7 @@ func respondWithJson(w http.ResponseWriter, obj interface{}) {
 }
 
 func (s *Server) Start() {
-	notificationChannel := make(chan common.Notification, 5)
+	notificationChannel := common.NewNotificationChannel()
 	websocketWorker := NewWebsocketWorker(notificationChannel)
 
 	router := CreateRouter(notificationChannel, websocketWorker)
