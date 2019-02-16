@@ -20,11 +20,29 @@ import (
 	"net/http"
 )
 
-func respondWithJson(w http.ResponseWriter, obj interface{}) {
+func UnknownError(w http.ResponseWriter, err error) {
+	http.Error(w, err.Error(), 500)
+}
+
+func RespondWithJson(w http.ResponseWriter, obj interface{}) {
 	resp := ApiResponse{Data: obj}
 	err := json.NewEncoder(w).Encode(resp)
 	if err != nil {
 		log.Fatal(err)
-		respondWithJson(w, "FAIL")
+		UnknownError(w, err)
 	}
+}
+
+func RespondWithError(w http.ResponseWriter, err error, code ...int) {
+	if len(code) > 0 {
+		w.WriteHeader(code[0])
+	}
+
+	resp := ApiErrorResponse{Error: err.Error()}
+	err = json.NewEncoder(w).Encode(resp)
+
+	if err != nil {
+		UnknownError(w, err)
+	}
+
 }
