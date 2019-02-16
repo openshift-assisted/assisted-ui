@@ -15,7 +15,6 @@
 package server
 
 import (
-	"encoding/json"
 	"github.com/metalkube/facet/pkg/common"
 	_ "github.com/metalkube/facet/statik"
 	"log"
@@ -36,15 +35,6 @@ func jsonMiddleware(next http.Handler) http.Handler {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		next.ServeHTTP(w, r)
 	})
-}
-
-func respondWithJson(w http.ResponseWriter, obj interface{}) {
-	resp := ApiResponse{Data: obj}
-	err := json.NewEncoder(w).Encode(resp)
-	if err != nil {
-		log.Fatal(err)
-		respondWithJson(w, "FAIL")
-	}
 }
 
 func (s *Server) Start() {
