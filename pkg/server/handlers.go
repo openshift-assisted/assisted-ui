@@ -27,7 +27,7 @@ func HostsHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Print(err)
 	}
-	respondWithJson(w, hostList)
+	RespondWithJson(w, hostList)
 }
 
 // This is an example of a REST API endpoint handler which will trigger a long
@@ -46,6 +46,6 @@ func LongRunningTaskHandler(notificationChannel chan common.Notification) http.H
 	return func(w http.ResponseWriter, r *http.Request) {
 		response := "OK"
 		go integration.PerformLongTask(notificationChannel)
-		respondWithJson(w, response)
+		RespondWithJson(w, response)
 	}
 }
