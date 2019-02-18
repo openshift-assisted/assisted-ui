@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/gorilla/websocket"
+	"github.com/metalkube/facet/pkg/common"
 	"log"
 	"net/http"
 )
@@ -10,7 +11,7 @@ type Client struct {
 	conn *websocket.Conn
 }
 
-func (c Client) send(notification Notification) {
+func (c Client) send(notification common.Notification) {
 	log.Print("Sending message to client: ", notification.Id)
 	err := c.conn.WriteJSON(notification)
 	if err != nil {
@@ -22,12 +23,12 @@ func (c Client) send(notification Notification) {
 // The WebSocket Worker will be a long-running go routine which registers
 // websocket clients connections, and broadcasts notification to connected clients.
 type WebsocketWorker struct {
-	clients    []*Client         // Connected clients
-	broadcasts chan Notification // A channel of messages to be sent to all clients
-	register   chan *Client      // A channel of websocket clients trying to connect
+	clients    []*Client                // Connected clients
+	broadcasts chan common.Notification // A channel of messages to be sent to all clients
+	register   chan *Client             // A channel of websocket clients trying to connect
 }
 
-func NewWebsocketWorker(broadcastChannel chan Notification) *WebsocketWorker {
+func NewWebsocketWorker(broadcastChannel chan common.Notification) *WebsocketWorker {
 	return &WebsocketWorker{
 		clients:    make([]*Client, 0),
 		register:   make(chan *Client, 0),
