@@ -1,18 +1,20 @@
 import React, { FC, Fragment } from 'react';
 
-// import BaremetalInventory from './BaremetalInventory';
+import BaremetalInventory from './BaremetalInventory';
 import ClusterWizardNav from './ClusterWizardNav';
-// import ClusterWizardSteps from './ClusterWizardSteps';
 import CreateClusterForm from './createCluster/CreateClusterForm';
+import { WizardStep } from '../models/wizardStep';
 
-const ClusterWizard: FC = (): JSX.Element => (
+interface ClusterWizardProps {
+  currentStep: WizardStep;
+}
+
+const ClusterWizard: FC<ClusterWizardProps> = ({
+  currentStep
+}: ClusterWizardProps): JSX.Element => (
   <Fragment>
-    {/* <ClusterWizardSteps
-      steps={[{ title: 'First' }, { title: 'Second' }]}
-      currentStepIndex={0}
-    /> */}
-    {/* <BaremetalInventory /> */}
-    <CreateClusterForm />
+    {currentStep === WizardStep.ClusterSetup && <CreateClusterForm />}
+    {currentStep === WizardStep.AddHosts && <BaremetalInventory />}
     <ClusterWizardNav />
   </Fragment>
 );
