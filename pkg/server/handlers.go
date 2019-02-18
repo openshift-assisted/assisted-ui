@@ -111,6 +111,12 @@ func CreateIgnitionConfigsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// TODO: Remove the hardcoded "ocp" value
-	integration.CreateIgnitionConfigs("ocp")
+	err := integration.CreateIgnitionConfigs("ocp")
+
+	if err != nil {
+		RespondWithError(w, err)
+		return
+	}
+
 	RespondWithJson(w, "OK")
 }
