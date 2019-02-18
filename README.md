@@ -141,6 +141,10 @@ In the project directory, you can run:
 
 Installs dependencies to node_modules directory
 
+### `yarn prettier`
+
+This application uses Prettier to check and format code. You can run the above command to clean your code, or if you're using something like VSCode, you can set up the Prettier extenson and formatting changes will automatically be applied when you save.
+
 ### `yarn start`
 
 Runs the app in the development mode.<br>
