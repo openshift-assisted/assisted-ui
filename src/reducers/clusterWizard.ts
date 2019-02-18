@@ -1,7 +1,7 @@
 import { ActionType, getType } from 'typesafe-actions';
 
 import * as clusterWizardActions from '../actions/clusterWizard';
-import { WizardStep } from '../models/wizardStep';
+import { WizardStep } from '../models/wizard';
 
 export interface ClusterWizardState {
   step: WizardStep;

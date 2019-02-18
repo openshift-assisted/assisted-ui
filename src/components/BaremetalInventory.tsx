@@ -3,9 +3,7 @@ import { connect } from 'react-redux';
 import {
   PageSectionVariants,
   Toolbar,
-  ToolbarGroup,
-  ToolbarItem,
-  Button
+  TextVariants
 } from '@patternfly/react-core';
 
 import { fetchHostsAsync } from '../actions/hosts';
@@ -14,11 +12,15 @@ import { RootState } from '../store/rootReducer';
 import PageSection from './ui/PageSection';
 import HostsTable from './HostsTable';
 import { HostTableRows } from '../models/hosts';
+import ClusterWizardToolbar from './ClusterWizardToolbar';
+import { ToolbarButton, ToolbarText } from './ui/Toolbar';
+import { WizardStep } from '../models/wizard';
 
 interface Props {
   hostRows: HostTableRows;
   loadingHosts: boolean;
   fetchHosts: () => void;
+  setCurrentStep: (step: WizardStep) => void;
 }
 
 class BaremetalInventory extends Component<Props> {
@@ -27,7 +29,7 @@ class BaremetalInventory extends Component<Props> {
   }
 
   render(): JSX.Element {
-    const { hostRows, loadingHosts } = this.props;
+    const { hostRows, loadingHosts, setCurrentStep } = this.props;
     return (
       <Fragment>
         <PageSection variant={PageSectionVariants.darker}>
@@ -35,11 +37,7 @@ class BaremetalInventory extends Component<Props> {
         </PageSection>
         <PageSection variant={PageSectionVariants.light}>
           <Toolbar>
-            <ToolbarGroup>
-              <ToolbarItem>
-                <Button variant="primary">Add Hosts</Button>
-              </ToolbarItem>
-            </ToolbarGroup>
+            <ToolbarButton variant="primary">Add Hosts</ToolbarButton>
           </Toolbar>
         </PageSection>
         <PageSection
@@ -49,6 +47,20 @@ class BaremetalInventory extends Component<Props> {
         >
           <HostsTable hostRows={hostRows} loadingHosts={loadingHosts} />
         </PageSection>
+        <ClusterWizardToolbar>
+          <ToolbarButton variant="primary" isDisabled>
+            Deploy Cluster
+          </ToolbarButton>
+          <ToolbarButton
+            variant="secondary"
+            onClick={() => setCurrentStep(WizardStep.ClusterSetup)}
+          >
+            Back
+          </ToolbarButton>
+          <ToolbarText component={TextVariants.small}>
+            Connect at least 3 hosts to begin deployment.
+          </ToolbarText>
+        </ClusterWizardToolbar>
       </Fragment>
     );
   }

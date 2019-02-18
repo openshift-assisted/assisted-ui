@@ -2,9 +2,8 @@ import React, { FC, Fragment } from 'react';
 import { connect } from 'react-redux';
 
 import BaremetalInventory from './BaremetalInventory';
-import ClusterWizardNav from './ClusterWizardNav';
 import CreateClusterForm from './createCluster/CreateClusterForm';
-import { WizardStep } from '../models/wizardStep';
+import { WizardStep } from '../models/wizard';
 import { RootState } from '../store/rootReducer';
 import { setCurrentStep } from '../actions/clusterWizard';
 
@@ -18,12 +17,12 @@ const ClusterWizard: FC<ClusterWizardProps> = ({
   setCurrentStep
 }: ClusterWizardProps): JSX.Element => (
   <Fragment>
-    {currentStep === WizardStep.ClusterSetup && <CreateClusterForm />}
-    {currentStep === WizardStep.AddHosts && <BaremetalInventory />}
-    <ClusterWizardNav
-      currentStep={currentStep}
-      setCurrentStep={setCurrentStep}
-    />
+    {currentStep === WizardStep.ClusterSetup && (
+      <CreateClusterForm setCurrentStep={setCurrentStep} />
+    )}
+    {currentStep === WizardStep.AddHosts && (
+      <BaremetalInventory setCurrentStep={setCurrentStep} />
+    )}
   </Fragment>
 );
 

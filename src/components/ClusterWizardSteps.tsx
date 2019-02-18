@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { PageSidebar, Nav, NavList, NavItem } from '@patternfly/react-core';
 import { connect } from 'react-redux';
 
-import { WizardStep } from '../models/wizardStep';
+import { WizardStep } from '../models/wizard';
 import { RootState } from '../store/rootReducer';
 
 interface ClusterWizardStepsProps {
