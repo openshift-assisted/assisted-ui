@@ -1,9 +1,10 @@
 import React, { FC, Fragment } from 'react';
 import { Table, TableHeader, TableBody } from '@patternfly/react-table';
 import { Bullseye } from '@patternfly/react-core';
+import { HostTableRows } from '../models/hosts';
 
 interface Props {
-  hostRows: string[][];
+  hostRows: HostTableRows;
   loadingHosts: boolean;
 }
 

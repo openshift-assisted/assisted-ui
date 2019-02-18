@@ -13,9 +13,10 @@ import { getHostTableRows, getHostsLoading } from '../selectors/hosts';
 import { RootState } from '../store/rootReducer';
 import PageSection from './ui/PageSection';
 import HostsTable from './HostsTable';
+import { HostTableRows } from '../models/hosts';
 
 interface Props {
-  hostRows: string[][];
+  hostRows: HostTableRows;
   loadingHosts: boolean;
   fetchHosts: () => void;
 }
