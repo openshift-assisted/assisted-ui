@@ -15,7 +15,10 @@
 package integration
 
 import (
+	apis "github.com/metalkube/baremetal-operator/pkg/apis/metalkube/v1alpha1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net"
+	"time"
 )
 
 type Host struct {
@@ -28,27 +31,61 @@ type Host struct {
 	Type   string `json:"type"`
 }
 
-func GetHosts() ([]Host, error) {
-	hostList := []Host{
-		Host{
-			Name:   "host-01",
-			Ip:     net.ParseIP("192.168.10.1"),
-			Status: "Enroll",
-			Cpu:    25,
-			Memory: 128,
-			Disk:   1024,
-			Type:   "Master",
+func GetHosts() (apis.BareMetalHostList, error) {
+	creationTime := metav1.Date(2019, time.January, 22, 9, 30, 0, 0, time.UTC)
+	t := metav1.Now()
+
+	item := apis.BareMetalHost{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:              "baremetalhost",
+			Namespace:         "default",
+			UID:               "some-uuid",
+			CreationTimestamp: creationTime,
+			Labels:            map[string]string{"app": "hello-world"},
 		},
-		Host{
-			Name:   "host-02",
-			Ip:     net.ParseIP("192.168.10.2"),
-			Status: "Manageable",
-			Cpu:    25,
-			Memory: 128,
-			Disk:   1024,
-			Type:   "Master",
+		Status: apis.BareMetalHostStatus{
+			LastUpdated:    &t,
+			ProvisioningID: "some ironic ID",
+			Image:          "image.qcow",
+			HardwareDetails: apis.HardwareDetails{
+				RAMGiB: 128,
+				NIC: []apis.NIC{
+					apis.NIC{
+						MAC:       "00:A0:C9:14:C8:29",
+						IP:        "192.168.100.100",
+						SpeedGbps: 40,
+					},
+				},
+				Storage: []apis.Storage{
+					apis.Storage{
+						SizeGiB: 1024,
+						Info:    "disk info",
+					},
+				},
+				CPUs: []apis.CPU{
+					apis.CPU{
+						Type:     "intel",
+						SpeedGHz: 3,
+					},
+				},
+			},
+		},
+		Spec: apis.BareMetalHostSpec{
+			BMC: apis.BMCDetails{
+				IP:              "192.168.100.100",
+				CredentialsName: "bmc-creds-valid",
+			},
+			Online: true,
 		},
 	}
 
-	return hostList, nil
+	list := apis.BareMetalHostList{
+		Items: []apis.BareMetalHost{item},
+		ListMeta: metav1.ListMeta{
+			SelfLink:        "/api/v1/namespace/default/baremetalhosts",
+			ResourceVersion: "123456",
+		},
+	}
+
+	return list, nil
 }
