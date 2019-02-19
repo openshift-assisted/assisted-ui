@@ -26,6 +26,7 @@ func ApiRouter(router *mux.Router, notificationChannel chan common.Notification)
 	router.Use(jsonMiddleware)
 
 	router.HandleFunc("/hosts", HostsHandler)
+	router.HandleFunc("/introspection_data/{host:[a-z0-9-]+}", IntrospectionDataHandler)
 	router.HandleFunc("/long", LongRunningTaskHandler(notificationChannel))
 	router.HandleFunc("/bootstrap-vm", BootstrapVMHandler(notificationChannel))
 	router.HandleFunc("/cluster-definition", CreateClusterDefinition).Methods("POST")

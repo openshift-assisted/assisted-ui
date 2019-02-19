@@ -8,6 +8,7 @@ import {
 
 import { fetchHostsAsync } from '../actions/hosts';
 import { getHostTableRows, getHostsLoading } from '../selectors/hosts';
+import { getHostValidationErrors } from '../selectors/validations';
 import { RootState } from '../store/rootReducer';
 import PageSection from './ui/PageSection';
 import HostsTable from './HostsTable';
@@ -18,6 +19,7 @@ import { WizardStep } from '../models/wizard';
 
 interface Props {
   hostRows: HostTableRows;
+  hostValidationErrors: any;
   loadingHosts: boolean;
   fetchHosts: () => void;
   setCurrentStep: (step: WizardStep) => void;
@@ -29,7 +31,7 @@ class BaremetalInventory extends Component<Props> {
   }
 
   render(): JSX.Element {
-    const { hostRows, loadingHosts, setCurrentStep } = this.props;
+    const { hostRows, loadingHosts, setCurrentStep, hostValidationErrors } = this.props;
     return (
       <Fragment>
         <PageSection variant={PageSectionVariants.darker}>
@@ -45,7 +47,7 @@ class BaremetalInventory extends Component<Props> {
           isMain
           style={{ padding: 0 }}
         >
-          <HostsTable hostRows={hostRows} loadingHosts={loadingHosts} />
+          <HostsTable hostRows={hostRows} loadingHosts={loadingHosts} hostValidationErrors={hostValidationErrors} />
         </PageSection>
         <ClusterWizardToolbar>
           <ToolbarButton variant="primary" isDisabled>
@@ -68,8 +70,13 @@ class BaremetalInventory extends Component<Props> {
 
 const mapStateToProps = (
   state: RootState
-): { hostRows: string[][]; loadingHosts: boolean } => ({
+): {
+  hostRows: string[][];
+  hostValidationErrors: any;
+  loadingHosts: boolean;
+} => ({
   hostRows: getHostTableRows(state),
+  hostValidationErrors: getHostValidationErrors(state),
   loadingHosts: getHostsLoading(state)
 });
 

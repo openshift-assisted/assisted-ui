@@ -19,6 +19,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/metalkube/facet/pkg/common"
 	"github.com/metalkube/facet/pkg/integration"
 )
@@ -68,6 +69,15 @@ func CreateClusterDefinition(w http.ResponseWriter, r *http.Request) {
 		// TODO(jtomasek): Response should be a complete InstallConfig object
 		RespondWithJson(w, pullSecret)
 	}
+}
+
+func IntrospectionDataHandler(w http.ResponseWriter, r *http.Request) {
+    vars := mux.Vars(r)
+	introspection_data, err := integration.GetIntrospectionData(vars["host"])
+	if err != nil {
+		log.Print(err)
+	}
+	RespondWithJson(w, introspection_data)
 }
 
 // This is an example of a REST API endpoint handler which will trigger a long

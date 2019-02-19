@@ -9,5 +9,5 @@ export const getHostsLoading = (state: RootState): boolean =>
 
 export const getHostTableRows = createSelector(
   getHosts,
-  hosts => hosts.map(host => Object.values(host))
+  (hosts: Host[]) => hosts.map((host: Host) => Object.values(host))
 );
