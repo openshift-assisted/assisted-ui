@@ -1,6 +1,5 @@
 import React from 'react';
-import { Avatar, Brand, PageHeader } from '@patternfly/react-core';
-import avatarImg from '@patternfly/patternfly-next/assets/images/img_avatar.svg';
+import { Brand, PageHeader } from '@patternfly/react-core';
 import logo from '../../images/logo.svg';
 
 const Header: React.FunctionComponent = (): React.ReactElement<

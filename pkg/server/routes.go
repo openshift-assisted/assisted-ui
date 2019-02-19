@@ -15,10 +15,11 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/metalkube/facet/pkg/common"
 	"github.com/rakyll/statik/fs"
-	"net/http"
 )
 
 func ApiRouter(router *mux.Router, notificationChannel chan common.Notification) {

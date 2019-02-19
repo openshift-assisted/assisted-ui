@@ -21,6 +21,7 @@ import (
 type Host struct {
 	Name   string `json:"name"`
 	Ip     net.IP `json:"ip"`
+	Status string `json:"status"`
 	Cpu    int    `json:"cpu"`
 	Memory int    `json:"memory"`
 	Disk   int    `json:"disk"`
@@ -32,6 +33,7 @@ func GetHosts() ([]Host, error) {
 		Host{
 			Name:   "host-01",
 			Ip:     net.ParseIP("192.168.10.1"),
+			Status: "Enroll",
 			Cpu:    25,
 			Memory: 128,
 			Disk:   1024,
@@ -40,6 +42,7 @@ func GetHosts() ([]Host, error) {
 		Host{
 			Name:   "host-02",
 			Ip:     net.ParseIP("192.168.10.2"),
+			Status: "Manageable",
 			Cpu:    25,
 			Memory: 128,
 			Disk:   1024,

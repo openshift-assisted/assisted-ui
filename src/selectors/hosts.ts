@@ -1,5 +1,13 @@
-import { HostsState } from '../reducers/hosts';
+import { createSelector } from 'reselect';
+
+import { RootState } from '../store/rootReducer';
 import { Host } from '../models/hosts';
 
-export const getHostList = (state: HostsState): Host[] => state.hosts;
-export const getHostsLoading = (state: HostsState): boolean => state.loading;
+export const getHosts = (state: RootState): Host[] => state.hosts.hosts;
+export const getHostsLoading = (state: RootState): boolean =>
+  state.hosts.loading;
+
+export const getHostTableRows = createSelector(
+  getHosts,
+  hosts => hosts.map(host => Object.values(host))
+);

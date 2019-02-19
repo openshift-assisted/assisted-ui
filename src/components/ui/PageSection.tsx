@@ -14,7 +14,9 @@ const scrollableStyle: CSSProperties = {
   height: '100%',
   width: '100%',
   overflow: 'auto',
-  zIndex: 0
+  zIndex: 0,
+  display: 'flex',
+  flexDirection: 'column'
 };
 
 const PageSection: FC<PageSectionProps> = ({

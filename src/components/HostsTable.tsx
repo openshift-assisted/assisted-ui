@@ -1,8 +1,23 @@
 import React, { FC, Fragment } from 'react';
 import { Table, TableHeader, TableBody } from '@patternfly/react-table';
+import { Bullseye } from '@patternfly/react-core';
+import { HostTableRows } from '../models/hosts';
 
-const HostsTable: FC = (): JSX.Element => {
-  const headerStyle = { position: 'sticky', top: 0, background: 'white' };
+interface Props {
+  hostRows: HostTableRows;
+  loadingHosts: boolean;
+}
+
+const HostsTable: FC<Props> = ({
+  hostRows,
+  loadingHosts
+}: Props): JSX.Element => {
+  const headerStyle = {
+    position: 'sticky',
+    top: 0,
+    background: 'white',
+    zIndex: 1
+  };
   const headerConfig = { header: { props: { style: headerStyle } } };
   // TODO(jtomasek): Those should not be needed to define as they are optional,
   // needs fixing in @patternfly/react-table
@@ -23,21 +38,13 @@ const HostsTable: FC = (): JSX.Element => {
     { title: 'Disk', ...headerConfig, ...columnConfig },
     { title: 'Type', ...headerConfig, ...columnConfig }
   ];
-  const hosts = Array.from(Array(12).keys()).map(i => [
-    `master-host${i}`,
-    '10.207.186.120',
-    'Manageable',
-    '25',
-    '100 GB',
-    '75 TB',
-    'Master'
-  ]);
   return (
     <Fragment>
-      <Table rows={hosts} cells={columns} aria-label="Hosts table">
+      <Table rows={hostRows} cells={columns} aria-label="Hosts table">
         <TableHeader />
-        <TableBody />
+        {!loadingHosts && <TableBody />}
       </Table>
+      {loadingHosts && <Bullseye>Loading...</Bullseye>}
     </Fragment>
   );
 };
