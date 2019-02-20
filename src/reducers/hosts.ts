@@ -15,7 +15,7 @@ export default combineReducers<HostsState, HostsActions>({
   hosts: (state = [], action) => {
     switch (action.type) {
       case getType(hosts.fetchHosts.success):
-        return [...state, ...action.payload];
+        return [...action.payload];
       default:
         return state;
     }

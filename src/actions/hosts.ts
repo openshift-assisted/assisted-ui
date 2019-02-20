@@ -1,4 +1,4 @@
-import * as redux from 'redux';
+import { Dispatch } from 'redux';
 import { createAsyncAction } from 'typesafe-actions';
 import { getHosts } from '../api/hosts';
 import { Host } from '../models/hosts';
@@ -9,8 +9,8 @@ export const fetchHosts = createAsyncAction(
   'GET_HOSTS_FAILURE'
 )<void, Host[], Error>();
 
-export const fetchHostsAsync = (): ((dispatch: redux.Dispatch) => void) => (
-  dispatch: redux.Dispatch
+export const fetchHostsAsync = (): ((dispatch: Dispatch) => void) => (
+  dispatch: Dispatch
 ) => {
   dispatch(fetchHosts.request());
   getHosts()
