@@ -1,27 +1,16 @@
 import React, { FC, Fragment } from 'react';
-import {
-  FormGroup,
-  TextInput,
-  TextContent,
-  Text
-} from '@patternfly/react-core';
+import { Field } from 'formik';
+import { TextContent, Text } from '@patternfly/react-core';
 
 import ExternalLink from '../ui/ExternalLink';
+import { TextInput } from '../ui/formik';
 
 interface RedHatAccountFieldsProps {
   onProvidePullSecret: () => void;
-  handleUsernameChange: (value: string) => void;
-  handlePasswordChange: (value: string) => void;
-  username: string;
-  password: string;
 }
 
 const RedHatAccountFields: FC<RedHatAccountFieldsProps> = ({
-  onProvidePullSecret,
-  handleUsernameChange,
-  handlePasswordChange,
-  username,
-  password
+  onProvidePullSecret
 }: RedHatAccountFieldsProps): JSX.Element => (
   <Fragment>
     <TextContent>
@@ -38,28 +27,21 @@ const RedHatAccountFields: FC<RedHatAccountFieldsProps> = ({
         instead.
       </Text>
     </TextContent>
-    <FormGroup label="Username" fieldId="create-cluster-username" isRequired>
-      <TextInput
-        type="text"
-        id="create-cluster-username"
-        name="username"
-        aria-describedby="create-cluster-username-helper"
-        value={username}
-        onChange={handleUsernameChange}
-        isRequired
-      />
-    </FormGroup>
-    <FormGroup label="Password" fieldId="create-cluster-password" isRequired>
-      <TextInput
-        type="text"
-        id="create-cluster-password-domain"
-        name="password"
-        aria-describedby="create-cluster-password-helper"
-        value={password}
-        onChange={handlePasswordChange}
-        isRequired
-      />
-    </FormGroup>
+    <Field
+      component={TextInput}
+      label="Username"
+      id="create-cluster-username"
+      name="username"
+      isRequired
+    />
+    <Field
+      component={TextInput}
+      label="Password"
+      id="create-cluster-password"
+      name="password"
+      type="password"
+      isRequired
+    />
   </Fragment>
 );
 export default RedHatAccountFields;

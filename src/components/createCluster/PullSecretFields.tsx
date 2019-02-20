@@ -1,18 +1,16 @@
 import React, { FC, Fragment } from 'react';
-import { FormGroup, TextArea, TextContent, Text } from '@patternfly/react-core';
+import { Field } from 'formik';
+import { TextContent, Text } from '@patternfly/react-core';
 
 import ExternalLink from '../ui/ExternalLink';
+import { TextArea } from '../ui/formik';
 
 interface PullSecretFieldsProps {
   onProvideCredentials: () => void;
-  handlePullSecretChange: (value: string) => void;
-  pullSecret: string;
 }
 
 const PullSecretFields: FC<PullSecretFieldsProps> = ({
-  onProvideCredentials,
-  handlePullSecretChange,
-  pullSecret
+  onProvideCredentials
 }: PullSecretFieldsProps): JSX.Element => (
   <Fragment>
     <TextContent>
@@ -28,20 +26,14 @@ const PullSecretFields: FC<PullSecretFieldsProps> = ({
         instead.
       </Text>
     </TextContent>
-    <FormGroup
+    <Field
+      component={TextArea}
       label="Pull secret"
-      fieldId="create-cluster-pull-secret"
+      name="pullSecret"
+      id="create-cluster-pull-secret"
+      aria-label="Pull secret"
       isRequired
-    >
-      <TextArea
-        id="create-cluster-pull-secret"
-        name="pullSecret"
-        value={pullSecret}
-        onChange={handlePullSecretChange}
-        aria-label="Pull secret"
-        isRequired
-      />
-    </FormGroup>
+    />
   </Fragment>
 );
 export default PullSecretFields;
