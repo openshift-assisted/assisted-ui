@@ -12,31 +12,52 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package host
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/metalkube/facet/cmd/host"
-	"github.com/metalkube/facet/cmd/server"
+	"github.com/metalkube/facet/pkg/integration"
 	"github.com/spf13/cobra"
-	"os"
+	"log"
 )
 
-var root = &cobra.Command{
-	Use:  "facet",
-	Long: "Facet\n\nMetalkube Facet is an interface to kubernetes baremetal provisioning.",
+var args struct {
+	port string
+}
+
+var Cmd = &cobra.Command{
+	Use:   "host",
+	Short: "Interact with baremetal hosts",
+	Long:  "",
+	Run:   nil,
 }
 
 func init() {
-	root.AddCommand(server.Cmd)
-	root.AddCommand(host.Cmd)
+
+	Cmd.AddCommand(
+		&cobra.Command{
+			Use:   "list",
+			Short: "List baremetal hosts",
+			Long:  "List baremetal hosts",
+			Run:   listHosts,
+		},
+	)
+
 }
 
-func main() {
-	err := root.Execute()
+func listHosts(cmd *cobra.Command, argv []string) {
+	hosts, err := integration.GetHosts()
+
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to execute command: %v\n", err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
+	data, err := json.MarshalIndent(hosts, "", "  ")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(string(data))
 }

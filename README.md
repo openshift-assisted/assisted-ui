@@ -75,13 +75,16 @@ You can use the binary directly:
 
 ```
 ./bin/facet -h
-facet server
+Facet
+
+Metalkube Facet is an interface to kubernetes baremetal provisioning.
 
 Usage:
   facet [command]
 
 Available Commands:
   help        Help about any command
+  host        Interact with baremetal hosts
   server      Run the facet server
 
 Flags:
@@ -132,6 +135,31 @@ func performLongTask(notificationChannel chan Notification) {
     notificationChannel <- n2
 }
 ```
+
+## REST API & CLI commands
+
+The facet repo is the home for both of these parts: both the command line
+client, and the REST API.  Both of these interfaces will consume a common
+integration API (API in the general sense, not an HTTP layer), also in facet.
+
+The REST API code is in github.com/metalkube/facet/pkg/server, the integration
+API is in github.com/metalkube/facet/pkg/integration, and any CLI commands will
+live in github.com/metalkube/facet/cmd. There are currently two CLI commands:
+
+* "server" which starts the REST API server
+* "host" which allows you to interact with baremetal hosts
+
+The CLI commands are self-documenting, so you should be able to run
+
+```
+$ go run main.go help
+```
+
+to learn about the various commands.  Try `go run main.go host list` for
+example.
+
+The integration package is where most of the code should go.  The server and the
+cmd packages are consumers of that code.
 
 ## Available Scripts
 
