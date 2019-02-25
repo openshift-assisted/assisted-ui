@@ -80,6 +80,10 @@ func GetHosts() (apis.BareMetalHostList, error) {
 	}
 
 	list := apis.BareMetalHostList{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "BareMetalHostList",
+			APIVersion: "alpha1",
+		},
 		Items: []apis.BareMetalHost{item},
 		ListMeta: metav1.ListMeta{
 			SelfLink:        "/api/v1/namespace/default/baremetalhosts",
