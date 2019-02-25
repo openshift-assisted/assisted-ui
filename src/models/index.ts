@@ -1,3 +1,6 @@
+/* eslint @typescript-eslint/no-explicit-any: 0 */
+/* eslint @typescript-eslint/indent: 0 */
+
 // NOTE(honza): These types are copied and pasted from openshift/console
 
 export type MatchExpression =
