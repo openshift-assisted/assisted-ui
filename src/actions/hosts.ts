@@ -14,6 +14,6 @@ export const fetchHostsAsync = (): ((dispatch: Dispatch) => void) => (
 ) => {
   dispatch(fetchHosts.request());
   getHosts()
-    .then(response => dispatch(fetchHosts.success(response.data.data)))
+    .then(response => dispatch(fetchHosts.success(response.data.items)))
     .catch(() => dispatch(fetchHosts.failure(Error('Failed to fetch hosts'))));
 };

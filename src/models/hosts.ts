@@ -1,12 +1,6 @@
-export interface Host {
-  name: string;
-  ip: string;
-  status: string;
-  cpu: number;
-  memory: number;
-  disk: number;
-  type: string;
-}
+import { K8sResourceKind } from './index';
+
+export type Host = K8sResourceKind;
 
 export type HostTableRow = string[];
 export type HostTableRows = HostTableRow[];
