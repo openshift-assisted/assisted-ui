@@ -33,6 +33,15 @@ func RespondWithJson(w http.ResponseWriter, obj interface{}) {
 	}
 }
 
+func RespondWithK8s(w http.ResponseWriter, obj interface{}) {
+	err := json.NewEncoder(w).Encode(obj)
+	if err != nil {
+		log.Fatal(err)
+		UnknownError(w, err)
+	}
+
+}
+
 func RespondWithError(w http.ResponseWriter, err error, code ...int) {
 	if len(code) > 0 {
 		w.WriteHeader(code[0])
