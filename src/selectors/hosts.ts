@@ -8,8 +8,7 @@ export const getHostsLoading = (state: RootState): boolean =>
   state.hosts.loading;
 
 const hostToHostTableRow = (host: Host): string[] => {
-  const spec = host.spec ? host.spec : {};
-  const status = host.status ? host.status : {};
+  const { spec = {}, status = {} } = host;
   return [
     host.metadata.name,
     spec.bmc.ip,
