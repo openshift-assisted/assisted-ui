@@ -36,7 +36,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,scss,yaml,yml}\"",
+    "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,scss,yaml,yml}'",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --color ."
   },
   "eslintConfig": {
