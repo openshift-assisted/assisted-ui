@@ -15,10 +15,11 @@
 package server
 
 import (
-	"github.com/metalkube/facet/pkg/common"
-	_ "github.com/metalkube/facet/statik"
 	"log"
 	"net/http"
+
+	"github.com/metalkube/facet/pkg/common"
+	_ "github.com/metalkube/facet/statik"
 )
 
 type Server struct {
@@ -53,8 +54,7 @@ func (s *Server) Start() {
 	err := http.ListenAndServe(":"+s.Port, router)
 
 	if err != nil {
-		log.Fatal("Failed to start server")
-		log.Fatal(err)
+		log.Fatal("Failed to start server: ", err)
 	}
 
 }

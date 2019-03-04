@@ -15,11 +15,21 @@
 package server
 
 import (
-	"github.com/metalkube/facet/pkg/common"
-	"github.com/metalkube/facet/pkg/integration"
+	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/metalkube/facet/pkg/common"
+	"github.com/metalkube/facet/pkg/integration"
 )
+
+type ClusterDefinition struct {
+	ClusterName string `json:"cluster_name"`
+	DNSDomain   string `json:"dns_domain"`
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	PullSecret  string `json:"pull_secret"`
+}
 
 func HostsHandler(w http.ResponseWriter, r *http.Request) {
 	hostList, err := integration.GetHosts()
@@ -28,6 +38,36 @@ func HostsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 	}
 	RespondWithJson(w, hostList)
+}
+
+func CreateClusterDefinition(w http.ResponseWriter, r *http.Request) {
+	var clusterDefinition ClusterDefinition
+	err := json.NewDecoder(r.Body).Decode(&clusterDefinition)
+	if err != nil {
+		RespondWithError(w, err, 500)
+		return
+	}
+
+	if clusterDefinition.PullSecret != "" {
+		// TODO(jtomasek): update install-config.yaml with clusterDefinitionData (except username/password)
+		RespondWithJson(w, clusterDefinition.PullSecret)
+	} else {
+		tokenData, err := integration.FetchAuthToken(clusterDefinition.Username, clusterDefinition.Password)
+		if err != nil {
+			RespondWithError(w, err, 500)
+			return
+		}
+
+		pullSecret, err := integration.FetchPullSecret(tokenData)
+		if err != nil {
+			RespondWithError(w, err, 500)
+			return
+		}
+
+		// TODO(jtomasek): update install-config.yaml with clusterDefinitionData (except username/password)
+		// TODO(jtomasek): Response should be a complete InstallConfig object
+		RespondWithJson(w, pullSecret)
+	}
 }
 
 // This is an example of a REST API endpoint handler which will trigger a long

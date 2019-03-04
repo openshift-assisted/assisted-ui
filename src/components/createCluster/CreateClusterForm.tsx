@@ -1,154 +1,170 @@
 import React, { Component, Fragment } from 'react';
 import {
+  Formik,
+  FormikActions,
+  Field,
+  validateYupSchema,
+  yupToFormErrors
+} from 'formik';
+import {
   Form,
-  FormGroup,
   Grid,
   GridItem,
-  TextInput,
   PageSectionVariants,
   TextContent,
   Text
 } from '@patternfly/react-core';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
 import ClusterWizardToolbar from '../ClusterWizardToolbar';
 import RedHatAccountFields from './RedHatAccountFields';
 import PageSection from '../ui/PageSection';
 import PullSecretFields from './PullSecretFields';
 import { WizardStep } from '../../models/wizard';
-import { ToolbarButton } from '../ui/Toolbar';
+import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
+import { TextInput } from '../ui/formik';
+import validationSchema from './validationSchema';
+import { ClusterDefinition } from '../../models/clusterDefinition';
+import { postInstallConfig } from '../../api/clusterDefinition';
 
 interface Props {
   setCurrentStep: (step: WizardStep) => void;
 }
 
-interface FormState {
-  clusterName: string;
-  DNSDomain: string;
-  username: string;
-  password: string;
-  pullSecret: string;
-}
-
 export interface CreateClusterFormState {
   providePullSecret: boolean;
-  form: FormState;
 }
 
 class CreateClusterForm extends Component<Props, CreateClusterFormState> {
   state: CreateClusterFormState = {
-    providePullSecret: false,
-    form: {
-      clusterName: '',
-      DNSDomain: '',
-      username: '',
-      password: '',
-      pullSecret: ''
+    providePullSecret: false
+  };
+
+  initialValues: ClusterDefinition = {
+    clusterName: '',
+    DNSDomain: '',
+    pullSecret: '',
+    username: '',
+    password: ''
+  };
+
+  validate = (values: ClusterDefinition) => {
+    // NOTE(jtomasek): This allows passing context to Yup schema
+    // https://github.com/jaredpalmer/formik/issues/506#issuecomment-372229014
+    try {
+      validateYupSchema<ClusterDefinition>(values, validationSchema, true, {
+        providePullSecret: this.state.providePullSecret
+      });
+    } catch (err) {
+      return yupToFormErrors(err);
     }
+    return {};
   };
 
-  updateFormState = (field: string, value: string) =>
-    this.setState(prevState => ({
-      ...prevState,
-      form: { ...prevState.form, [field]: value }
-    }));
-
-  handleClusterNameChange = (value: string) => {
-    this.updateFormState('clusterName', value);
-  };
-  handleDNSDomainChange = (value: string) => {
-    this.updateFormState('DNSDomain', value);
-  };
-  handleUsernameChange = (value: string) => {
-    this.updateFormState('username', value);
-  };
-  handlePasswordChange = (value: string) => {
-    this.updateFormState('password', value);
-  };
-  handlePullSecretChange = (value: string) => {
-    this.updateFormState('pullSecret', value);
+  handleSubmit = (
+    values: ClusterDefinition,
+    formikActions: FormikActions<ClusterDefinition>
+  ) => {
+    postInstallConfig(values)
+      .then(response => {
+        // TODO(jtomasek): dispatch a success action
+        console.log(response); // eslint-disable-line
+        this.props.setCurrentStep(WizardStep.AddHosts);
+        formikActions.setSubmitting(false);
+      })
+      .catch(e => {
+        formikActions.setStatus({ error: e.message });
+        formikActions.setSubmitting(false);
+        // TODO(jtomasek): dispatch a failure action
+      });
   };
 
   render(): JSX.Element {
-    const {
-      providePullSecret,
-      form: { clusterName, DNSDomain, username, password, pullSecret }
-    } = this.state;
-    const { setCurrentStep } = this.props;
+    const { providePullSecret } = this.state;
     return (
-      <Fragment>
-        <PageSection variant={PageSectionVariants.light} isMain>
-          <Grid gutter="md">
-            <GridItem span={12} lg={10} xl={6}>
-              <TextContent>
-                <Text component="h1">Define Cluster</Text>
-              </TextContent>
-              <Form>
-                <FormGroup
-                  label="Cluster name"
-                  fieldId="create-cluster-cluster-name"
-                  helperText="Please provide cluster name"
-                  isRequired
-                >
-                  <TextInput
-                    type="text"
-                    id="create-cluster-cluster-name"
-                    name="clusterName"
-                    aria-describedby="create-cluster-cluster-name-helper"
-                    value={clusterName}
-                    onChange={this.handleClusterNameChange}
-                    isRequired
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Base DNS domain"
-                  fieldId="create-cluster-base-dns-domain"
-                  isRequired
-                >
-                  <TextInput
-                    type="text"
-                    id="create-cluster-base-dns-domain"
-                    name="DNSDomain"
-                    aria-describedby="create-cluster-base-dns-domain-helper"
-                    value={DNSDomain}
-                    onChange={this.handleDNSDomainChange}
-                    isRequired
-                  />
-                </FormGroup>
-                <TextContent>
-                  <Text component="h2">Connect to Red Hat Account </Text>
-                </TextContent>
-                {providePullSecret ? (
-                  <PullSecretFields
-                    onProvideCredentials={() =>
-                      this.setState({ providePullSecret: false })
-                    }
-                    handlePullSecretChange={this.handlePullSecretChange}
-                    pullSecret={pullSecret}
-                  />
-                ) : (
-                  <RedHatAccountFields
-                    onProvidePullSecret={() =>
-                      this.setState({ providePullSecret: true })
-                    }
-                    handleUsernameChange={this.handleUsernameChange}
-                    handlePasswordChange={this.handlePasswordChange}
-                    username={username}
-                    password={password}
-                  />
-                )}
-              </Form>
-            </GridItem>
-          </Grid>
-        </PageSection>
-        <ClusterWizardToolbar>
-          <ToolbarButton
-            variant="primary"
-            onClick={() => setCurrentStep(WizardStep.AddHosts)}
-          >
-            Next
-          </ToolbarButton>
-        </ClusterWizardToolbar>
-      </Fragment>
+      <Formik
+        initialValues={this.initialValues}
+        initialStatus={{ error: null }}
+        validate={this.validate}
+        onSubmit={this.handleSubmit}
+      >
+        {({
+          handleSubmit,
+          isSubmitting,
+          isValid,
+          submitForm,
+          validateForm,
+          values,
+          status
+        }) => (
+          <Fragment>
+            {JSON.stringify(status, null, 2)}
+            <PageSection variant={PageSectionVariants.light} isMain>
+              <Grid gutter="md">
+                <GridItem span={12} lg={10} xl={6}>
+                  <TextContent>
+                    <Text component="h1">Define Cluster</Text>
+                  </TextContent>
+                  <Form className="pf-c-form" onSubmit={handleSubmit}>
+                    <Field
+                      component={TextInput}
+                      label="Cluster name"
+                      name="clusterName"
+                      id="create-cluster-cluster-name"
+                      helperText="This can not be changed after cluster is deployed"
+                      isRequired
+                    />
+                    <Field
+                      component={TextInput}
+                      label="Base DNS domain"
+                      name="DNSDomain"
+                      id="create-cluster-base-dns-domain"
+                      isRequired
+                    />
+                    <TextContent>
+                      <Text component="h2">Connect to Red Hat Account </Text>
+                    </TextContent>
+                    {providePullSecret ? (
+                      <PullSecretFields
+                        onProvideCredentials={() => {
+                          this.setState({ providePullSecret: false }, () =>
+                            validateForm(values)
+                          );
+                        }}
+                      />
+                    ) : (
+                      <RedHatAccountFields
+                        onProvidePullSecret={() => {
+                          this.setState({ providePullSecret: true }, () =>
+                            validateForm(values)
+                          );
+                        }}
+                      />
+                    )}
+                  </Form>
+                </GridItem>
+              </Grid>
+            </PageSection>
+            <ClusterWizardToolbar>
+              <ToolbarButton
+                variant="primary"
+                onClick={submitForm}
+                isDisabled={isSubmitting || !isValid}
+              >
+                Next
+              </ToolbarButton>
+              {isSubmitting && (
+                <ToolbarText>Form is being submitted</ToolbarText>
+              )}
+              {status.error && (
+                <ToolbarText>
+                  <ExclamationCircleIcon /> {status.error}
+                </ToolbarText>
+              )}
+            </ClusterWizardToolbar>
+          </Fragment>
+        )}
+      </Formik>
     );
   }
 }
