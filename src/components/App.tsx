@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Page } from '@patternfly/react-core';
+import { Page, Stack } from '@patternfly/react-core';
 import { Provider } from 'react-redux';
 
 import Header from './ui/Header';
@@ -20,7 +20,9 @@ class App extends Component {
           // view. This requires update to Page.d.ts and Page.js in @patternfly/react-core
           // isManagedSidebar
         >
-          <ClusterWizard />
+          <Stack style={{ minHeight: 480 }}>
+            <ClusterWizard />
+          </Stack>
         </Page>
       </Provider>
     );
