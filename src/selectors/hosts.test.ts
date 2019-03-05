@@ -5,13 +5,26 @@ const state: RootState = {
   hosts: {
     hosts: [
       {
-        name: 'host-01',
-        ip: '192.168.10.1',
-        status: 'Enroll',
-        cpu: '25',
-        memory: '128',
-        disk: '1024',
-        type: 'Master'
+        metadata: {
+          name: 'host-01'
+        },
+        spec: {
+          online: true,
+          bmc: {
+            ip: '192.168.10.1'
+          }
+        },
+        status: {
+          hardware: {
+            cpus: [{}],
+            ramGiB: 128,
+            storage: [
+              {
+                sizeGiB: 1024
+              }
+            ]
+          }
+        }
       }
     ],
     loading: false
@@ -21,7 +34,7 @@ const state: RootState = {
 describe('hosts selectors', () => {
   it('provides a selector to return hosts data as table rows', () => {
     const expectedTableRows = [
-      ['host-01', '192.168.10.1', 'Enroll', '25', '128', '1024', 'Master']
+      ['host-01', '192.168.10.1', 'Online', '1', '128', '1024', 'Master']
     ];
     expect(getHostTableRows(state)).toEqual(expectedTableRows);
   });

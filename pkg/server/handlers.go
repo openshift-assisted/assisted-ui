@@ -16,7 +16,6 @@ package server
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/metalkube/facet/pkg/common"
@@ -33,11 +32,11 @@ type ClusterDefinition struct {
 
 func HostsHandler(w http.ResponseWriter, r *http.Request) {
 	hostList, err := integration.GetHosts()
-	// TODO: Implement a real JSON error handler
 	if err != nil {
-		log.Print(err)
+		RespondWithError(w, err, 500)
+		return
 	}
-	RespondWithJson(w, hostList)
+	RespondWithK8s(w, hostList)
 }
 
 func CreateClusterDefinition(w http.ResponseWriter, r *http.Request) {

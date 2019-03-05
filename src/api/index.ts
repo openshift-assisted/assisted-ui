@@ -8,3 +8,7 @@ export interface ApiResponse<T> {
   status: Status;
   data: T;
 }
+
+export interface K8sListApiResponse<T> {
+  items: T[];
+}
