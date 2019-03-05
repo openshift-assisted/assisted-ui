@@ -42,7 +42,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,scss,yaml,yml}'",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx --color ."
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx --color .",
+    "test-suite": "./node_modules/protractor/bin/protractor integration_tests/protractor.conf.js"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -59,7 +60,10 @@
     "eslint-config-prettier": "^3.6.0",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.4",
-    "prettier": "1.16.1"
+    "jasmine-console-reporter": "^3.1.0",
+    "jasmine-reporters": "^2.3.2",
+    "prettier": "1.16.1",
+    "protractor": "^5.4.2"
   },
   "proxy": "http://localhost:8080"
 }
