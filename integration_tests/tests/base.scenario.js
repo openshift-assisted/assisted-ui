@@ -1,23 +1,23 @@
-//import { browser, ExpectedConditions as until } from 'protractor';
-const browser = require('protractor').browser
-const until = require('protractor').ExpectedConditions
+import { browser, ExpectedConditions as until } from 'protractor';
 
-const appHost = require('../protractor.conf').appHost
-const mainView = require('../views/main.view')
+import { appHost } from '../protractor.conf';
+import { clusterName } from '../views/main.view';
 
 const BROWSER_TIMEOUT = 15000;
 
 describe('GUI layout', () => {
-
-  afterAll(async() => {
+  afterAll(async () => {
     // Clears HTTP 401 errors for subsequent tests
-    await browser.manage().logs().get('browser');
+    await browser
+      .manage()
+      .logs()
+      .get('browser');
   });
 
-  it('includes the Cluster Name field', async() => {
+  it('includes the Cluster Name field', async () => {
     await browser.get(appHost);
-    expect(await browser.wait(until.visibilityOf(mainView.clusterName), BROWSER_TIMEOUT))
-        .toBe(true);
+    expect(
+      await browser.wait(until.visibilityOf(clusterName), BROWSER_TIMEOUT)
+    ).toBe(true);
   });
-
 });

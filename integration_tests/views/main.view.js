@@ -1,4 +1,3 @@
-// import { $ } from 'protractor';
-var $ = require('protractor').$
+import { $ } from 'protractor';
 
-exports.clusterName = $('input[name=clusterName]');
+export const clusterName = $('input[name=clusterName]');
