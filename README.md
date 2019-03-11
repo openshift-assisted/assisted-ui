@@ -1,5 +1,7 @@
 # Facet
 
+MetalKube installer UI.
+
 Facet is the central integration point for doing a MetalKube deployment of
 OpenShift. It’s the one command you run on a provisioning host to kick off the
 deployment. It performs the following functions:
@@ -20,6 +22,9 @@ deployment. It performs the following functions:
   the bootstrap VM and bare metal hosts)
 
 - Will run the installer, launch the bootstrap VM, and drive Ironic APIs.
+
+Here's a diagram of the Facet architecture:
+![Facet Architecture](/images/Facet_Architecture.png)
 
 For further details about the MetalKube architecture, see
 [http://github.com/metalkube/metalkube-docs].
