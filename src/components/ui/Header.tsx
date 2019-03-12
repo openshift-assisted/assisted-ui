@@ -1,6 +1,6 @@
 import React from 'react';
 import { Brand, PageHeader } from '@patternfly/react-core';
-import logo from '../../images/logo.svg';
+import logo from '../../images/metalkube_facet-whitetext.svg';
 
 const Header: React.FunctionComponent = (): React.ReactElement<
   React.ReactNode
