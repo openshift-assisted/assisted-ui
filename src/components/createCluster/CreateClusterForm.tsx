@@ -98,7 +98,6 @@ class CreateClusterForm extends Component<Props, CreateClusterFormState> {
           status
         }) => (
           <Fragment>
-            {JSON.stringify(status, null, 2)}
             <PageSection variant={PageSectionVariants.light} isMain>
               <Grid gutter="md">
                 <GridItem span={12} lg={10} xl={6}>
