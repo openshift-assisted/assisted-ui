@@ -18,7 +18,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/metalkube/facet/pkg/common"
+	"github.com/openshift-metalkube/facet/pkg/common"
 	"github.com/rakyll/statik/fs"
 )
 
