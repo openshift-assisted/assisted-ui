@@ -18,8 +18,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/metalkube/facet/pkg/common"
-	_ "github.com/metalkube/facet/statik"
+	"github.com/openshift-metalkube/facet/pkg/common"
+	_ "github.com/openshift-metalkube/facet/statik"
 )
 
 type Server struct {

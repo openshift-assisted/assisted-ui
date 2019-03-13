@@ -15,7 +15,7 @@
 package integration
 
 import (
-	"github.com/metalkube/facet/pkg/common"
+	"github.com/openshift-metalkube/facet/pkg/common"
 	"time"
 )
 
