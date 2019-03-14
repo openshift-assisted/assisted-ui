@@ -1,6 +1,6 @@
 # Facet
 
-MetalKube installer UI.
+OpenShift MetalKube installer UI.
 
 Facet is the central integration point for doing a MetalKube deployment of
 OpenShift. It’s the one command you run on a provisioning host to kick off the
@@ -36,7 +36,7 @@ For further details about the MetalKube architecture, see
   all your golang code will go, and setting the `GOPATH` environment variable to
   that path)
 - Clone this repository to your `$GOPATH` directory, i.e.
-  `$GOPATH/src/github.com/metalkube/facet` (create the `src` and `github.com`
+  `$GOPATH/src/github.com/openshift-metalkube/facet` (create the `src` and `github.com`
   directories if they don't already exist)
 - `cd` into it
 - Install javascript dependencies with `yarn install`
@@ -83,7 +83,7 @@ You can use the binary directly:
 ./bin/facet -h
 Facet
 
-Metalkube Facet is an interface to kubernetes baremetal provisioning.
+OpenShift Metalkube Facet is an interface to kubernetes baremetal provisioning.
 
 Usage:
   facet [command]
@@ -148,9 +148,9 @@ The facet repo is the home for both of these parts: both the command line
 client, and the REST API. Both of these interfaces will consume a common
 integration API (API in the general sense, not an HTTP layer), also in facet.
 
-The REST API code is in github.com/metalkube/facet/pkg/server, the integration
-API is in github.com/metalkube/facet/pkg/integration, and any CLI commands will
-live in github.com/metalkube/facet/cmd. There are currently two CLI commands:
+The REST API code is in github.com/openshift-metalkube/facet/pkg/server, the integration
+API is in github.com/openshift-metalkube/facet/pkg/integration, and any CLI commands will
+live in github.com/openshift-metalkube/facet/cmd. There are currently two CLI commands:
 
 - "server" which starts the REST API server
 - "host" which allows you to interact with baremetal hosts
