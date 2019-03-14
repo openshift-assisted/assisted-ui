@@ -18,8 +18,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/metalkube/facet/pkg/common"
-	"github.com/metalkube/facet/pkg/integration"
+	"github.com/openshift-metalkube/facet/pkg/common"
+	"github.com/openshift-metalkube/facet/pkg/integration"
 )
 
 type ClusterDefinition struct {
