@@ -3,6 +3,7 @@
     "es6": true,
     "browser": true,
     "jasmine": true,
+    "protractor": true,
     "node": true,
     "jest": true
   },
@@ -26,7 +27,7 @@
   ],
   "rules": {
     "indent": "off",
-    "react/no-unescaped-entities": ["error", {"forbid": [">", "}"]}],
+    "react/no-unescaped-entities": ["error", { "forbid": [">", "}"] }],
     "@typescript-eslint/indent": [
       "error",
       2,
