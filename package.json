@@ -42,7 +42,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,scss,yaml,yml}'",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx --color ."
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx --color .",
+    "test-suite": "babel-node node_modules/.bin/protractor integration_tests/protractor.conf.js",
+    "webdriver-update": "webdriver-manager update"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -54,12 +56,18 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.4",
     "@typescript-eslint/eslint-plugin": "^1.1.0",
     "@typescript-eslint/parser": "^1.1.0",
     "eslint-config-prettier": "^3.6.0",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.4",
-    "prettier": "1.16.1"
+    "jasmine-console-reporter": "^3.1.0",
+    "jasmine-reporters": "^2.3.2",
+    "prettier": "1.16.1",
+    "protractor": "^5.4.2"
   },
-  "proxy": "http://localhost:8080"
+  "proxy": "http://0.0.0.0:8080"
 }

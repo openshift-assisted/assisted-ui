@@ -176,7 +176,11 @@ Installs dependencies to node_modules directory
 
 ### `yarn prettier`
 
-This application uses Prettier to check and format code. You can run the above command to clean your code, or you can [integrate it with your editor](https://prettier.io/docs/en/editors.html), and set up a Prettier extenson and formatting changes will automatically be applied when you save.
+This application uses Prettier to check and format code. You can run the above
+command to clean your code, or you can
+[integrate it with your editor](https://prettier.io/docs/en/editors.html), and
+set up a Prettier extenson and formatting changes will automatically be applied
+when you save.
 
 ### `yarn start`
 
@@ -192,6 +196,20 @@ Launches the test runner in the interactive watch mode.<br> See the section
 about
 [running tests](https://facebook.github.io/create-react-app/docs/running-tests)
 for more information.
+
+### `yarn test-suite`
+
+Runs the GUI tests, based on Protrator (Selenium). Make sure you run
+`yarn webdriver-update` at least once before using protractor, in order to
+download the needed Selenium web drivers.
+
+You can also run a specific suite with: yarn test-suite --suite <suite-name>
+
+### `yarn webdriver-update`
+
+Downloads the Selenium web drivers for Firefox and Chrome. Run it at least once
+before trying to run the test-suite which uses Protractor. You also need to
+re-run this after every `yarn install` or update to the node modules.
 
 ### `yarn run build`
 
