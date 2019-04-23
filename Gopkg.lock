@@ -13,20 +13,20 @@
   version = "v1.2.1"
 
 [[projects]]
-  branch = "master"
-  digest = "1:3ee90c0d94da31b442dde97c99635aaafec68d0b8a3c12ee2075c6bdabeec6bb"
+  digest = "1:a6181aca1fd5e27103f9a920876f29ac72854df7345a39f3b01e61c8c94cc8af"
   name = "github.com/google/gofuzz"
   packages = ["."]
   pruneopts = "UT"
-  revision = "24818f796faf91cd76ec7bddd72458fbced7a6c1"
+  revision = "f140a6486e521aad38f5917de355cbf147cc0496"
+  version = "v1.0.0"
 
 [[projects]]
-  digest = "1:ca59b1175189b3f0e9f1793d2c350114be36eaabbe5b9f554b35edee1de50aea"
+  digest = "1:d5f97fc268267ec1b61c3453058c738246fc3e746f14b1ae25161513b7367b0c"
   name = "github.com/gorilla/mux"
   packages = ["."]
   pruneopts = "UT"
-  revision = "a7962380ca08b5a188038c69871b8d3fbdf31e89"
-  version = "v1.7.0"
+  revision = "c5c6c98bc25355028a63748a498942a6398ccd22"
+  version = "v1.7.1"
 
 [[projects]]
   digest = "1:7b5c6e2eeaa9ae5907c391a91c132abfd5c9e8a784a341b5625e750c67e6825d"
@@ -46,19 +46,19 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:046b57293cc81a4a36c57ef28f529e4018bed09229df8c6e11c05e62cb613b6b"
-  name = "github.com/metalkube/baremetal-operator"
-  packages = ["pkg/apis/metalkube/v1alpha1"]
+  digest = "1:3ab6399c76ab6bdd23dc3eb0eb4e15827335250359e225c37f5ae4864b8ac772"
+  name = "github.com/metal3-io/baremetal-operator"
+  packages = ["pkg/apis/metal3/v1alpha1"]
   pruneopts = "UT"
-  revision = "402a886cf6b0d78d86c4d8aa6ded9c69692ffc36"
+  revision = "870473bf6959dbf73e1652315b5bf3cbca397473"
 
 [[projects]]
-  digest = "1:ea0700160aca4ef099f4e06686a665a87691f4248dddd40796925eda2e46bd64"
+  digest = "1:77b730fa4c2d98f3ddf492acbea351eb6b0560fa5eace4105a6fc33ff937bb1b"
   name = "github.com/rakyll/statik"
   packages = ["fs"]
   pruneopts = "UT"
-  revision = "1355192d24db2566a83c3914e187e2a7e7679832"
-  version = "v0.1.5"
+  revision = "3bac566d30cdbeddef402a80f3d6305860e59f12"
+  version = "v0.1.6"
 
 [[projects]]
   digest = "1:274f67cb6fed9588ea2521ecdac05a6d62a8c51c074c1fccc6a49a40ba80e925"
@@ -86,7 +86,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:e480830d20470d74d24bc36a52d4152c420c2cab67503e54f8f08e2db52579c5"
+  digest = "1:01831e6da6dfda2ea208bc4a153f6fb2fe02b0baec3af50f3b61c0d87d99a3f7"
   name = "golang.org/x/net"
   packages = [
     "http/httpguts",
@@ -95,16 +95,18 @@
     "idna",
   ]
   pruneopts = "UT"
-  revision = "3a22650c66bd7f4fb6d1e8072ffd7b75c8a27898"
+  revision = "4829fb13d2c62012c17688fa7f629f371014946d"
 
 [[projects]]
-  digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"
+  digest = "1:f4ea3f623a07a2602bb9c1624d6dc7d291261278ba2484508fac559dc7926048"
   name = "golang.org/x/text"
   packages = [
     "collate",
     "collate/build",
     "internal/colltab",
     "internal/gen",
+    "internal/language",
+    "internal/language/compact",
     "internal/tag",
     "internal/triegen",
     "internal/ucd",
@@ -117,8 +119,8 @@
     "unicode/rangetable",
   ]
   pruneopts = "UT"
-  revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
-  version = "v0.3.0"
+  revision = "c942b20a5d85b458c4dce1589326051d85e25d6d"
+  version = "v0.3.1"
 
 [[projects]]
   digest = "1:2d1fbdc6777e5408cabeb02bf336305e724b925ff4546ded0fa8715a7267922a"
@@ -130,14 +132,15 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:98387c4a01465c4b3db338de740f633e5f842f2f093d6b1a4b45e6b6692476a9"
+  digest = "1:e1006f2c47f69445711ad3f630e23d8a6c53cd49a72f581af1578618c467653f"
   name = "k8s.io/api"
   packages = ["core/v1"]
   pruneopts = "UT"
-  revision = "a4bb047fdb92ce239f4bf0c3402b6ec14bb242de"
+  revision = "7fd04442e4f571bef21c39f6aa681469048903f5"
 
 [[projects]]
-  digest = "1:64cc55bfc7c794bc04562c22daf8486dc65c84251d820e41672d76893205ad45"
+  branch = "master"
+  digest = "1:c40e11e1617fc1f14187d33f872fb5a9ae22a132c780acd2ca62c23d543fb635"
   name = "k8s.io/apimachinery"
   packages = [
     "pkg/api/resource",
@@ -163,24 +166,23 @@
     "third_party/forked/golang/reflect",
   ]
   pruneopts = "UT"
-  revision = "2b1284ed4c93a43499e781493253e2ac5959c4fd"
-  version = "kubernetes-1.13.1"
+  revision = "f1e86e15343c4bebb6eac63ed39907c686813ae7"
 
 [[projects]]
-  digest = "1:72fd56341405f53c745377e0ebc4abeff87f1a048e0eea6568a20212650f5a82"
+  digest = "1:c696379ad201c1e86591785579e16bf6cf886c362e9a7534e8eb0d1028b20582"
   name = "k8s.io/klog"
   packages = ["."]
   pruneopts = "UT"
-  revision = "71442cd4037d612096940ceb0f3fec3f7fff66e0"
-  version = "v0.2.0"
+  revision = "e531227889390a39d9533dde61f590fe9f4b0035"
+  version = "v0.3.0"
 
 [[projects]]
-  digest = "1:84a8609383bec11b71d52dd813f33f1d16614b91966940bdc2aa79bea864fa25"
+  digest = "1:b2cae87f790ae141af181acd57d0d46f22468b6ee391c59d37c0d82987cdb69f"
   name = "sigs.k8s.io/controller-runtime"
   packages = ["pkg/runtime/scheme"]
   pruneopts = "UT"
-  revision = "12d98582e72927b6cd0123e2b4e819f9341ce62c"
-  version = "v0.1.10"
+  revision = "4276f3895df0acc9249f817eb86a47a3db6b7a9e"
+  version = "v0.2.0-alpha.0"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -188,7 +190,7 @@
   input-imports = [
     "github.com/gorilla/mux",
     "github.com/gorilla/websocket",
-    "github.com/metalkube/baremetal-operator/pkg/apis/metalkube/v1alpha1",
+    "github.com/metal3-io/baremetal-operator/pkg/apis/metal3/v1alpha1",
     "github.com/rakyll/statik/fs",
     "github.com/satori/go.uuid",
     "github.com/spf13/cobra",
