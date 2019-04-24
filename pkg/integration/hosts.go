@@ -15,10 +15,11 @@
 package integration
 
 import (
-	apis "github.com/metalkube/baremetal-operator/pkg/apis/metalkube/v1alpha1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net"
 	"time"
+
+	apis "github.com/metal3-io/baremetal-operator/pkg/apis/metal3/v1alpha1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type Host struct {
