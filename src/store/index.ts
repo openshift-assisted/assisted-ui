@@ -7,7 +7,7 @@ import rootReducer from './rootReducer';
 const initialState = {};
 
 const composeEnhancers = composeWithDevTools({
-  name: 'MetalKube Facet Redux Dev Tools'
+  name: 'Metal3 Facet Redux Dev Tools'
 });
 
 export const store = createStore(

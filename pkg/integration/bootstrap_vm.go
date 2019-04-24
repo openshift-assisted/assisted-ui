@@ -16,7 +16,7 @@ package integration
 
 import (
 	"fmt"
-	"github.com/openshift-metalkube/facet/pkg/common"
+	"github.com/openshift-metal3/facet/pkg/common"
 	"log"
 	"os/exec"
 )

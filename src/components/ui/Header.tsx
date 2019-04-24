@@ -1,12 +1,12 @@
 import React from 'react';
 import { Brand, PageHeader } from '@patternfly/react-core';
-import logo from '../../images/metalkube_facet-whitetext.svg';
+import logo from '../../images/metal3_facet-whitetext.svg';
 
 const Header: React.FunctionComponent = (): React.ReactElement<
   React.ReactNode
 > => (
   <PageHeader
-    logo={<Brand src={logo} alt="MetalKube Facet UI" />}
+    logo={<Brand src={logo} alt="Metal3 Facet UI" />}
     // toolbar={PageToolbar}
     //avatar={<Avatar src={avatarImg} alt="Avatar image" />}
     // showNavToggle

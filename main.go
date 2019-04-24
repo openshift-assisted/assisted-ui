@@ -16,8 +16,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/openshift-metalkube/facet/cmd/host"
-	"github.com/openshift-metalkube/facet/cmd/server"
+	"github.com/openshift-metal3/facet/cmd/host"
+	"github.com/openshift-metal3/facet/cmd/server"
 	"github.com/spf13/cobra"
 	"os"
 )
