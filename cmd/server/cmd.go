@@ -15,7 +15,7 @@
 package server
 
 import (
-	"github.com/openshift-metal3/facet/pkg/server"
+	"github.com/openshift-metalkube/facet/pkg/server"
 	"github.com/spf13/cobra"
 )
 

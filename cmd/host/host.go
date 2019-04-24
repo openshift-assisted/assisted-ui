@@ -17,7 +17,7 @@ package host
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/openshift-metal3/facet/pkg/integration"
+	"github.com/openshift-metalkube/facet/pkg/integration"
 	"github.com/spf13/cobra"
 	"log"
 )

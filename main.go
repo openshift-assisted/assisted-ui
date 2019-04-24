@@ -16,16 +16,15 @@ package main
 
 import (
 	"fmt"
-	"os"
-
-	"github.com/openshift-metal3/facet/cmd/host"
-	"github.com/openshift-metal3/facet/cmd/server"
+	"github.com/openshift-metalkube/facet/cmd/host"
+	"github.com/openshift-metalkube/facet/cmd/server"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 var root = &cobra.Command{
 	Use:  "facet",
-	Long: "Facet\n\nMetal³ Facet is an interface to kubernetes baremetal provisioning.",
+	Long: "Facet\n\nMetalkube Facet is an interface to kubernetes baremetal provisioning.",
 }
 
 func init() {

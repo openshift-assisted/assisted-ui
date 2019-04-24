@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/gorilla/websocket"
-	"github.com/openshift-metal3/facet/pkg/common"
+	"github.com/openshift-metalkube/facet/pkg/common"
 	"log"
 	"net/http"
 )

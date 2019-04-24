@@ -1,5 +1,5 @@
 {
-  "name": "metal3-facet",
+  "name": "metalkube-facet",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
