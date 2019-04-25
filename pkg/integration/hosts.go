@@ -45,10 +45,15 @@ func GetHosts() (apis.BareMetalHostList, error) {
 			Labels:            map[string]string{"app": "hello-world"},
 		},
 		Status: apis.BareMetalHostStatus{
-			LastUpdated:    &t,
-			ProvisioningID: "some ironic ID",
-			Image:          "image.qcow",
-			HardwareDetails: apis.HardwareDetails{
+			LastUpdated: &t,
+			Provisioning: apis.ProvisionStatus{
+				ID: "some ironic ID",
+				Image: apis.Image{
+					URL: "image.qcow",
+				},
+			},
+
+			HardwareDetails: &apis.HardwareDetails{
 				RAMGiB: 128,
 				NIC: []apis.NIC{
 					apis.NIC{
@@ -60,7 +65,7 @@ func GetHosts() (apis.BareMetalHostList, error) {
 				Storage: []apis.Storage{
 					apis.Storage{
 						SizeGiB: 1024,
-						Info:    "disk info",
+						Model:   "disk info",
 					},
 				},
 				CPUs: []apis.CPU{
@@ -73,7 +78,7 @@ func GetHosts() (apis.BareMetalHostList, error) {
 		},
 		Spec: apis.BareMetalHostSpec{
 			BMC: apis.BMCDetails{
-				IP:              "192.168.100.100",
+				Address:         "192.168.100.100",
 				CredentialsName: "bmc-creds-valid",
 			},
 			Online: true,
