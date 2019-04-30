@@ -46,11 +46,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:046b57293cc81a4a36c57ef28f529e4018bed09229df8c6e11c05e62cb613b6b"
-  name = "github.com/metalkube/baremetal-operator"
-  packages = ["pkg/apis/metalkube/v1alpha1"]
+  digest = "1:3ab6399c76ab6bdd23dc3eb0eb4e15827335250359e225c37f5ae4864b8ac772"
+  name = "github.com/metal3-io/baremetal-operator"
+  packages = ["pkg/apis/metal3/v1alpha1"]
   pruneopts = "UT"
-  revision = "402a886cf6b0d78d86c4d8aa6ded9c69692ffc36"
+  revision = "870473bf6959dbf73e1652315b5bf3cbca397473"
 
 [[projects]]
   digest = "1:ea0700160aca4ef099f4e06686a665a87691f4248dddd40796925eda2e46bd64"
@@ -188,7 +188,7 @@
   input-imports = [
     "github.com/gorilla/mux",
     "github.com/gorilla/websocket",
-    "github.com/metalkube/baremetal-operator/pkg/apis/metalkube/v1alpha1",
+    "github.com/metal3-io/baremetal-operator/pkg/apis/metal3/v1alpha1",
     "github.com/rakyll/statik/fs",
     "github.com/satori/go.uuid",
     "github.com/spf13/cobra",
