@@ -50,7 +50,8 @@ func (s *Server) Start() {
 
 	go websocketWorker.Run()
 
-	log.Print("Server started at http://localhost:" + s.Port)
+	log.Print("Server started at http://0.0.0.0:" + s.Port)
+
 	err := http.ListenAndServe("0.0.0.0:"+s.Port, router)
 
 	if err != nil {
