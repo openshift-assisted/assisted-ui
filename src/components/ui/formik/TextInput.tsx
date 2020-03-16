@@ -15,8 +15,7 @@ interface Props extends FieldProps {
 
 export default class TextInput extends Component<Props> {
   // PFTextInput introduces different onChange footprint, this fixes it
-  handleChange = (v: string, e: FormEvent<HTMLInputElement>): void =>
-    this.props.field.onChange(e);
+  handleChange = (v: string, e: FormEvent<HTMLInputElement>): void => this.props.field.onChange(e);
 
   render(): JSX.Element {
     const {
@@ -33,8 +32,7 @@ export default class TextInput extends Component<Props> {
       ...rest
     }: Props = this.props;
 
-    const isValid =
-      !touched[field.name] || (!!touched[field.name] && !errors[field.name]);
+    const isValid = !touched[field.name] || (!!touched[field.name] && !errors[field.name]);
 
     return (
       <FormGroup

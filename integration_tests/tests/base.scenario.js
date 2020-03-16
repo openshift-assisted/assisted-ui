@@ -16,8 +16,6 @@ describe('GUI layout', () => {
 
   it('includes the Cluster Name field', async () => {
     await browser.get(appHost);
-    expect(
-      await browser.wait(until.visibilityOf(clusterName), BROWSER_TIMEOUT)
-    ).toBe(true);
+    expect(await browser.wait(until.visibilityOf(clusterName), BROWSER_TIMEOUT)).toBe(true);
   });
 });

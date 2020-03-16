@@ -14,23 +14,18 @@ interface ClusterWizardProps {
 
 const ClusterWizard: FC<ClusterWizardProps> = ({
   currentStep,
-  setCurrentStep
+  setCurrentStep,
 }: ClusterWizardProps): JSX.Element => (
   <Fragment>
     {currentStep === WizardStep.ClusterSetup && (
       <CreateClusterForm setCurrentStep={setCurrentStep} />
     )}
-    {currentStep === WizardStep.AddHosts && (
-      <BaremetalInventory setCurrentStep={setCurrentStep} />
-    )}
+    {currentStep === WizardStep.AddHosts && <BaremetalInventory setCurrentStep={setCurrentStep} />}
   </Fragment>
 );
 
 const mapStateToProps = (state: RootState): { currentStep: WizardStep } => ({
-  currentStep: state.clusterWizard.step
+  currentStep: state.clusterWizard.step,
 });
 
-export default connect(
-  mapStateToProps,
-  { setCurrentStep }
-)(ClusterWizard);
+export default connect(mapStateToProps, { setCurrentStep })(ClusterWizard);

@@ -1,18 +1,12 @@
 import React, { Component, Fragment } from 'react';
-import {
-  Formik,
-  FormikActions,
-  Field,
-  validateYupSchema,
-  yupToFormErrors
-} from 'formik';
+import { Formik, FormikActions, Field, validateYupSchema, yupToFormErrors } from 'formik';
 import {
   Form,
   Grid,
   GridItem,
   PageSectionVariants,
   TextContent,
-  Text
+  Text,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
@@ -37,7 +31,7 @@ export interface CreateClusterFormState {
 
 class CreateClusterForm extends Component<Props, CreateClusterFormState> {
   state: CreateClusterFormState = {
-    providePullSecret: false
+    providePullSecret: false,
   };
 
   initialValues: ClusterDefinition = {
@@ -45,7 +39,7 @@ class CreateClusterForm extends Component<Props, CreateClusterFormState> {
     DNSDomain: '',
     pullSecret: '',
     username: '',
-    password: ''
+    password: '',
   };
 
   validate = (values: ClusterDefinition) => {
@@ -53,7 +47,7 @@ class CreateClusterForm extends Component<Props, CreateClusterFormState> {
     // https://github.com/jaredpalmer/formik/issues/506#issuecomment-372229014
     try {
       validateYupSchema<ClusterDefinition>(values, validationSchema, true, {
-        providePullSecret: this.state.providePullSecret
+        providePullSecret: this.state.providePullSecret,
       });
     } catch (err) {
       return yupToFormErrors(err);
@@ -61,18 +55,15 @@ class CreateClusterForm extends Component<Props, CreateClusterFormState> {
     return {};
   };
 
-  handleSubmit = (
-    values: ClusterDefinition,
-    formikActions: FormikActions<ClusterDefinition>
-  ) => {
+  handleSubmit = (values: ClusterDefinition, formikActions: FormikActions<ClusterDefinition>) => {
     postInstallConfig(values)
-      .then(response => {
+      .then((response) => {
         // TODO(jtomasek): dispatch a success action
         console.log(response); // eslint-disable-line
         this.props.setCurrentStep(WizardStep.AddHosts);
         formikActions.setSubmitting(false);
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e); // eslint-disable-line
         formikActions.setStatus({ error: e.message });
         formikActions.setSubmitting(false);
@@ -89,15 +80,7 @@ class CreateClusterForm extends Component<Props, CreateClusterFormState> {
         validate={this.validate}
         onSubmit={this.handleSubmit}
       >
-        {({
-          handleSubmit,
-          isSubmitting,
-          isValid,
-          submitForm,
-          validateForm,
-          values,
-          status
-        }) => (
+        {({ handleSubmit, isSubmitting, isValid, submitForm, validateForm, values, status }) => (
           <Fragment>
             <PageSection variant={PageSectionVariants.light} isMain>
               <Grid gutter="md">
@@ -127,17 +110,13 @@ class CreateClusterForm extends Component<Props, CreateClusterFormState> {
                     {providePullSecret ? (
                       <PullSecretFields
                         onProvideCredentials={() => {
-                          this.setState({ providePullSecret: false }, () =>
-                            validateForm(values)
-                          );
+                          this.setState({ providePullSecret: false }, () => validateForm(values));
                         }}
                       />
                     ) : (
                       <RedHatAccountFields
                         onProvidePullSecret={() => {
-                          this.setState({ providePullSecret: true }, () =>
-                            validateForm(values)
-                          );
+                          this.setState({ providePullSecret: true }, () => validateForm(values));
                         }}
                       />
                     )}
@@ -153,9 +132,7 @@ class CreateClusterForm extends Component<Props, CreateClusterFormState> {
               >
                 Next
               </ToolbarButton>
-              {isSubmitting && (
-                <ToolbarText>Form is being submitted</ToolbarText>
-              )}
+              {isSubmitting && <ToolbarText>Form is being submitted</ToolbarText>}
               {status.error && (
                 <ToolbarText>
                   <ExclamationCircleIcon /> {status.error}

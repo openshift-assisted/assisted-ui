@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  BackgroundImage as PfBackgroundImage,
-  BackgroundImageSrc
-} from '@patternfly/react-core';
+import { BackgroundImage as PfBackgroundImage, BackgroundImageSrc } from '@patternfly/react-core';
 import { BackgroundImageProps } from '@patternfly/react-core/dist/js/components/BackgroundImage/BackgroundImage';
 
 import pfbg1200 from '@patternfly/patternfly-next/assets/images/pfbg_1200.jpg';
@@ -18,11 +15,11 @@ const bgImages = {
   [BackgroundImageSrc.sm2x]: pfbg768at2x,
   [BackgroundImageSrc.xs]: pfbg576,
   [BackgroundImageSrc.xs2x]: pfbg576at2x,
-  [BackgroundImageSrc.filter]: `${pfbgBackgroundFilter}#image_overlay`
+  [BackgroundImageSrc.filter]: `${pfbgBackgroundFilter}#image_overlay`,
 };
 
-const BackgroundImage: React.FunctionComponent = (): React.ReactElement<
-  BackgroundImageProps
-> => <PfBackgroundImage src={bgImages} />;
+const BackgroundImage: React.FunctionComponent = (): React.ReactElement<BackgroundImageProps> => (
+  <PfBackgroundImage src={bgImages} />
+);
 
 export default BackgroundImage;

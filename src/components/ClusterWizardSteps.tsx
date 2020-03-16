@@ -10,14 +10,10 @@ interface ClusterWizardStepsProps {
 }
 
 const ClusterWizardSteps: FC<ClusterWizardStepsProps> = ({
-  currentStep
+  currentStep,
 }: ClusterWizardStepsProps): JSX.Element => {
   const nav = (
-    <Nav
-      onToggle={() => {}}
-      onSelect={() => {}}
-      aria-label="Cluster deployment wizard steps"
-    >
+    <Nav onToggle={() => {}} onSelect={() => {}} aria-label="Cluster deployment wizard steps">
       <NavList>
         <NavItem
           id="cluster-wizard-steps-cluster-setup"
@@ -50,6 +46,6 @@ const ClusterWizardSteps: FC<ClusterWizardStepsProps> = ({
 };
 
 const mapStateToProps = (state: RootState): { currentStep: WizardStep } => ({
-  currentStep: state.clusterWizard.step
+  currentStep: state.clusterWizard.step,
 });
 export default connect(mapStateToProps)(ClusterWizardSteps);

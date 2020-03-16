@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Title,
-  EmptyState,
-  EmptyStateBody,
-  Bullseye
-} from '@patternfly/react-core';
+import { Title, EmptyState, EmptyStateBody, Bullseye } from '@patternfly/react-core';
 
 class HostsEmptyState extends React.Component {
   render(): JSX.Element {

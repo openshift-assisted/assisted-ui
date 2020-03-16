@@ -12,8 +12,7 @@ const ExternalLink: FC<ExternalLinkProps> = ({
   ...rest
 }: ExternalLinkProps): JSX.Element => (
   <Text component="a" href={href} target="_blank" {...rest}>
-    {children ? children : href}{' '}
-    <ExternalLinkAltIcon color="rgb(0, 123, 186)" />
+    {children ? children : href} <ExternalLinkAltIcon color="rgb(0, 123, 186)" />
   </Text>
 );
 export default ExternalLink;

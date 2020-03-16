@@ -28,11 +28,7 @@
   "rules": {
     "indent": "off",
     "react/no-unescaped-entities": ["error", { "forbid": [">", "}"] }],
-    "@typescript-eslint/indent": [
-      "error",
-      2,
-      { "SwitchCase": 1, "VariableDeclarator": 2 }
-    ],
+    "@typescript-eslint/indent": ["error", 2, { "SwitchCase": 1, "VariableDeclarator": 2 }],
     "@typescript-eslint/explicit-member-accessibility": "off"
   },
   "settings": {

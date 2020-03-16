@@ -1,8 +1,5 @@
 import React, { FC, CSSProperties } from 'react';
-import {
-  PageSection as PfPageSection,
-  StackItem
-} from '@patternfly/react-core';
+import { PageSection as PfPageSection, StackItem } from '@patternfly/react-core';
 
 interface PageSectionProps extends React.ComponentProps<typeof PfPageSection> {
   isMain?: boolean;
@@ -16,7 +13,7 @@ const scrollableStyle: CSSProperties = {
   overflow: 'auto',
   zIndex: 0,
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
 };
 
 const PageSection: FC<PageSectionProps> = ({

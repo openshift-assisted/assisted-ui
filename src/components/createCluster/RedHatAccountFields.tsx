@@ -10,17 +10,14 @@ interface RedHatAccountFieldsProps {
 }
 
 const RedHatAccountFields: FC<RedHatAccountFieldsProps> = ({
-  onProvidePullSecret
+  onProvidePullSecret,
 }: RedHatAccountFieldsProps): JSX.Element => (
   <Fragment>
     <TextContent>
       <Text component="p">
-        Provide your Red Hat Account credentials to download necessary resources
-        from{' '}
-        <ExternalLink href="https://try.openshift.com/">
-          try.openshift.com
-        </ExternalLink>{' '}
-        . You can also{' '}
+        Provide your Red Hat Account credentials to download necessary resources from{' '}
+        <ExternalLink href="https://try.openshift.com/">try.openshift.com</ExternalLink> . You can
+        also{' '}
         <Text component="a" onClick={onProvidePullSecret}>
           provide a Pull Secret
         </Text>{' '}

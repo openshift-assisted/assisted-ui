@@ -30,5 +30,5 @@ export default combineReducers<HostsState, HostsActions>({
       default:
         return state;
     }
-  }
+  },
 });

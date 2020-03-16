@@ -8,10 +8,7 @@ interface Props {
 }
 
 const ClusterWizardToolbar: FC<Props> = ({ children }: Props): JSX.Element => (
-  <PageSection
-    variant={PageSectionVariants.light}
-    className="pf-u-box-shadow-lg-top"
-  >
+  <PageSection variant={PageSectionVariants.light} className="pf-u-box-shadow-lg-top">
     <Toolbar>{children}</Toolbar>
   </PageSection>
 );

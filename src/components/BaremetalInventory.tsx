@@ -1,10 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import {
-  PageSectionVariants,
-  Toolbar,
-  TextVariants
-} from '@patternfly/react-core';
+import { PageSectionVariants, Toolbar, TextVariants } from '@patternfly/react-core';
 
 import { fetchHostsAsync } from '../actions/hosts';
 import { getHostTableRows, getHostsLoading } from '../selectors/hosts';
@@ -32,19 +28,13 @@ class BaremetalInventory extends Component<Props> {
     const { hostRows, loadingHosts, setCurrentStep } = this.props;
     return (
       <Fragment>
-        <PageSection variant={PageSectionVariants.darker}>
-          Summary stats
-        </PageSection>
+        <PageSection variant={PageSectionVariants.darker}>Summary stats</PageSection>
         <PageSection variant={PageSectionVariants.light}>
           <Toolbar>
             <ToolbarButton variant="primary">Add Hosts</ToolbarButton>
           </Toolbar>
         </PageSection>
-        <PageSection
-          variant={PageSectionVariants.light}
-          isMain
-          style={{ padding: 0 }}
-        >
+        <PageSection variant={PageSectionVariants.light} isMain style={{ padding: 0 }}>
           <HostsTable hostRows={hostRows} loadingHosts={loadingHosts} />
         </PageSection>
         <ClusterWizardToolbar>
@@ -66,14 +56,9 @@ class BaremetalInventory extends Component<Props> {
   }
 }
 
-const mapStateToProps = (
-  state: RootState
-): { hostRows: string[][]; loadingHosts: boolean } => ({
+const mapStateToProps = (state: RootState): { hostRows: string[][]; loadingHosts: boolean } => ({
   hostRows: getHostTableRows(state),
-  loadingHosts: getHostsLoading(state)
+  loadingHosts: getHostsLoading(state),
 });
 
-export default connect(
-  mapStateToProps,
-  { fetchHosts: fetchHostsAsync }
-)(BaremetalInventory);
+export default connect(mapStateToProps, { fetchHosts: fetchHostsAsync })(BaremetalInventory);

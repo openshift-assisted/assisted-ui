@@ -5,7 +5,7 @@ import clusterWizardReducer from '../reducers/clusterWizard';
 
 const rootReducer = combineReducers({
   hosts: hostsReducer,
-  clusterWizard: clusterWizardReducer
+  clusterWizard: clusterWizardReducer,
 });
 
 export type RootState = StateType<typeof rootReducer>;

@@ -9,15 +9,12 @@ interface Props {
   loadingHosts: boolean;
 }
 
-const HostsTable: FC<Props> = ({
-  hostRows,
-  loadingHosts
-}: Props): JSX.Element => {
+const HostsTable: FC<Props> = ({ hostRows, loadingHosts }: Props): JSX.Element => {
   const headerStyle = {
     position: 'sticky',
     top: 0,
     background: 'white',
-    zIndex: 1
+    zIndex: 1,
   };
   const headerConfig = { header: { props: { style: headerStyle } } };
   // TODO(jtomasek): Those should not be needed to define as they are optional,
@@ -28,7 +25,7 @@ const HostsTable: FC<Props> = ({
     cellTransforms: [],
     formatters: [],
     cellFormatters: [],
-    props: {}
+    props: {},
   };
   const columns = [
     { title: 'Name', ...headerConfig, ...columnConfig },
@@ -37,7 +34,7 @@ const HostsTable: FC<Props> = ({
     { title: 'CPU', ...headerConfig, ...columnConfig },
     { title: 'Memory', ...headerConfig, ...columnConfig },
     { title: 'Disk', ...headerConfig, ...columnConfig },
-    { title: 'Type', ...headerConfig, ...columnConfig }
+    { title: 'Type', ...headerConfig, ...columnConfig },
   ];
   return (
     <Fragment>

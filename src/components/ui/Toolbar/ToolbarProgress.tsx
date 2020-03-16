@@ -1,11 +1,6 @@
 import React, { FC } from 'react';
 
-import {
-  ToolbarGroup,
-  ToolbarItem,
-  Progress,
-  ProgressSize
-} from '@patternfly/react-core';
+import { ToolbarGroup, ToolbarItem, Progress, ProgressSize } from '@patternfly/react-core';
 
 const ToolbarProgress: FC<React.ComponentProps<typeof Progress>> = ({
   style,

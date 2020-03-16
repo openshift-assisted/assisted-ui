@@ -12,21 +12,13 @@ type PostClusterDefinitionApiRequestKeys =
   | 'pull_secret';
 
 type PostClusterDefinitionApiRequestData = {
-  [T in PostClusterDefinitionApiRequestKeys]: string
+  [T in PostClusterDefinitionApiRequestKeys]: string;
 };
 
-type PostClusterDefinitionApiResponse = AxiosPromise<
-  ApiResponse<ClusterDefinition>
->;
+type PostClusterDefinitionApiResponse = AxiosPromise<ApiResponse<ClusterDefinition>>;
 
-const snakeCaseKeys = (
-  values: ClusterDefinition
-): PostClusterDefinitionApiRequestData =>
-  mapKeys(values, (value, key) =>
-    snakeCase(key)
-  ) as PostClusterDefinitionApiRequestData;
+const snakeCaseKeys = (values: ClusterDefinition): PostClusterDefinitionApiRequestData =>
+  mapKeys(values, (value, key) => snakeCase(key)) as PostClusterDefinitionApiRequestData;
 
-export const postInstallConfig = (
-  values: ClusterDefinition
-): PostClusterDefinitionApiResponse =>
+export const postInstallConfig = (values: ClusterDefinition): PostClusterDefinitionApiResponse =>
   axios.post('/api/cluster-definition', snakeCaseKeys(values));
