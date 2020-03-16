@@ -1,8 +1,8 @@
-import React, { Component, FormEvent } from 'react';
+import React, { FormEvent } from 'react';
 import { FieldProps } from 'formik';
 import { FormGroup, TextInput as PFTextInput } from '@patternfly/react-core';
 
-interface Props extends FieldProps {
+interface TextInputProps extends FieldProps {
   id: string;
   label: string;
   type?: string;
@@ -13,49 +13,47 @@ interface Props extends FieldProps {
   isReadOnly?: boolean;
 }
 
-export default class TextInput extends Component<Props> {
+const TextInput: React.FC<TextInputProps> = ({
+  field,
+  form: { touched, errors, isSubmitting },
+  id,
+  label,
+  type = 'text',
+  helperText,
+  isRequired = false,
+  isDisabled = false,
+  isInline = false,
+  isReadOnly = false,
+  ...rest
+}) => {
   // PFTextInput introduces different onChange footprint, this fixes it
-  handleChange = (v: string, e: FormEvent<HTMLInputElement>): void => this.props.field.onChange(e);
+  const handleChange = (v: string, e: FormEvent<HTMLInputElement>): void => field.onChange(e);
 
-  render(): JSX.Element {
-    const {
-      field,
-      form: { touched, errors, isSubmitting },
-      id,
-      label,
-      type = 'text',
-      helperText,
-      isRequired = false,
-      isDisabled = false,
-      isInline = false,
-      isReadOnly = false,
-      ...rest
-    }: Props = this.props;
+  const isValid = !touched[field.name] || (!!touched[field.name] && !errors[field.name]);
 
-    const isValid = !touched[field.name] || (!!touched[field.name] && !errors[field.name]);
-
-    return (
-      <FormGroup
-        label={label}
-        fieldId={id}
-        helperText={helperText}
-        helperTextInvalid={errors[field.name]}
+  return (
+    <FormGroup
+      label={label}
+      fieldId={id}
+      helperText={helperText}
+      helperTextInvalid={errors[field.name]}
+      isValid={isValid}
+      isRequired={isRequired}
+      isInline={isInline}
+    >
+      <PFTextInput
+        type={type}
+        id={id}
         isValid={isValid}
         isRequired={isRequired}
-        isInline={isInline}
-      >
-        <PFTextInput
-          type={type}
-          id={id}
-          isValid={isValid}
-          isRequired={isRequired}
-          isDisabled={isDisabled || isSubmitting}
-          isReadOnly={isReadOnly}
-          {...field}
-          onChange={this.handleChange}
-          {...rest}
-        />
-      </FormGroup>
-    );
-  }
-}
+        isDisabled={isDisabled || isSubmitting}
+        isReadOnly={isReadOnly}
+        {...field}
+        onChange={handleChange}
+        {...rest}
+      />
+    </FormGroup>
+  );
+};
+
+export default TextInput;

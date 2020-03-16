@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { PageSectionVariants, Toolbar, TextVariants } from '@patternfly/react-core';
 
@@ -12,49 +12,46 @@ import ClusterWizardToolbar from './ClusterWizardToolbar';
 import { ToolbarButton, ToolbarText } from './ui/Toolbar';
 import { WizardStep } from '../models/wizard';
 
-interface Props {
+interface BareMetalInventoryProps {
   hostRows: HostTableRows;
   loadingHosts: boolean;
   fetchHosts: () => void;
   setCurrentStep: (step: WizardStep) => void;
 }
 
-class BaremetalInventory extends Component<Props> {
-  componentDidMount(): void {
-    this.props.fetchHosts();
-  }
+const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
+  fetchHosts,
+  hostRows,
+  loadingHosts,
+  setCurrentStep,
+}) => {
+  React.useEffect(() => fetchHosts(), [fetchHosts]);
 
-  render(): JSX.Element {
-    const { hostRows, loadingHosts, setCurrentStep } = this.props;
-    return (
-      <Fragment>
-        <PageSection variant={PageSectionVariants.darker}>Summary stats</PageSection>
-        <PageSection variant={PageSectionVariants.light}>
-          <Toolbar>
-            <ToolbarButton variant="primary">Add Hosts</ToolbarButton>
-          </Toolbar>
-        </PageSection>
-        <PageSection variant={PageSectionVariants.light} isMain style={{ padding: 0 }}>
-          <HostsTable hostRows={hostRows} loadingHosts={loadingHosts} />
-        </PageSection>
-        <ClusterWizardToolbar>
-          <ToolbarButton variant="primary" isDisabled>
-            Deploy Cluster
-          </ToolbarButton>
-          <ToolbarButton
-            variant="secondary"
-            onClick={() => setCurrentStep(WizardStep.ClusterSetup)}
-          >
-            Back
-          </ToolbarButton>
-          <ToolbarText component={TextVariants.small}>
-            Connect at least 3 hosts to begin deployment.
-          </ToolbarText>
-        </ClusterWizardToolbar>
-      </Fragment>
-    );
-  }
-}
+  return (
+    <>
+      <PageSection variant={PageSectionVariants.darker}>Summary stats</PageSection>
+      <PageSection variant={PageSectionVariants.light}>
+        <Toolbar>
+          <ToolbarButton variant="primary">Add Hosts</ToolbarButton>
+        </Toolbar>
+      </PageSection>
+      <PageSection variant={PageSectionVariants.light} isMain style={{ padding: 0 }}>
+        <HostsTable hostRows={hostRows} loadingHosts={loadingHosts} />
+      </PageSection>
+      <ClusterWizardToolbar>
+        <ToolbarButton variant="primary" isDisabled>
+          Deploy Cluster
+        </ToolbarButton>
+        <ToolbarButton variant="secondary" onClick={() => setCurrentStep(WizardStep.ClusterSetup)}>
+          Back
+        </ToolbarButton>
+        <ToolbarText component={TextVariants.small}>
+          Connect at least 3 hosts to begin deployment.
+        </ToolbarText>
+      </ClusterWizardToolbar>
+    </>
+  );
+};
 
 const mapStateToProps = (state: RootState): { hostRows: string[][]; loadingHosts: boolean } => ({
   hostRows: getHostTableRows(state),
