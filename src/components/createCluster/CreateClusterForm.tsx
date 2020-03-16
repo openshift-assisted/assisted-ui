@@ -73,6 +73,7 @@ class CreateClusterForm extends Component<Props, CreateClusterFormState> {
         formikActions.setSubmitting(false);
       })
       .catch(e => {
+        console.log(e); // eslint-disable-line
         formikActions.setStatus({ error: e.message });
         formikActions.setSubmitting(false);
         // TODO(jtomasek): dispatch a failure action
