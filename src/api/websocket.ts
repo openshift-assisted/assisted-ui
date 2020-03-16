@@ -3,11 +3,11 @@
 
 const startWebsocketService = (): void => {
   window.addEventListener('load', () => {
-    let ws = new WebSocket('ws://localhost:8080/ws');
+    const ws = new WebSocket('ws://localhost:8080/ws');
 
     ws.addEventListener('message', (event) => {
       try {
-        let message = JSON.parse(event.data);
+        const message = JSON.parse(event.data);
         // eslint-disable-next-line no-console
         console.log('Websocket message', message);
       } catch (e) {

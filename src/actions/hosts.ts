@@ -9,7 +9,7 @@ export const fetchHosts = createAsyncAction(
   'GET_HOSTS_FAILURE',
 )<void, Host[], Error>();
 
-export const fetchHostsAsync = (): ((dispatch: Dispatch) => void) => (dispatch: Dispatch) => {
+export const fetchHostsAsync = () => (dispatch: Dispatch) => {
   dispatch(fetchHosts.request());
   getHosts()
     .then((response) => dispatch(fetchHosts.success(response.data.items)))

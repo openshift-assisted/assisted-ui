@@ -23,7 +23,7 @@ exports.config = {
       },
     },
   },
-  onPrepare: () => {
+  onPrepare: (): void => {
     browser.ignoreSynchronization = true;
     jasmine.getEnv().addReporter(new ConsoleReporter());
   },
