@@ -1,7 +1,7 @@
 import React from 'react';
 import { Page, Stack } from '@patternfly/react-core';
 import { Provider } from 'react-redux';
-
+import '../styles/index.scss';
 import Header from './ui/Header';
 import BackgroundImage from './ui/BackgroundImage';
 import ClusterWizard from './ClusterWizard';
