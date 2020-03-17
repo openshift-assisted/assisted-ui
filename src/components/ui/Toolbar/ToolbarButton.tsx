@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import { ToolbarGroup, ToolbarItem, Button } from '@patternfly/react-core';
 
-const ToolbarProgress: FC<React.ComponentProps<typeof Button>> = (
+const ToolbarButton: FC<React.ComponentProps<typeof Button>> = (
   props: React.ComponentProps<typeof Button>,
 ): JSX.Element => (
   <ToolbarGroup>
@@ -12,4 +12,4 @@ const ToolbarProgress: FC<React.ComponentProps<typeof Button>> = (
   </ToolbarGroup>
 );
 
-export default ToolbarProgress;
+export default ToolbarButton;

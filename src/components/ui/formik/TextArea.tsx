@@ -1,4 +1,4 @@
-import React, { FormEvent } from 'react';
+import React from 'react';
 import { FieldProps } from 'formik';
 import { FormGroup, TextArea as PFTextArea } from '@patternfly/react-core';
 
@@ -21,7 +21,8 @@ const TextArea: React.FC<TextAreaProps> = ({
   ...rest
 }) => {
   // PFTextInput introduces different onChange footprint, this fixes it
-  const handleChange = (v: string, e: FormEvent<HTMLInputElement>): void => field.onChange(e);
+  const handleChange = (v: string, e: React.ChangeEvent<HTMLTextAreaElement>): void =>
+    field.onChange(e);
 
   const isValid = !touched[field.name] || (!!touched[field.name] && !errors[field.name]);
 

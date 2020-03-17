@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import { ToolbarGroup, ToolbarItem, Text } from '@patternfly/react-core';
 
-const ToolbarProgress: FC<React.ComponentProps<typeof Text>> = (
+const ToolbarText: FC<React.ComponentProps<typeof Text>> = (
   props: React.ComponentProps<typeof Text>,
 ): JSX.Element => (
   <ToolbarGroup>
@@ -12,4 +12,4 @@ const ToolbarProgress: FC<React.ComponentProps<typeof Text>> = (
   </ToolbarGroup>
 );
 
-export default ToolbarProgress;
+export default ToolbarText;

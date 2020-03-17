@@ -23,7 +23,7 @@ const PageSection: FC<PageSectionProps> = ({
 }: PageSectionProps): JSX.Element => {
   const resultStyle = isMain ? { ...style, ...scrollableStyle } : { ...style };
   return (
-    <StackItem isMain={isMain} style={{ position: 'relative' }}>
+    <StackItem isFilled={isMain} style={{ position: 'relative' }}>
       <PfPageSection style={resultStyle} {...rest} />
     </StackItem>
   );

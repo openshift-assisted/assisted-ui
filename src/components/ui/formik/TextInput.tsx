@@ -1,11 +1,11 @@
 import React, { FormEvent } from 'react';
 import { FieldProps } from 'formik';
-import { FormGroup, TextInput as PFTextInput } from '@patternfly/react-core';
+import { FormGroup, TextInput as PFTextInput, TextInputTypes } from '@patternfly/react-core';
 
 interface TextInputProps extends FieldProps {
   id: string;
   label: string;
-  type?: string;
+  type?: TextInputTypes;
   helperText?: string;
   isRequired?: boolean;
   isDisabled?: boolean;
@@ -18,7 +18,7 @@ const TextInput: React.FC<TextInputProps> = ({
   form: { touched, errors, isSubmitting },
   id,
   label,
-  type = 'text',
+  type = TextInputTypes.text,
   helperText,
   isRequired = false,
   isDisabled = false,
@@ -49,6 +49,7 @@ const TextInput: React.FC<TextInputProps> = ({
         isDisabled={isDisabled || isSubmitting}
         isReadOnly={isReadOnly}
         {...field}
+        css={{}}
         onChange={handleChange}
         {...rest}
       />
