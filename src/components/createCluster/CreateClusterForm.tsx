@@ -1,5 +1,5 @@
 import React from 'react';
-import { Formik, FormikActions, Field, validateYupSchema, yupToFormErrors } from 'formik';
+import { Formik, FormikHelpers, Field, validateYupSchema, yupToFormErrors } from 'formik';
 import {
   Form,
   Grid,
@@ -55,7 +55,7 @@ const CreateClusterForm: React.FC<CreateClusterFormProps> = ({ setCurrentStep })
 
   const handleSubmit = (
     values: ClusterDefinition,
-    formikActions: FormikActions<ClusterDefinition>,
+    formikActions: FormikHelpers<ClusterDefinition>,
   ) => {
     postInstallConfig(values)
       .then((response) => {
