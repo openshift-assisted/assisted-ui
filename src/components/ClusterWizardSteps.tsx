@@ -1,7 +1,14 @@
 import React from 'react';
-import { PageSidebar, Nav, NavList, NavItem } from '@patternfly/react-core';
 import { connect } from 'react-redux';
-
+import {
+  PageSidebar,
+  Nav,
+  NavList,
+  NavItem,
+  // WizardNav,
+  // WizardNavItem,
+} from '@patternfly/react-core';
+import { setCurrentStep } from '../actions/clusterWizard';
 import { WizardStep } from '../models/wizard';
 import { RootState } from '../store/rootReducer';
 
@@ -11,39 +18,60 @@ interface ClusterWizardStepsProps {
 
 const ClusterWizardSteps: React.FC<ClusterWizardStepsProps> = ({ currentStep }) => {
   const nav = (
-    <Nav onToggle={() => {}} onSelect={() => {}} aria-label="Cluster deployment wizard steps">
+    <Nav
+      onToggle={() => {}}
+      onSelect={({ itemId }) => setCurrentStep(itemId as WizardStep)}
+      aria-label="Cluster deployment wizard steps"
+    >
       <NavList>
         <NavItem
           id="cluster-wizard-steps-cluster-setup"
-          to="#"
-          itemId={0}
+          itemId={WizardStep.ClusterSetup}
           isActive={currentStep === WizardStep.ClusterSetup}
         >
-          1. Cluster setup
+          Cluster setup
         </NavItem>
         <NavItem
           id="cluster-wizard-steps-add-hosts"
-          to="#"
-          itemId={1}
+          itemId={WizardStep.AddHosts}
           isActive={currentStep === WizardStep.AddHosts}
         >
-          2. Add hosts
+          Add hosts
         </NavItem>
         <NavItem
           id="cluster-wizard-steps-results"
-          to="#"
-          itemId={2}
+          itemId={WizardStep.Results}
           isActive={currentStep === WizardStep.Results}
         >
-          3. Results
+          Results
         </NavItem>
       </NavList>
     </Nav>
   );
+
+  // const nav = (
+  //   <WizardNav returnList>
+  //     <WizardNavItem
+  //       text="Cluster Setup"
+  //       isCurrent={currentStep === WizardStep.ClusterSetup}
+  //       step={WizardStep.ClusterSetup}
+  //     />
+  //     <WizardNavItem
+  //       text="Add Hosts"
+  //       isCurrent={currentStep === WizardStep.AddHosts}
+  //       step={WizardStep.AddHosts}
+  //     />
+  //     <WizardNavItem
+  //       text="Results"
+  //       isCurrent={currentStep === WizardStep.Results}
+  //       step={WizardStep.Results}
+  //     />
+  //   </WizardNav>
+  // );
   return <PageSidebar nav={nav} />;
 };
 
 const mapStateToProps = (state: RootState): { currentStep: WizardStep } => ({
   currentStep: state.clusterWizard.step,
 });
-export default connect(mapStateToProps)(ClusterWizardSteps);
+export default connect(mapStateToProps, { setCurrentStep })(ClusterWizardSteps);
