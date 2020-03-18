@@ -1,10 +1,8 @@
-import React, { FC } from 'react';
+import React from 'react';
 
 import { ToolbarGroup, ToolbarItem, Text } from '@patternfly/react-core';
 
-const ToolbarText: FC<React.ComponentProps<typeof Text>> = (
-  props: React.ComponentProps<typeof Text>,
-): JSX.Element => (
+const ToolbarText: React.FC<React.ComponentProps<typeof Text>> = (props) => (
   <ToolbarGroup>
     <ToolbarItem>
       <Text {...props} />

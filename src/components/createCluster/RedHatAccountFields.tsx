@@ -1,4 +1,4 @@
-import React, { FC, Fragment } from 'react';
+import React from 'react';
 import { Field } from 'formik';
 import { TextContent, Text } from '@patternfly/react-core';
 
@@ -9,10 +9,8 @@ interface RedHatAccountFieldsProps {
   onProvidePullSecret: () => void;
 }
 
-const RedHatAccountFields: FC<RedHatAccountFieldsProps> = ({
-  onProvidePullSecret,
-}: RedHatAccountFieldsProps): JSX.Element => (
-  <Fragment>
+const RedHatAccountFields: React.FC<RedHatAccountFieldsProps> = ({ onProvidePullSecret }) => (
+  <>
     <TextContent>
       <Text component="p">
         Provide your Red Hat Account credentials to download necessary resources from{' '}
@@ -39,6 +37,6 @@ const RedHatAccountFields: FC<RedHatAccountFieldsProps> = ({
       type="password"
       isRequired
     />
-  </Fragment>
+  </>
 );
 export default RedHatAccountFields;

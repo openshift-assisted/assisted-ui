@@ -1,4 +1,4 @@
-import React, { FC, Fragment } from 'react';
+import React from 'react';
 import { Table, TableHeader, TableBody } from '@patternfly/react-table';
 import { Bullseye } from '@patternfly/react-core';
 import { HostTableRows } from '../models/hosts';
@@ -9,7 +9,7 @@ interface Props {
   loadingHosts: boolean;
 }
 
-const HostsTable: FC<Props> = ({ hostRows, loadingHosts }: Props): JSX.Element => {
+const HostsTable: React.FC<Props> = ({ hostRows, loadingHosts }) => {
   const headerStyle = {
     position: 'sticky',
     top: 0,
@@ -37,14 +37,14 @@ const HostsTable: FC<Props> = ({ hostRows, loadingHosts }: Props): JSX.Element =
     { title: 'Type', ...headerConfig, ...columnConfig },
   ];
   return (
-    <Fragment>
+    <>
       <Table rows={hostRows} cells={columns} aria-label="Hosts table">
         <TableHeader />
         {!loadingHosts && !!hostRows.length && <TableBody />}
       </Table>
       {loadingHosts && <Bullseye>Loading...</Bullseye>}
       {!loadingHosts && !hostRows.length && <HostsEmptyState />}
-    </Fragment>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { PageSidebar, Nav, NavList, NavItem } from '@patternfly/react-core';
 import { connect } from 'react-redux';
 
@@ -9,9 +9,7 @@ interface ClusterWizardStepsProps {
   currentStep: WizardStep;
 }
 
-const ClusterWizardSteps: FC<ClusterWizardStepsProps> = ({
-  currentStep,
-}: ClusterWizardStepsProps): JSX.Element => {
+const ClusterWizardSteps: React.FC<ClusterWizardStepsProps> = ({ currentStep }) => {
   const nav = (
     <Nav onToggle={() => {}} onSelect={() => {}} aria-label="Cluster deployment wizard steps">
       <NavList>

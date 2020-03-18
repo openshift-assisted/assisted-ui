@@ -1,4 +1,4 @@
-import React, { FC, Fragment } from 'react';
+import React from 'react';
 import { Field } from 'formik';
 import { TextContent, Text } from '@patternfly/react-core';
 
@@ -9,10 +9,8 @@ interface PullSecretFieldsProps {
   onProvideCredentials: () => void;
 }
 
-const PullSecretFields: FC<PullSecretFieldsProps> = ({
-  onProvideCredentials,
-}: PullSecretFieldsProps): JSX.Element => (
-  <Fragment>
+const PullSecretFields: React.FC<PullSecretFieldsProps> = ({ onProvideCredentials }) => (
+  <>
     <TextContent>
       <Text component="p">
         Provide your Red Hat Account Pull Secret from{' '}
@@ -32,6 +30,6 @@ const PullSecretFields: FC<PullSecretFieldsProps> = ({
       aria-label="Pull secret"
       isRequired
     />
-  </Fragment>
+  </>
 );
 export default PullSecretFields;
