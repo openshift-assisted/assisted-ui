@@ -35,7 +35,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
           <ToolbarButton variant="primary">Add Hosts</ToolbarButton>
         </Toolbar>
       </PageSection>
-      <PageSection variant={PageSectionVariants.light} isMain style={{ padding: 0 }}>
+      <PageSection variant={PageSectionVariants.light} isMain noPadding>
         <HostsTable hostRows={hostRows} loadingHosts={loadingHosts} />
       </PageSection>
       <ClusterWizardToolbar>

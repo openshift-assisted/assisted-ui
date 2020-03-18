@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Stack } from '@patternfly/react-core';
+import { Page } from '@patternfly/react-core';
 import { Provider } from 'react-redux';
 import '../styles/index.scss';
 import Header from './ui/Header';
@@ -14,13 +14,10 @@ const App: React.FC = () => (
     <Page
       header={<Header />}
       sidebar={<ClusterWizardSteps />}
-      // TODO(jtomasek): enable this to automatically hide sidebar in mobile
-      // view. This requires update to Page.d.ts and Page.js in @patternfly/react-core
-      // isManagedSidebar
+      style={{ height: '100vh', background: 'transparent' }}
+      isManagedSidebar // enable this to automatically hide sidebar in mobile
     >
-      <Stack style={{ minHeight: 480 }}>
-        <ClusterWizard />
-      </Stack>
+      <ClusterWizard />
     </Page>
   </Provider>
 );

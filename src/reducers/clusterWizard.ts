@@ -9,7 +9,7 @@ export interface ClusterWizardState {
 
 const clusterWizard = (
   // state = { step: WizardStep.ClusterSetup },
-  state = { step: WizardStep.ClusterSetup },
+  state = { step: WizardStep.AddHosts },
   action: ActionType<typeof clusterWizardActions>,
 ): ClusterWizardState => {
   switch (action.type) {
