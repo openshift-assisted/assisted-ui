@@ -1,12 +1,13 @@
 import React from 'react';
+import { store } from '../store';
 import { Page } from '@patternfly/react-core';
 import { Provider } from 'react-redux';
-import '../styles/index.scss';
 import Header from './ui/Header';
 import BackgroundImage from './ui/BackgroundImage';
 import ClusterWizard from './ClusterWizard';
 import ClusterWizardSteps from './ClusterWizardSteps';
-import { store } from '../store';
+
+import '../styles/index.css';
 
 const App: React.FC = () => (
   <Provider store={store}>

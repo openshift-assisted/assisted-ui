@@ -23,7 +23,7 @@ const ClusterWizard: React.FC<ClusterWizardProps> = ({ currentStep, setCurrentSt
   }
 };
 
-const mapStateToProps = (state: RootState): { currentStep: WizardStep } => ({
+const mapStateToProps = (state: RootState) => ({
   currentStep: state.clusterWizard.step,
 });
 

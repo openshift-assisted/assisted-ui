@@ -53,7 +53,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
   );
 };
 
-const mapStateToProps = (state: RootState): { hostRows: string[][]; loadingHosts: boolean } => ({
+const mapStateToProps = (state: RootState): { hostRows: HostTableRows; loadingHosts: boolean } => ({
   hostRows: getHostTableRows(state),
   loadingHosts: getHostsLoading(state),
 });

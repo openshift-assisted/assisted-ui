@@ -1,6 +1,6 @@
 import { ActionType, getType } from 'typesafe-actions';
 
-import * as clusterWizardActions from '../actions/clusterWizard';
+import * as actions from '../actions/clusterWizard';
 import { WizardStep } from '../models/wizard';
 
 export interface ClusterWizardState {
@@ -10,10 +10,10 @@ export interface ClusterWizardState {
 const clusterWizard = (
   // state = { step: WizardStep.ClusterSetup },
   state = { step: WizardStep.AddHosts },
-  action: ActionType<typeof clusterWizardActions>,
+  action: ActionType<typeof actions>,
 ): ClusterWizardState => {
   switch (action.type) {
-    case getType(clusterWizardActions.setCurrentStep):
+    case getType(actions.setCurrentStep):
       return { ...state, step: action.payload };
     default:
       return state;

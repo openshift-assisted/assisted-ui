@@ -1,5 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   PageSidebar,
   Nav,
@@ -12,15 +13,13 @@ import { setCurrentStep } from '../actions/clusterWizard';
 import { WizardStep } from '../models/wizard';
 import { RootState } from '../store/rootReducer';
 
-interface ClusterWizardStepsProps {
-  currentStep: WizardStep;
-}
+const ClusterWizardSteps: React.FC = () => {
+  const currentStep: WizardStep = useSelector((state: RootState) => state.clusterWizard.step);
+  const dispatch: Dispatch = useDispatch();
 
-const ClusterWizardSteps: React.FC<ClusterWizardStepsProps> = ({ currentStep }) => {
   const nav = (
     <Nav
-      onToggle={() => {}}
-      onSelect={({ itemId }) => setCurrentStep(itemId as WizardStep)}
+      onSelect={({ itemId }) => dispatch(setCurrentStep(itemId as WizardStep))}
       aria-label="Cluster deployment wizard steps"
     >
       <NavList>
@@ -71,7 +70,4 @@ const ClusterWizardSteps: React.FC<ClusterWizardStepsProps> = ({ currentStep }) 
   return <PageSidebar nav={nav} />;
 };
 
-const mapStateToProps = (state: RootState): { currentStep: WizardStep } => ({
-  currentStep: state.clusterWizard.step,
-});
-export default connect(mapStateToProps, { setCurrentStep })(ClusterWizardSteps);
+export default ClusterWizardSteps;
