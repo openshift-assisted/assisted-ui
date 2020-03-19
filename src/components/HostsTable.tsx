@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, TableHeader, TableBody } from '@patternfly/react-table';
 import { Bullseye } from '@patternfly/react-core';
-import { HostTableRows } from '../models/hosts';
+import { HostTableRows } from '../types/hosts';
 import HostsEmptyState from './HostsEmptyState';
 
 interface Props {

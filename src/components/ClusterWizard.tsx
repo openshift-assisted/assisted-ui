@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import BaremetalInventory from './BaremetalInventory';
 import CreateClusterForm from './createCluster/CreateClusterForm';
-import { WizardStep } from '../models/wizard';
+import { WizardStep } from '../types/wizard';
 import { RootState } from '../store/rootReducer';
 import { setCurrentStep } from '../actions/clusterWizard';
 

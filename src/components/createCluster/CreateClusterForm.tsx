@@ -14,11 +14,11 @@ import ClusterWizardToolbar from '../ClusterWizardToolbar';
 import RedHatAccountFields from './RedHatAccountFields';
 import PageSection from '../ui/PageSection';
 import PullSecretFields from './PullSecretFields';
-import { WizardStep } from '../../models/wizard';
+import { WizardStep } from '../../types/wizard';
 import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import { TextInput } from '../ui/formik';
 import validationSchema from './validationSchema';
-import { ClusterDefinition } from '../../models/clusterDefinition';
+import { ClusterDefinition } from '../../types/clusterDefinition';
 import { postInstallConfig } from '../../api/clusterDefinition';
 
 interface CreateClusterFormProps {

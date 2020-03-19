@@ -1,7 +1,7 @@
 import axios, { AxiosPromise } from 'axios';
 import { mapKeys, snakeCase } from 'lodash';
 
-import { ClusterDefinition } from '../models/clusterDefinition';
+import { ClusterDefinition } from '../types/clusterDefinition';
 import { ApiResponse } from './index';
 
 type PostClusterDefinitionApiRequestKeys =

@@ -2,20 +2,30 @@ import { AxiosResponse } from 'axios';
 import { Dispatch } from 'redux';
 import { createAsyncAction } from 'typesafe-actions';
 import { getHosts } from '../api/hosts';
-import { K8sListApiResponse } from '../api';
-import { Host } from '../models/hosts';
+import { ListApiResponse } from '../api';
+import { Host } from '../types/hosts';
 
 export const fetchHosts = createAsyncAction(
-  ['GET_HOSTS_REQUEST', undefined],
-  ['GET_HOSTS_SUCCESS', (response: AxiosResponse<K8sListApiResponse<Host>>) => response.data.items],
+  'GET_HOSTS_REQUEST',
+  ['GET_HOSTS_SUCCESS', (response: AxiosResponse<ListApiResponse<Host>>) => response.data.items],
   ['GET_HOSTS_FAILURE', (error: Error) => error.message],
 )();
-// )<void, Host[], Error, undefined>();
+
+// const createResourceListAsyncAction = <T>(resource: string) =>
+//   createAsyncAction(
+//     `GET_${resource}_REQUEST`,
+//     [
+//       `GET_${resource}_SUCCESS`,
+//       (response: AxiosResponse<ListApiResponse<T>>) => response.data.items,
+//     ],
+//     [`GET_${resource}_FAILURE`, (error: Error) => error.message],
+//   )();
+
+// export const fetchHosts = createResourceListAsyncAction<Host>('HOSTS');
 
 export const fetchHostsAsync = () => (dispatch: Dispatch) => {
   dispatch(fetchHosts.request());
   getHosts()
-    // .then((response) => dispatch(fetchHosts.success(response)))
     .then((response) => dispatch(fetchHosts.success(response)))
     .catch(() => dispatch(fetchHosts.failure(Error('Failed to fetch hosts'))));
 };

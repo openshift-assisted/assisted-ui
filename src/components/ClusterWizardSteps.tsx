@@ -10,7 +10,7 @@ import {
   // WizardNavItem,
 } from '@patternfly/react-core';
 import { setCurrentStep } from '../actions/clusterWizard';
-import { WizardStep } from '../models/wizard';
+import { WizardStep } from '../types/wizard';
 import { RootState } from '../store/rootReducer';
 
 const ClusterWizardSteps: React.FC = () => {

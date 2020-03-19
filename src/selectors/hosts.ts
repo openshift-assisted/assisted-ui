@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 
 import { RootState } from '../store/rootReducer';
-import { Host } from '../models/hosts';
+import { Host } from '../types/hosts';
 
 export const getHosts = (state: RootState): Host[] => state.hosts.hosts;
 export const getHostsLoading = (state: RootState): boolean => state.hosts.loading;

@@ -7,10 +7,10 @@ import { getHostTableRows, getHostsLoading } from '../selectors/hosts';
 import { RootState } from '../store/rootReducer';
 import PageSection from './ui/PageSection';
 import HostsTable from './HostsTable';
-import { HostTableRows } from '../models/hosts';
+import { HostTableRows } from '../types/hosts';
 import ClusterWizardToolbar from './ClusterWizardToolbar';
 import { ToolbarButton, ToolbarText } from './ui/Toolbar';
-import { WizardStep } from '../models/wizard';
+import { WizardStep } from '../types/wizard';
 
 interface BareMetalInventoryProps {
   hostRows: HostTableRows;

@@ -9,6 +9,6 @@ export interface ApiResponse<T> {
   data: T;
 }
 
-export interface K8sListApiResponse<T> {
+export interface ListApiResponse<T> {
   items: T[];
 }
