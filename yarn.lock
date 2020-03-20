@@ -2032,6 +2032,13 @@
   dependencies:
     "@fortawesome/free-brands-svg-icons" "^5.8.1"
 
+"@patternfly/react-icons@^3.15.12":
+  version "3.15.12"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-3.15.12.tgz#7c80672d5bff4a7ea2d24abdd9e8477d79667e45"
+  integrity sha512-UX2mkfYp7NunBTBrsd4RamPh4pTTqhIxjvx23n19xLs9doXEMjZr1+xMuswrg+68EpCDA5gngeFWKRnb8vYXKg==
+  dependencies:
+    "@fortawesome/free-brands-svg-icons" "^5.8.1"
+
 "@patternfly/react-styles@^3.7.8":
   version "3.7.8"
   resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-3.7.8.tgz#6cfac5a7e7c8c49520f0f9276734036ceece9b85"

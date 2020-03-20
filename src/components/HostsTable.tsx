@@ -1,15 +1,16 @@
 import React from 'react';
-import { Table, TableHeader, TableBody } from '@patternfly/react-table';
-import { Bullseye } from '@patternfly/react-core';
+import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
 import { HostTableRows } from '../types/hosts';
-import HostsEmptyState from './HostsEmptyState';
+import { TableEmptyState, TableErrorState, TableLoadingState } from './ui/table';
+import { getColSpanRow } from './ui/table/utils';
 
 interface Props {
   hostRows: HostTableRows;
-  loadingHosts: boolean;
+  loading: boolean;
+  error: string;
 }
 
-const HostsTable: React.FC<Props> = ({ hostRows, loadingHosts }) => {
+const HostsTable: React.FC<Props> = ({ hostRows, loading, error }) => {
   const headerStyle = {
     position: 'sticky',
     top: 0,
@@ -20,8 +21,7 @@ const HostsTable: React.FC<Props> = ({ hostRows, loadingHosts }) => {
   // TODO(jtomasek): Those should not be needed to define as they are optional,
   // needs fixing in @patternfly/react-table
   const columnConfig = {
-    transfroms: [], // TODO fix the typo once it is fixed in @patternfly/react-table
-    // transforms: [],
+    transforms: [],
     cellTransforms: [],
     formatters: [],
     cellFormatters: [],
@@ -36,15 +36,34 @@ const HostsTable: React.FC<Props> = ({ hostRows, loadingHosts }) => {
     { title: 'Disk', ...headerConfig, ...columnConfig },
     { title: 'Type', ...headerConfig, ...columnConfig },
   ];
+
+  const emptyState = (
+    <TableEmptyState
+      title="No hosts connected yet."
+      content="Connect at least 3 hosts to your cluster to pool together resources and start running workloads."
+    />
+  );
+  const errorState = <TableErrorState title={error} />;
+  const loadingState = <TableLoadingState />;
+
+  const getRows = () => {
+    const columnCount = columns.length;
+    if (error) return getColSpanRow(errorState, columnCount);
+    else if (loading) return getColSpanRow(loadingState, columnCount);
+    else if (!hostRows.length) return getColSpanRow(emptyState, columnCount);
+    else return hostRows;
+  };
+
   return (
-    <>
-      <Table rows={hostRows} cells={columns} aria-label="Hosts table">
-        <TableHeader />
-        {!loadingHosts && !!hostRows.length && <TableBody />}
-      </Table>
-      {loadingHosts && <Bullseye>Loading...</Bullseye>}
-      {!loadingHosts && !hostRows.length && <HostsEmptyState />}
-    </>
+    <Table
+      rows={getRows()}
+      cells={columns}
+      variant={columns.length > 5 ? TableVariant.compact : undefined}
+      aria-label="Hosts table"
+    >
+      <TableHeader />
+      <TableBody />
+    </Table>
   );
 };
 

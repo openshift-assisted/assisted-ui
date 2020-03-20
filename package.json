@@ -5,8 +5,9 @@
   "dependencies": {
     "@patternfly/patternfly": "^2.68.4",
     "@patternfly/react-core": "^3.146.0",
-    "@patternfly/react-icons": "^3.15.11",
+    "@patternfly/react-icons": "^3.15.12",
     "@patternfly/react-table": "^2.28.10",
+    "@patternfly/react-tokens": "^2.8.8",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -65,5 +66,5 @@
     "jasmine-reporters": "^2.3.2",
     "protractor": "^5.4.2"
   },
-  "proxy": "http://0.0.0.0:8080"
+  "proxy": "http://192.168.39.98:31117"
 }

@@ -1,15 +1,13 @@
-import { AxiosResponse } from 'axios';
 import { Dispatch } from 'redux';
 import { createAsyncAction } from 'typesafe-actions';
 import { getHosts } from '../api/hosts';
-import { ListApiResponse } from '../api';
 import { Host } from '../types/hosts';
 
 export const fetchHosts = createAsyncAction(
   'GET_HOSTS_REQUEST',
-  ['GET_HOSTS_SUCCESS', (response: AxiosResponse<ListApiResponse<Host>>) => response.data.items],
-  ['GET_HOSTS_FAILURE', (error: Error) => error.message],
-)();
+  'GET_HOSTS_SUCCESS',
+  'GET_HOSTS_FAILURE',
+)<void, Host[], string>();
 
 // const createResourceListAsyncAction = <T>(resource: string) =>
 //   createAsyncAction(
@@ -26,6 +24,9 @@ export const fetchHosts = createAsyncAction(
 export const fetchHostsAsync = () => (dispatch: Dispatch) => {
   dispatch(fetchHosts.request());
   getHosts()
-    .then((response) => dispatch(fetchHosts.success(response)))
-    .catch(() => dispatch(fetchHosts.failure(Error('Failed to fetch hosts'))));
+    .then((response) => dispatch(fetchHosts.success(response.data)))
+    .catch((e) => {
+      console.error(e);
+      return dispatch(fetchHosts.failure('Failed to fetch hosts'));
+    });
 };

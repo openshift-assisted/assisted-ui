@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { PageSectionVariants, Toolbar, TextVariants } from '@patternfly/react-core';
 
 import { fetchHostsAsync } from '../actions/hosts';
-import { getHostTableRows, getHostsLoading } from '../selectors/hosts';
+import { getHostTableRows, getHostsLoading, getHostsError } from '../selectors/hosts';
 import { RootState } from '../store/rootReducer';
 import PageSection from './ui/PageSection';
 import HostsTable from './HostsTable';
@@ -15,6 +15,7 @@ import { WizardStep } from '../types/wizard';
 interface BareMetalInventoryProps {
   hostRows: HostTableRows;
   loadingHosts: boolean;
+  hostsError: string;
   fetchHosts: () => void;
   setCurrentStep: (step: WizardStep) => void;
 }
@@ -23,6 +24,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
   fetchHosts,
   hostRows,
   loadingHosts,
+  hostsError,
   setCurrentStep,
 }) => {
   React.useEffect(() => fetchHosts(), [fetchHosts]);
@@ -36,7 +38,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
         </Toolbar>
       </PageSection>
       <PageSection variant={PageSectionVariants.light} isMain noPadding>
-        <HostsTable hostRows={hostRows} loadingHosts={loadingHosts} />
+        <HostsTable hostRows={hostRows} loading={loadingHosts} error={hostsError} />
       </PageSection>
       <ClusterWizardToolbar>
         <ToolbarButton variant="primary" isDisabled>
@@ -53,9 +55,10 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
   );
 };
 
-const mapStateToProps = (state: RootState): { hostRows: HostTableRows; loadingHosts: boolean } => ({
+const mapStateToProps = (state: RootState) => ({
   hostRows: getHostTableRows(state),
   loadingHosts: getHostsLoading(state),
+  hostsError: getHostsError(state),
 });
 
 export default connect(mapStateToProps, { fetchHosts: fetchHostsAsync })(BaremetalInventory);

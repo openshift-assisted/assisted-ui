@@ -8,6 +8,7 @@ export type HostsActions = ActionType<typeof hosts>;
 
 export interface HostsState {
   hosts: Host[];
+  error: string,
   loading: boolean;
 }
 
@@ -16,6 +17,16 @@ export default combineReducers<HostsState, HostsActions>({
     switch (action.type) {
       case getType(hosts.fetchHosts.success):
         return [...action.payload];
+      default:
+        return state;
+    }
+  },
+  error: (state = '', action) => {
+    switch (action.type) {
+      case getType(hosts.fetchHosts.success):
+        return '';
+      case getType(hosts.fetchHosts.failure):
+        return action.payload;
       default:
         return state;
     }
