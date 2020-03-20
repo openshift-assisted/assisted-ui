@@ -27,7 +27,9 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
   hostsError,
   setCurrentStep,
 }) => {
-  React.useEffect(() => fetchHosts(), [fetchHosts]);
+  React.useEffect(() => {
+    fetchHosts();
+  }, [fetchHosts]);
 
   return (
     <>
@@ -38,7 +40,12 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
         </Toolbar>
       </PageSection>
       <PageSection variant={PageSectionVariants.light} isMain noPadding>
-        <HostsTable hostRows={hostRows} loading={loadingHosts} error={hostsError} />
+        <HostsTable
+          hostRows={hostRows}
+          loading={loadingHosts}
+          error={hostsError}
+          fetchHosts={fetchHosts}
+        />
       </PageSection>
       <ClusterWizardToolbar>
         <ToolbarButton variant="primary" isDisabled>

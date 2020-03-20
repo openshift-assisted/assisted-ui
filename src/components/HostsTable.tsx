@@ -3,14 +3,16 @@ import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-t
 import { HostTableRows } from '../types/hosts';
 import { TableEmptyState, TableErrorState, TableLoadingState } from './ui/table';
 import { getColSpanRow } from './ui/table/utils';
+import { Button, ButtonVariant } from '@patternfly/react-core';
 
 interface Props {
   hostRows: HostTableRows;
   loading: boolean;
   error: string;
+  fetchHosts: () => void;
 }
 
-const HostsTable: React.FC<Props> = ({ hostRows, loading, error }) => {
+const HostsTable: React.FC<Props> = ({ hostRows, loading, error, fetchHosts }) => {
   const headerStyle = {
     position: 'sticky',
     top: 0,
@@ -43,7 +45,20 @@ const HostsTable: React.FC<Props> = ({ hostRows, loading, error }) => {
       content="Connect at least 3 hosts to your cluster to pool together resources and start running workloads."
     />
   );
-  const errorState = <TableErrorState title={error} />;
+  const errorState = (
+    <TableErrorState
+      title={error}
+      content={
+        <>
+          There was an error retrieving data. Check your connection and{' '}
+          <Button onClick={fetchHosts} variant={ButtonVariant.link} isInline>
+            try again
+          </Button>
+          .
+        </>
+      }
+    />
+  );
   const loadingState = <TableLoadingState />;
 
   const getRows = () => {

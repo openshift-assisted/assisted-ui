@@ -21,12 +21,13 @@ export const fetchHosts = createAsyncAction(
 
 // export const fetchHosts = createResourceListAsyncAction<Host>('HOSTS');
 
-export const fetchHostsAsync = () => (dispatch: Dispatch) => {
+export const fetchHostsAsync = () => async (dispatch: Dispatch) => {
   dispatch(fetchHosts.request());
-  getHosts()
-    .then((response) => dispatch(fetchHosts.success(response.data)))
-    .catch((e) => {
-      console.error(e);
-      return dispatch(fetchHosts.failure('Failed to fetch hosts'));
-    });
+  try {
+    const { data } = await getHosts();
+    return dispatch(fetchHosts.success(data));
+  } catch (e) {
+    console.error(e);
+    return dispatch(fetchHosts.failure('Failed to fetch hosts'));
+  }
 };
