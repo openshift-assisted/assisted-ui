@@ -8,6 +8,18 @@ export enum ResourceListUIState {
   LOADED,
 }
 
+export enum ApiResourceKind {
+  image,
+  host,
+  cluster,
+}
+
+export type ApiResourceBase = {
+  kind: ApiResourceKind;
+  id: string;
+  href: string;
+};
+
 // NOTE(honza): These types are copied and pasted from openshift/console
 
 export type MatchExpression =

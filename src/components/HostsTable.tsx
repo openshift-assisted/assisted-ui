@@ -32,13 +32,14 @@ const HostsTable: React.FC<Props> = ({ hostRows, uiState, fetchHosts }) => {
     props: {},
   };
   const columns = [
-    { title: 'Name', ...headerConfig, ...columnConfig },
-    { title: 'IP Address', ...headerConfig, ...columnConfig },
+    { title: 'ID', ...headerConfig, ...columnConfig },
+    { title: 'Role', ...headerConfig, ...columnConfig },
+    { title: 'Serial Number', ...headerConfig, ...columnConfig },
     { title: 'Status', ...headerConfig, ...columnConfig },
+    { title: 'Namespace', ...headerConfig, ...columnConfig },
     { title: 'CPU', ...headerConfig, ...columnConfig },
     { title: 'Memory', ...headerConfig, ...columnConfig },
     { title: 'Disk', ...headerConfig, ...columnConfig },
-    { title: 'Type', ...headerConfig, ...columnConfig },
   ];
 
   const emptyState = (
@@ -64,11 +65,12 @@ const HostsTable: React.FC<Props> = ({ hostRows, uiState, fetchHosts }) => {
     }
   };
 
+  const rows = getRows();
   return (
     <Table
-      rows={getRows()}
+      rows={rows}
       cells={columns}
-      variant={columns.length > 5 ? TableVariant.compact : undefined}
+      variant={rows.length > 5 ? TableVariant.compact : undefined}
       aria-label="Hosts table"
     >
       <TableHeader />
