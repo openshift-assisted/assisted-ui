@@ -30,7 +30,7 @@
     "formik": "^2.1.4",
     "lodash": "^4.17.15",
     "node-sass": "^4.13.1",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-redux": "^7.2.0",
