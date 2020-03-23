@@ -1,9 +1,8 @@
 import React from 'react';
 import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
 import { HostTableRows } from '../types/hosts';
-import { TableEmptyState, TableErrorState, TableLoadingState } from './ui/table';
+import { EmptyState, ErrorState, LoadingState } from './ui/uiState';
 import { getColSpanRow } from './ui/table/utils';
-import { Button, ButtonVariant } from '@patternfly/react-core';
 
 interface Props {
   hostRows: HostTableRows;
@@ -40,13 +39,13 @@ const HostsTable: React.FC<Props> = ({ hostRows, loading, error, fetchHosts }) =
   ];
 
   const emptyState = (
-    <TableEmptyState
+    <EmptyState
       title="No hosts connected yet."
       content="Connect at least 3 hosts to your cluster to pool together resources and start running workloads."
     />
   );
-  const errorState = <TableErrorState title={error} fetchData={fetchHosts} />;
-  const loadingState = <TableLoadingState />;
+  const errorState = <ErrorState title={error} fetchData={fetchHosts} />;
+  const loadingState = <LoadingState />;
 
   const getRows = () => {
     const columnCount = columns.length;

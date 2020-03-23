@@ -17,7 +17,7 @@ import { HostTableRows } from '../../types/hosts';
 import ClusterWizardToolbar from '../ClusterWizardToolbar';
 import { ToolbarButton } from '../ui/Toolbar';
 import { WizardStep } from '../../types/wizard';
-import { TableLoadingState, TableErrorState, TableEmptyState } from '../ui/table';
+import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';
 
 interface ClustersProps {
@@ -41,17 +41,17 @@ const Clusters: React.FC<ClustersProps> = ({
 
   const errorState = (
     <PageSection variant={PageSectionVariants.light} isMain>
-      <TableErrorState title={clustersError} fetchData={fetchHosts} />;
+      <ErrorState title={clustersError} fetchData={fetchHosts} />;
     </PageSection>
   );
   const loadingState = (
     <PageSection variant={PageSectionVariants.light} isMain>
-      <TableLoadingState />
+      <LoadingState />
     </PageSection>
   );
   const emptyState = (
     <PageSection variant={PageSectionVariants.light} isMain>
-      <TableEmptyState
+      <EmptyState
         icon={AddCircleOIcon}
         title="Create new bare metal cluster"
         content="There are no clusters yet. This wizard is going to guide you through the OpenShift bare metal cluster deployment."

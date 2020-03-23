@@ -11,7 +11,7 @@ type Props = {
   content?: React.ReactNode;
 };
 
-const TableLoadingState: React.FC<Props> = ({ content }) => (
+const LoadingState: React.FC<Props> = ({ content }) => (
   <Bullseye>
     <EmptyState variant={EmptyStateVariant.small}>
       <Spinner size="xl" />
@@ -20,4 +20,4 @@ const TableLoadingState: React.FC<Props> = ({ content }) => (
   </Bullseye>
 );
 
-export default TableLoadingState;
+export default LoadingState;

@@ -21,7 +21,7 @@ type Props = {
   iconColor?: string;
 };
 
-const TableErrorState: React.FC<Props> = ({
+const ErrorState: React.FC<Props> = ({
   title = 'Error loading data',
   content,
   fetchData,
@@ -53,4 +53,4 @@ const TableErrorState: React.FC<Props> = ({
   );
 };
 
-export default TableErrorState;
+export default ErrorState;
