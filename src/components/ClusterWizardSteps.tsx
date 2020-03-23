@@ -12,6 +12,7 @@ import {
 import { setCurrentStep } from '../actions/clusterWizard';
 import { WizardStep } from '../types/wizard';
 import { RootState } from '../store/rootReducer';
+import _ from 'lodash';
 
 const ClusterWizardSteps: React.FC = () => {
   const currentStep: WizardStep = useSelector((state: RootState) => state.clusterWizard.step);
@@ -23,27 +24,16 @@ const ClusterWizardSteps: React.FC = () => {
       aria-label="Cluster deployment wizard steps"
     >
       <NavList>
-        <NavItem
-          id="cluster-wizard-steps-cluster-setup"
-          itemId={WizardStep.ClusterSetup}
-          isActive={currentStep === WizardStep.ClusterSetup}
-        >
-          Cluster setup
-        </NavItem>
-        <NavItem
-          id="cluster-wizard-steps-add-hosts"
-          itemId={WizardStep.AddHosts}
-          isActive={currentStep === WizardStep.AddHosts}
-        >
-          Add hosts
-        </NavItem>
-        <NavItem
-          id="cluster-wizard-steps-results"
-          itemId={WizardStep.Results}
-          isActive={currentStep === WizardStep.Results}
-        >
-          Results
-        </NavItem>
+        {Object.values(WizardStep).map((v) => (
+          <NavItem
+            key={`clluster-wizard-steps-${_.kebabCase(v)}`}
+            id={`clluster-wizard-steps-${_.kebabCase(v)}`}
+            itemId={v}
+            isActive={currentStep === v}
+          >
+            {v}
+          </NavItem>
+        ))}
       </NavList>
     </Nav>
   );

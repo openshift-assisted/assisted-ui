@@ -7,6 +7,7 @@ import {
   EmptyStateIcon,
   IconProps,
   EmptyStateSecondaryActions,
+  Button,
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 
@@ -14,21 +15,26 @@ type Props = {
   title?: string;
   content?: React.ReactNode;
   icon?: string | React.FC<IconProps>;
-  actions?: React.FC<React.ComponentProps<typeof EmptyStateSecondaryActions>>;
+  primaryAction?: React.ReactNode;
+  secondaryActions?: React.ReactNode[];
 };
 
 const TableEmptyState: React.FC<Props> = ({
   title = 'No results found',
   content,
   icon = SearchIcon,
-  actions,
+  primaryAction,
+  secondaryActions,
 }) => (
   <Bullseye>
     <EmptyState>
       <EmptyStateIcon icon={icon} />
       <Title size="lg">{title}</Title>
       {content && <EmptyStateBody>{content}</EmptyStateBody>}
-      {actions}
+      {primaryAction}
+      {secondaryActions && (
+        <EmptyStateSecondaryActions>{secondaryActions}</EmptyStateSecondaryActions>
+      )}
     </EmptyState>
   </Bullseye>
 );

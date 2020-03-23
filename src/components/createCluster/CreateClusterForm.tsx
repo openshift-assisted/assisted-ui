@@ -61,7 +61,7 @@ const CreateClusterForm: React.FC<CreateClusterFormProps> = ({ setCurrentStep })
       .then((response) => {
         // TODO(jtomasek): dispatch a success action
         console.log(response); // eslint-disable-line
-        setCurrentStep(WizardStep.AddHosts);
+        setCurrentStep(WizardStep.ManageHosts);
         formikActions.setSubmitting(false);
       })
       .catch((e) => {

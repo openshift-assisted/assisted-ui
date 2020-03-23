@@ -39,7 +39,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
           <ToolbarButton variant="primary">Add Hosts</ToolbarButton>
         </Toolbar>
       </PageSection>
-      <PageSection variant={PageSectionVariants.light} isMain noPadding>
+      <PageSection variant={PageSectionVariants.light} isMain>
         <HostsTable
           hostRows={hostRows}
           loading={loadingHosts}
@@ -51,7 +51,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
         <ToolbarButton variant="primary" isDisabled>
           Deploy Cluster
         </ToolbarButton>
-        <ToolbarButton variant="secondary" onClick={() => setCurrentStep(WizardStep.ClusterSetup)}>
+        <ToolbarButton variant="secondary" onClick={() => setCurrentStep(WizardStep.AccountLogin)}>
           Back
         </ToolbarButton>
         <ToolbarText component={TextVariants.small}>

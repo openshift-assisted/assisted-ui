@@ -45,20 +45,7 @@ const HostsTable: React.FC<Props> = ({ hostRows, loading, error, fetchHosts }) =
       content="Connect at least 3 hosts to your cluster to pool together resources and start running workloads."
     />
   );
-  const errorState = (
-    <TableErrorState
-      title={error}
-      content={
-        <>
-          There was an error retrieving data. Check your connection and{' '}
-          <Button onClick={fetchHosts} variant={ButtonVariant.link} isInline>
-            try again
-          </Button>
-          .
-        </>
-      }
-    />
-  );
+  const errorState = <TableErrorState title={error} fetchData={fetchHosts} />;
   const loadingState = <TableLoadingState />;
 
   const getRows = () => {

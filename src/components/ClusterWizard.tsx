@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import BaremetalInventory from './BaremetalInventory';
 import CreateClusterForm from './createCluster/CreateClusterForm';
+import Clusters from './clusters/Clusters';
 import { WizardStep } from '../types/wizard';
 import { RootState } from '../store/rootReducer';
 import { setCurrentStep } from '../actions/clusterWizard';
@@ -14,9 +15,11 @@ interface ClusterWizardProps {
 
 const ClusterWizard: React.FC<ClusterWizardProps> = ({ currentStep, setCurrentStep }) => {
   switch (currentStep) {
-    case WizardStep.ClusterSetup:
+    case WizardStep.AccountLogin:
       return <CreateClusterForm setCurrentStep={setCurrentStep} />;
-    case WizardStep.AddHosts:
+    case WizardStep.ManagedClusters:
+      return <Clusters setCurrentStep={setCurrentStep} />;
+    case WizardStep.ManageHosts:
       return <BaremetalInventory setCurrentStep={setCurrentStep} />;
     default:
       return null;
