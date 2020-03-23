@@ -1,6 +1,13 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 /* eslint @typescript-eslint/indent: 0 */
 
+export enum ResourceListUIState {
+  LOADING,
+  ERROR,
+  EMPTY,
+  LOADED,
+}
+
 // NOTE(honza): These types are copied and pasted from openshift/console
 
 export type MatchExpression =

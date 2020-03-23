@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 
 import { RootState } from '../store/rootReducer';
 import { Host, HostTableRows } from '../types/hosts';
+import { ResourceListUIState } from '../types';
 
 export const getHosts = (state: RootState): Host[] => state.hosts.hosts;
 export const getHostsLoading = (state: RootState): boolean => state.hosts.loading;
@@ -23,4 +24,14 @@ const hostToHostTableRow = (host: Host): string[] => {
 export const getHostTableRows = createSelector(
   getHosts,
   (hosts): HostTableRows => hosts.map(hostToHostTableRow),
+);
+
+export const getHostsUIState = createSelector(
+  [getHostsLoading, getHostsError, getHosts],
+  (loading: boolean, error: string, hosts: Host[]) => {
+    if (loading) return ResourceListUIState.LOADING;
+    else if (error) return ResourceListUIState.ERROR;
+    else if (!hosts.length) return ResourceListUIState.EMPTY;
+    else return ResourceListUIState.LOADED;
+  },
 );

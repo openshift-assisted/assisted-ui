@@ -9,7 +9,7 @@ import {
 } from '@patternfly/react-core';
 
 import { fetchHostsAsync } from '../../actions/hosts';
-import { getHostTableRows, getHostsLoading, getHostsError } from '../../selectors/hosts';
+import { getHostTableRows, getHostsError, getHostsUIState } from '../../selectors/hosts';
 import { RootState } from '../../store/rootReducer';
 import PageSection from '../ui/PageSection';
 // import HostsTable from '../HostsTable';
@@ -19,10 +19,11 @@ import { ToolbarButton } from '../ui/Toolbar';
 import { WizardStep } from '../../types/wizard';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';
+import { ResourceListUIState } from '../../types';
 
 interface ClustersProps {
   hostRows: HostTableRows;
-  loadingHosts: boolean;
+  clustersUIState: ResourceListUIState;
   clustersError: string;
   fetchHosts: () => void;
   setCurrentStep: (step: WizardStep) => void;
@@ -31,7 +32,7 @@ interface ClustersProps {
 const Clusters: React.FC<ClustersProps> = ({
   fetchHosts,
   hostRows,
-  loadingHosts,
+  clustersUIState,
   clustersError,
   setCurrentStep,
 }) => {
@@ -67,43 +68,47 @@ const Clusters: React.FC<ClustersProps> = ({
     </PageSection>
   );
 
-  if (clustersError) return errorState;
-  else if (loadingHosts) return loadingState;
-  else if (!hostRows.length) return emptyState;
-  // TODO(jtomasek): if there is just one cluster, redirect to it's detail
-  else {
-    return (
-      <>
-        <PageSection variant={PageSectionVariants.light}>
-          <TextContent>
-            <Text component="h1">Managed Clusters</Text>
-          </TextContent>
-        </PageSection>
-        <PageSection variant={PageSectionVariants.light} isMain>
-          Table will be here
-          {/* <HostsTable
+  switch (clustersUIState) {
+    case ResourceListUIState.LOADING:
+      return loadingState;
+    case ResourceListUIState.ERROR:
+      return errorState;
+    case ResourceListUIState.EMPTY:
+      return emptyState;
+    default:
+      // TODO(jtomasek): if there is just one cluster, redirect to it's detail
+      return (
+        <>
+          <PageSection variant={PageSectionVariants.light}>
+            <TextContent>
+              <Text component="h1">Managed Clusters</Text>
+            </TextContent>
+          </PageSection>
+          <PageSection variant={PageSectionVariants.light} isMain>
+            Table will be here
+            {/* <HostsTable
           hostRows={hostRows}
           loading={loadingHosts}
           error={hostsError}
           fetchHosts={fetchHosts}
         /> */}
-        </PageSection>
-        <ClusterWizardToolbar>
-          <ToolbarButton
-            variant={ButtonVariant.primary}
-            onClick={() => setCurrentStep(WizardStep.DiscoveryImages)}
-          >
-            Create New Cluster
-          </ToolbarButton>
-        </ClusterWizardToolbar>
-      </>
-    );
+          </PageSection>
+          <ClusterWizardToolbar>
+            <ToolbarButton
+              variant={ButtonVariant.primary}
+              onClick={() => setCurrentStep(WizardStep.DiscoveryImages)}
+            >
+              Create New Cluster
+            </ToolbarButton>
+          </ClusterWizardToolbar>
+        </>
+      );
   }
 };
 
 const mapStateToProps = (state: RootState) => ({
   hostRows: getHostTableRows(state),
-  loadingHosts: getHostsLoading(state),
+  clustersUIState: getHostsUIState(state),
   clustersError: getHostsError(state),
 });
 

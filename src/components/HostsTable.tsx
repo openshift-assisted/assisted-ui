@@ -3,15 +3,18 @@ import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-t
 import { HostTableRows } from '../types/hosts';
 import { EmptyState, ErrorState, LoadingState } from './ui/uiState';
 import { getColSpanRow } from './ui/table/utils';
+import { ResourceListUIState } from '../types';
+import { useSelector } from 'react-redux';
+import { getHostsError } from '../selectors/hosts';
 
 interface Props {
   hostRows: HostTableRows;
-  loading: boolean;
-  error: string;
+  uiState: ResourceListUIState;
   fetchHosts: () => void;
 }
 
-const HostsTable: React.FC<Props> = ({ hostRows, loading, error, fetchHosts }) => {
+const HostsTable: React.FC<Props> = ({ hostRows, uiState, fetchHosts }) => {
+  const error = useSelector(getHostsError);
   const headerStyle = {
     position: 'sticky',
     top: 0,
@@ -49,10 +52,16 @@ const HostsTable: React.FC<Props> = ({ hostRows, loading, error, fetchHosts }) =
 
   const getRows = () => {
     const columnCount = columns.length;
-    if (error) return getColSpanRow(errorState, columnCount);
-    else if (loading) return getColSpanRow(loadingState, columnCount);
-    else if (!hostRows.length) return getColSpanRow(emptyState, columnCount);
-    else return hostRows;
+    switch (uiState) {
+      case ResourceListUIState.LOADING:
+        return getColSpanRow(loadingState, columnCount);
+      case ResourceListUIState.ERROR:
+        return getColSpanRow(errorState, columnCount);
+      case ResourceListUIState.EMPTY:
+        return getColSpanRow(emptyState, columnCount);
+      default:
+        return hostRows;
+    }
   };
 
   return (

@@ -32,7 +32,7 @@ export default combineReducers<HostsState, HostsActions>({
         return state;
     }
   },
-  loading: (state = false, action) => {
+  loading: (state = true, action) => {
     switch (action.type) {
       case getType(hosts.fetchHosts.request):
         return true;

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { PageSectionVariants, Toolbar, TextVariants } from '@patternfly/react-core';
 
 import { fetchHostsAsync } from '../actions/hosts';
-import { getHostTableRows, getHostsLoading, getHostsError } from '../selectors/hosts';
+import { getHostTableRows, getHostsUIState, getHostsError } from '../selectors/hosts';
 import { RootState } from '../store/rootReducer';
 import PageSection from './ui/PageSection';
 import HostsTable from './HostsTable';
@@ -11,11 +11,11 @@ import { HostTableRows } from '../types/hosts';
 import ClusterWizardToolbar from './ClusterWizardToolbar';
 import { ToolbarButton, ToolbarText } from './ui/Toolbar';
 import { WizardStep } from '../types/wizard';
+import { ResourceListUIState } from '../types';
 
 interface BareMetalInventoryProps {
   hostRows: HostTableRows;
-  loadingHosts: boolean;
-  hostsError: string;
+  hostsUIState: ResourceListUIState;
   fetchHosts: () => void;
   setCurrentStep: (step: WizardStep) => void;
 }
@@ -23,8 +23,7 @@ interface BareMetalInventoryProps {
 const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
   fetchHosts,
   hostRows,
-  loadingHosts,
-  hostsError,
+  hostsUIState,
   setCurrentStep,
 }) => {
   React.useEffect(() => {
@@ -40,12 +39,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
         </Toolbar>
       </PageSection>
       <PageSection variant={PageSectionVariants.light} isMain>
-        <HostsTable
-          hostRows={hostRows}
-          loading={loadingHosts}
-          error={hostsError}
-          fetchHosts={fetchHosts}
-        />
+        <HostsTable hostRows={hostRows} uiState={hostsUIState} fetchHosts={fetchHosts} />
       </PageSection>
       <ClusterWizardToolbar>
         <ToolbarButton variant="primary" isDisabled>
@@ -64,7 +58,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
 
 const mapStateToProps = (state: RootState) => ({
   hostRows: getHostTableRows(state),
-  loadingHosts: getHostsLoading(state),
+  hostsUIState: getHostsUIState(state),
   hostsError: getHostsError(state),
 });
 
