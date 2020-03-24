@@ -1,3 +1,6 @@
+export type ClusterTableRow = string[];
+export type ClusterTableRows = ClusterTableRow[];
+
 export type Cluster = {
   kind: string;
   id: string;

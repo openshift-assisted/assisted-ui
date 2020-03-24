@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import {
   PageSectionVariants,
   ButtonVariant,
@@ -8,41 +9,45 @@ import {
   Button,
 } from '@patternfly/react-core';
 
-import { fetchHostsAsync } from '../../actions/hosts';
-import { getHostTableRows, getHostsError, getHostsUIState } from '../../selectors/hosts';
 import { RootState } from '../../store/rootReducer';
 import PageSection from '../ui/PageSection';
-// import HostsTable from '../HostsTable';
-import { HostTableRows } from '../../types/hosts';
+import {
+  getClustersError,
+  getClustersUIState,
+  getClusterTableRows,
+} from '../../selectors/clusters';
 import ClusterWizardToolbar from '../ClusterWizardToolbar';
 import { ToolbarButton } from '../ui/Toolbar';
 import { WizardStep } from '../../types/wizard';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';
-import { ResourceListUIState } from '../../types';
+import { ResourceListUIState, ApiResourceKindPlural } from '../../types';
+import { ClusterTableRows, Cluster } from '../../types/clusters';
+import { fetchResourceListAsync } from '../../actions/resourceList';
+import ClustersTable from './ClustersTable';
 
 interface ClustersProps {
-  hostRows: HostTableRows;
+  clusterRows: ClusterTableRows;
   clustersUIState: ResourceListUIState;
   clustersError: string;
-  fetchHosts: () => void;
+  fetchClusters: () => void;
   setCurrentStep: (step: WizardStep) => void;
 }
 
 const Clusters: React.FC<ClustersProps> = ({
-  fetchHosts,
-  hostRows,
+  fetchClusters,
+  clusterRows,
   clustersUIState,
   clustersError,
   setCurrentStep,
 }) => {
   React.useEffect(() => {
-    fetchHosts();
-  }, [fetchHosts]);
+    fetchClusters();
+  }, [fetchClusters]);
 
   const errorState = (
     <PageSection variant={PageSectionVariants.light} isMain>
-      <ErrorState title={clustersError} fetchData={fetchHosts} />;
+      <ErrorState title={clustersError} fetchData={fetchClusters} />;
     </PageSection>
   );
   const loadingState = (
@@ -59,7 +64,7 @@ const Clusters: React.FC<ClustersProps> = ({
         primaryAction={
           <Button
             variant={ButtonVariant.primary}
-            onClick={() => setCurrentStep(WizardStep.DiscoveryImages)}
+            onClick={() => setCurrentStep(WizardStep.ClusterConfiguration)}
           >
             Create New Cluster
           </Button>
@@ -85,18 +90,12 @@ const Clusters: React.FC<ClustersProps> = ({
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light} isMain>
-            Table will be here
-            {/* <HostsTable
-          hostRows={hostRows}
-          loading={loadingHosts}
-          error={hostsError}
-          fetchHosts={fetchHosts}
-        /> */}
+            <ClustersTable rows={clusterRows} />
           </PageSection>
           <ClusterWizardToolbar>
             <ToolbarButton
               variant={ButtonVariant.primary}
-              onClick={() => setCurrentStep(WizardStep.DiscoveryImages)}
+              onClick={() => setCurrentStep(WizardStep.ClusterConfiguration)}
             >
               Create New Cluster
             </ToolbarButton>
@@ -107,9 +106,14 @@ const Clusters: React.FC<ClustersProps> = ({
 };
 
 const mapStateToProps = (state: RootState) => ({
-  hostRows: getHostTableRows(state),
-  clustersUIState: getHostsUIState(state),
-  clustersError: getHostsError(state),
+  clusterRows: getClusterTableRows(state),
+  clustersUIState: getClustersUIState(state),
+  clustersError: getClustersError(state),
 });
 
-export default connect(mapStateToProps, { fetchHosts: fetchHostsAsync })(Clusters);
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  fetchClusters: () =>
+    dispatch<any>(fetchResourceListAsync<Cluster>(ApiResourceKindPlural.clusters)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Clusters);
