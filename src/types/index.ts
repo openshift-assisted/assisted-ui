@@ -9,9 +9,15 @@ export enum ResourceListUIState {
 }
 
 export enum ApiResourceKind {
-  image,
-  host,
-  cluster,
+  image = 'image',
+  host = 'host',
+  cluster = 'cluster',
+}
+
+export enum ApiResourceKindPlural {
+  images = 'images',
+  hosts = 'hosts',
+  clusters = 'clusters',
 }
 
 export type ApiResourceBase = {

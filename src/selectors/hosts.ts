@@ -4,9 +4,9 @@ import { RootState } from '../store/rootReducer';
 import { Host, HostTableRows } from '../types/hosts';
 import { ResourceListUIState } from '../types';
 
-export const getHosts = (state: RootState): Host[] => state.hosts.hosts;
-export const getHostsLoading = (state: RootState): boolean => state.hosts.loading;
-export const getHostsError = (state: RootState): string => state.hosts.error;
+export const getHosts = (state: RootState): Host[] => state.resources.items.hosts;
+export const getHostsLoading = (state: RootState): boolean => state.resources.loading.hosts;
+export const getHostsError = (state: RootState): string => state.resources.error.hosts;
 
 const hostToHostTableRow = (host: Host): string[] => {
   // const { spec = {}, status = {} } = host;

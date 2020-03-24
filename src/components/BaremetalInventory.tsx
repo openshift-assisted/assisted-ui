@@ -1,17 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { PageSectionVariants, Toolbar, TextVariants } from '@patternfly/react-core';
 
-import { fetchHostsAsync } from '../actions/hosts';
 import { getHostTableRows, getHostsUIState, getHostsError } from '../selectors/hosts';
 import { RootState } from '../store/rootReducer';
 import PageSection from './ui/PageSection';
 import HostsTable from './HostsTable';
-import { HostTableRows } from '../types/hosts';
+import { HostTableRows, Host } from '../types/hosts';
 import ClusterWizardToolbar from './ClusterWizardToolbar';
 import { ToolbarButton, ToolbarText } from './ui/Toolbar';
 import { WizardStep } from '../types/wizard';
-import { ResourceListUIState } from '../types';
+import { ResourceListUIState, ApiResourceKindPlural } from '../types';
+import { fetchResourceListAsync } from '../actions/resourceList';
 
 interface BareMetalInventoryProps {
   hostRows: HostTableRows;
@@ -62,4 +63,8 @@ const mapStateToProps = (state: RootState) => ({
   hostsError: getHostsError(state),
 });
 
-export default connect(mapStateToProps, { fetchHosts: fetchHostsAsync })(BaremetalInventory);
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  fetchHosts: () => dispatch<any>(fetchResourceListAsync<Host>(ApiResourceKindPlural.hosts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(BaremetalInventory);

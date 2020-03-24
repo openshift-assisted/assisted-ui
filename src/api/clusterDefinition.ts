@@ -2,7 +2,7 @@ import axios, { AxiosPromise } from 'axios';
 import { mapKeys, snakeCase } from 'lodash';
 
 import { ClusterDefinition } from '../types/clusterDefinition';
-import { ApiResponse } from './index';
+import { ApiResponse } from './types';
 
 type PostClusterDefinitionApiRequestKeys =
   | 'cluster_name'

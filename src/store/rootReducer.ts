@@ -1,10 +1,10 @@
 import { StateType } from 'typesafe-actions';
 import { combineReducers } from 'redux';
-import hostsReducer from '../reducers/hosts';
+import resourceListReducer from '../reducers/resourceList';
 import clusterWizardReducer from '../reducers/clusterWizard';
 
 const rootReducer = combineReducers({
-  hosts: hostsReducer,
+  resources: resourceListReducer,
   clusterWizard: clusterWizardReducer,
 });
 
