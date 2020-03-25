@@ -1,9 +1,8 @@
 import React from 'react';
-import { Field } from 'formik';
-import { TextContent, Text } from '@patternfly/react-core';
+import { TextContent, Text, TextInputTypes } from '@patternfly/react-core';
 
 import ExternalLink from '../ui/ExternalLink';
-import { TextInput } from '../ui/formik';
+import { InputField } from '../ui/formik';
 
 interface RedHatAccountFieldsProps {
   onProvidePullSecret: () => void;
@@ -22,21 +21,8 @@ const RedHatAccountFields: React.FC<RedHatAccountFieldsProps> = ({ onProvidePull
         instead.
       </Text>
     </TextContent>
-    <Field
-      component={TextInput}
-      label="Username"
-      id="create-cluster-username"
-      name="username"
-      isRequired
-    />
-    <Field
-      component={TextInput}
-      label="Password"
-      id="create-cluster-password"
-      name="password"
-      type="password"
-      isRequired
-    />
+    <InputField label="Username" name="username" isRequired />
+    <InputField label="Password" name="password" type={TextInputTypes.password} isRequired />
   </>
 );
 export default RedHatAccountFields;

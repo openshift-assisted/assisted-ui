@@ -17,8 +17,6 @@ import PullSecretFields from './PullSecretFields';
 import { WizardStep } from '../../types/wizard';
 import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import validationSchema from './validationSchema';
-import { ClusterDefinition } from '../../types/clusterDefinition';
-import { postInstallConfig } from '../../api/clusterDefinition';
 
 interface Props {
   setCurrentStep: (step: WizardStep) => void;
@@ -89,9 +87,9 @@ const LoginForm: React.FC<Props> = ({ setCurrentStep }) => {
             <Grid gutter="md">
               <GridItem span={12} lg={10} xl={6}>
                 <TextContent>
-                  <Text component="h2">Connect to Red Hat Account </Text>
+                  <Text component="h1">Connect to Red Hat Account </Text>
                 </TextContent>
-                <Form className="pf-c-form" onSubmit={handleSubmit}>
+                <Form onSubmit={handleSubmit}>
                   {providePullSecret ? (
                     <PullSecretFields onProvideCredentials={() => setProvidePullSecret(false)} />
                   ) : (

@@ -8,7 +8,7 @@ export interface ClusterWizardState {
 }
 
 const clusterWizard = (
-  state = { step: WizardStep.ManagedClusters },
+  state = { step: WizardStep.ClusterConfiguration },
   action: ActionType<typeof actions>,
 ): ClusterWizardState => {
   switch (action.type) {

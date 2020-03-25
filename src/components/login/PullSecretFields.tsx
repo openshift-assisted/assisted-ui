@@ -1,9 +1,8 @@
 import React from 'react';
-import { Field } from 'formik';
 import { TextContent, Text } from '@patternfly/react-core';
 
 import ExternalLink from '../ui/ExternalLink';
-import { TextArea } from '../ui/formik';
+import { TextAreaField } from '../ui/formik';
 
 interface PullSecretFieldsProps {
   onProvideCredentials: () => void;
@@ -22,14 +21,7 @@ const PullSecretFields: React.FC<PullSecretFieldsProps> = ({ onProvideCredential
         instead.
       </Text>
     </TextContent>
-    <Field
-      component={TextArea}
-      label="Pull secret"
-      name="pullSecret"
-      id="create-cluster-pull-secret"
-      aria-label="Pull secret"
-      isRequired
-    />
+    <TextAreaField label="Pull secret" name="pullSecret" isRequired />
   </>
 );
 export default PullSecretFields;

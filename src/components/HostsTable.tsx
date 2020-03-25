@@ -7,13 +7,14 @@ import { ResourceListUIState } from '../types';
 import { useSelector } from 'react-redux';
 import { getHostsError } from '../selectors/hosts';
 
-interface Props {
+type Props = {
   hostRows: HostTableRows;
   uiState: ResourceListUIState;
   fetchHosts: () => void;
-}
+  variant?: TableVariant;
+};
 
-const HostsTable: React.FC<Props> = ({ hostRows, uiState, fetchHosts }) => {
+const HostsTable: React.FC<Props> = ({ hostRows, uiState, fetchHosts, variant }) => {
   const error = useSelector(getHostsError);
   const headerStyle = {
     position: 'sticky',
@@ -70,7 +71,7 @@ const HostsTable: React.FC<Props> = ({ hostRows, uiState, fetchHosts }) => {
     <Table
       rows={rows}
       cells={columns}
-      variant={rows.length > 5 ? TableVariant.compact : undefined}
+      variant={variant ? variant : rows.length > 5 ? TableVariant.compact : undefined}
       aria-label="Hosts table"
     >
       <TableHeader />

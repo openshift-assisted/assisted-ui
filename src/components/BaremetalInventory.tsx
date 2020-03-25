@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { PageSectionVariants, Toolbar, TextVariants } from '@patternfly/react-core';
 
-import { getHostTableRows, getHostsUIState, getHostsError } from '../selectors/hosts';
+import { getHostTableRows, getHostsUIState } from '../selectors/hosts';
 import { RootState } from '../store/rootReducer';
 import PageSection from './ui/PageSection';
 import HostsTable from './HostsTable';
@@ -60,7 +60,6 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
 const mapStateToProps = (state: RootState) => ({
   hostRows: getHostTableRows(state),
   hostsUIState: getHostsUIState(state),
-  hostsError: getHostsError(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
