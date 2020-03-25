@@ -1,7 +1,8 @@
 import { Dispatch } from 'redux';
 import { createAsyncAction } from 'typesafe-actions';
-import { getHosts } from '../api/hosts';
 import { Host } from '../types/hosts';
+import { ApiResourceKindPlural } from '../types';
+import { getResourceList } from '../api';
 
 export const fetchHosts = createAsyncAction(
   'GET_HOSTS_REQUEST',
@@ -12,7 +13,7 @@ export const fetchHosts = createAsyncAction(
 export const fetchHostsAsync = () => async (dispatch: Dispatch) => {
   dispatch(fetchHosts.request());
   try {
-    const { data } = await getHosts();
+    const { data } = await getResourceList<Host>(ApiResourceKindPlural.hosts);
     return dispatch(fetchHosts.success(data));
   } catch (e) {
     console.error(e);

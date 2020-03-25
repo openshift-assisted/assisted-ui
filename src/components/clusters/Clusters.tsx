@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 import {
   PageSectionVariants,
   ButtonVariant,
@@ -21,10 +20,10 @@ import { ToolbarButton } from '../ui/Toolbar';
 import { WizardStep } from '../../types/wizard';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';
-import { ResourceListUIState, ApiResourceKindPlural } from '../../types';
-import { ClusterTableRows, Cluster } from '../../types/clusters';
-import { fetchResourceListAsync } from '../../actions/resourceList';
+import { ResourceListUIState } from '../../types';
+import { ClusterTableRows } from '../../types/clusters';
 import ClustersTable from './ClustersTable';
+import { fetchClustersAsync } from '../../actions/clusters';
 
 interface ClustersProps {
   clusterRows: ClusterTableRows;
@@ -111,9 +110,4 @@ const mapStateToProps = (state: RootState) => ({
   clustersError: getClustersError(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchClusters: () =>
-    dispatch<any>(fetchResourceListAsync<Cluster>(ApiResourceKindPlural.clusters)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Clusters);
+export default connect(mapStateToProps, { fetchClusters: fetchClustersAsync })(Clusters);

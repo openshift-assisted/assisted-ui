@@ -1,5 +1,4 @@
 import React from 'react';
-import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { TableVariant } from '@patternfly/react-table';
 import { Formik, FormikHelpers, validateYupSchema, yupToFormErrors } from 'formik';
@@ -24,12 +23,12 @@ import validationSchema from './validationSchema';
 import { ClusterDefinition } from '../../types/clusterDefinition';
 import { postInstallConfig } from '../../api/clusterDefinition';
 import HostsTable from '../HostsTable';
-import { Host, HostTableRows } from '../../types/hosts';
-import { fetchResourceListAsync } from '../../actions/resourceList';
+import { HostTableRows } from '../../types/hosts';
 import { getHostTableRows, getHostsUIState } from '../../selectors/hosts';
-import { ResourceListUIState, ApiResourceKindPlural } from '../../types';
+import { ResourceListUIState } from '../../types';
 import { RootState } from '../../store/rootReducer';
 import GridGap from '../ui/GridGap';
+import { fetchHostsAsync } from '../../actions/hosts';
 
 interface CreateClusterFormProps {
   hostRows: HostTableRows;
@@ -190,8 +189,4 @@ const mapStateToProps = (state: RootState) => ({
   hostsUIState: getHostsUIState(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchHosts: () => dispatch<any>(fetchResourceListAsync<Host>(ApiResourceKindPlural.hosts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CreateClusterForm);
+export default connect(mapStateToProps, { fetchHosts: fetchHostsAsync })(CreateClusterForm);

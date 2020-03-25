@@ -1,16 +1,16 @@
 import { combineReducers } from 'redux';
 import { ActionType, getType } from 'typesafe-actions';
 
-import * as hosts from '../actions/hosts';
-import { Host } from '../types/hosts';
+import * as actions from '../actions/clusters';
+import { Cluster } from '../types/clusters';
 import { ResourceState } from './types';
 
-export type HostsActions = ActionType<typeof hosts>;
+export type ClustersActions = ActionType<typeof actions>;
 
-export default combineReducers<ResourceState<Host>, HostsActions>({
+export default combineReducers<ResourceState<Cluster>, ClustersActions>({
   items: (state = [], action) => {
     switch (action.type) {
-      case getType(hosts.fetchHosts.success):
+      case getType(actions.fetchClusters.success):
         return [...action.payload];
       default:
         return state;
@@ -18,10 +18,10 @@ export default combineReducers<ResourceState<Host>, HostsActions>({
   },
   error: (state = '', action) => {
     switch (action.type) {
-      case getType(hosts.fetchHosts.request):
-      case getType(hosts.fetchHosts.success):
+      case getType(actions.fetchClusters.request):
+      case getType(actions.fetchClusters.success):
         return '';
-      case getType(hosts.fetchHosts.failure):
+      case getType(actions.fetchClusters.failure):
         return action.payload;
       default:
         return state;
@@ -29,10 +29,10 @@ export default combineReducers<ResourceState<Host>, HostsActions>({
   },
   loading: (state = true, action) => {
     switch (action.type) {
-      case getType(hosts.fetchHosts.request):
+      case getType(actions.fetchClusters.request):
         return true;
-      case getType(hosts.fetchHosts.success):
-      case getType(hosts.fetchHosts.failure):
+      case getType(actions.fetchClusters.success):
+      case getType(actions.fetchClusters.failure):
         return false;
       default:
         return state;

@@ -16,12 +16,13 @@ type Props = {
 
 const HostsTable: React.FC<Props> = ({ hostRows, uiState, fetchHosts, variant }) => {
   const error = useSelector(getHostsError);
-  const headerStyle = {
-    position: 'sticky',
-    top: 0,
-    background: 'white',
-    zIndex: 1,
-  };
+  // const headerStyle = {
+  //   position: 'sticky',
+  //   top: 0,
+  //   background: 'white',
+  //   zIndex: 1,
+  // };
+  const headerStyle = {};
   const headerConfig = { header: { props: { style: headerStyle } } };
   // TODO(jtomasek): Those should not be needed to define as they are optional,
   // needs fixing in @patternfly/react-table

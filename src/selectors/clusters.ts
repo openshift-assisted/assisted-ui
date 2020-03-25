@@ -1,12 +1,15 @@
 import { createSelector } from 'reselect';
 
-import { RootState } from '../store/rootReducer';
 import { Cluster, ClusterTableRows } from '../types/clusters';
-import { ResourceListUIState } from '../types';
+import { ApiResourceKindPlural } from '../types';
+import {
+  createGetResourcesError,
+  createGetResources,
+  createGetResourcesUIState,
+} from './resources';
 
-export const getClusters = (state: RootState): Cluster[] => state.resources.items.clusters;
-export const getClustersLoading = (state: RootState): boolean => state.resources.loading.clusters;
-export const getClustersError = (state: RootState): string => state.resources.error.clusters;
+export const getClustersError = createGetResourcesError(ApiResourceKindPlural.clusters);
+export const getClusters = createGetResources(ApiResourceKindPlural.clusters);
 
 const clusterToClusterTableRow = (cluster: Cluster): string[] => {
   // const { spec = {}, status = {} } = host;
@@ -24,16 +27,9 @@ const clusterToClusterTableRow = (cluster: Cluster): string[] => {
 };
 
 export const getClusterTableRows = createSelector(
+  // createGetResources<Cluster>(ApiResourceKindPlural.clusters) as Cluster[],
   getClusters,
-  (clusters): ClusterTableRows => clusters.map(clusterToClusterTableRow),
+  (clusters): ClusterTableRows => (clusters as Cluster[]).map(clusterToClusterTableRow),
 );
 
-export const getClustersUIState = createSelector(
-  [getClustersLoading, getClustersError, getClusters],
-  (loading: boolean, error: string, clusters: Cluster[]) => {
-    if (loading) return ResourceListUIState.LOADING;
-    else if (error) return ResourceListUIState.ERROR;
-    else if (!clusters.length) return ResourceListUIState.EMPTY;
-    else return ResourceListUIState.LOADED;
-  },
-);
+export const getClustersUIState = createGetResourcesUIState(ApiResourceKindPlural.clusters);

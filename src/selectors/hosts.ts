@@ -1,12 +1,14 @@
 import { createSelector } from 'reselect';
 
-import { RootState } from '../store/rootReducer';
 import { Host, HostTableRows } from '../types/hosts';
-import { ResourceListUIState } from '../types';
+import { ApiResourceKindPlural } from '../types';
+import {
+  createGetResources,
+  createGetResourcesUIState,
+  createGetResourcesError,
+} from './resources';
 
-export const getHosts = (state: RootState): Host[] => state.resources.items.hosts;
-export const getHostsLoading = (state: RootState): boolean => state.resources.loading.hosts;
-export const getHostsError = (state: RootState): string => state.resources.error.hosts;
+export const getHostsError = createGetResourcesError(ApiResourceKindPlural.hosts);
 
 const hostToHostTableRow = (host: Host): string[] => {
   // const { spec = {}, status = {} } = host;
@@ -24,16 +26,8 @@ const hostToHostTableRow = (host: Host): string[] => {
 };
 
 export const getHostTableRows = createSelector(
-  getHosts,
-  (hosts): HostTableRows => hosts.map(hostToHostTableRow),
+  createGetResources(ApiResourceKindPlural.hosts),
+  (hosts): HostTableRows => (hosts as Host[]).map(hostToHostTableRow),
 );
 
-export const getHostsUIState = createSelector(
-  [getHostsLoading, getHostsError, getHosts],
-  (loading: boolean, error: string, hosts: Host[]) => {
-    if (loading) return ResourceListUIState.LOADING;
-    else if (error) return ResourceListUIState.ERROR;
-    else if (!hosts.length) return ResourceListUIState.EMPTY;
-    else return ResourceListUIState.LOADED;
-  },
-);
+export const getHostsUIState = createGetResourcesUIState(ApiResourceKindPlural.hosts);
