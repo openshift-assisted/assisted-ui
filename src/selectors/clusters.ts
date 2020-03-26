@@ -2,11 +2,7 @@ import { createSelector } from 'reselect';
 
 import { Cluster, ClusterTableRows } from '../types/clusters';
 import { ApiResourceKindPlural } from '../types';
-import {
-  createGetResourcesError,
-  createGetResources,
-  createGetResourcesUIState,
-} from './resources';
+import { createGetResourcesError, createGetResources, createGetResourcesUIState } from './utils';
 
 export const getClustersError = createGetResourcesError(ApiResourceKindPlural.clusters);
 

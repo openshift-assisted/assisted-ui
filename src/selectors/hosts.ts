@@ -2,11 +2,7 @@ import { createSelector } from 'reselect';
 
 import { Host, HostTableRows } from '../types/hosts';
 import { ApiResourceKindPlural } from '../types';
-import {
-  createGetResources,
-  createGetResourcesUIState,
-  createGetResourcesError,
-} from './resources';
+import { createGetResources, createGetResourcesUIState, createGetResourcesError } from './utils';
 
 export const getHostsError = createGetResourcesError(ApiResourceKindPlural.hosts);
 
