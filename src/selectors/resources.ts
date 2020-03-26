@@ -1,9 +1,11 @@
 import { createSelector } from 'reselect';
 import { ResourceListUIState, ApiResourceKindPlural } from '../types';
 import { RootState } from '../store/rootReducer';
+import { ApiResource } from '../types';
 
-export const createGetResources = (resources: ApiResourceKindPlural) => (state: RootState) =>
-  state[resources].items;
+export const createGetResources = <T extends ApiResource>(resources: ApiResourceKindPlural) => (
+  state: RootState,
+) => state[resources].items as T[];
 
 export const createGetResourcesLoading = (resources: ApiResourceKindPlural) => (state: RootState) =>
   state[resources].loading;

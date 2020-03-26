@@ -26,8 +26,8 @@ const hostToHostTableRow = (host: Host): string[] => {
 };
 
 export const getHostTableRows = createSelector(
-  createGetResources(ApiResourceKindPlural.hosts),
-  (hosts): HostTableRows => (hosts as Host[]).map(hostToHostTableRow),
+  createGetResources<Host>(ApiResourceKindPlural.hosts),
+  (hosts): HostTableRows => hosts.map(hostToHostTableRow),
 );
 
 export const getHostsUIState = createGetResourcesUIState(ApiResourceKindPlural.hosts);

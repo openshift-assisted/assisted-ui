@@ -1,11 +1,12 @@
 import { StateType } from 'typesafe-actions';
 import { combineReducers } from 'redux';
 import hostsReducer from '../reducers/hosts';
+import imagesReducer from '../reducers/images';
 import clustersReducer from '../reducers/clusters';
 import clusterWizardReducer from '../reducers/clusterWizard';
 
 const rootReducer = combineReducers({
-  images: hostsReducer,
+  images: imagesReducer,
   clusters: clustersReducer,
   hosts: hostsReducer,
   clusterWizard: clusterWizardReducer,

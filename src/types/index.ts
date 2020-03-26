@@ -1,5 +1,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 /* eslint @typescript-eslint/indent: 0 */
+import { Image } from './images';
+import { Host } from './hosts';
+import { Cluster } from './clusters';
 
 export enum ResourceListUIState {
   LOADING,
@@ -7,6 +10,8 @@ export enum ResourceListUIState {
   EMPTY,
   LOADED,
 }
+
+export type ApiResource = Host | Image | Cluster;
 
 export enum ApiResourceKind {
   image = 'image',

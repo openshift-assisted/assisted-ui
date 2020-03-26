@@ -1,7 +1,10 @@
+export type ImageTableRow = string[];
+export type ImageTableRows = ImageTableRow[];
+
 export enum ImageStatus {
-  creating,
-  ready,
-  error,
+  creating = 'creating',
+  ready = 'ready',
+  error = 'error',
 }
 
 export type Image = {

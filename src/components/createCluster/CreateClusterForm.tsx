@@ -23,17 +23,23 @@ import validationSchema from './validationSchema';
 import { ClusterDefinition } from '../../types/clusterDefinition';
 import { postInstallConfig } from '../../api/clusterDefinition';
 import HostsTable from '../HostsTable';
+import ImagesTable from './ImagesTable';
 import { HostTableRows } from '../../types/hosts';
 import { getHostTableRows, getHostsUIState } from '../../selectors/hosts';
+import { getImageTableRows, getImagesUIState } from '../../selectors/images';
 import { ResourceListUIState } from '../../types';
 import { RootState } from '../../store/rootReducer';
 import GridGap from '../ui/GridGap';
 import { fetchHostsAsync } from '../../actions/hosts';
+import { fetchImagesAsync } from '../../actions/images';
 
 interface CreateClusterFormProps {
   hostRows: HostTableRows;
   hostsUIState: ResourceListUIState;
   fetchHosts: () => void;
+  imageRows: HostTableRows;
+  imagesUIState: ResourceListUIState;
+  fetchImages: () => void;
   setCurrentStep: (step: WizardStep) => void;
 }
 
@@ -41,8 +47,14 @@ const CreateClusterForm: React.FC<CreateClusterFormProps> = ({
   fetchHosts,
   hostRows,
   hostsUIState,
+  fetchImages,
+  imageRows,
+  imagesUIState,
   setCurrentStep,
 }) => {
+  React.useEffect(() => {
+    fetchImages();
+  }, [fetchImages]);
   React.useEffect(() => {
     fetchHosts();
   }, [fetchHosts]);
@@ -119,13 +131,21 @@ const CreateClusterForm: React.FC<CreateClusterFormProps> = ({
                 </GridItem>
               </Grid>
               <TextContent>
+                <Text component="h2">Discovery Images</Text>
+                {/* <Text component="p">
+                  <Button variant={ButtonVariant.secondary}>Download discovery ISO</Button>
+                </Text> */}
+              </TextContent>
+              <ImagesTable
+                imageRows={imageRows}
+                uiState={imagesUIState}
+                fetchImages={fetchImages}
+              />
+              <TextContent>
                 <Text component="h2">Bare metal hosts</Text>
                 <Text component="p">
                   Boot the discovery ISO on hosts that are connected to the internet. At least 3
                   hosts are isRequired to create a cluster.
-                </Text>
-                <Text component="p">
-                  <Button variant={ButtonVariant.secondary}>Download discovery ISO</Button>
                 </Text>
               </TextContent>
               <HostsTable
@@ -187,6 +207,11 @@ const CreateClusterForm: React.FC<CreateClusterFormProps> = ({
 const mapStateToProps = (state: RootState) => ({
   hostRows: getHostTableRows(state),
   hostsUIState: getHostsUIState(state),
+  imageRows: getImageTableRows(state),
+  imagesUIState: getImagesUIState(state),
 });
 
-export default connect(mapStateToProps, { fetchHosts: fetchHostsAsync })(CreateClusterForm);
+export default connect(mapStateToProps, {
+  fetchHosts: fetchHostsAsync,
+  fetchImages: fetchImagesAsync,
+})(CreateClusterForm);

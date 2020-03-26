@@ -9,7 +9,6 @@ import {
 } from './resources';
 
 export const getClustersError = createGetResourcesError(ApiResourceKindPlural.clusters);
-export const getClusters = createGetResources(ApiResourceKindPlural.clusters);
 
 const clusterToClusterTableRow = (cluster: Cluster): string[] => {
   // const { spec = {}, status = {} } = host;
@@ -27,8 +26,7 @@ const clusterToClusterTableRow = (cluster: Cluster): string[] => {
 };
 
 export const getClusterTableRows = createSelector(
-  // createGetResources<Cluster>(ApiResourceKindPlural.clusters) as Cluster[],
-  getClusters,
+  createGetResources<Cluster>(ApiResourceKindPlural.clusters),
   (clusters): ClusterTableRows => (clusters as Cluster[]).map(clusterToClusterTableRow),
 );
 
