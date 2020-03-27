@@ -1,0 +1,1164 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Bare metal inventory",
+    "version": "1.0.0",
+    "title": "BMInventory"
+  },
+  "host": "api.openshift.com",
+  "basePath": "/api/bm-inventory/v1",
+  "tags": [
+    {
+      "name": "Bare metal inventory",
+      "description": "Manage bare metal inventory"
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/clusters": {
+      "post": {
+        "tags": ["inventory"],
+        "summary": "Create a new OpenShift bare metal cluster definition",
+        "operationId": "RegisterCluster",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "new-cluster-params",
+            "description": "New cluster parameters",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/cluster-create-params"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Registered cluster",
+            "schema": {
+              "$ref": "#/definitions/cluster"
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "tags": ["inventory"],
+        "summary": "List OpenShift bare metal clusters",
+        "operationId": "ListClusters",
+        "responses": {
+          "200": {
+            "description": "Cluster list",
+            "schema": {
+              "$ref": "#/definitions/cluster-list"
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clusters/{cluster_id}": {
+      "get": {
+        "tags": ["inventory"],
+        "summary": "Retrieve OpenShift bare metal cluster information",
+        "operationId": "GetCluster",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster to retrieve",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cluster information",
+            "schema": {
+              "$ref": "#/definitions/cluster"
+            }
+          },
+          "404": {
+            "description": "Cluster not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["inventory"],
+        "summary": "Update an OpenShift bare metal cluster definition",
+        "operationId": "UpdateCluster",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster to retrieve",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "cluster-update-params",
+            "description": "New cluster parameters",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/cluster-update-params"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Registered cluster",
+            "schema": {
+              "$ref": "#/definitions/cluster"
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Cluster not found"
+          },
+          "409": {
+            "description": "Invalid state"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["inventory"],
+        "summary": "Delete an OpenShift bare metal cluster definition",
+        "operationId": "DeregisterCluster",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster to retrieve",
+            "format": "uuid",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Cluster deregistered"
+          },
+          "404": {
+            "description": "Cluster not found"
+          },
+          "409": {
+            "description": "Invalid state"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clusters/{cluster_id}/actions/download": {
+      "get": {
+        "tags": ["inventory"],
+        "summary": "Download OpenShift per-cluster discovery ISO",
+        "operationId": "DownloadClusterISO",
+        "produces": ["application/octet-stream"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster whose ISO to download",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "proxy_ip",
+            "description": "The IP address of the HTTP proxy that agents should use to access the discovery service",
+            "type": "string",
+            "format": "hostname"
+          },
+          {
+            "in": "query",
+            "name": "proxy_port",
+            "description": "The port of the HTTP proxy",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535
+          },
+          {
+            "in": "query",
+            "name": "ssh_public_key",
+            "description": "SSH public key for debugging the installation",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The ISO file",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "400": {
+            "description": "Invalid parameters"
+          },
+          "404": {
+            "description": "Cluster not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clusters/{cluster_id}/actions/install": {
+      "post": {
+        "tags": ["inventory"],
+        "summary": "Install a new OpenShift bare metal cluster",
+        "operationId": "InstallCluster",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster to begin installing",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Installing cluster",
+            "schema": {
+              "$ref": "#/definitions/cluster"
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Cluster not found"
+          },
+          "409": {
+            "description": "Invalid state"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clusters/{cluster_id}/hosts": {
+      "post": {
+        "tags": ["inventory"],
+        "summary": "Register a new OpenShift bare metal host",
+        "operationId": "RegisterHost",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster to register host to",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "new-host-params",
+            "description": "New host parameters",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/host-create-params"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Registered host",
+            "schema": {
+              "$ref": "#/definitions/host"
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "tags": ["inventory"],
+        "summary": "List OpenShift bare metal hosts",
+        "operationId": "ListHosts",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster to get hosts from",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Host list",
+            "schema": {
+              "$ref": "#/definitions/host-list"
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clusters/{cluster_id}/hosts/{host_id}": {
+      "get": {
+        "tags": ["inventory"],
+        "summary": "Retrieve OpenShift bare metal host information",
+        "operationId": "GetHost",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster to get hosts from",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "host_id",
+            "description": "The ID of the host to retrieve",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Host information",
+            "schema": {
+              "$ref": "#/definitions/host"
+            }
+          },
+          "404": {
+            "description": "Host not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["inventory"],
+        "summary": "Deregister OpenShift bare metal host",
+        "operationId": "DeregisterHost",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster to deregister host from",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "host_id",
+            "description": "The ID of the host to retrieve",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Host deregistered"
+          },
+          "400": {
+            "description": "Host in use"
+          },
+          "404": {
+            "description": "Host not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clusters/{cluster_id}/hosts/{host_id}/actions/debug": {
+      "post": {
+        "tags": ["inventory"],
+        "summary": "Set a single shot debug step that will be sent next time the agent will ask for a command",
+        "operationId": "SetDebugStep",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster of the host",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "host_id",
+            "description": "The ID of the host to debug",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "step",
+            "description": "Next debug step",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/debug-step"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registered"
+          },
+          "404": {
+            "description": "Host not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clusters/{cluster_id}/hosts/{host_id}/actions/enable": {
+      "post": {
+        "tags": ["inventory"],
+        "summary": "Enable a host for use",
+        "operationId": "EnableHost",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster of the host",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "host_id",
+            "description": "The ID of the host to enable",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Enabled"
+          },
+          "404": {
+            "description": "Host not found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["inventory"],
+        "summary": "Disable a host for use",
+        "operationId": "DisableHost",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster of the host",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "host_id",
+            "description": "The ID of the host to disable",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Disabled"
+          },
+          "404": {
+            "description": "Host not found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clusters/{cluster_id}/hosts/{host_id}/next-steps": {
+      "get": {
+        "tags": ["inventory"],
+        "summary": "Retrieve the next operations that the agent need to perform",
+        "operationId": "GetNextSteps",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster of the host",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "host_id",
+            "description": "ID of host",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Steps information",
+            "schema": {
+              "$ref": "#/definitions/steps"
+            }
+          },
+          "404": {
+            "description": "Host not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clusters/{cluster_id}/hosts/{host_id}/next-steps/reply": {
+      "post": {
+        "tags": ["inventory"],
+        "summary": "Post the result of the required operations from the server",
+        "operationId": "PostStepReply",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster_id",
+            "description": "The ID of the cluster of the host",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "host_id",
+            "description": "ID of host",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "name": "reply",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/step-reply"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Reply accepted"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Host not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "base": {
+      "type": "object",
+      "required": ["kind", "id", "href"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["image", "host", "cluster"]
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "x-go-custom-tag": "gorm:\"primary_key\""
+        },
+        "href": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "host-create-params": {
+      "type": "object",
+      "required": ["host_id"],
+      "properties": {
+        "host_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "host": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/base"
+        },
+        {
+          "$ref": "#/definitions/host-create-params"
+        },
+        {
+          "type": "object",
+          "required": ["kind", "status", "status_info", "connectivity", "hardware_info"],
+          "properties": {
+            "cluster_id": {
+              "type": "string",
+              "format": "uuid",
+              "x-go-custom-tag": "gorm:\"primary_key;foreignkey:Cluster\""
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "discovering",
+                "known",
+                "disconnected",
+                "insufficient",
+                "disabled",
+                "installing",
+                "installed"
+              ]
+            },
+            "status_info": {
+              "type": "string"
+            },
+            "connectivity": {
+              "$ref": "#/definitions/connectivity-report"
+            },
+            "hardware_info": {
+              "$ref": "#/definitions/introspection"
+            },
+            "role": {
+              "type": "string",
+              "enum": ["undefined", "master", "worker"]
+            },
+            "updated_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-go-custom-tag": "gorm:\"type:datetime\""
+            }
+          }
+        }
+      ]
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/step"
+      }
+    },
+    "step-type": {
+      "type": "string",
+      "enum": ["hardaware-info", "connectivity-check", "execute"]
+    },
+    "step": {
+      "type": "object",
+      "properties": {
+        "step-type": {
+          "$ref": "#/definitions/step-type"
+        },
+        "step-id": {
+          "type": "string"
+        },
+        "command": {
+          "type": "string"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "steps-reply": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/step-reply"
+      }
+    },
+    "step-reply": {
+      "type": "object",
+      "properties": {
+        "step-id": {
+          "type": "string"
+        },
+        "exit-code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "connectivity-check-nic": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "mac": {
+          "type": "string"
+        },
+        "ip-addresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "connectivity-check-host": {
+      "type": "object",
+      "properties": {
+        "host-id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "nics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/connectivity-check-nic"
+          }
+        }
+      }
+    },
+    "connectivity-check-params": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/connectivity-check-host"
+      }
+    },
+    "host-list": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/host"
+      }
+    },
+    "cluster-create-params": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "openshift_version": {
+          "type": "string",
+          "pattern": "^4\\.\\d$"
+        },
+        "base_dns_domain": {
+          "type": "string"
+        },
+        "api_vip": {
+          "type": "string",
+          "format": "hostname"
+        },
+        "dns_vip": {
+          "type": "string",
+          "format": "hostname"
+        },
+        "ingress_vip": {
+          "type": "string",
+          "format": "hostname"
+        },
+        "ssh_public_key": {
+          "type": "string",
+          "description": "SSH public key for debugging OpenShift nodes"
+        }
+      }
+    },
+    "cluster-update-params": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "openshift_version": {
+          "type": "string",
+          "pattern": "^4\\.\\d$"
+        },
+        "base_dns_domain": {
+          "type": "string"
+        },
+        "api_vip": {
+          "type": "string",
+          "format": "hostname"
+        },
+        "dns_vip": {
+          "type": "string",
+          "format": "hostname"
+        },
+        "ingress_vip": {
+          "type": "string",
+          "format": "hostname"
+        },
+        "ssh_public_key": {
+          "type": "string",
+          "description": "SSH public key for debugging OpenShift nodes"
+        },
+        "hosts_roles": {
+          "type": "array",
+          "x-go-custom-tag": "gorm:\"type:varchar(64)[]\"",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "role": {
+                "type": "string",
+                "enum": ["master", "worker"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "cluster": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/base"
+        },
+        {
+          "type": "object",
+          "required": ["status"],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "openshift_version": {
+              "type": "string",
+              "pattern": "^4\\.\\d$"
+            },
+            "base_dns_domain": {
+              "type": "string"
+            },
+            "api_vip": {
+              "type": "string",
+              "format": "hostname"
+            },
+            "dns_vip": {
+              "type": "string",
+              "format": "hostname"
+            },
+            "ingress_vip": {
+              "type": "string",
+              "format": "hostname"
+            },
+            "ssh_public_key": {
+              "type": "string",
+              "x-go-custom-tag": "gorm:\"type:varchar(1024)\"",
+              "description": "SSH public key for debugging OpenShift nodes"
+            },
+            "status": {
+              "type": "string",
+              "enum": ["creating", "ready", "error"]
+            },
+            "hosts": {
+              "x-go-custom-tag": "gorm:\"foreignkey:ClusterID;association_foreignkey:ID\"",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/host"
+              }
+            },
+            "updated_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-go-custom-tag": "gorm:\"type:datetime\""
+            },
+            "install_started_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-go-custom-tag": "gorm:\"type:datetime;default:0\""
+            },
+            "install_completed_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-go-custom-tag": "gorm:\"type:datetime;default:0\""
+            }
+          }
+        }
+      ]
+    },
+    "cluster-list": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/cluster"
+      }
+    },
+    "debug-step": {
+      "type": "object",
+      "required": ["command"],
+      "properties": {
+        "command": {
+          "type": "string"
+        }
+      }
+    },
+    "cpu": {
+      "type": "object",
+      "properties": {
+        "architecture": {
+          "type": "string"
+        },
+        "model-name": {
+          "type": "string"
+        },
+        "cpus": {
+          "type": "integer"
+        },
+        "threads-per-core": {
+          "type": "integer"
+        },
+        "sockets": {
+          "type": "integer"
+        },
+        "cpu-mhz": {
+          "type": "number"
+        }
+      }
+    },
+    "block-device": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "major-device-number": {
+          "type": "integer"
+        },
+        "minor-device-number": {
+          "type": "integer"
+        },
+        "removable-device": {
+          "type": "integer"
+        },
+        "size": {
+          "type": "integer"
+        },
+        "read-only": {
+          "type": "boolean"
+        },
+        "device-type": {
+          "type": "string"
+        },
+        "mountpoint": {
+          "type": "string"
+        },
+        "fstype": {
+          "type": "string"
+        }
+      }
+    },
+    "memory": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "total": {
+          "type": "integer"
+        },
+        "used": {
+          "type": "integer"
+        },
+        "free": {
+          "type": "integer"
+        },
+        "shared": {
+          "type": "integer"
+        },
+        "buff-cached": {
+          "type": "integer"
+        },
+        "available": {
+          "type": "integer"
+        }
+      }
+    },
+    "cidr": {
+      "type": "object",
+      "properties": {
+        "ip-address": {
+          "type": "string"
+        },
+        "mask": {
+          "type": "integer"
+        }
+      }
+    },
+    "nic": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "mtu": {
+          "type": "integer"
+        },
+        "mac": {
+          "type": "string"
+        },
+        "cidrs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cidr"
+          }
+        }
+      }
+    },
+    "introspection": {
+      "type": "object",
+      "properties": {
+        "cpu": {
+          "$ref": "#/definitions/cpu"
+        },
+        "block-devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/block-device"
+          }
+        },
+        "memory": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/memory"
+          }
+        },
+        "nics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/nic"
+          }
+        }
+      }
+    },
+    "l2-connectivity": {
+      "type": "object",
+      "properties": {
+        "outgoing-nic": {
+          "type": "string"
+        },
+        "outgoing-ip-address": {
+          "type": "string"
+        },
+        "remote-ip-address": {
+          "type": "string"
+        },
+        "remote-mac": {
+          "type": "string"
+        },
+        "successful": {
+          "type": "boolean"
+        }
+      }
+    },
+    "l3-connectivity": {
+      "type": "object",
+      "properties": {
+        "outgoing-nic": {
+          "type": "string"
+        },
+        "remote-ip-address": {
+          "type": "string"
+        },
+        "successful": {
+          "type": "boolean"
+        }
+      }
+    },
+    "connectivity-remote-host": {
+      "type": "object",
+      "properties": {
+        "host-id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "l2-connectivity": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/l2-connectivity"
+          }
+        },
+        "l3-connectivity": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/l3-connectivity"
+          }
+        }
+      }
+    },
+    "connectivity-report": {
+      "type": "object",
+      "properties": {
+        "remote-hosts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/connectivity-remote-host"
+          }
+        }
+      }
+    }
+  }
+}

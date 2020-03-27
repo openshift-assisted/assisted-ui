@@ -8,7 +8,6 @@ import {
   TextContent,
   Text,
   ButtonVariant,
-  Button,
   Grid,
   GridItem,
 } from '@patternfly/react-core';

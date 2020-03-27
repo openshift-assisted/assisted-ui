@@ -2,7 +2,6 @@ import axios, { AxiosPromise } from 'axios';
 import { mapKeys, snakeCase } from 'lodash';
 
 import { ClusterDefinition } from '../types/clusterDefinition';
-import { ApiResponse } from './types';
 
 type PostClusterDefinitionApiRequestKeys =
   | 'cluster_name'
@@ -15,7 +14,7 @@ type PostClusterDefinitionApiRequestData = {
   [T in PostClusterDefinitionApiRequestKeys]: string;
 };
 
-type PostClusterDefinitionApiResponse = AxiosPromise<ApiResponse<ClusterDefinition>>;
+type PostClusterDefinitionApiResponse = AxiosPromise<ClusterDefinition>;
 
 const snakeCaseKeys = (values: ClusterDefinition): PostClusterDefinitionApiRequestData =>
   mapKeys(values, (value, key) => snakeCase(key)) as PostClusterDefinitionApiRequestData;

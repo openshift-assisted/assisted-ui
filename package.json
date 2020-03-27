@@ -51,7 +51,8 @@
     "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,scss,yaml,yml}'",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --color .",
     "test-suite": "babel-node node_modules/.bin/protractor integration_tests/protractor.conf.js",
-    "webdriver-update": "webdriver-manager update"
+    "webdriver-update": "webdriver-manager update",
+    "swagger": "npx sw2dts -o src/api/types.ts src/api/swagger.json"
   },
   "browserslist": [
     ">0.2%",
