@@ -43,6 +43,7 @@
     "reselect": "^4.0.0",
     "typesafe-actions": "^5.1.0",
     "typescript": "^3.8.3",
+    "unique-names-generator": "^4.2.0",
     "yup": "^0.28.3"
   },
   "scripts": {
