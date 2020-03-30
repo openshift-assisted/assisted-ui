@@ -65,7 +65,7 @@
         }
       }
     },
-    "/clusters/{cluster_id}": {
+    "/clusters/{clusterId}": {
       "get": {
         "tags": ["inventory"],
         "summary": "Retrieve OpenShift bare metal cluster information",
@@ -73,7 +73,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster to retrieve",
             "type": "string",
             "format": "uuid",
@@ -102,7 +102,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster to retrieve",
             "type": "string",
             "format": "uuid",
@@ -146,7 +146,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster to retrieve",
             "format": "uuid",
             "type": "string",
@@ -169,7 +169,7 @@
         }
       }
     },
-    "/clusters/{cluster_id}/actions/download": {
+    "/clusters/{clusterId}/actions/download": {
       "get": {
         "tags": ["inventory"],
         "summary": "Download OpenShift per-cluster discovery ISO",
@@ -178,7 +178,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster whose ISO to download",
             "type": "string",
             "format": "uuid",
@@ -186,14 +186,14 @@
           },
           {
             "in": "query",
-            "name": "proxy_ip",
+            "name": "proxyIp",
             "description": "The IP address of the HTTP proxy that agents should use to access the discovery service",
             "type": "string",
             "format": "hostname"
           },
           {
             "in": "query",
-            "name": "proxy_port",
+            "name": "proxyPort",
             "description": "The port of the HTTP proxy",
             "type": "integer",
             "minimum": 0,
@@ -201,7 +201,7 @@
           },
           {
             "in": "query",
-            "name": "ssh_public_key",
+            "name": "sshPublicKey",
             "description": "SSH public key for debugging the installation",
             "type": "string"
           }
@@ -225,7 +225,7 @@
         }
       }
     },
-    "/clusters/{cluster_id}/actions/install": {
+    "/clusters/{clusterId}/actions/install": {
       "post": {
         "tags": ["inventory"],
         "summary": "Install a new OpenShift bare metal cluster",
@@ -233,7 +233,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster to begin installing",
             "type": "string",
             "format": "uuid",
@@ -262,7 +262,7 @@
         }
       }
     },
-    "/clusters/{cluster_id}/hosts": {
+    "/clusters/{clusterId}/hosts": {
       "post": {
         "tags": ["inventory"],
         "summary": "Register a new OpenShift bare metal host",
@@ -270,7 +270,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster to register host to",
             "type": "string",
             "format": "uuid",
@@ -308,7 +308,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster to get hosts from",
             "type": "string",
             "format": "uuid",
@@ -328,7 +328,7 @@
         }
       }
     },
-    "/clusters/{cluster_id}/hosts/{host_id}": {
+    "/clusters/{clusterId}/hosts/{hostId}": {
       "get": {
         "tags": ["inventory"],
         "summary": "Retrieve OpenShift bare metal host information",
@@ -336,7 +336,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster to get hosts from",
             "type": "string",
             "format": "uuid",
@@ -344,7 +344,7 @@
           },
           {
             "in": "path",
-            "name": "host_id",
+            "name": "hostId",
             "description": "The ID of the host to retrieve",
             "type": "string",
             "format": "uuid",
@@ -373,7 +373,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster to deregister host from",
             "type": "string",
             "format": "uuid",
@@ -381,7 +381,7 @@
           },
           {
             "in": "path",
-            "name": "host_id",
+            "name": "hostId",
             "description": "The ID of the host to retrieve",
             "type": "string",
             "format": "uuid",
@@ -404,7 +404,7 @@
         }
       }
     },
-    "/clusters/{cluster_id}/hosts/{host_id}/actions/debug": {
+    "/clusters/{clusterId}/hosts/{hostId}/actions/debug": {
       "post": {
         "tags": ["inventory"],
         "summary": "Set a single shot debug step that will be sent next time the agent will ask for a command",
@@ -412,7 +412,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster of the host",
             "type": "string",
             "format": "uuid",
@@ -420,7 +420,7 @@
           },
           {
             "in": "path",
-            "name": "host_id",
+            "name": "hostId",
             "description": "The ID of the host to debug",
             "type": "string",
             "format": "uuid",
@@ -449,7 +449,7 @@
         }
       }
     },
-    "/clusters/{cluster_id}/hosts/{host_id}/actions/enable": {
+    "/clusters/{clusterId}/hosts/{hostId}/actions/enable": {
       "post": {
         "tags": ["inventory"],
         "summary": "Enable a host for use",
@@ -457,7 +457,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster of the host",
             "type": "string",
             "format": "uuid",
@@ -465,7 +465,7 @@
           },
           {
             "in": "path",
-            "name": "host_id",
+            "name": "hostId",
             "description": "The ID of the host to enable",
             "type": "string",
             "format": "uuid",
@@ -494,7 +494,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster of the host",
             "type": "string",
             "format": "uuid",
@@ -502,7 +502,7 @@
           },
           {
             "in": "path",
-            "name": "host_id",
+            "name": "hostId",
             "description": "The ID of the host to disable",
             "type": "string",
             "format": "uuid",
@@ -525,7 +525,7 @@
         }
       }
     },
-    "/clusters/{cluster_id}/hosts/{host_id}/next-steps": {
+    "/clusters/{clusterId}/hosts/{hostId}/next-steps": {
       "get": {
         "tags": ["inventory"],
         "summary": "Retrieve the next operations that the agent need to perform",
@@ -533,7 +533,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster of the host",
             "type": "string",
             "format": "uuid",
@@ -541,7 +541,7 @@
           },
           {
             "in": "path",
-            "name": "host_id",
+            "name": "hostId",
             "description": "ID of host",
             "type": "string",
             "format": "uuid",
@@ -564,7 +564,7 @@
         }
       }
     },
-    "/clusters/{cluster_id}/hosts/{host_id}/next-steps/reply": {
+    "/clusters/{clusterId}/hosts/{hostId}/next-steps/reply": {
       "post": {
         "tags": ["inventory"],
         "summary": "Post the result of the required operations from the server",
@@ -572,7 +572,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "cluster_id",
+            "name": "clusterId",
             "description": "The ID of the cluster of the host",
             "type": "string",
             "format": "uuid",
@@ -580,7 +580,7 @@
           },
           {
             "in": "path",
-            "name": "host_id",
+            "name": "hostId",
             "description": "ID of host",
             "type": "string",
             "format": "uuid",
@@ -633,9 +633,9 @@
     },
     "host-create-params": {
       "type": "object",
-      "required": ["host_id"],
+      "required": ["hostId"],
       "properties": {
-        "host_id": {
+        "hostId": {
           "type": "string",
           "format": "uuid"
         }
@@ -652,9 +652,9 @@
         },
         {
           "type": "object",
-          "required": ["kind", "status", "status_info", "connectivity", "hardware_info"],
+          "required": ["kind", "status", "statusInfo", "connectivity", "hardwareInfo"],
           "properties": {
-            "cluster_id": {
+            "clusterId": {
               "type": "string",
               "format": "uuid",
               "x-go-custom-tag": "gorm:\"primary_key;foreignkey:Cluster\""
@@ -671,7 +671,7 @@
                 "installed"
               ]
             },
-            "status_info": {
+            "statusInfo": {
               "type": "string"
             },
             "connectivity": {
@@ -684,7 +684,7 @@
               "type": "string",
               "enum": ["undefined", "master", "worker"]
             },
-            "updated_at": {
+            "updatedAt": {
               "type": "string",
               "format": "date-time",
               "x-go-custom-tag": "gorm:\"type:datetime\""
@@ -797,26 +797,26 @@
         "name": {
           "type": "string"
         },
-        "openshift_version": {
+        "openshiftVersion": {
           "type": "string",
           "pattern": "^4\\.\\d$"
         },
-        "base_dns_domain": {
+        "baseDnsDomain": {
           "type": "string"
         },
-        "api_vip": {
+        "apiVip": {
           "type": "string",
           "format": "hostname"
         },
-        "dns_vip": {
+        "dnsVip": {
           "type": "string",
           "format": "hostname"
         },
-        "ingress_vip": {
+        "ingressVip": {
           "type": "string",
           "format": "hostname"
         },
-        "ssh_public_key": {
+        "sshPublicKey": {
           "type": "string",
           "description": "SSH public key for debugging OpenShift nodes"
         }
@@ -828,30 +828,30 @@
         "name": {
           "type": "string"
         },
-        "openshift_version": {
+        "openshiftVersion": {
           "type": "string",
           "pattern": "^4\\.\\d$"
         },
-        "base_dns_domain": {
+        "baseDnsDomain": {
           "type": "string"
         },
-        "api_vip": {
+        "apiVip": {
           "type": "string",
           "format": "hostname"
         },
-        "dns_vip": {
+        "dnsVip": {
           "type": "string",
           "format": "hostname"
         },
-        "ingress_vip": {
+        "ingressVip": {
           "type": "string",
           "format": "hostname"
         },
-        "ssh_public_key": {
+        "sshPublicKey": {
           "type": "string",
           "description": "SSH public key for debugging OpenShift nodes"
         },
-        "hosts_roles": {
+        "hostsRoles": {
           "type": "array",
           "x-go-custom-tag": "gorm:\"type:varchar(64)[]\"",
           "items": {
@@ -883,26 +883,26 @@
             "name": {
               "type": "string"
             },
-            "openshift_version": {
+            "openshiftVersion": {
               "type": "string",
               "pattern": "^4\\.\\d$"
             },
-            "base_dns_domain": {
+            "baseDnsDomain": {
               "type": "string"
             },
-            "api_vip": {
+            "apiVip": {
               "type": "string",
               "format": "hostname"
             },
-            "dns_vip": {
+            "dnsVip": {
               "type": "string",
               "format": "hostname"
             },
-            "ingress_vip": {
+            "ingressVip": {
               "type": "string",
               "format": "hostname"
             },
-            "ssh_public_key": {
+            "sshPublicKey": {
               "type": "string",
               "x-go-custom-tag": "gorm:\"type:varchar(1024)\"",
               "description": "SSH public key for debugging OpenShift nodes"
@@ -919,17 +919,17 @@
                 "$ref": "#/definitions/host"
               }
             },
-            "updated_at": {
+            "updatedAt": {
               "type": "string",
               "format": "date-time",
               "x-go-custom-tag": "gorm:\"type:datetime\""
             },
-            "install_started_at": {
+            "installStartedAt": {
               "type": "string",
               "format": "date-time",
               "x-go-custom-tag": "gorm:\"type:datetime;default:0\""
             },
-            "install_completed_at": {
+            "installCompletedAt": {
               "type": "string",
               "format": "date-time",
               "x-go-custom-tag": "gorm:\"type:datetime;default:0\""

@@ -18,7 +18,7 @@ const clusterToClusterTableRow = (cluster: Cluster): string[] => {
   //   'Master',
   // ];
   const { id, name, status, namespace, hosts } = cluster;
-  return [name, id, status, hosts.length.toString(), namespace];
+  return [name, id, status, hosts ? hosts.length.toString() : '0', namespace];
 };
 
 export const getClusterTableRows = createSelector(

@@ -1,12 +1,13 @@
 import React from 'react';
-import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
+import { Table, TableHeader, TableBody, TableVariant, IRowData } from '@patternfly/react-table';
 import { ClusterTableRows } from '../../types/clusters';
 
 interface Props {
   rows: ClusterTableRows;
+  deleteCluster: (id: string) => void;
 }
 
-const ClustersTable: React.FC<Props> = ({ rows }) => {
+const ClustersTable: React.FC<Props> = ({ rows, deleteCluster }) => {
   const headerStyle = {
     position: 'sticky',
     top: 0,
@@ -30,11 +31,19 @@ const ClustersTable: React.FC<Props> = ({ rows }) => {
     { title: 'Hosts', ...headerConfig, ...columnConfig },
     { title: 'Namespace', ...headerConfig, ...columnConfig },
   ];
+  const actions = [
+    {
+      title: 'Delete',
+      onClick: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) =>
+        deleteCluster(rowData[1]),
+    },
+  ];
 
   return (
     <Table
       rows={rows}
       cells={columns}
+      actions={actions}
       variant={rows.length > 5 ? TableVariant.compact : undefined}
       aria-label="Clusters table"
     >

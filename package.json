@@ -69,5 +69,5 @@
     "jasmine-reporters": "^2.3.2",
     "protractor": "^5.4.2"
   },
-  "proxy": "http://192.168.39.98:31117"
+  "proxy": "http://192.168.39.98:30090"
 }

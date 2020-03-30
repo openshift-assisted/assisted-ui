@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux';
 import { createAsyncAction } from 'typesafe-actions';
 import { getResourceList } from '../api';
+import { deleteCluster } from '../api/clusters';
 import { ApiResourceKindPlural } from '../types';
 import { Cluster } from '../types/clusters';
 
@@ -10,6 +11,12 @@ export const fetchClusters = createAsyncAction(
   'GET_CLUSTERS_FAILURE',
 )<void, Cluster[], string>();
 
+export const deleteClusterActions = createAsyncAction(
+  'DELETE_CLUSTER_REQUEST',
+  'DELETE_CLUSTER_SUCCESS',
+  'DELETE_CLUSTER_FAILURE',
+)<void, string, string>();
+
 export const fetchClustersAsync = () => async (dispatch: Dispatch) => {
   dispatch(fetchClusters.request());
   try {
@@ -18,5 +25,16 @@ export const fetchClustersAsync = () => async (dispatch: Dispatch) => {
   } catch (e) {
     console.error(e);
     return dispatch(fetchClusters.failure('Failed to fetch clusters'));
+  }
+};
+
+export const deleteClusterAsync = (id: string) => async (dispatch: Dispatch) => {
+  dispatch(deleteClusterActions.request());
+  try {
+    await deleteCluster(id);
+    return dispatch(deleteClusterActions.success(id));
+  } catch (e) {
+    console.error(e);
+    return dispatch(deleteClusterActions.failure('Failed to delete cluster'));
   }
 };

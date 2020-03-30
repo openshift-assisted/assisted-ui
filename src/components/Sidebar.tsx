@@ -17,7 +17,7 @@ const Sidebar: React.FC = () => {
         <NavItem key="nav-login" id="nav-login" isActive={pathname === '/'}>
           <Link to="/">Login</Link>
         </NavItem>
-        <NavItem key="nav-clusters" id="nav-login" isActive={pathname === '/clusters'}>
+        <NavItem key="nav-clusters" id="nav-login" isActive={pathname.includes('/clusters')}>
           <Link to="/clusters">Clusters</Link>
         </NavItem>
         <NavItem

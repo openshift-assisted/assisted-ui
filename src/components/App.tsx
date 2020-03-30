@@ -9,6 +9,7 @@ import Sidebar from './Sidebar';
 import BackgroundImage from './ui/BackgroundImage';
 import LoginForm from './login/LoginForm';
 import Clusters from './clusters/Clusters';
+import NewCluster from './clusters/NewCluster';
 import BaremetalInventory from './BaremetalInventory';
 
 import '../styles/index.css';
@@ -24,6 +25,9 @@ const App: React.FC = () => (
         isManagedSidebar // enable this to automatically hide sidebar in mobile
       >
         <Switch>
+          <Route path="/clusters/new">
+            <NewCluster />
+          </Route>
           <Route path="/clusters">
             <Clusters />
           </Route>

@@ -23,46 +23,46 @@ export interface Cluster {
   id: string; // uuid
   href: string; // uri
   name?: string;
-  openshift_version?: string; // ^4\.\d$
-  base_dns_domain?: string;
-  api_vip?: string; // hostname
-  dns_vip?: string; // hostname
-  ingress_vip?: string; // hostname
+  openshiftVersion?: string; // ^4\.\d$
+  baseDnsDomain?: string;
+  apiVip?: string; // hostname
+  dnsVip?: string; // hostname
+  ingressVip?: string; // hostname
   /**
    * SSH public key for debugging OpenShift nodes
    */
-  ssh_public_key?: string;
+  sshPublicKey?: string;
   status: 'creating' | 'ready' | 'error';
   hosts?: Host[];
-  updated_at?: string; // date-time
-  install_started_at?: string; // date-time
-  install_completed_at?: string; // date-time
+  updatedAt?: string; // date-time
+  installStartedAt?: string; // date-time
+  installCompletedAt?: string; // date-time
 }
 export interface ClusterCreateParams {
   name: string;
-  openshift_version?: string; // ^4\.\d$
-  base_dns_domain?: string;
-  api_vip?: string; // hostname
-  dns_vip?: string; // hostname
-  ingress_vip?: string; // hostname
+  openshiftVersion?: string; // ^4\.\d$
+  baseDnsDomain?: string;
+  apiVip?: string; // hostname
+  dnsVip?: string; // hostname
+  ingressVip?: string; // hostname
   /**
    * SSH public key for debugging OpenShift nodes
    */
-  ssh_public_key?: string;
+  sshPublicKey?: string;
 }
 export type ClusterList = Cluster[];
 export interface ClusterUpdateParams {
   name?: string;
-  openshift_version?: string; // ^4\.\d$
-  base_dns_domain?: string;
-  api_vip?: string; // hostname
-  dns_vip?: string; // hostname
-  ingress_vip?: string; // hostname
+  openshiftVersion?: string; // ^4\.\d$
+  baseDnsDomain?: string;
+  apiVip?: string; // hostname
+  dnsVip?: string; // hostname
+  ingressVip?: string; // hostname
   /**
    * SSH public key for debugging OpenShift nodes
    */
-  ssh_public_key?: string;
-  hosts_roles?: {
+  sshPublicKey?: string;
+  hostsRoles?: {
     id?: string; // uuid
     role?: 'master' | 'worker';
   }[];
@@ -100,8 +100,8 @@ export interface Host {
   kind: 'image' | 'host' | 'cluster';
   id: string; // uuid
   href: string; // uri
-  host_id: string; // uuid
-  cluster_id?: string; // uuid
+  hostId: string; // uuid
+  clusterId?: string; // uuid
   status:
     | 'discovering'
     | 'known'
@@ -110,14 +110,14 @@ export interface Host {
     | 'disabled'
     | 'installing'
     | 'installed';
-  status_info: string;
+  statusInfo: string;
   connectivity: ConnectivityReport;
-  hardware_info: Introspection;
+  hardware_info?: Introspection;
   role?: 'undefined' | 'master' | 'worker';
-  updated_at?: string; // date-time
+  updatedAt?: string; // date-time
 }
 export interface HostCreateParams {
-  host_id: string; // uuid
+  hostId: string; // uuid
 }
 export type HostList = Host[];
 export interface Introspection {

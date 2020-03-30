@@ -22,17 +22,20 @@ import { AddCircleOIcon } from '@patternfly/react-icons';
 import { ResourceListUIState } from '../../types';
 import { ClusterTableRows } from '../../types/clusters';
 import ClustersTable from './ClustersTable';
-import { fetchClustersAsync } from '../../actions/clusters';
+import { fetchClustersAsync, deleteClusterAsync } from '../../actions/clusters';
+import { Link } from 'react-router-dom';
 
 interface ClustersProps {
   clusterRows: ClusterTableRows;
   clustersUIState: ResourceListUIState;
   clustersError: string;
   fetchClusters: () => void;
+  deleteCluster: (id: string) => void;
 }
 
 const Clusters: React.FC<ClustersProps> = ({
   fetchClusters,
+  deleteCluster,
   clusterRows,
   clustersUIState,
   clustersError,
@@ -60,7 +63,7 @@ const Clusters: React.FC<ClustersProps> = ({
         primaryAction={
           <Button
             variant={ButtonVariant.primary}
-            // onClick={() => setCurrentStep(WizardStep.ClusterConfiguration)}
+            component={(props) => <Link to="/clusters/new" {...props} />}
           >
             Create New Cluster
           </Button>
@@ -86,12 +89,12 @@ const Clusters: React.FC<ClustersProps> = ({
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light} isMain>
-            <ClustersTable rows={clusterRows} />
+            <ClustersTable rows={clusterRows} deleteCluster={deleteCluster} />
           </PageSection>
           <ClusterWizardToolbar>
             <ToolbarButton
               variant={ButtonVariant.primary}
-              // onClick={() => setCurrentStep(WizardStep.ClusterConfiguration)}
+              component={(props) => <Link to="/clusters/new" {...props} />}
             >
               Create New Cluster
             </ToolbarButton>
@@ -107,4 +110,7 @@ const mapStateToProps = (state: RootState) => ({
   clustersError: getClustersError(state),
 });
 
-export default connect(mapStateToProps, { fetchClusters: fetchClustersAsync })(Clusters);
+export default connect(mapStateToProps, {
+  fetchClusters: fetchClustersAsync,
+  deleteCluster: deleteClusterAsync,
+})(Clusters);
