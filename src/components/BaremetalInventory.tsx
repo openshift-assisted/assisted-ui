@@ -9,7 +9,6 @@ import HostsTable from './HostsTable';
 import { HostTableRows } from '../types/hosts';
 import ClusterWizardToolbar from './ClusterWizardToolbar';
 import { ToolbarButton, ToolbarText } from './ui/Toolbar';
-import { WizardStep } from '../types/wizard';
 import { ResourceListUIState } from '../types';
 import { fetchHostsAsync } from '../actions/hosts';
 
@@ -17,14 +16,12 @@ interface BareMetalInventoryProps {
   hostRows: HostTableRows;
   hostsUIState: ResourceListUIState;
   fetchHosts: () => void;
-  setCurrentStep: (step: WizardStep) => void;
 }
 
 const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
   fetchHosts,
   hostRows,
   hostsUIState,
-  setCurrentStep,
 }) => {
   React.useEffect(() => {
     fetchHosts();
@@ -45,9 +42,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
         <ToolbarButton variant="primary" isDisabled>
           Deploy Cluster
         </ToolbarButton>
-        <ToolbarButton variant="secondary" onClick={() => setCurrentStep(WizardStep.AccountLogin)}>
-          Back
-        </ToolbarButton>
+        <ToolbarButton variant="secondary">Back</ToolbarButton>
         <ToolbarText component={TextVariants.small}>
           Connect at least 3 hosts to begin deployment.
         </ToolbarText>

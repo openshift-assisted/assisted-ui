@@ -17,7 +17,6 @@ import {
 } from '../../selectors/clusters';
 import ClusterWizardToolbar from '../ClusterWizardToolbar';
 import { ToolbarButton } from '../ui/Toolbar';
-import { WizardStep } from '../../types/wizard';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';
 import { ResourceListUIState } from '../../types';
@@ -30,7 +29,6 @@ interface ClustersProps {
   clustersUIState: ResourceListUIState;
   clustersError: string;
   fetchClusters: () => void;
-  setCurrentStep: (step: WizardStep) => void;
 }
 
 const Clusters: React.FC<ClustersProps> = ({
@@ -38,7 +36,6 @@ const Clusters: React.FC<ClustersProps> = ({
   clusterRows,
   clustersUIState,
   clustersError,
-  setCurrentStep,
 }) => {
   React.useEffect(() => {
     fetchClusters();
@@ -63,7 +60,7 @@ const Clusters: React.FC<ClustersProps> = ({
         primaryAction={
           <Button
             variant={ButtonVariant.primary}
-            onClick={() => setCurrentStep(WizardStep.ClusterConfiguration)}
+            // onClick={() => setCurrentStep(WizardStep.ClusterConfiguration)}
           >
             Create New Cluster
           </Button>
@@ -94,7 +91,7 @@ const Clusters: React.FC<ClustersProps> = ({
           <ClusterWizardToolbar>
             <ToolbarButton
               variant={ButtonVariant.primary}
-              onClick={() => setCurrentStep(WizardStep.ClusterConfiguration)}
+              // onClick={() => setCurrentStep(WizardStep.ClusterConfiguration)}
             >
               Create New Cluster
             </ToolbarButton>

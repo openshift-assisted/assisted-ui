@@ -14,13 +14,8 @@ import ClusterWizardToolbar from '../ClusterWizardToolbar';
 import RedHatAccountFields from './RedHatAccountFields';
 import PageSection from '../ui/PageSection';
 import PullSecretFields from './PullSecretFields';
-import { WizardStep } from '../../types/wizard';
 import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import validationSchema from './validationSchema';
-
-interface Props {
-  setCurrentStep: (step: WizardStep) => void;
-}
 
 interface LoginValues {
   username: string;
@@ -32,7 +27,7 @@ export interface CreateClusterFormState {
   providePullSecret: boolean;
 }
 
-const LoginForm: React.FC<Props> = ({ setCurrentStep }) => {
+const LoginForm: React.FC = () => {
   const [providePullSecret, setProvidePullSecret] = React.useState(false);
 
   const initialValues: LoginValues = {
@@ -69,7 +64,7 @@ const LoginForm: React.FC<Props> = ({ setCurrentStep }) => {
     //     // TODO(jtomasek): dispatch a failure action
     //   });
     return Promise.resolve().then(() => {
-      setCurrentStep(WizardStep.ManagedClusters);
+      // setCurrentStep(WizardStep.ManagedClusters);
       formikActions.setSubmitting(false);
     });
   };
