@@ -29,7 +29,6 @@ const ClustersTable: React.FC<Props> = ({ rows, deleteCluster }) => {
     { title: 'ID', ...headerConfig, ...columnConfig },
     { title: 'Status', ...headerConfig, ...columnConfig },
     { title: 'Hosts', ...headerConfig, ...columnConfig },
-    { title: 'Namespace', ...headerConfig, ...columnConfig },
   ];
   const actions = [
     {

@@ -1,7 +1,8 @@
 import React from 'react';
 import { createSelector } from 'reselect';
 
-import { Cluster, ClusterTableRows } from '../types/clusters';
+import { ClusterTableRows } from '../types/clusters';
+import { Cluster } from '../api/types';
 import { ApiResourceKindPlural } from '../types';
 import { createGetResourcesError, createGetResources, createGetResourcesUIState } from './utils';
 import { Link } from 'react-router-dom';
@@ -10,7 +11,7 @@ import { IRow } from '@patternfly/react-table';
 export const getClustersError = createGetResourcesError(ApiResourceKindPlural.clusters);
 
 const clusterToClusterTableRow = (cluster: Cluster): IRow => {
-  const { id, name, status, namespace, hosts } = cluster;
+  const { id, name, status, hosts } = cluster;
   return {
     cells: [
       {
@@ -23,7 +24,6 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
       id,
       status,
       hosts ? hosts.length.toString() : '0',
-      namespace,
     ],
   };
 };

@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { ActionType, getType } from 'typesafe-actions';
 import _ from 'lodash';
 import * as actions from '../actions/clusters';
-import { Cluster } from '../types/clusters';
+import { Cluster } from '../api/types';
 import { ResourceState } from './types';
 
 export type ClustersActions = ActionType<typeof actions>;

@@ -2,7 +2,7 @@
 /* eslint @typescript-eslint/indent: 0 */
 import { Image } from './images';
 import { Host } from './hosts';
-import { Cluster } from './clusters';
+import { Cluster } from '../api/types';
 
 export enum ResourceListUIState {
   LOADING,

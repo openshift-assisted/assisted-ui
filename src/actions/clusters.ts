@@ -3,7 +3,7 @@ import { createAsyncAction } from 'typesafe-actions';
 import { getResourceList } from '../api';
 import { deleteCluster } from '../api/clusters';
 import { ApiResourceKindPlural } from '../types';
-import { Cluster } from '../types/clusters';
+import { Cluster } from '../api/types';
 
 export const fetchClusters = createAsyncAction(
   'GET_CLUSTERS_REQUEST',

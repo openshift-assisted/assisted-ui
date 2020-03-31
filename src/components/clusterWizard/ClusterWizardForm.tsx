@@ -31,25 +31,26 @@ import { RootState } from '../../store/rootReducer';
 import GridGap from '../ui/GridGap';
 import { fetchHostsAsync } from '../../actions/hosts';
 import { fetchImagesAsync } from '../../actions/images';
+import { Cluster } from '../../api/types';
 
-interface CreateClusterFormProps {
+interface ClusterWizardFormProps {
+  cluster: Cluster;
   hostRows: HostTableRows;
   hostsUIState: ResourceListUIState;
   fetchHosts: () => void;
   imageRows: HostTableRows;
   imagesUIState: ResourceListUIState;
   fetchImages: () => void;
-  setCurrentStep: (step: WizardStep) => void;
 }
 
-const CreateClusterForm: React.FC<CreateClusterFormProps> = ({
+const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({
+  cluster,
   fetchHosts,
   hostRows,
   hostsUIState,
   fetchImages,
   imageRows,
   imagesUIState,
-  setCurrentStep,
 }) => {
   React.useEffect(() => {
     fetchImages();
@@ -59,7 +60,7 @@ const CreateClusterForm: React.FC<CreateClusterFormProps> = ({
   }, [fetchHosts]);
 
   const initialValues: ClusterDefinition = {
-    clusterName: '',
+    clusterName: cluster.name || '',
     DNSDomain: '',
     openshiftVersion: '',
     apiVIP: '',
@@ -90,7 +91,6 @@ const CreateClusterForm: React.FC<CreateClusterFormProps> = ({
       .then((response) => {
         // TODO(jtomasek): dispatch a success action
         console.log(response); // eslint-disable-line
-        setCurrentStep(WizardStep.ManageHosts);
         formikActions.setSubmitting(false);
       })
       .catch((e) => {
@@ -116,7 +116,7 @@ const CreateClusterForm: React.FC<CreateClusterFormProps> = ({
                 <GridItem span={12} lg={10} xl={6}>
                   <GridGap>
                     <TextContent>
-                      <Text component="h1">Create a bare metal OpenShift cluster</Text>
+                      <Text component="h1">Configure a bare metal OpenShift cluster</Text>
                     </TextContent>
                     <InputField
                       label="Cluster name"
@@ -184,12 +184,7 @@ const CreateClusterForm: React.FC<CreateClusterFormProps> = ({
             >
               Create cluster
             </ToolbarButton>
-            <ToolbarButton
-              variant={ButtonVariant.secondary}
-              onClick={() => setCurrentStep(WizardStep.ManagedClusters)}
-            >
-              Cancel
-            </ToolbarButton>
+            <ToolbarButton variant={ButtonVariant.secondary}>Cancel</ToolbarButton>
             {isSubmitting && <ToolbarText>Form is being submitted</ToolbarText>}
             {status.error && (
               <ToolbarText>
@@ -213,4 +208,4 @@ const mapStateToProps = (state: RootState) => ({
 export default connect(mapStateToProps, {
   fetchHosts: fetchHostsAsync,
   fetchImages: fetchImagesAsync,
-})(CreateClusterForm);
+})(ClusterWizardForm);

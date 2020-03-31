@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
 import { PageSectionVariants, ButtonVariant, Button } from '@patternfly/react-core';
 import PageSection from '../ui/PageSection';
 import { ErrorState, LoadingState } from '../ui/uiState';
 import { getCluster } from '../../api/clusters';
 import { Cluster } from '../../api/types';
+import ClusterWizardForm from '../clusterWizard/ClusterWizardForm';
 
 type MatchParams = {
   clusterId: string;
@@ -38,7 +39,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
       variant={ButtonVariant.secondary}
       component={(props) => <Link to="/clusters" {...props} />}
     >
-      Cancel
+      Back
     </Button>
   );
 
@@ -58,8 +59,10 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   );
 
   if (uiState === 'loading') return loadingState;
-  if (uiState === 'error') return errorState;
-  return <PageSection isMain>{JSON.stringify(cluster, null, 2)}</PageSection>;
+  if (uiState === 'error') return errorState; // TODO(jtomasek): redirect to cluster list instead?
+  // TODO(jtomasek): handle cases when cluster is not-deployed/deploying/deployed
+  if (cluster) return <ClusterWizardForm cluster={cluster} />;
+  return <Redirect to="/clusters" />;
 };
 
 export default ClusterPage;
