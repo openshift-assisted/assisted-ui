@@ -35,7 +35,7 @@ const ClustersTable: React.FC<Props> = ({ rows, deleteCluster }) => {
     {
       title: 'Delete',
       onClick: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) =>
-        deleteCluster(rowData[1]),
+        deleteCluster(rowData.id.title),
     },
   ];
   return (
