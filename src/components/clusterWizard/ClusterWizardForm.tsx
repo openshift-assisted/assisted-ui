@@ -15,7 +15,6 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
 import ClusterWizardToolbar from '../ClusterWizardToolbar';
 import PageSection from '../ui/PageSection';
-import { WizardStep } from '../../types/wizard';
 import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import { InputField, TextAreaField } from '../ui/formik';
 import validationSchema from './validationSchema';
@@ -24,7 +23,6 @@ import { postInstallConfig } from '../../api/clusterDefinition';
 import HostsTable from '../HostsTable';
 import ImagesTable from './ImagesTable';
 import { HostTableRows } from '../../types/hosts';
-import { getHostTableRows, getHostsUIState } from '../../selectors/hosts';
 import { getImageTableRows, getImagesUIState } from '../../selectors/images';
 import { ResourceListUIState } from '../../types';
 import { RootState } from '../../store/rootReducer';
@@ -32,11 +30,10 @@ import GridGap from '../ui/GridGap';
 import { fetchHostsAsync } from '../../actions/hosts';
 import { fetchImagesAsync } from '../../actions/images';
 import { Cluster } from '../../api/types';
+import { getHostsTableRows } from '../../selectors/clusters';
 
 interface ClusterWizardFormProps {
   cluster: Cluster;
-  hostRows: HostTableRows;
-  hostsUIState: ResourceListUIState;
   fetchHosts: () => void;
   imageRows: HostTableRows;
   imagesUIState: ResourceListUIState;
@@ -46,8 +43,6 @@ interface ClusterWizardFormProps {
 const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({
   cluster,
   fetchHosts,
-  hostRows,
-  hostsUIState,
   fetchImages,
   imageRows,
   imagesUIState,
@@ -101,6 +96,11 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({
       });
   };
 
+  const hostRows = getHostsTableRows(cluster);
+  const hostsUIState = cluster.hosts?.length
+    ? ResourceListUIState.LOADED
+    : ResourceListUIState.EMPTY;
+  console.log(hostRows);
   return (
     <Formik
       initialValues={initialValues}
@@ -149,6 +149,7 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({
               </TextContent>
               <HostsTable
                 hostRows={hostRows}
+                // uiState={hostsUIState}
                 uiState={hostsUIState}
                 fetchHosts={fetchHosts}
                 variant={TableVariant.compact}
@@ -199,8 +200,6 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({
 };
 
 const mapStateToProps = (state: RootState) => ({
-  hostRows: getHostTableRows(state),
-  hostsUIState: getHostsUIState(state),
   imageRows: getImageTableRows(state),
   imagesUIState: getImagesUIState(state),
 });
