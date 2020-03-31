@@ -38,7 +38,6 @@ const ClustersTable: React.FC<Props> = ({ rows, deleteCluster }) => {
         deleteCluster(rowData[1]),
     },
   ];
-
   return (
     <Table
       rows={rows}

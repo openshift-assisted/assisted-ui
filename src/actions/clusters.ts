@@ -11,12 +11,6 @@ export const fetchClusters = createAsyncAction(
   'GET_CLUSTERS_FAILURE',
 )<void, Cluster[], string>();
 
-export const deleteClusterActions = createAsyncAction(
-  'DELETE_CLUSTER_REQUEST',
-  'DELETE_CLUSTER_SUCCESS',
-  'DELETE_CLUSTER_FAILURE',
-)<void, string, string>();
-
 export const fetchClustersAsync = () => async (dispatch: Dispatch) => {
   dispatch(fetchClusters.request());
   try {
@@ -27,6 +21,12 @@ export const fetchClustersAsync = () => async (dispatch: Dispatch) => {
     return dispatch(fetchClusters.failure('Failed to fetch clusters'));
   }
 };
+
+export const deleteClusterActions = createAsyncAction(
+  'DELETE_CLUSTER_REQUEST',
+  'DELETE_CLUSTER_SUCCESS',
+  'DELETE_CLUSTER_FAILURE',
+)<void, string, string>();
 
 export const deleteClusterAsync = (id: string) => async (dispatch: Dispatch) => {
   dispatch(deleteClusterActions.request());

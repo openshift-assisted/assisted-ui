@@ -1,28 +1,24 @@
 import React, { useEffect } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { PageSectionVariants, ButtonVariant, Button } from '@patternfly/react-core';
-import { uniqueNamesGenerator, Config, adjectives, colors, animals } from 'unique-names-generator';
 import PageSection from '../ui/PageSection';
 import { ErrorState, LoadingState } from '../ui/uiState';
-import { createCluster } from '../../api/clusters';
+import { getCluster } from '../../api/clusters';
 import { Cluster } from '../../api/types';
 
-const namesConfig: Config = {
-  dictionaries: [adjectives, colors, animals],
-  separator: '-',
-  length: 3,
-  style: 'lowerCase',
+type MatchParams = {
+  clusterId: string;
 };
 
-const NewCluster: React.FC = () => {
+const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
+  const { clusterId } = match.params;
   const [uiState, setUiState] = React.useState('loading');
   const [cluster, setCluster] = React.useState<Cluster>();
 
-  const createClusterAsync = async () => {
+  const fetchClusterAsync = async (clusterId: string) => {
     try {
       setUiState('loading');
-      const name: string = uniqueNamesGenerator(namesConfig);
-      const { data } = await createCluster({ name });
+      const { data } = await getCluster(clusterId);
       setCluster(data);
       setUiState('done');
     } catch (e) {
@@ -33,8 +29,8 @@ const NewCluster: React.FC = () => {
   };
 
   useEffect(() => {
-    createClusterAsync();
-  }, []);
+    fetchClusterAsync(clusterId);
+  }, [clusterId]);
 
   const cancel = (
     <Button
@@ -49,8 +45,8 @@ const NewCluster: React.FC = () => {
   const errorState = (
     <PageSection variant={PageSectionVariants.light} isMain>
       <ErrorState
-        title={'Failed to create new cluster'}
-        fetchData={createClusterAsync}
+        title={'Failed to fetch the cluster'}
+        fetchData={() => fetchClusterAsync(clusterId)}
         actions={[cancel]}
       />
     </PageSection>
@@ -63,7 +59,7 @@ const NewCluster: React.FC = () => {
 
   if (uiState === 'loading') return loadingState;
   if (uiState === 'error') return errorState;
-  return <Redirect to={`/clusters/${cluster?.id}`} />;
+  return <PageSection isMain>{JSON.stringify(cluster, null, 2)}</PageSection>;
 };
 
-export default NewCluster;
+export default ClusterPage;

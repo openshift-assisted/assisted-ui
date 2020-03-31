@@ -10,6 +10,7 @@ import BackgroundImage from './ui/BackgroundImage';
 import LoginForm from './login/LoginForm';
 import Clusters from './clusters/Clusters';
 import NewCluster from './clusters/NewCluster';
+import ClusterPage from './clusters/ClusterPage';
 import BaremetalInventory from './BaremetalInventory';
 
 import '../styles/index.css';
@@ -25,18 +26,11 @@ const App: React.FC = () => (
         isManagedSidebar // enable this to automatically hide sidebar in mobile
       >
         <Switch>
-          <Route path="/clusters/new">
-            <NewCluster />
-          </Route>
-          <Route path="/clusters">
-            <Clusters />
-          </Route>
-          <Route path="/baremetal-inventory">
-            <BaremetalInventory />
-          </Route>
-          <Route path="/">
-            <LoginForm />
-          </Route>
+          <Route path="/clusters/new" component={NewCluster} />
+          <Route path={`/clusters/:clusterId`} component={ClusterPage} />
+          <Route path="/clusters" component={Clusters} />
+          <Route path="/baremetal-inventory" component={BaremetalInventory} />
+          <Route path="/" component={LoginForm} />
         </Switch>
       </Page>
     </Router>

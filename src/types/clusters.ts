@@ -1,5 +1,6 @@
-export type ClusterTableRow = string[];
-export type ClusterTableRows = ClusterTableRow[];
+import { IRow } from '@patternfly/react-table';
+
+export type ClusterTableRows = IRow[];
 
 export type Cluster = {
   kind: string;
