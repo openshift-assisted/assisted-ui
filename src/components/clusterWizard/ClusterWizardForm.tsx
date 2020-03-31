@@ -10,6 +10,7 @@ import {
   ButtonVariant,
   Grid,
   GridItem,
+  Button,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
@@ -21,35 +22,19 @@ import validationSchema from './validationSchema';
 import { ClusterDefinition } from '../../types/clusterDefinition';
 import { postInstallConfig } from '../../api/clusterDefinition';
 import HostsTable from '../HostsTable';
-import ImagesTable from './ImagesTable';
-import { HostTableRows } from '../../types/hosts';
-import { getImageTableRows, getImagesUIState } from '../../selectors/images';
 import { ResourceListUIState } from '../../types';
 import { RootState } from '../../store/rootReducer';
 import GridGap from '../ui/GridGap';
 import { fetchHostsAsync } from '../../actions/hosts';
-import { fetchImagesAsync } from '../../actions/images';
 import { Cluster } from '../../api/types';
 import { getHostsTableRows } from '../../selectors/clusters';
 
 interface ClusterWizardFormProps {
   cluster: Cluster;
   fetchHosts: () => void;
-  imageRows: HostTableRows;
-  imagesUIState: ResourceListUIState;
-  fetchImages: () => void;
 }
 
-const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({
-  cluster,
-  fetchHosts,
-  fetchImages,
-  imageRows,
-  imagesUIState,
-}) => {
-  React.useEffect(() => {
-    fetchImages();
-  }, [fetchImages]);
+const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, fetchHosts }) => {
   React.useEffect(() => {
     fetchHosts();
   }, [fetchHosts]);
@@ -100,7 +85,6 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({
   const hostsUIState = cluster.hosts?.length
     ? ResourceListUIState.LOADED
     : ResourceListUIState.EMPTY;
-  console.log(hostRows);
   return (
     <Formik
       initialValues={initialValues}
@@ -130,26 +114,17 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({
                 </GridItem>
               </Grid>
               <TextContent>
-                <Text component="h2">Discovery Images</Text>
-                {/* <Text component="p">
-                  <Button variant={ButtonVariant.secondary}>Download discovery ISO</Button>
-                </Text> */}
-              </TextContent>
-              <ImagesTable
-                imageRows={imageRows}
-                uiState={imagesUIState}
-                fetchImages={fetchImages}
-              />
-              <TextContent>
                 <Text component="h2">Bare metal hosts</Text>
                 <Text component="p">
                   Boot the discovery ISO on hosts that are connected to the internet. At least 3
                   hosts are isRequired to create a cluster.
                 </Text>
+                <Text component="p">
+                  <Button variant={ButtonVariant.secondary}>Download discovery ISO</Button>
+                </Text>
               </TextContent>
               <HostsTable
                 hostRows={hostRows}
-                // uiState={hostsUIState}
                 uiState={hostsUIState}
                 fetchHosts={fetchHosts}
                 variant={TableVariant.compact}
@@ -157,6 +132,9 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({
               <Grid gutter="md">
                 <GridItem span={12} lg={10} xl={6}>
                   <GridGap>
+                    <TextContent>
+                      <Text component="h2">Network</Text>
+                    </TextContent>
                     <InputField
                       label="API Virtual IP"
                       name="apiVIP"
@@ -199,12 +177,8 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({
   );
 };
 
-const mapStateToProps = (state: RootState) => ({
-  imageRows: getImageTableRows(state),
-  imagesUIState: getImagesUIState(state),
-});
+const mapStateToProps = (state: RootState) => ({});
 
 export default connect(mapStateToProps, {
   fetchHosts: fetchHostsAsync,
-  fetchImages: fetchImagesAsync,
 })(ClusterWizardForm);
