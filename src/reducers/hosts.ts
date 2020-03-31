@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { ActionType, getType } from 'typesafe-actions';
 
 import * as hosts from '../actions/hosts';
-import { Host } from '../types/hosts';
+import { Host } from '../api/types';
 import { ResourceState } from './types';
 
 export type HostsActions = ActionType<typeof hosts>;

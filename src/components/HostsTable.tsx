@@ -38,7 +38,6 @@ const HostsTable: React.FC<Props> = ({ hostRows, uiState, fetchHosts, variant })
     { title: 'Role', ...headerConfig, ...columnConfig },
     { title: 'Serial Number', ...headerConfig, ...columnConfig },
     { title: 'Status', ...headerConfig, ...columnConfig },
-    { title: 'Namespace', ...headerConfig, ...columnConfig },
     { title: 'CPU', ...headerConfig, ...columnConfig },
     { title: 'Memory', ...headerConfig, ...columnConfig },
     { title: 'Disk', ...headerConfig, ...columnConfig },

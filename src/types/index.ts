@@ -1,7 +1,6 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 /* eslint @typescript-eslint/indent: 0 */
-import { Host } from './hosts';
-import { Cluster } from '../api/types';
+import { Cluster, Host } from '../api/types';
 
 export enum ResourceListUIState {
   LOADING,
@@ -21,12 +20,6 @@ export enum ApiResourceKindPlural {
   hosts = 'hosts',
   clusters = 'clusters',
 }
-
-export type ApiResourceBase = {
-  kind: ApiResourceKind;
-  id: string;
-  href: string;
-};
 
 // NOTE(honza): These types are copied and pasted from openshift/console
 

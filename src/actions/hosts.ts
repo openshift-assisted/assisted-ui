@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
 import { createAsyncAction } from 'typesafe-actions';
-import { Host } from '../types/hosts';
+import { Host } from '../api/types';
 import { ApiResourceKindPlural } from '../types';
 import { getResourceList } from '../api';
 

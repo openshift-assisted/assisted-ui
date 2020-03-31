@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 
-import { Host, HostTableRows } from '../types/hosts';
+import { HostTableRows } from '../types/hosts';
+import { Host } from '../api/types';
 import { ApiResourceKindPlural } from '../types';
 import { createGetResources, createGetResourcesUIState, createGetResourcesError } from './utils';
 
@@ -17,8 +18,8 @@ const hostToHostTableRow = (host: Host): string[] => {
   //   status.hardware.storage[0].sizeGiB.toString(),
   //   'Master',
   // ];
-  const { id, status, namespace } = host;
-  return [id, 'Master', 'SN00000', status, namespace, '-', '-', '-'];
+  const { id, status } = host;
+  return [id, 'Master', 'SN00000', status, '-', '-', '-'];
 };
 
 export const getHostTableRows = createSelector(
