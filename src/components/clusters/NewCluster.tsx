@@ -1,16 +1,18 @@
 import React, { useEffect } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { PageSectionVariants, ButtonVariant, Button } from '@patternfly/react-core';
-import { uniqueNamesGenerator, Config, adjectives, colors, animals } from 'unique-names-generator';
+import { uniqueNamesGenerator, Config, starWars } from 'unique-names-generator';
+import _ from 'lodash';
 import PageSection from '../ui/PageSection';
 import { ErrorState, LoadingState } from '../ui/uiState';
 import { createCluster } from '../../api/clusters';
 import { Cluster } from '../../api/types';
 
 const namesConfig: Config = {
-  dictionaries: [adjectives, colors, animals],
+  // dictionaries: [adjectives, colors, animals],
+  dictionaries: [starWars],
   separator: '-',
-  length: 3,
+  length: 1,
   style: 'lowerCase',
 };
 
@@ -21,7 +23,7 @@ const NewCluster: React.FC = () => {
   const createClusterAsync = async () => {
     try {
       setUiState('loading');
-      const name: string = uniqueNamesGenerator(namesConfig);
+      const name = _.kebabCase(uniqueNamesGenerator(namesConfig));
       const { data } = await createCluster({ name });
       setCluster(data);
       setUiState('done');
