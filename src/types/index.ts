@@ -2,7 +2,7 @@
 /* eslint @typescript-eslint/indent: 0 */
 import { Cluster, Host } from '../api/types';
 
-export enum ResourceListUIState {
+export enum ResourceUIState {
   LOADING,
   ERROR,
   EMPTY,

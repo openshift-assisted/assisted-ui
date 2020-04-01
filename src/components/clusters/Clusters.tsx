@@ -19,7 +19,7 @@ import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
 import { ToolbarButton } from '../ui/Toolbar';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';
-import { ResourceListUIState } from '../../types';
+import { ResourceUIState } from '../../types';
 import { ClusterTableRows } from '../../types/clusters';
 import ClustersTable from './ClustersTable';
 import { fetchClustersAsync, deleteClusterAsync } from '../../actions/clusters';
@@ -27,7 +27,7 @@ import { Link } from 'react-router-dom';
 
 interface ClustersProps {
   clusterRows: ClusterTableRows;
-  clustersUIState: ResourceListUIState;
+  clustersUIState: ResourceUIState;
   clustersError: string;
   fetchClusters: () => void;
   deleteCluster: (id: string) => void;
@@ -73,11 +73,11 @@ const Clusters: React.FC<ClustersProps> = ({
   );
 
   switch (clustersUIState) {
-    case ResourceListUIState.LOADING:
+    case ResourceUIState.LOADING:
       return loadingState;
-    case ResourceListUIState.ERROR:
+    case ResourceUIState.ERROR:
       return errorState;
-    case ResourceListUIState.EMPTY:
+    case ResourceUIState.EMPTY:
       return emptyState;
     default:
       // TODO(jtomasek): if there is just one cluster, redirect to it's detail

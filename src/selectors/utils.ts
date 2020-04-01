@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { ResourceListUIState, ApiResourceKindPlural } from '../types';
+import { ResourceUIState, ApiResourceKindPlural } from '../types';
 import { RootState } from '../store/rootReducer';
 import { ApiResource } from '../types';
 
@@ -21,9 +21,9 @@ export const createGetResourcesUIState = (resources: ApiResourceKindPlural) =>
       createGetResources(resources),
     ],
     (loading, error, resources) => {
-      if (loading) return ResourceListUIState.LOADING;
-      else if (error) return ResourceListUIState.ERROR;
-      else if (!resources.length) return ResourceListUIState.EMPTY;
-      else return ResourceListUIState.LOADED;
+      if (loading) return ResourceUIState.LOADING;
+      else if (error) return ResourceUIState.ERROR;
+      else if (!resources.length) return ResourceUIState.EMPTY;
+      else return ResourceUIState.LOADED;
     },
   );

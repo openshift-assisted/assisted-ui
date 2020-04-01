@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
 import { PageSectionVariants, ButtonVariant, Button } from '@patternfly/react-core';
 import PageSection from '../ui/PageSection';
 import { ErrorState, LoadingState } from '../ui/uiState';
 import { getCluster } from '../../api/clusters';
-import { Cluster } from '../../api/types';
-import ClusterWizardForm from '../clusterWizard/ClusterWizardForm';
+import ClusterWizard from '../clusterWizard/ClusterWizard';
+import useApi from '../../api/useApi';
+import { ResourceUIState } from '../../types';
 
 type MatchParams = {
   clusterId: string;
@@ -13,25 +14,7 @@ type MatchParams = {
 
 const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const { clusterId } = match.params;
-  const [uiState, setUiState] = React.useState('loading');
-  const [cluster, setCluster] = React.useState<Cluster>();
-
-  const fetchClusterAsync = async (clusterId: string) => {
-    try {
-      setUiState('loading');
-      const { data } = await getCluster(clusterId);
-      setCluster(data);
-      setUiState('done');
-    } catch (e) {
-      setUiState('error');
-      console.error(e);
-      console.error(e.response?.data);
-    }
-  };
-
-  useEffect(() => {
-    fetchClusterAsync(clusterId);
-  }, [clusterId]);
+  const [{ data: cluster, uiState }, fetchCluster] = useApi(getCluster, clusterId);
 
   const cancel = (
     <Button
@@ -47,7 +30,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     <PageSection variant={PageSectionVariants.light} isMain>
       <ErrorState
         title={'Failed to fetch the cluster'}
-        fetchData={() => fetchClusterAsync(clusterId)}
+        fetchData={fetchCluster}
         actions={[cancel]}
       />
     </PageSection>
@@ -58,10 +41,10 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     </PageSection>
   );
 
-  if (uiState === 'loading') return loadingState;
-  if (uiState === 'error') return errorState; // TODO(jtomasek): redirect to cluster list instead?
+  if (uiState === ResourceUIState.LOADING) return loadingState;
+  if (uiState === ResourceUIState.ERROR) return errorState; // TODO(jtomasek): redirect to cluster list instead?
   // TODO(jtomasek): handle cases when cluster is not-deployed/deploying/deployed
-  if (cluster) return <ClusterWizardForm cluster={cluster} />;
+  if (cluster) return <ClusterWizard cluster={cluster} />;
   return <Redirect to="/clusters" />;
 };
 

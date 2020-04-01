@@ -3,13 +3,13 @@ import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-t
 import { HostTableRows } from '../../types/hosts';
 import { EmptyState, ErrorState, LoadingState } from '../ui/uiState';
 import { getColSpanRow } from '../ui/table/utils';
-import { ResourceListUIState } from '../../types';
+import { ResourceUIState } from '../../types';
 import { useSelector } from 'react-redux';
 import { getHostsError } from '../../selectors/hosts';
 
 type Props = {
   hostRows: HostTableRows;
-  uiState: ResourceListUIState;
+  uiState: ResourceUIState;
   fetchHosts: () => void;
   variant?: TableVariant;
 };
@@ -55,11 +55,11 @@ const HostsTable: React.FC<Props> = ({ hostRows, uiState, fetchHosts, variant })
   const getRows = () => {
     const columnCount = columns.length;
     switch (uiState) {
-      case ResourceListUIState.LOADING:
+      case ResourceUIState.LOADING:
         return getColSpanRow(loadingState, columnCount);
-      case ResourceListUIState.ERROR:
+      case ResourceUIState.ERROR:
         return getColSpanRow(errorState, columnCount);
-      case ResourceListUIState.EMPTY:
+      case ResourceUIState.EMPTY:
         return getColSpanRow(emptyState, columnCount);
       default:
         return hostRows;

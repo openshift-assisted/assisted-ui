@@ -22,7 +22,7 @@ import validationSchema from './validationSchema';
 import { ClusterDefinition } from '../../types/clusterDefinition';
 import { postInstallConfig } from '../../api/clusterDefinition';
 import HostsTable from './HostsTable';
-import { ResourceListUIState } from '../../types';
+import { ResourceUIState } from '../../types';
 import { RootState } from '../../store/rootReducer';
 import GridGap from '../ui/GridGap';
 import { fetchHostsAsync } from '../../actions/hosts';
@@ -83,9 +83,7 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, fetchHos
   };
 
   const hostRows = getHostsTableRows(cluster);
-  const hostsUIState = cluster.hosts?.length
-    ? ResourceListUIState.LOADED
-    : ResourceListUIState.EMPTY;
+  const hostsUIState = cluster.hosts?.length ? ResourceUIState.LOADED : ResourceUIState.EMPTY;
   return (
     <Formik
       initialValues={initialValues}

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { PageSectionVariants, ButtonVariant, Button } from '@patternfly/react-core';
 import { uniqueNamesGenerator, Config, starWars } from 'unique-names-generator';
@@ -6,7 +6,8 @@ import _ from 'lodash';
 import PageSection from '../ui/PageSection';
 import { ErrorState, LoadingState } from '../ui/uiState';
 import { createCluster } from '../../api/clusters';
-import { Cluster } from '../../api/types';
+import useApi from '../../api/useApi';
+import { ResourceUIState } from '../../types';
 
 const namesConfig: Config = {
   // dictionaries: [adjectives, colors, animals],
@@ -17,26 +18,29 @@ const namesConfig: Config = {
 };
 
 const NewCluster: React.FC = () => {
-  const [uiState, setUiState] = React.useState('loading');
-  const [cluster, setCluster] = React.useState<Cluster>();
+  // const generateName = useCallback(() => _.kebabCase(uniqueNamesGenerator(namesConfig)), []);
+  const name = React.useRef(_.kebabCase(uniqueNamesGenerator(namesConfig)));
+  const [{ data: cluster, uiState }, retry] = useApi(createCluster, { name: name.current });
+  // const [uiState, setUiState] = React.useState('loading');
+  // const [cluster, setCluster] = React.useState<Cluster>();
 
-  const createClusterAsync = async () => {
-    try {
-      setUiState('loading');
-      const name = _.kebabCase(uniqueNamesGenerator(namesConfig));
-      const { data } = await createCluster({ name });
-      setCluster(data);
-      setUiState('done');
-    } catch (e) {
-      setUiState('error');
-      console.error(e);
-      console.error(e.response?.data);
-    }
-  };
+  // const createClusterAsync = async () => {
+  //   try {
+  //     setUiState('loading');
+  //     const name = _.kebabCase(uniqueNamesGenerator(namesConfig));
+  //     const { data } = await createCluster({ name });
+  //     setCluster(data);
+  //     setUiState('done');
+  //   } catch (e) {
+  //     setUiState('error');
+  //     console.error(e);
+  //     console.error(e.response?.data);
+  //   }
+  // };
 
-  useEffect(() => {
-    createClusterAsync();
-  }, []);
+  // useEffect(() => {
+  //   createClusterAsync();
+  // }, []);
 
   const cancel = (
     <Button
@@ -50,11 +54,7 @@ const NewCluster: React.FC = () => {
 
   const errorState = (
     <PageSection variant={PageSectionVariants.light} isMain>
-      <ErrorState
-        title={'Failed to create new cluster'}
-        fetchData={createClusterAsync}
-        actions={[cancel]}
-      />
+      <ErrorState title={'Failed to create new cluster'} fetchData={retry} actions={[cancel]} />
     </PageSection>
   );
   const loadingState = (
@@ -63,9 +63,10 @@ const NewCluster: React.FC = () => {
     </PageSection>
   );
 
-  if (uiState === 'loading') return loadingState;
-  if (uiState === 'error') return errorState;
-  return <Redirect to={`/clusters/${cluster?.id}`} />;
+  if (uiState === ResourceUIState.LOADING) return loadingState;
+  if (uiState === ResourceUIState.ERROR) return errorState;
+  if (cluster) return <Redirect to={`/clusters/${cluster.id}`} />;
+  return <Redirect to="/clusters" />;
 };
 
 export default NewCluster;
