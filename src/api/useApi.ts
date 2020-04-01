@@ -2,49 +2,73 @@ import React from 'react';
 import { AxiosPromise } from 'axios';
 import { ResourceUIState } from '../types';
 
-type Status<T> = {
+type State<T> = {
   data?: T;
   uiState: ResourceUIState;
-  error: string;
 };
+
+type Action<T> = {
+  type: 'REQUEST' | 'SUCCESS' | 'ERROR';
+  payload?: T;
+};
+
+const reducer = <T>(state: State<T>, { type, payload }: Action<T>) => {
+  switch (type) {
+    case 'REQUEST':
+      return { ...state, uiState: ResourceUIState.LOADING };
+    case 'SUCCESS':
+      if (payload instanceof Array && !payload.length) {
+        return { ...state, uiState: ResourceUIState.EMPTY, data: payload };
+      } else {
+        return { ...state, uiState: ResourceUIState.LOADED, data: payload };
+      }
+    case 'ERROR':
+      return { ...state, uiState: ResourceUIState.ERROR };
+    default:
+      return state;
+  }
+};
+
+const createInitialState = <T>(manual: boolean): State<T> => ({
+  uiState: manual ? ResourceUIState.LOADED : ResourceUIState.LOADING,
+  data: undefined,
+});
 
 const useApi = <Data, A>(
   apiCall: (params: A) => AxiosPromise<Data>,
   params: A,
-  fetchOnMount = true,
-): [Status<Data>, () => void] => {
-  const [uiState, setUiState] = React.useState<ResourceUIState>(ResourceUIState.LOADING);
-  const [error, setError] = React.useState('');
-  const [data, setData] = React.useState<Data>();
-  const [refetch, setRefetch] = React.useState(true);
-  const didMountRef = React.useRef(fetchOnMount);
+  manual = false,
+): [State<Data>, () => void] => {
+  const [state, dispatch] = React.useReducer(reducer, createInitialState<Data>(manual));
+
+  const fetchData = async () => {
+    dispatch({ type: 'REQUEST' });
+    try {
+      const { data } = await apiCall(params);
+      dispatch({ type: 'SUCCESS', payload: data });
+    } catch (e) {
+      console.error(e);
+      console.error(e.response.data);
+      dispatch({ type: 'ERROR' });
+    }
+  };
+
+  const stringifiedParams = typeof params === 'string' ? params : JSON.stringify(params);
 
   React.useEffect(() => {
-    const fetchData = async () => {
-      setUiState(ResourceUIState.LOADING);
-      setError('');
-      try {
-        const { data } = await apiCall(params);
-        setData(data);
-        if (data instanceof Array && !data.length) {
-          setUiState(ResourceUIState.EMPTY);
-        } else {
-          setUiState(ResourceUIState.LOADED);
-        }
-      } catch (e) {
-        console.error(e);
-        console.error(e.response.data);
-        setUiState(ResourceUIState.ERROR);
-        setError(e.response.data);
-      }
-    };
-
-    if (didMountRef.current) {
+    if (!manual) {
       fetchData();
-      didMountRef.current = true;
     }
-  }, [apiCall, params, refetch]);
-  return [{ data, uiState, error }, () => setRefetch(!refetch)];
+  }, [apiCall, stringifiedParams]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const refetch = React.useCallback(
+    () => {
+      fetchData();
+    },
+    [params, stringifiedParams], // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  return [state as State<Data>, refetch];
 };
 
 export default useApi;

@@ -5,7 +5,7 @@ import { uniqueNamesGenerator, Config, starWars } from 'unique-names-generator';
 import _ from 'lodash';
 import PageSection from '../ui/PageSection';
 import { ErrorState, LoadingState } from '../ui/uiState';
-import { createCluster } from '../../api/clusters';
+import { postCluster } from '../../api/clusters';
 import useApi from '../../api/useApi';
 import { ResourceUIState } from '../../types';
 
@@ -18,9 +18,17 @@ const namesConfig: Config = {
 };
 
 const NewCluster: React.FC = () => {
-  // const generateName = useCallback(() => _.kebabCase(uniqueNamesGenerator(namesConfig)), []);
-  const name = React.useRef(_.kebabCase(uniqueNamesGenerator(namesConfig)));
-  const [{ data: cluster, uiState }, retry] = useApi(createCluster, { name: name.current });
+  const nameRef = React.useRef(_.kebabCase(uniqueNamesGenerator(namesConfig)));
+  const [{ data: cluster, uiState }, createCluster] = useApi(
+    postCluster,
+    { name: nameRef.current },
+    true,
+  );
+
+  // useEffect(() => {
+  //   createCluster({})
+  // })
+
   // const [uiState, setUiState] = React.useState('loading');
   // const [cluster, setCluster] = React.useState<Cluster>();
 
@@ -54,7 +62,11 @@ const NewCluster: React.FC = () => {
 
   const errorState = (
     <PageSection variant={PageSectionVariants.light} isMain>
-      <ErrorState title={'Failed to create new cluster'} fetchData={retry} actions={[cancel]} />
+      <ErrorState
+        title={'Failed to create new cluster'}
+        fetchData={createCluster}
+        actions={[cancel]}
+      />
     </PageSection>
   );
   const loadingState = (

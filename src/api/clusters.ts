@@ -2,7 +2,7 @@ import axios, { AxiosPromise } from 'axios';
 import { Cluster, ClusterCreateParams, Host } from './types';
 import { API_ROOT } from '.';
 
-export const createCluster = (params: ClusterCreateParams): AxiosPromise<Cluster> =>
+export const postCluster = (params: ClusterCreateParams): AxiosPromise<Cluster> =>
   axios.post(`${API_ROOT}/clusters`, params);
 
 export const getCluster = (id: string): AxiosPromise<Cluster> =>
