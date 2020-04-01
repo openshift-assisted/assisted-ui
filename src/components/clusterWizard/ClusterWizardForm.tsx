@@ -28,6 +28,7 @@ import GridGap from '../ui/GridGap';
 import { fetchHostsAsync } from '../../actions/hosts';
 import { Cluster } from '../../api/types';
 import { getHostsTableRows } from '../../selectors/clusters';
+import { Link } from 'react-router-dom';
 
 interface ClusterWizardFormProps {
   cluster: Cluster;
@@ -133,7 +134,7 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, fetchHos
                 <GridItem span={12} lg={10} xl={6}>
                   <GridGap>
                     <TextContent>
-                      <Text component="h2">Network</Text>
+                      <Text component="h2">Networking</Text>
                     </TextContent>
                     <InputField
                       label="API Virtual IP"
@@ -163,7 +164,12 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, fetchHos
             >
               Create cluster
             </ToolbarButton>
-            <ToolbarButton variant={ButtonVariant.secondary}>Cancel</ToolbarButton>
+            <ToolbarButton
+              variant={ButtonVariant.secondary}
+              component={(props) => <Link to="/clusters" {...props} />}
+            >
+              Cancel
+            </ToolbarButton>
             {isSubmitting && <ToolbarText>Form is being submitted</ToolbarText>}
             {status.error && (
               <ToolbarText>
