@@ -15,7 +15,7 @@ import {
   getClustersUIState,
   getClusterTableRows,
 } from '../../selectors/clusters';
-import ClusterWizardToolbar from '../ClusterWizardToolbar';
+import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
 import { ToolbarButton } from '../ui/Toolbar';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';

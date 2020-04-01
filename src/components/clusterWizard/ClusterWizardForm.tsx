@@ -14,14 +14,14 @@ import {
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
-import ClusterWizardToolbar from '../ClusterWizardToolbar';
+import ClusterWizardToolbar from './ClusterWizardToolbar';
 import PageSection from '../ui/PageSection';
 import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import { InputField, TextAreaField } from '../ui/formik';
 import validationSchema from './validationSchema';
 import { ClusterDefinition } from '../../types/clusterDefinition';
 import { postInstallConfig } from '../../api/clusterDefinition';
-import HostsTable from '../HostsTable';
+import HostsTable from './HostsTable';
 import { ResourceListUIState } from '../../types';
 import { RootState } from '../../store/rootReducer';
 import GridGap from '../ui/GridGap';

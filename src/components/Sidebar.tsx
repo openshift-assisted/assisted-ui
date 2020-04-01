@@ -15,17 +15,10 @@ const Sidebar: React.FC = () => {
     <Nav aria-label="Cluster deployment wizard steps">
       <NavList>
         <NavItem key="nav-login" id="nav-login" isActive={pathname === '/'}>
-          <Link to="/">Login</Link>
+          <Link to="/login">Login</Link>
         </NavItem>
         <NavItem key="nav-clusters" id="nav-login" isActive={pathname.includes('/clusters')}>
           <Link to="/clusters">Clusters</Link>
-        </NavItem>
-        <NavItem
-          key="nav-bm-inventory"
-          id="nav-login"
-          isActive={pathname === '/baremetal-inventory'}
-        >
-          <Link to="/baremetal-inventory">Baremetal Inventory</Link>
         </NavItem>
       </NavList>
     </Nav>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { PageSectionVariants, Toolbar } from '@patternfly/react-core';
 
-import PageSection from './ui/PageSection';
+import PageSection from '../ui/PageSection';
 
 interface Props {
   children: React.ReactNode;

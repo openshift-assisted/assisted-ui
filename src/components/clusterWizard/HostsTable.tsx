@@ -1,11 +1,11 @@
 import React from 'react';
 import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
-import { HostTableRows } from '../types/hosts';
-import { EmptyState, ErrorState, LoadingState } from './ui/uiState';
-import { getColSpanRow } from './ui/table/utils';
-import { ResourceListUIState } from '../types';
+import { HostTableRows } from '../../types/hosts';
+import { EmptyState, ErrorState, LoadingState } from '../ui/uiState';
+import { getColSpanRow } from '../ui/table/utils';
+import { ResourceListUIState } from '../../types';
 import { useSelector } from 'react-redux';
-import { getHostsError } from '../selectors/hosts';
+import { getHostsError } from '../../selectors/hosts';
 
 type Props = {
   hostRows: HostTableRows;

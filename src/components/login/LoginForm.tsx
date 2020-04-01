@@ -10,7 +10,7 @@ import {
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
-import ClusterWizardToolbar from '../ClusterWizardToolbar';
+import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
 import RedHatAccountFields from './RedHatAccountFields';
 import PageSection from '../ui/PageSection';
 import PullSecretFields from './PullSecretFields';

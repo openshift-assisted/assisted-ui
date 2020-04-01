@@ -2,15 +2,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { PageSectionVariants, Toolbar, TextVariants } from '@patternfly/react-core';
 
-import { getHostTableRows, getHostsUIState } from '../selectors/hosts';
-import { RootState } from '../store/rootReducer';
-import PageSection from './ui/PageSection';
+import { getHostTableRows, getHostsUIState } from '../../selectors/hosts';
+import { RootState } from '../../store/rootReducer';
+import PageSection from '../ui/PageSection';
 import HostsTable from './HostsTable';
-import { HostTableRows } from '../types/hosts';
+import { HostTableRows } from '../../types/hosts';
 import ClusterWizardToolbar from './ClusterWizardToolbar';
-import { ToolbarButton, ToolbarText } from './ui/Toolbar';
-import { ResourceListUIState } from '../types';
-import { fetchHostsAsync } from '../actions/hosts';
+import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
+import { ResourceListUIState } from '../../types';
+import { fetchHostsAsync } from '../../actions/hosts';
 
 interface BareMetalInventoryProps {
   hostRows: HostTableRows;

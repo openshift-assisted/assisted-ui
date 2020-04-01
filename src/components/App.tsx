@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router, Switch, Route } from 'react-router-dom';
+import { Router, Switch, Route, Redirect } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { Page } from '@patternfly/react-core';
 import { store } from '../store';
@@ -11,7 +11,6 @@ import LoginForm from './login/LoginForm';
 import Clusters from './clusters/Clusters';
 import NewCluster from './clusters/NewCluster';
 import ClusterPage from './clusters/ClusterPage';
-import BaremetalInventory from './BaremetalInventory';
 
 import '../styles/index.css';
 
@@ -29,8 +28,8 @@ const App: React.FC = () => (
           <Route path="/clusters/new" component={NewCluster} />
           <Route path={`/clusters/:clusterId`} component={ClusterPage} />
           <Route path="/clusters" component={Clusters} />
-          <Route path="/baremetal-inventory" component={BaremetalInventory} />
-          <Route path="/" component={LoginForm} />
+          <Route path="/login" component={LoginForm} />
+          <Redirect to="/clusters" />
         </Switch>
       </Page>
     </Router>
