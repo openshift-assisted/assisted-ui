@@ -66,15 +66,19 @@ const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant 
 
   const getRows = () => {
     const columnCount = columns.length;
+    console.log('UISTATE', uiState);
     switch (uiState) {
-      case ResourceUIState.LOADING:
-        return getColSpanRow(loadingState, columnCount);
+      // case ResourceUIState.LOADING:
+      //   return getColSpanRow(loadingState, columnCount);
       case ResourceUIState.ERROR:
         return getColSpanRow(errorState, columnCount);
-      case ResourceUIState.EMPTY:
-        return getColSpanRow(emptyState, columnCount);
+      // case ResourceUIState.EMPTY:
+      //   return getColSpanRow(emptyState, columnCount);
       default:
-        return hostRows;
+        if (hostRows.length) {
+          return hostRows;
+        }
+        return getColSpanRow(emptyState, columnCount);
     }
   };
 
