@@ -1,6 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { TableVariant } from '@patternfly/react-table';
 import { Formik, FormikHelpers, validateYupSchema, yupToFormErrors } from 'formik';
 import {
   Form,
@@ -10,7 +8,6 @@ import {
   ButtonVariant,
   Grid,
   GridItem,
-  Button,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
@@ -21,25 +18,15 @@ import { InputField, TextAreaField } from '../ui/formik';
 import validationSchema from './validationSchema';
 import { ClusterDefinition } from '../../types/clusterDefinition';
 import { postInstallConfig } from '../../api/clusterDefinition';
-import HostsTable from './HostsTable';
-import { ResourceUIState } from '../../types';
-import { RootState } from '../../store/rootReducer';
 import GridGap from '../ui/GridGap';
-import { fetchHostsAsync } from '../../actions/hosts';
 import { Cluster } from '../../api/types';
-import { getHostsTableRows } from '../../selectors/clusters';
 import { Link } from 'react-router-dom';
 
 interface ClusterWizardFormProps {
   cluster: Cluster;
-  fetchHosts: () => void;
 }
 
-const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, fetchHosts }) => {
-  React.useEffect(() => {
-    fetchHosts();
-  }, [fetchHosts]);
-
+const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster }) => {
   const initialValues: ClusterDefinition = {
     clusterName: cluster.name || '',
     DNSDomain: '',
@@ -82,8 +69,6 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, fetchHos
       });
   };
 
-  const hostRows = getHostsTableRows(cluster);
-  const hostsUIState = cluster.hosts?.length ? ResourceUIState.LOADED : ResourceUIState.EMPTY;
   return (
     <Formik
       initialValues={initialValues}
@@ -97,6 +82,7 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, fetchHos
             <Form onSubmit={handleSubmit}>
               <Grid gutter="md">
                 <GridItem span={12} lg={10} xl={6}>
+                  {/* TODO(jtomasek): remove this if we're not putting full width content here (e.g. hosts table)*/}
                   <GridGap>
                     <TextContent>
                       <Text component="h1">Configure a bare metal OpenShift cluster</Text>
@@ -109,28 +95,6 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, fetchHos
                     />
                     <InputField label="Base DNS domain" name="DNSDomain" isRequired />
                     <InputField label="OpenShift Version" name="openshiftVersion" isRequired />
-                  </GridGap>
-                </GridItem>
-              </Grid>
-              <TextContent>
-                <Text component="h2">Bare metal hosts</Text>
-                <Text component="p">
-                  Boot the discovery ISO on hosts that are connected to the internet. At least 3
-                  hosts are isRequired to create a cluster.
-                </Text>
-                <Text component="p">
-                  <Button variant={ButtonVariant.secondary}>Download discovery ISO</Button>
-                </Text>
-              </TextContent>
-              <HostsTable
-                hostRows={hostRows}
-                uiState={hostsUIState}
-                fetchHosts={fetchHosts}
-                variant={TableVariant.compact}
-              />
-              <Grid gutter="md">
-                <GridItem span={12} lg={10} xl={6}>
-                  <GridGap>
                     <TextContent>
                       <Text component="h2">Networking</Text>
                     </TextContent>
@@ -181,8 +145,4 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, fetchHos
   );
 };
 
-const mapStateToProps = (state: RootState) => ({});
-
-export default connect(mapStateToProps, {
-  fetchHosts: fetchHostsAsync,
-})(ClusterWizardForm);
+export default ClusterWizardForm;

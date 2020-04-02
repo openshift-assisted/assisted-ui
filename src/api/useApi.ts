@@ -2,6 +2,8 @@ import React from 'react';
 import { AxiosPromise } from 'axios';
 import { ResourceUIState } from '../types';
 
+type ApiCall<P, T> = (params?: P) => AxiosPromise<T>;
+
 type State<T> = {
   data?: T;
   uiState: ResourceUIState;
@@ -10,6 +12,16 @@ type State<T> = {
 type Action<T> = {
   type: 'REQUEST' | 'SUCCESS' | 'ERROR';
   payload?: T;
+};
+
+type Config = {
+  manual?: boolean;
+  initialUIState?: ResourceUIState;
+};
+
+type Cfg = {
+  manual: boolean;
+  initialUIState: ResourceUIState;
 };
 
 const reducer = <T>(state: State<T>, { type, payload }: Action<T>) => {
@@ -29,41 +41,47 @@ const reducer = <T>(state: State<T>, { type, payload }: Action<T>) => {
   }
 };
 
-const createInitialState = <T>(manual: boolean): State<T> => ({
-  uiState: manual ? ResourceUIState.LOADED : ResourceUIState.LOADING,
+const createInitialState = <T>(config: Cfg): State<T> => ({
+  uiState: config.initialUIState,
   data: undefined,
 });
 
-const useApi = <Data, A>(
-  apiCall: (params: A) => AxiosPromise<Data>,
-  params: A,
-  manual = false,
-): [State<Data>, () => void] => {
-  const [state, dispatch] = React.useReducer(reducer, createInitialState<Data>(manual));
+const fetchData = async <P, D>(
+  dispatch: React.Dispatch<Action<D>>,
+  apiCall: ApiCall<P, D>,
+  params?: P,
+) => {
+  dispatch({ type: 'REQUEST' });
+  try {
+    const { data } = await apiCall(params);
+    dispatch({ type: 'SUCCESS', payload: data });
+  } catch (e) {
+    console.error(e);
+    console.error('Response data:', e.response?.data);
+    dispatch({ type: 'ERROR' });
+  }
+};
 
-  const fetchData = async () => {
-    dispatch({ type: 'REQUEST' });
-    try {
-      const { data } = await apiCall(params);
-      dispatch({ type: 'SUCCESS', payload: data });
-    } catch (e) {
-      console.error(e);
-      console.error(e.response.data);
-      dispatch({ type: 'ERROR' });
-    }
-  };
+const useApi = <Data, P>(
+  apiCall: ApiCall<P, Data>,
+  params?: P,
+  config?: Config,
+): [State<Data>, (params?: P) => void] => {
+  const cfg = { manual: false, initialUIState: ResourceUIState.LOADING, ...config };
+
+  const [state, dispatch] = React.useReducer(reducer, createInitialState<Data>(cfg));
 
   const stringifiedParams = typeof params === 'string' ? params : JSON.stringify(params);
 
   React.useEffect(() => {
-    if (!manual) {
-      fetchData();
+    if (!cfg.manual) {
+      fetchData(dispatch, apiCall, params);
     }
   }, [apiCall, stringifiedParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const refetch = React.useCallback(
-    () => {
-      fetchData();
+    (newParams?: P) => {
+      fetchData(dispatch, apiCall, newParams || params);
     },
     [params, stringifiedParams], // eslint-disable-line react-hooks/exhaustive-deps
   );

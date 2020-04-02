@@ -3,10 +3,10 @@
 import { Cluster, Host } from '../api/types';
 
 export enum ResourceUIState {
-  LOADING,
-  ERROR,
-  EMPTY,
-  LOADED,
+  LOADING = 'LOADING',
+  ERROR = 'ERROR',
+  EMPTY = 'EMPTY',
+  LOADED = 'LOADED',
 }
 
 export type ApiResource = Host | Cluster;

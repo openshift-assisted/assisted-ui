@@ -1,21 +1,19 @@
 import React from 'react';
 import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
-import { HostTableRows } from '../../types/hosts';
 import { EmptyState, ErrorState, LoadingState } from '../ui/uiState';
 import { getColSpanRow } from '../ui/table/utils';
 import { ResourceUIState } from '../../types';
-import { useSelector } from 'react-redux';
-import { getHostsError } from '../../selectors/hosts';
+import { Host } from '../../api/types';
+import { Button, ButtonVariant } from '@patternfly/react-core';
 
 type Props = {
-  hostRows: HostTableRows;
+  hosts?: Host[];
   uiState: ResourceUIState;
   fetchHosts: () => void;
   variant?: TableVariant;
 };
 
-const HostsTable: React.FC<Props> = ({ hostRows, uiState, fetchHosts, variant }) => {
-  const error = useSelector(getHostsError);
+const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant }) => {
   // const headerStyle = {
   //   position: 'sticky',
   //   top: 0,
@@ -38,18 +36,32 @@ const HostsTable: React.FC<Props> = ({ hostRows, uiState, fetchHosts, variant })
     { title: 'Role', ...headerConfig, ...columnConfig },
     { title: 'Serial Number', ...headerConfig, ...columnConfig },
     { title: 'Status', ...headerConfig, ...columnConfig },
+    { title: 'Status Info', ...headerConfig, ...columnConfig },
     { title: 'CPU', ...headerConfig, ...columnConfig },
     { title: 'Memory', ...headerConfig, ...columnConfig },
     { title: 'Disk', ...headerConfig, ...columnConfig },
   ];
 
+  const hostToHostTableRow = (host: Host): string[] => {
+    const { id, status, statusInfo } = host;
+    return [id, 'Master', 'SN00000', status, statusInfo || '-', '-', '-', '-'];
+  };
+
+  // const hostRows = React.useMemo(() => hosts.map(hostToHostTableRow), [hosts]);
+  const hostRows = hosts.map(hostToHostTableRow);
+
   const emptyState = (
     <EmptyState
       title="No hosts connected yet."
       content="Connect at least 3 hosts to your cluster to pool together resources and start running workloads."
+      primaryAction={
+        <Button variant={ButtonVariant.primary} onClick={() => alert('Hi!')}>
+          Download discovery ISO
+        </Button>
+      }
     />
   );
-  const errorState = <ErrorState title={error} fetchData={fetchHosts} />;
+  const errorState = <ErrorState title="Failed to fetch hosts" fetchData={fetchHosts} />;
   const loadingState = <LoadingState />;
 
   const getRows = () => {

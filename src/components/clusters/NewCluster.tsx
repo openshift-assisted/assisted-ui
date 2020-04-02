@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { PageSectionVariants, ButtonVariant, Button } from '@patternfly/react-core';
 import { uniqueNamesGenerator, Config, starWars } from 'unique-names-generator';
@@ -18,37 +18,14 @@ const namesConfig: Config = {
 };
 
 const NewCluster: React.FC = () => {
-  const nameRef = React.useRef(_.kebabCase(uniqueNamesGenerator(namesConfig)));
-  const [{ data: cluster, uiState }, createCluster] = useApi(
-    postCluster,
-    { name: nameRef.current },
-    true,
-  );
+  const [{ data: cluster, uiState }, createCluster] = useApi(postCluster, undefined, {
+    manual: true,
+  });
 
-  // useEffect(() => {
-  //   createCluster({})
-  // })
-
-  // const [uiState, setUiState] = React.useState('loading');
-  // const [cluster, setCluster] = React.useState<Cluster>();
-
-  // const createClusterAsync = async () => {
-  //   try {
-  //     setUiState('loading');
-  //     const name = _.kebabCase(uniqueNamesGenerator(namesConfig));
-  //     const { data } = await createCluster({ name });
-  //     setCluster(data);
-  //     setUiState('done');
-  //   } catch (e) {
-  //     setUiState('error');
-  //     console.error(e);
-  //     console.error(e.response?.data);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   createClusterAsync();
-  // }, []);
+  React.useEffect(() => {
+    const name = _.kebabCase(uniqueNamesGenerator(namesConfig));
+    createCluster({ name });
+  }, [createCluster]);
 
   const cancel = (
     <Button
@@ -64,7 +41,7 @@ const NewCluster: React.FC = () => {
     <PageSection variant={PageSectionVariants.light} isMain>
       <ErrorState
         title={'Failed to create new cluster'}
-        fetchData={createCluster}
+        // fetchData={() => createCluster()}
         actions={[cancel]}
       />
     </PageSection>

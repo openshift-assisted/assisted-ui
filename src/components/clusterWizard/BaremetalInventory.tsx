@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import {
   ButtonVariant,
   Breadcrumb,
@@ -10,51 +9,27 @@ import {
   TextContent,
 } from '@patternfly/react-core';
 
-import { getHostTableRows, getHostsUIState } from '../../selectors/hosts';
-import { RootState } from '../../store/rootReducer';
 import PageSection from '../ui/PageSection';
 import HostsTable from './HostsTable';
-import { HostTableRows } from '../../types/hosts';
 import ClusterWizardToolbar from './ClusterWizardToolbar';
 import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
-import { ResourceUIState } from '../../types';
-import { fetchHostsAsync } from '../../actions/hosts';
 import { Cluster } from '../../api/types';
 import { Link } from 'react-router-dom';
 import { WizardStep } from '../../types/wizard';
 import { getClusterHosts } from '../../api/clusters';
 import useApi from '../../api/useApi';
+import { ResourceUIState } from '../../types';
 
 interface BareMetalInventoryProps {
   cluster: Cluster;
   setStep: React.Dispatch<React.SetStateAction<WizardStep>>;
-  hostRows: HostTableRows;
-  hostsUIState: ResourceUIState;
 }
 
-const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
-  cluster,
-  setStep,
-  hostRows,
-  hostsUIState,
-}) => {
-  const [{ data: hosts, uiState }, fetchHosts] = useApi(getClusterHosts, cluster.id);
-  // const fetchHosts = useApi(() => getClusterHosts(cluster.id));
-  // console.log(state);
-
-  // const [uiState, setUIState] = React.useState('loading');
-  // const [error, setError] = React.useState('');
-  // React.useEffect(() => {
-  //   setUIState('loading');
-  //   setError('');
-  //   try {
-  //     const { data } = await getClusterHosts(cluster.id);
-  //     setUIState('done');
-  //   } catch (e) {
-  //     console.error(e);
-  //     return dispatch(fetchHosts.failure('Failed to fetch hosts'));
-  //   }
-  // }, [fetchHosts]);
+const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster, setStep }) => {
+  const [{ data: hosts, uiState }, fetchHosts] = useApi(getClusterHosts, cluster.id, {
+    manual: true,
+    initialUIState: cluster.hosts?.length ? ResourceUIState.LOADED : ResourceUIState.EMPTY,
+  });
 
   return (
     <>
@@ -76,7 +51,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
         </TextContent>
       </PageSection>
       <PageSection variant={PageSectionVariants.light} isMain>
-        <HostsTable hostRows={hostRows} uiState={uiState} fetchHosts={fetchHosts} />
+        <HostsTable hosts={hosts || cluster.hosts} uiState={uiState} fetchHosts={fetchHosts} />
       </PageSection>
       <ClusterWizardToolbar>
         <ToolbarButton
@@ -88,10 +63,12 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
           )}
         ></ToolbarButton>
         <ToolbarButton variant={ButtonVariant.primary}>Download discovery ISO</ToolbarButton>
+        <ToolbarButton variant={ButtonVariant.secondary} onClick={() => fetchHosts()}>
+          Reload Hosts
+        </ToolbarButton>
         <ToolbarButton
           variant={ButtonVariant.secondary}
-          // onClick={() => setStep(WizardStep.ClusterConfiguration)}
-          onClick={() => fetchHosts()}
+          onClick={() => setStep(WizardStep.ClusterConfiguration)}
         >
           Next
         </ToolbarButton>
@@ -103,9 +80,4 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({
   );
 };
 
-const mapStateToProps = (state: RootState) => ({
-  hostRows: getHostTableRows(state),
-  hostsUIState: getHostsUIState(state),
-});
-
-export default connect(mapStateToProps, { fetchHosts: fetchHostsAsync })(BaremetalInventory);
+export default BaremetalInventory;
