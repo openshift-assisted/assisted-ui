@@ -169,7 +169,7 @@
         }
       }
     },
-    "/clusters/{clusterId}/actions/download": {
+    "/clusters/{clusterId}/downloads/image": {
       "get": {
         "tags": ["inventory"],
         "summary": "Download OpenShift per-cluster discovery ISO",
@@ -215,6 +215,38 @@
           },
           "400": {
             "description": "Invalid parameters"
+          },
+          "404": {
+            "description": "Cluster not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clusters/{clusterId}/downloads/kubeconfig": {
+      "get": {
+        "tags": ["inventory"],
+        "summary": "Download the kubeconfig file for the specified cluster",
+        "operationId": "DownloadClusterKubeconfig",
+        "produces": ["text/x-yaml"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "clusterId",
+            "description": "The ID of the cluster whose kubeconfig to download",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The kubeconfig file",
+            "schema": {
+              "type": "file"
+            }
           },
           "404": {
             "description": "Cluster not found"
@@ -525,7 +557,7 @@
         }
       }
     },
-    "/clusters/{clusterId}/hosts/{hostId}/next-steps": {
+    "/clusters/{clusterId}/hosts/{hostId}/instructions": {
       "get": {
         "tags": ["inventory"],
         "summary": "Retrieve the next operations that the agent need to perform",
@@ -550,7 +582,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Steps information",
+            "description": "Instruction information",
             "schema": {
               "$ref": "#/definitions/steps"
             }
@@ -562,12 +594,10 @@
             "description": "Internal server error"
           }
         }
-      }
-    },
-    "/clusters/{clusterId}/hosts/{hostId}/next-steps/reply": {
+      },
       "post": {
         "tags": ["inventory"],
-        "summary": "Post the result of the required operations from the server",
+        "summary": "Post the result of the operations from the server",
         "operationId": "PostStepReply",
         "parameters": [
           {
@@ -652,7 +682,7 @@
         },
         {
           "type": "object",
-          "required": ["kind", "status", "statusInfo", "connectivity", "hardwareInfo"],
+          "required": ["kind", "status"],
           "properties": {
             "clusterId": {
               "type": "string",
@@ -795,26 +825,52 @@
       "required": ["name"],
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "OpenShift cluster name"
         },
         "openshiftVersion": {
           "type": "string",
-          "pattern": "^4\\.\\d$"
+          "pattern": "^4\\.\\d$",
+          "description": "OpenShift cluster version"
         },
         "baseDnsDomain": {
-          "type": "string"
+          "type": "string",
+          "description": "The base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name."
+        },
+        "clusterNetworkCIDR": {
+          "type": "string",
+          "description": "IP address block from which Pod IPs are allocated This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.",
+          "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}\\/[0-9]|[1-2][0-9]|3[0-2]?$"
+        },
+        "clusterNetworkHostPrefix": {
+          "type": "integer",
+          "description": "The subnet prefix length to assign to each individual node. For example, if clusterNetworkHostPrefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "serviceNetworkCIDR": {
+          "type": "string",
+          "description": "The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.",
+          "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}\\/[0-9]|[1-2][0-9]|3[0-2]?$"
         },
         "apiVip": {
           "type": "string",
-          "format": "hostname"
+          "format": "hostname",
+          "description": "Virtual IP used to reach the OpenShift cluster API"
         },
         "dnsVip": {
           "type": "string",
-          "format": "hostname"
+          "format": "hostname",
+          "description": "Virtual IP used internally by the cluster for automating internal DNS requirements"
         },
         "ingressVip": {
           "type": "string",
-          "format": "hostname"
+          "format": "hostname",
+          "description": "Virtual IP used for cluster ingress traffic"
+        },
+        "pullSecret": {
+          "type": "string",
+          "description": "The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site"
         },
         "sshPublicKey": {
           "type": "string",
@@ -826,26 +882,52 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "OpenShift cluster name"
         },
         "openshiftVersion": {
           "type": "string",
-          "pattern": "^4\\.\\d$"
+          "pattern": "^4\\.\\d$",
+          "description": "OpenShift cluster version"
         },
         "baseDnsDomain": {
-          "type": "string"
+          "type": "string",
+          "description": "The base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name."
+        },
+        "clusterNetworkCIDR": {
+          "type": "string",
+          "description": "IP address block from which Pod IPs are allocated This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.",
+          "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}\\/[0-9]|[1-2][0-9]|3[0-2]?$"
+        },
+        "clusterNetworkHostPrefix": {
+          "type": "integer",
+          "description": "The subnet prefix length to assign to each individual node. For example, if clusterNetworkHostPrefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "serviceNetworkCIDR": {
+          "type": "string",
+          "description": "The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.",
+          "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}\\/[0-9]|[1-2][0-9]|3[0-2]?$"
         },
         "apiVip": {
           "type": "string",
-          "format": "hostname"
+          "format": "hostname",
+          "description": "Virtual IP used to reach the OpenShift cluster API"
         },
         "dnsVip": {
           "type": "string",
-          "format": "hostname"
+          "format": "hostname",
+          "description": "Virtual IP used internally by the cluster for automating internal DNS requirements"
         },
         "ingressVip": {
           "type": "string",
-          "format": "hostname"
+          "format": "hostname",
+          "description": "Virtual IP used for cluster ingress traffic"
+        },
+        "pullSecret": {
+          "type": "string",
+          "description": "The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site"
         },
         "sshPublicKey": {
           "type": "string",
@@ -881,26 +963,53 @@
           "required": ["status"],
           "properties": {
             "name": {
-              "type": "string"
+              "type": "string",
+              "description": "OpenShift cluster name"
             },
             "openshiftVersion": {
               "type": "string",
-              "pattern": "^4\\.\\d$"
+              "pattern": "^4\\.\\d$",
+              "description": "OpenShift cluster version"
             },
             "baseDnsDomain": {
-              "type": "string"
+              "type": "string",
+              "description": "The base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name."
+            },
+            "clusterNetworkCIDR": {
+              "type": "string",
+              "description": "IP address block from which Pod IPs are allocated This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.",
+              "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}\\/[0-9]|[1-2][0-9]|3[0-2]?$"
+            },
+            "clusterNetworkHostPrefix": {
+              "type": "integer",
+              "description": "The subnet prefix length to assign to each individual node. For example, if clusterNetworkHostPrefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.",
+              "minimum": 1,
+              "maximum": 32
+            },
+            "serviceNetworkCIDR": {
+              "type": "string",
+              "description": "The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.",
+              "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}\\/[0-9]|[1-2][0-9]|3[0-2]?$"
             },
             "apiVip": {
               "type": "string",
-              "format": "hostname"
+              "format": "hostname",
+              "description": "Virtual IP used to reach the OpenShift cluster API"
             },
             "dnsVip": {
               "type": "string",
-              "format": "hostname"
+              "format": "hostname",
+              "description": "Virtual IP used internally by the cluster for automating internal DNS requirements"
             },
             "ingressVip": {
               "type": "string",
-              "format": "hostname"
+              "format": "hostname",
+              "description": "Virtual IP used for cluster ingress traffic"
+            },
+            "pullSecret": {
+              "type": "string",
+              "x-go-custom-tag": "gorm:\"type:varchar(4096)\"",
+              "description": "The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site"
             },
             "sshPublicKey": {
               "type": "string",
@@ -920,6 +1029,11 @@
               }
             },
             "updatedAt": {
+              "type": "string",
+              "format": "date-time",
+              "x-go-custom-tag": "gorm:\"type:datetime\""
+            },
+            "createdAt": {
               "type": "string",
               "format": "date-time",
               "x-go-custom-tag": "gorm:\"type:datetime\""
