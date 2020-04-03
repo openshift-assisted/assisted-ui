@@ -19,6 +19,7 @@ import { WizardStep } from '../../types/wizard';
 import { getClusterHosts } from '../../api/clusters';
 import useApi from '../../api/useApi';
 import { ResourceUIState } from '../../types';
+import { DiscoveryImageModalButton } from './discoveryImageModal';
 
 interface BareMetalInventoryProps {
   cluster: Cluster;
@@ -62,7 +63,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster, setSte
             </Link>
           )}
         ></ToolbarButton>
-        <ToolbarButton variant={ButtonVariant.primary}>Download discovery ISO</ToolbarButton>
+        <DiscoveryImageModalButton ButtonComponent={ToolbarButton} />
         <ToolbarButton variant={ButtonVariant.secondary} onClick={() => fetchHosts()}>
           Reload Hosts
         </ToolbarButton>

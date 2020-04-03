@@ -4,7 +4,7 @@ import { EmptyState, ErrorState, LoadingState } from '../ui/uiState';
 import { getColSpanRow } from '../ui/table/utils';
 import { ResourceUIState } from '../../types';
 import { Host } from '../../api/types';
-import { Button, ButtonVariant } from '@patternfly/react-core';
+import { DiscoveryImageModalButton } from './discoveryImageModal';
 
 type Props = {
   hosts?: Host[];
@@ -54,11 +54,7 @@ const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant 
     <EmptyState
       title="No hosts connected yet."
       content="Connect at least 3 hosts to your cluster to pool together resources and start running workloads."
-      primaryAction={
-        <Button variant={ButtonVariant.primary} onClick={() => alert('Hi!')}>
-          Download discovery ISO
-        </Button>
-      }
+      primaryAction={<DiscoveryImageModalButton />}
     />
   );
   const errorState = <ErrorState title="Failed to fetch hosts" fetchData={fetchHosts} />;
@@ -66,7 +62,6 @@ const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant 
 
   const getRows = () => {
     const columnCount = columns.length;
-    console.log('UISTATE', uiState);
     switch (uiState) {
       // case ResourceUIState.LOADING:
       //   return getColSpanRow(loadingState, columnCount);
