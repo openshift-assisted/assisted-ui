@@ -40,7 +40,7 @@ export const getClusterHosts = (cluster: Cluster) => cluster.hosts || [];
 
 const hostToHostTableRow = (host: Host): string[] => {
   const { id, status, statusInfo } = host;
-  return [id, 'Master', 'SN00000', status, statusInfo, '-', '-', '-'];
+  return [id, 'Master', 'SN00000', status, statusInfo || '-', '-', '-', '-'];
 };
 
 export const getHostsTableRows = createSelector(

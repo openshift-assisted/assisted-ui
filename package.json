@@ -12,6 +12,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "@tippy.js/react": "^3.1.1",
+    "@types/file-saver": "^2.0.1",
     "@types/jest": "^24.0.0",
     "@types/lodash": "^4.14.121",
     "@types/node": "^12.0.0",
@@ -28,6 +29,7 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.0",
+    "file-saver": "^2.0.2",
     "formik": "^2.1.4",
     "lodash": "^4.17.15",
     "node-sass": "^4.13.1",
@@ -55,7 +57,7 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --color .",
     "test-suite": "babel-node node_modules/.bin/protractor integration_tests/protractor.conf.js",
     "webdriver-update": "webdriver-manager update",
-    "swagger": "npx sw2dts -o src/api/types.ts src/api/swagger.json"
+    "swagger": "npx sw2dts -w -o src/api/types.ts src/api/swagger.json"
   },
   "browserslist": [
     ">0.2%",
@@ -70,5 +72,5 @@
     "jasmine-reporters": "^2.3.2",
     "protractor": "^5.4.2"
   },
-  "proxy": "http://192.168.39.98:32079"
+  "proxy": "http://192.168.39.12:31939"
 }

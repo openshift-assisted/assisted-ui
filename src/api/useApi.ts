@@ -2,7 +2,7 @@ import React from 'react';
 import { AxiosPromise } from 'axios';
 import { ResourceUIState } from '../types';
 
-type ApiCall<P, T> = (params?: P) => AxiosPromise<T>;
+type ApiCall<P, T> = (params: P) => AxiosPromise<T>;
 
 type State<T> = {
   data?: T;
@@ -53,7 +53,8 @@ const fetchData = async <P, D>(
 ) => {
   dispatch({ type: 'REQUEST' });
   try {
-    const { data } = await apiCall(params);
+    const { data, ...rest } = await apiCall(params!); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+    console.log('rest', rest);
     dispatch({ type: 'SUCCESS', payload: data });
   } catch (e) {
     console.error(e);
