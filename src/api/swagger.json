@@ -210,7 +210,8 @@
           "200": {
             "description": "The ISO file",
             "schema": {
-              "type": "file"
+              "type": "string",
+              "format": "binary"
             }
           },
           "400": {
@@ -230,7 +231,7 @@
         "tags": ["inventory"],
         "summary": "Download the kubeconfig file for the specified cluster",
         "operationId": "DownloadClusterKubeconfig",
-        "produces": ["text/x-yaml"],
+        "produces": ["application/octet-stream"],
         "parameters": [
           {
             "in": "path",
@@ -245,7 +246,8 @@
           "200": {
             "description": "The kubeconfig file",
             "schema": {
-              "type": "file"
+              "type": "string",
+              "format": "binary"
             }
           },
           "404": {
@@ -708,7 +710,8 @@
               "$ref": "#/definitions/connectivity-report"
             },
             "hardware_info": {
-              "$ref": "#/definitions/introspection"
+              "x-go-custom-tag": "gorm:\"type:text\"",
+              "type": "string"
             },
             "role": {
               "type": "string",
@@ -731,7 +734,7 @@
     },
     "step-type": {
       "type": "string",
-      "enum": ["hardaware-info", "connectivity-check", "execute"]
+      "enum": ["hardware-info", "connectivity-check", "execute"]
     },
     "step": {
       "type": "object",

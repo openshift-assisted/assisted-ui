@@ -215,7 +215,7 @@ export interface Host {
     | 'installed';
   statusInfo?: string;
   connectivity?: ConnectivityReport;
-  hardware_info?: Introspection;
+  hardware_info?: string;
   role?: 'undefined' | 'master' | 'worker';
   updatedAt?: string; // date-time
 }
@@ -269,6 +269,6 @@ export interface StepReply {
   output?: string;
   error?: string;
 }
-export type StepType = 'hardaware-info' | 'connectivity-check' | 'execute';
+export type StepType = 'hardware-info' | 'connectivity-check' | 'execute';
 export type Steps = Step[];
 export type StepsReply = StepReply[];

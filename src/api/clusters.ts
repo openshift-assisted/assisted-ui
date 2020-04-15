@@ -32,7 +32,10 @@ export const getClusterDownloadsImage = ([id, params]: GetClusterDownloadsImageA
 > =>
   axios.get(`${API_ROOT}/clusters/${id}/downloads/image`, {
     params,
-    // responseType: 'blob',
+    responseType: 'blob',
+    onDownloadProgress: function (progressEvent) {
+      console.log('onDownloadProgress', progressEvent);
+    },
     headers: {
       accept: 'application/octet-stream',
       'Content-Disposition': 'attachment; filename="discovery.iso"; filename*="discovery.iso"',
