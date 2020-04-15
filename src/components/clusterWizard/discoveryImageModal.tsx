@@ -36,6 +36,7 @@ type DiscoveryImageModalProps = {
 
 export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeModal }) => {
   const { clusterId } = useParams();
+  const [submitting, setSubmitting] = React.useState(false);
 
   const [{ data, uiState }, downloadImage] = useApi(getClusterDownloadsImage, undefined, {
     manual: true,
@@ -62,8 +63,8 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
           variant="primary"
           href={`/api/bm-inventory/v1/clusters/${clusterId}/downloads/image`}
           component="a"
-          target="_blank"
-          // download
+          download="discovery.iso"
+          onClick={() => setSubmitting(true)}
         >
           Download discovery ISO
         </Button>,
@@ -74,39 +75,47 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
       isFooterLeftAligned
       isSmall
     >
-      <Formik
-        initialValues={{ proxyIp: '', proxyPort: '', sshPublicKey: '' }}
-        initialStatus={{ error: null }}
-        // validate={validate}
-        onSubmit={handleSubmit}
-      >
-        {({ handleSubmit, isSubmitting, isValid, submitForm, status }) => (
-          <Form onSubmit={handleSubmit}>
-            <TextContent>
-              <Text component="p">
-                Provide configuration for discovery image so the hosts which boot the image can
-                access the internet
-              </Text>
-            </TextContent>
-            <InputField
-              label="Proxy IP"
-              name="proxyIp"
-              helperText="The IP address of the HTTP proxy that agents should use to access the discovery service"
-            />
-            <InputField
-              label="Proxy port"
-              name="proxyPort"
-              helperText="The port of the HTTP proxy"
-            />
-            <InputField
-              label="SSH public key"
-              name="sshPublicKey"
-              helperText="SSH public key for debugging the installation"
-            />
-            <Button type="submit">Submit</Button>
-          </Form>
-        )}
-      </Formik>
+      {submitting ? (
+        <LoadingState />
+      ) : (
+        <Formik
+          initialValues={{ proxyIp: '', proxyPort: '', sshPublicKey: '' }}
+          initialStatus={{ error: null }}
+          // validate={validate}
+          onSubmit={handleSubmit}
+        >
+          {({ handleSubmit, isSubmitting, isValid, submitForm, status, values }) => (
+            <Form
+              action={`/api/bm-inventory/v1/clusters/${clusterId}/downloads/image`}
+              method="get"
+              onSubmit={handleSubmit}
+            >
+              <TextContent>
+                <Text component="p">
+                  Provide configuration for discovery image so the hosts which boot the image can
+                  access the internet
+                </Text>
+              </TextContent>
+              <InputField
+                label="Proxy IP"
+                name="proxyIp"
+                helperText="The IP address of the HTTP proxy that agents should use to access the discovery service"
+              />
+              <InputField
+                label="Proxy port"
+                name="proxyPort"
+                helperText="The port of the HTTP proxy"
+              />
+              <InputField
+                label="SSH public key"
+                name="sshPublicKey"
+                helperText="SSH public key for debugging the installation"
+              />
+              <Button type="submit">Submit</Button>
+            </Form>
+          )}
+        </Formik>
+      )}
     </Modal>
   );
 };
