@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Modal,
   Button,
@@ -7,20 +7,16 @@ import {
   TextContent,
   Text,
   ModalBoxFooter,
-  Bullseye,
-  EmptyState,
-  EmptyStateVariant,
-  EmptyStateSecondaryActions,
-  EmptyStateBody,
 } from '@patternfly/react-core';
-import { saveAs } from 'file-saver';
+// import { saveAs } from 'file-saver';
 import { ToolbarButton } from '../ui/Toolbar';
 import { InputField } from '../ui/formik';
 import { Formik, FormikHelpers } from 'formik';
-import useApi from '../../api/useApi';
+// import useApi from '../../api/useApi';
 import { getClusterDownloadsImage, GetClusterDownloadsImageParams } from '../../api/clusters';
-import { ResourceUIState } from '../../types';
+// import { ResourceUIState } from '../../types';
 import { useParams } from 'react-router-dom';
+import { LoadingState } from '../ui/uiState';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -56,7 +52,7 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
   // console.log('DATA', data);
   // console.log('DATATYPE', typeof data);
 
-  // useEffect(() => {
+  // React.useEffect(() => {
   //   if (data) saveAs(data, 'discoveryImage.iso');
   // }, [data]);
 
@@ -106,18 +102,14 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
             onSubmit={() => handleSubmit()}
           >
             {isSubmitting ? (
-              <Bullseye>
-                <EmptyState variant={EmptyStateVariant.small}>
-                  <EmptyStateBody>
-                    Discovery image is being prepared, the download will start in a moment.
-                  </EmptyStateBody>
-                  <EmptyStateSecondaryActions>
-                    <Button variant={ButtonVariant.secondary} onClick={closeModal}>
-                      Close
-                    </Button>
-                  </EmptyStateSecondaryActions>
-                </EmptyState>
-              </Bullseye>
+              <LoadingState
+                content="Discovery image is being prepared, the download will start in a moment."
+                secondaryActions={[
+                  <Button key="close" variant={ButtonVariant.secondary} onClick={closeModal}>
+                    Close
+                  </Button>,
+                ]}
+              />
             ) : (
               <>
                 <TextContent>
