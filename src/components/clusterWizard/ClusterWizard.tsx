@@ -13,7 +13,7 @@ const ClusterWizard: React.FC<Props> = ({ cluster }) => {
 
   switch (step) {
     case WizardStep.ClusterConfiguration:
-      return <ClusterWizardForm cluster={cluster} />;
+      return <ClusterWizardForm cluster={cluster} setStep={setStep} />;
     default:
       return <BaremetalInventory cluster={cluster} setStep={setStep} />;
   }

@@ -216,6 +216,7 @@ export interface Host {
   statusInfo?: string;
   connectivity?: ConnectivityReport;
   hardwareInfo?: string;
+  hardware_info?: string;
   role?: 'undefined' | 'master' | 'worker';
   updatedAt?: string; // date-time
 }

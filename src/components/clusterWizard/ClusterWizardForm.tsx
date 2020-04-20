@@ -21,12 +21,14 @@ import { postInstallConfig } from '../../api/clusterDefinition';
 import GridGap from '../ui/GridGap';
 import { Cluster } from '../../api/types';
 import { Link } from 'react-router-dom';
+import { WizardStep } from '../../types/wizard';
 
 interface ClusterWizardFormProps {
   cluster: Cluster;
+  setStep: React.Dispatch<React.SetStateAction<WizardStep>>;
 }
 
-const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster }) => {
+const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep }) => {
   const initialValues: ClusterDefinition = {
     clusterName: cluster.name || '',
     DNSDomain: '',
@@ -120,11 +122,17 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster }) => {
           </PageSection>
           <ClusterWizardToolbar>
             <ToolbarButton
+              variant={ButtonVariant.secondary}
+              onClick={() => setStep(WizardStep.BaremetalInventory)}
+            >
+              Back
+            </ToolbarButton>
+            <ToolbarButton
               variant="primary"
               onClick={submitForm}
               isDisabled={isSubmitting || !isValid}
             >
-              Create cluster
+              Deploy cluster
             </ToolbarButton>
             <ToolbarButton
               variant={ButtonVariant.secondary}

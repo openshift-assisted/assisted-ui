@@ -32,6 +32,13 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster, setSte
     initialUIState: cluster.hosts?.length ? ResourceUIState.LOADED : ResourceUIState.EMPTY,
   });
 
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchHosts();
+    }, 5000);
+    return () => clearTimeout(timer);
+  });
+
   return (
     <>
       <PageSection variant={PageSectionVariants.light}>
@@ -64,9 +71,9 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster, setSte
           )}
         ></ToolbarButton>
         <DiscoveryImageModalButton ButtonComponent={ToolbarButton} />
-        <ToolbarButton variant={ButtonVariant.secondary} onClick={() => fetchHosts()}>
+        {/* <ToolbarButton variant={ButtonVariant.secondary} onClick={() => fetchHosts()}>
           Reload Hosts
-        </ToolbarButton>
+        </ToolbarButton> */}
         <ToolbarButton
           variant={ButtonVariant.secondary}
           onClick={() => setStep(WizardStep.ClusterConfiguration)}
@@ -74,7 +81,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster, setSte
           Next
         </ToolbarButton>
         <ToolbarText component={TextVariants.small}>
-          Connect at least 3 hosts to begin deployment.
+          {uiState === ResourceUIState.LOADING && 'Waiting for hosts...'}
         </ToolbarText>
       </ClusterWizardToolbar>
     </>

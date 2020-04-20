@@ -115,7 +115,7 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
                 <TextContent>
                   <Text component="p">
                     Provide configuration for discovery image so the hosts which boot the image can
-                    access the internet
+                    access the internet to register as a cluster inventory.
                   </Text>
                 </TextContent>
                 <InputField

@@ -1,11 +1,20 @@
 import React from 'react';
-import { Table, TableHeader, TableBody, TableVariant, IRow } from '@patternfly/react-table';
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableVariant,
+  IRow,
+  expandable,
+} from '@patternfly/react-table';
+import Humanize from 'humanize-plus';
 import { EmptyState, ErrorState, LoadingState } from '../ui/uiState';
 import { getColSpanRow } from '../ui/table/utils';
 import { ResourceUIState } from '../../types';
-import { Host } from '../../api/types';
+import { Host, Introspection, BlockDevice } from '../../api/types';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import HostStatus from './HostStatus';
+import { ConnectedIcon } from '@patternfly/react-icons';
 
 type Props = {
   hosts?: Host[];
@@ -21,51 +30,69 @@ const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant 
   //   background: 'white',
   //   zIndex: 1,
   // };
-  const headerStyle = {};
-  const headerConfig = { header: { props: { style: headerStyle } } };
-  // TODO(jtomasek): Those should not be needed to define as they are optional,
-  // needs fixing in @patternfly/react-table
-  const columnConfig = {
-    transforms: [],
-    cellTransforms: [],
-    formatters: [],
-    cellFormatters: [],
-    props: {},
-  };
+  // const headerStyle = {};
+  // const headerConfig = { header: { props: { style: headerStyle } } };
+
   const columns = [
-    { title: 'ID', ...headerConfig, ...columnConfig },
-    { title: 'Role', ...headerConfig, ...columnConfig },
-    { title: 'Serial Number', ...headerConfig, ...columnConfig },
-    { title: 'Status', ...headerConfig, ...columnConfig },
-    { title: 'CPU', ...headerConfig, ...columnConfig },
-    { title: 'Memory', ...headerConfig, ...columnConfig },
-    { title: 'Disk', ...headerConfig, ...columnConfig },
+    { title: 'ID', cellFormatters: [expandable] },
+    { title: 'Role' },
+    { title: 'Serial Number' },
+    { title: 'Status' },
+    { title: 'CPU' },
+    { title: 'Memory' },
+    { title: 'Disk' },
   ];
 
-  const hostToHostTableRow = (host: Host): IRow => {
-    const { id, status, statusInfo, hardware_info = '' } = host;
-    const hwInfo = JSON.parse(hardware_info);
-    console.log('hwInfo', hwInfo);
+  type HostRowHwInfo = { cpu: string; memory: string; disk: string };
+
+  const getHostRowHardwareInfo = (hwInfoString: string): HostRowHwInfo => {
+    let hwInfo: Introspection = {};
+    try {
+      hwInfo = JSON.parse(hwInfoString);
+    } catch (e) {
+      console.error('Failed to parse Hardware Info', e);
+    }
     return {
+      cpu: `${hwInfo?.cpu?.cpus}x ${Humanize.formatNumber(hwInfo?.cpu?.['cpu-mhz'] || 0)} MHz`,
+      memory: Humanize.fileSize(hwInfo?.memory?.[0]?.total || 0),
+      disk: Humanize.fileSize(
+        hwInfo?.['block-devices']
+          ?.filter((device: BlockDevice) => device['device-type'] === 'disk')
+          .reduce((diskSize: number, device: BlockDevice) => diskSize + (device?.size || 0), 0) ||
+          0,
+      ),
+    };
+  };
+
+  const hostToHostTableRow = (host: Host): IRow => {
+    const { id, status, statusInfo, hardwareInfo = '' } = host;
+    const { cpu, memory, disk } = getHostRowHardwareInfo(hardwareInfo);
+    return {
+      // isOpen: true,
       cells: [
         id,
         'Master',
-        'SN000',
+        id,
         { title: <HostStatus status={status} statusInfo={statusInfo} /> },
-        '-',
-        '-',
-        '-',
+        cpu,
+        memory,
+        disk,
       ],
     };
   };
 
-  // const hostRows = React.useMemo(() => hosts.map(hostToHostTableRow), [hosts]);
   const hostRows = hosts.map(hostToHostTableRow);
+  // const hostRows = hosts.map(hostToHostTableRow).reduce((newRows: IRow[], currentRow) => {
+  //   newRows.push(currentRow);
+  //   newRows.push({ parent: currentRow[0], fullWidth: true, cells: ['hello'] } as IRow);
+  //   return newRows;
+  // }, []);
 
   const emptyState = (
     <EmptyState
-      title="No hosts connected yet."
-      content="Connect at least 3 hosts to your cluster to pool together resources and start running workloads."
+      icon={ConnectedIcon}
+      title="Waiting for hosts..."
+      content="Boot the discovery ISO on a hardware that should become part of this bare metal cluster. After booting the ISO the hosts get inspected and register to the cluster. At least 3 bare metal hosts are required to form the cluster."
       primaryAction={<DiscoveryImageModalButton />}
     />
   );
@@ -94,7 +121,11 @@ const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant 
     <Table
       rows={rows}
       cells={columns}
-      variant={variant ? variant : rows.length > 5 ? TableVariant.compact : undefined}
+      // onCollapse={(event, rowKey, isOpen) => {
+      //   console.log('rowKey', rowKey);
+      //   console.log('isOpen', isOpen);
+      // }}
+      variant={variant ? variant : rows.length > 10 ? TableVariant.compact : undefined}
       aria-label="Hosts table"
     >
       <TableHeader />

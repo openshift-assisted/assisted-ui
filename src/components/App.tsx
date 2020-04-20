@@ -23,6 +23,7 @@ const App: React.FC = () => (
         sidebar={<Sidebar />}
         style={{ height: '100vh', background: 'transparent' }}
         isManagedSidebar // enable this to automatically hide sidebar in mobile
+        defaultManagedSidebarIsOpen={false}
       >
         <Switch>
           <Route path="/clusters/new" component={NewCluster} />
