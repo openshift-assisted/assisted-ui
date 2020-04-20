@@ -1,10 +1,11 @@
 import React from 'react';
-import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
+import { Table, TableHeader, TableBody, TableVariant, IRow } from '@patternfly/react-table';
 import { EmptyState, ErrorState, LoadingState } from '../ui/uiState';
 import { getColSpanRow } from '../ui/table/utils';
 import { ResourceUIState } from '../../types';
 import { Host } from '../../api/types';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
+import HostStatus from './HostStatus';
 
 type Props = {
   hosts?: Host[];
@@ -36,15 +37,26 @@ const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant 
     { title: 'Role', ...headerConfig, ...columnConfig },
     { title: 'Serial Number', ...headerConfig, ...columnConfig },
     { title: 'Status', ...headerConfig, ...columnConfig },
-    { title: 'Status Info', ...headerConfig, ...columnConfig },
     { title: 'CPU', ...headerConfig, ...columnConfig },
     { title: 'Memory', ...headerConfig, ...columnConfig },
     { title: 'Disk', ...headerConfig, ...columnConfig },
   ];
 
-  const hostToHostTableRow = (host: Host): string[] => {
-    const { id, status, statusInfo } = host;
-    return [id, 'Master', 'SN00000', status, statusInfo || '-', '-', '-', '-'];
+  const hostToHostTableRow = (host: Host): IRow => {
+    const { id, status, statusInfo, hardware_info = '' } = host;
+    const hwInfo = JSON.parse(hardware_info);
+    console.log('hwInfo', hwInfo);
+    return {
+      cells: [
+        id,
+        'Master',
+        'SN000',
+        { title: <HostStatus status={status} statusInfo={statusInfo} /> },
+        '-',
+        '-',
+        '-',
+      ],
+    };
   };
 
   // const hostRows = React.useMemo(() => hosts.map(hostToHostTableRow), [hosts]);
