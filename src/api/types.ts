@@ -215,7 +215,7 @@ export interface Host {
     | 'installed';
   statusInfo?: string;
   connectivity?: ConnectivityReport;
-  hardware_info?: string;
+  hardwareInfo?: string;
   role?: 'undefined' | 'master' | 'worker';
   updatedAt?: string; // date-time
 }
