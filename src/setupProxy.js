@@ -5,8 +5,8 @@ module.exports = function (app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      // target: 'http://192.168.39.47:32074',
-      target: 'http://127.0.0.1:8081',
+      // HINT: export BM_INVENTORY=`minikube service bm-inventory --url`
+      target: process.env['BM_INVENTORY'] || 'http://unknown.bm-inventory.service.url:port',
       changeOrigin: true,
     }),
   );
