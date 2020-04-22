@@ -16,24 +16,23 @@
     "ecmaVersion": 2017,
     "sourceType": "module"
   },
-  "plugins": ["prettier", "react", "@typescript-eslint"],
+  "plugins": ["prettier", "react", "react-hooks", "@typescript-eslint"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "plugin:prettier/recommended",
-    "prettier/typescript",
+    "prettier/@typescript-eslint",
     "prettier/react"
   ],
   "rules": {
     "indent": "off",
     "react/no-unescaped-entities": ["error", { "forbid": [">", "}"] }],
-    "@typescript-eslint/indent": [
-      "error",
-      2,
-      { "SwitchCase": 1, "VariableDeclarator": 2 }
-    ],
-    "@typescript-eslint/explicit-member-accessibility": "off"
+    "@typescript-eslint/explicit-member-accessibility": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/prop-types": "off"
   },
   "settings": {
     "react": {

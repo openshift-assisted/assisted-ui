@@ -2,17 +2,13 @@ import { combineReducers } from 'redux';
 import { ActionType, getType } from 'typesafe-actions';
 
 import * as hosts from '../actions/hosts';
-import { Host } from '../models/hosts';
+import { Host } from '../api/types';
+import { ResourceState } from './types';
 
 export type HostsActions = ActionType<typeof hosts>;
 
-export interface HostsState {
-  hosts: Host[];
-  loading: boolean;
-}
-
-export default combineReducers<HostsState, HostsActions>({
-  hosts: (state = [], action) => {
+export default combineReducers<ResourceState<Host>, HostsActions>({
+  items: (state = [], action) => {
     switch (action.type) {
       case getType(hosts.fetchHosts.success):
         return [...action.payload];
@@ -20,7 +16,18 @@ export default combineReducers<HostsState, HostsActions>({
         return state;
     }
   },
-  loading: (state = false, action) => {
+  error: (state = '', action) => {
+    switch (action.type) {
+      case getType(hosts.fetchHosts.request):
+      case getType(hosts.fetchHosts.success):
+        return '';
+      case getType(hosts.fetchHosts.failure):
+        return action.payload;
+      default:
+        return state;
+    }
+  },
+  loading: (state = true, action) => {
     switch (action.type) {
       case getType(hosts.fetchHosts.request):
         return true;
@@ -30,5 +37,5 @@ export default combineReducers<HostsState, HostsActions>({
       default:
         return state;
     }
-  }
+  },
 });

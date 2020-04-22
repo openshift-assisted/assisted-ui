@@ -7,11 +7,11 @@ import rootReducer from './rootReducer';
 const initialState = {};
 
 const composeEnhancers = composeWithDevTools({
-  name: 'Metal³ Facet Redux Dev Tools'
+  name: 'Metal³ Facet Redux Dev Tools',
 });
 
 export const store = createStore(
   rootReducer,
   initialState,
-  composeEnhancers(applyMiddleware(thunk))
+  composeEnhancers(applyMiddleware(thunk)),
 );

@@ -1,14 +1,11 @@
-type OK = string;
-type Status = OK | Error;
+import axios, { AxiosPromise } from 'axios';
+import { ApiResourceKindPlural } from '../types';
 
-// Generic API reponse type
-//
-// We can always expect a status and some data
-export interface ApiResponse<T> {
-  status: Status;
-  data: T;
-}
+export const API_ROOT = '/api/bm-inventory/v1';
 
-export interface K8sListApiResponse<T> {
-  items: T[];
-}
+export const getResourceList = <T>(resourceKindPlural: ApiResourceKindPlural): AxiosPromise<T[]> =>
+  axios.get(`${API_ROOT}/${resourceKindPlural}`, {
+    headers: {
+      accept: 'application/json',
+    },
+  });

@@ -1,8 +1,5 @@
-import React, { FC, CSSProperties } from 'react';
-import {
-  PageSection as PfPageSection,
-  StackItem
-} from '@patternfly/react-core';
+import React, { CSSProperties } from 'react';
+import { PageSection as PfPageSection } from '@patternfly/react-core';
 
 interface PageSectionProps extends React.ComponentProps<typeof PfPageSection> {
   isMain?: boolean;
@@ -16,20 +13,19 @@ const scrollableStyle: CSSProperties = {
   overflow: 'auto',
   zIndex: 0,
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  padding: 'var(--pf-c-page__main-section--PaddingTop)',
 };
 
-const PageSection: FC<PageSectionProps> = ({
-  isMain = false,
-  style,
-  ...rest
-}: PageSectionProps): JSX.Element => {
-  const resultStyle = isMain ? { ...style, ...scrollableStyle } : { ...style };
-  return (
-    <StackItem isMain={isMain} style={{ position: 'relative' }}>
-      <PfPageSection style={resultStyle} {...rest} />
-    </StackItem>
-  );
-};
+const PageSection: React.FC<PageSectionProps> = ({ isMain = false, style, children, ...rest }) => (
+  <PfPageSection
+    style={{ ...style, position: 'relative' }}
+    isFilled={isMain}
+    noPadding={isMain}
+    {...rest}
+  >
+    {isMain ? <div style={scrollableStyle}>{children}</div> : <>{children}</>}
+  </PfPageSection>
+);
 
 export default PageSection;

@@ -8,16 +8,11 @@ const BROWSER_TIMEOUT = 15000;
 describe('GUI layout', () => {
   afterAll(async () => {
     // Clears HTTP 401 errors for subsequent tests
-    await browser
-      .manage()
-      .logs()
-      .get('browser');
+    await browser.manage().logs().get('browser');
   });
 
   it('includes the Cluster Name field', async () => {
     await browser.get(appHost);
-    expect(
-      await browser.wait(until.visibilityOf(clusterName), BROWSER_TIMEOUT)
-    ).toBe(true);
+    expect(await browser.wait(until.visibilityOf(clusterName), BROWSER_TIMEOUT)).toBe(true);
   });
 });
