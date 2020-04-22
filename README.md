@@ -36,7 +36,11 @@ For further details about the Metal³ architecture, see [http://github.com/metal
 - `cd` into it
 - Install javascript dependencies with `yarn install`
 - Start the backend server with `go run main.go server`
-- Start the yarn server with `yarn start`
+- Start the yarn server with:
+```
+  export BM_INVENTORY=`minikube service bm-inventory --url`
+  yarn start
+```
 - Open the UI at `http://localhost:3000`
 
 [1]: https://yarnpkg.com/en/
