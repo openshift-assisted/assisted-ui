@@ -38,7 +38,7 @@ const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant 
     { title: 'Role' },
     { title: 'Serial Number' },
     { title: 'Status' },
-    { title: 'CPU' },
+    { title: 'vCPU' },
     { title: 'Memory' },
     { title: 'Disk' },
   ];
@@ -65,14 +65,15 @@ const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant 
   };
 
   const hostToHostTableRow = (host: Host): IRow => {
+    // console.log('--- host: ', host);
     const { id, status, statusInfo, hardwareInfo = '' } = host;
     const { cpu, memory, disk } = getHostRowHardwareInfo(hardwareInfo);
     return {
       // isOpen: true,
       cells: [
-        id,
-        'Master',
-        id,
+        id, // TODO: should be "name"
+        'Master', // TODO: should be flexible (a dropdown for master/worker)
+        id, // TODO: should be serial number
         { title: <HostStatus status={status} statusInfo={statusInfo} /> },
         cpu,
         memory,
