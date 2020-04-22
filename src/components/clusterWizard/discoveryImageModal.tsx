@@ -13,7 +13,7 @@ import { ToolbarButton } from '../ui/Toolbar';
 import { InputField } from '../ui/formik';
 import { Formik, FormikHelpers } from 'formik';
 // import useApi from '../../api/useApi';
-import { getClusterDownloadsImage, GetClusterDownloadsImageParams } from '../../api/clusters';
+import { GetClusterDownloadsImageParams } from '../../api/clusters';
 // import { ResourceUIState } from '../../types';
 import { useParams } from 'react-router-dom';
 import { LoadingState } from '../ui/uiState';
@@ -95,7 +95,7 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
         // validate={validate}
         onSubmit={handleSubmit}
       >
-        {({ handleSubmit, isSubmitting, isValid, submitForm, status, values }) => (
+        {({ handleSubmit, isSubmitting }) => (
           <Form
             action={`/api/bm-inventory/v1/clusters/${clusterId}/downloads/image`}
             method="get"

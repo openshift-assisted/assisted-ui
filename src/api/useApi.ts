@@ -53,7 +53,7 @@ const fetchData = async <P, D>(
 ) => {
   dispatch({ type: 'REQUEST' });
   try {
-    const { data, ...rest } = await apiCall(params!); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+    const { data } = await apiCall(params!); // eslint-disable-line @typescript-eslint/no-non-null-assertion
     dispatch({ type: 'SUCCESS', payload: data });
   } catch (e) {
     console.error(e);

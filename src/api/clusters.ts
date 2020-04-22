@@ -1,6 +1,6 @@
 import axios, { AxiosPromise } from 'axios';
-import { saveAs } from 'file-saver';
-import { Cluster, ClusterCreateParams, Host, ClusterUpdateParams } from './types';
+// import { saveAs } from 'file-saver';
+import { Cluster, ClusterCreateParams, Host } from './types';
 import { API_ROOT } from '.';
 
 export const getClusters = (): AxiosPromise<Cluster[]> => axios.get(`${API_ROOT}/clusters`);

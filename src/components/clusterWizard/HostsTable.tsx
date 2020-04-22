@@ -8,7 +8,7 @@ import {
   expandable,
 } from '@patternfly/react-table';
 import Humanize from 'humanize-plus';
-import { EmptyState, ErrorState, LoadingState } from '../ui/uiState';
+import { EmptyState, ErrorState } from '../ui/uiState';
 import { getColSpanRow } from '../ui/table/utils';
 import { ResourceUIState } from '../../types';
 import { Host, Introspection, BlockDevice } from '../../api/types';
@@ -97,7 +97,6 @@ const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant 
     />
   );
   const errorState = <ErrorState title="Failed to fetch hosts" fetchData={fetchHosts} />;
-  const loadingState = <LoadingState />;
 
   const getRows = () => {
     const columnCount = columns.length;
