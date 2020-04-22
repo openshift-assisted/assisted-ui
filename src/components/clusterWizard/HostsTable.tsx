@@ -7,6 +7,7 @@ import {
   IRow,
   expandable,
 } from '@patternfly/react-table';
+import { ConnectedIcon } from '@patternfly/react-icons';
 import Humanize from 'humanize-plus';
 import { EmptyState, ErrorState } from '../ui/uiState';
 import { getColSpanRow } from '../ui/table/utils';
@@ -14,7 +15,6 @@ import { ResourceUIState } from '../../types';
 import { Host, Introspection, BlockDevice } from '../../api/types';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import HostStatus from './HostStatus';
-import { ConnectedIcon } from '@patternfly/react-icons';
 
 type Props = {
   hosts?: Host[];
@@ -52,7 +52,7 @@ const hostToHostTableRow = (host: Host): IRow => {
   const { id, status, statusInfo, hardwareInfo = '' } = host;
   const { cpu, memory, disk } = getHostRowHardwareInfo(hardwareInfo);
   return {
-    // isOpen: true,
+    isOpen: false,
     cells: [
       id, // TODO: should be "name"
       'Master', // TODO: should be flexible (a dropdown for master/worker)
@@ -84,26 +84,16 @@ const columns = [
   { title: 'Disk' },
 ];
 
-const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant }) => {
-  // const headerStyle = {
-  //   position: 'sticky',
-  //   top: 0,
-  //   background: 'white',
-  //   zIndex: 1,
-  // };
-  // const headerStyle = {};
-  // const headerConfig = { header: { props: { style: headerStyle } } };
+const rowKey = (params: any) => params.rowData.id.title;
 
-  // const hostRows = hosts.map(hostToHostTableRow).reduce((newRows: IRow[], currentRow) => {
-  //   newRows.push(currentRow);
-  //   newRows.push({ parent: currentRow[0], fullWidth: true, cells: ['hello'] } as IRow);
-  //   return newRows;
-  // }, []);
+const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant }) => {
+  const [hostRows, setHostRows] = React.useState([] as IRow[]);
+  React.useEffect(() => {
+    setHostRows(hosts.map(hostToHostTableRow));
+  }, [hosts]);
 
   const rows = React.useMemo(() => {
     const errorState = <ErrorState title="Failed to fetch hosts" fetchData={fetchHosts} />;
-    const hostRows = hosts.map(hostToHostTableRow);
-
     const columnCount = columns.length;
     switch (uiState) {
       // case ResourceUIState.LOADING:
@@ -118,21 +108,27 @@ const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant 
         }
         return getColSpanRow(HostsTableEmptyState, columnCount);
     }
-  }, [uiState, fetchHosts, hosts]);
+  }, [uiState, fetchHosts, hostRows]);
+
+  const onCollapse = React.useCallback(
+    (_event, rowKey) => {
+      const newHostRows = [...hostRows];
+      newHostRows[rowKey].isOpen = !newHostRows[rowKey].isOpen;
+      setHostRows(newHostRows);
+    },
+    [hostRows],
+  );
 
   return (
     <Table
       rows={rows}
       cells={columns}
-      // onCollapse={(event, rowKey, isOpen) => {
-      //   console.log('rowKey', rowKey);
-      //   console.log('isOpen', isOpen);
-      // }}
+      onCollapse={onCollapse}
       variant={variant ? variant : rows.length > 10 ? TableVariant.compact : undefined}
       aria-label="Hosts table"
     >
       <TableHeader />
-      <TableBody />
+      <TableBody rowKey={rowKey} />
     </Table>
   );
 };
