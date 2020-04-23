@@ -1,4 +1,4 @@
-import { TextInputTypes } from '@patternfly/react-core';
+import { TextInputTypes, FormSelectOptionProps } from '@patternfly/react-core';
 
 export interface FieldProps {
   name: string;
@@ -11,6 +11,12 @@ export interface FieldProps {
   disableAddRow?: boolean;
   className?: string;
   isDisabled?: boolean;
+}
+
+export interface SelectFieldProps extends FieldProps {
+  options: FormSelectOptionProps[];
+  onChange?: (event: React.FormEvent<HTMLSelectElement>) => void;
+  // onBlur?: (event: React.FormEvent<HTMLSelectElement>) => void;
 }
 
 export interface InputFieldProps extends FieldProps {
