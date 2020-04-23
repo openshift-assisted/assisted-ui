@@ -1,5 +1,5 @@
 import React from 'react';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import {
   Table,
   TableHeader,
@@ -9,22 +9,14 @@ import {
   expandable,
 } from '@patternfly/react-table';
 import { ConnectedIcon } from '@patternfly/react-icons';
-import {
-  Flex,
-  FlexItem,
-  TextContent,
-  TextList,
-  TextListItem,
-  TextListVariants,
-  TextListItemVariants,
-} from '@patternfly/react-core';
-import Humanize from 'humanize-plus';
 import { EmptyState, ErrorState } from '../ui/uiState';
 import { getColSpanRow } from '../ui/table/utils';
 import { ResourceUIState } from '../../types';
-import { Host, Introspection, BlockDevice } from '../../api/types';
+import { Host } from '../../api/types';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import HostStatus from './HostStatus';
+import { HostDetail } from './HostRowDetail';
+import { getHostRowHardwareInfo, getHardwareInfo } from './harwareInfo';
 
 type HostsTableProps = {
   hosts?: Host[];
@@ -33,88 +25,32 @@ type HostsTableProps = {
   variant?: TableVariant;
 };
 
-type HostDetailProps = {
-  hwInfo: HostHardwareInfo;
-};
-
 type OpenRows = {
   [id: string]: boolean;
 };
 
-export type HostHardwareInfo = {
-  cpu: string;
-  memory: string;
-  disk: string;
-};
-
-const getHostRowHardwareInfo = (hwInfoString: string): HostHardwareInfo => {
-  let hwInfo: Introspection = {};
-  try {
-    hwInfo = JSON.parse(hwInfoString);
-    console.log('--- hwInfo: ', hwInfo);
-  } catch (e) {
-    console.error('Failed to parse Hardware Info', e);
-  }
-  return {
-    cpu: `${hwInfo?.cpu?.cpus}x ${Humanize.formatNumber(hwInfo?.cpu?.['cpu-mhz'] || 0)} MHz`,
-    memory: Humanize.fileSize(hwInfo?.memory?.[0]?.total || 0),
-    disk: Humanize.fileSize(
-      hwInfo?.['block-devices']
-        ?.filter((device: BlockDevice) => device['device-type'] === 'disk')
-        .reduce((diskSize: number, device: BlockDevice) => diskSize + (device?.size || 0), 0) || 0,
-    ),
-  };
-};
-
-const HostDetail: React.FC<HostDetailProps> = (props) => (
-  <Flex>
-    <FlexItem>
-      <TextContent>
-        <TextList component={TextListVariants.dl}>
-          <TextListItem component={TextListItemVariants.dt}>Web</TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            The part of the Internet that contains websites and web pages
-          </TextListItem>
-          <TextListItem component={TextListItemVariants.dt}>HTML</TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            A markup language for creating web pages
-          </TextListItem>
-          <TextListItem component={TextListItemVariants.dt}>CSS</TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            A technology to make HTML look better
-          </TextListItem>
-        </TextList>
-      </TextContent>{' '}
-    </FlexItem>
-    <FlexItem>
-      <TextContent>
-        <TextList component={TextListVariants.dl}>
-          <TextListItem component={TextListItemVariants.dt}>HTML</TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            A markup language for creating web pages
-          </TextListItem>
-          <TextListItem component={TextListItemVariants.dt}>CSS</TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            A technology to make HTML look better
-          </TextListItem>
-        </TextList>
-      </TextContent>{' '}
-    </FlexItem>
-  </Flex>
-);
+const columns = [
+  { title: 'ID', cellFormatters: [expandable] },
+  { title: 'Role' },
+  { title: 'Serial Number' },
+  { title: 'Status' },
+  { title: 'vCPU' },
+  { title: 'Memory' },
+  { title: 'Disk' },
+];
 
 const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IRow => {
-  const { id, status, statusInfo, hardwareInfo = '' } = host;
-  const hwInfo = getHostRowHardwareInfo(hardwareInfo);
-  const { cpu, memory, disk } = hwInfo;
+  const { id, status, statusInfo, role, hardwareInfo = '' } = host;
+  const hwInfo = getHardwareInfo(hardwareInfo) || {};
+  const { cpu, memory, disk } = getHostRowHardwareInfo(hwInfo);
 
   return [
     {
       // visible row
       isOpen: !!openRows[id],
       cells: [
-        id, // TODO: should be "name"
-        'Master', // TODO: should be flexible (a dropdown for master/worker)
+        id,
+        role,
         id, // TODO: should be serial number
         { title: <HostStatus status={status} statusInfo={statusInfo} /> },
         cpu,
@@ -139,16 +75,6 @@ const HostsTableEmptyState: React.FC = () => (
     primaryAction={<DiscoveryImageModalButton />}
   />
 );
-
-const columns = [
-  { title: 'ID', cellFormatters: [expandable] },
-  { title: 'Role' },
-  { title: 'Serial Number' },
-  { title: 'Status' },
-  { title: 'vCPU' },
-  { title: 'Memory' },
-  { title: 'Disk' },
-];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const rowKey = (params: any) => params.rowData.id.title;
