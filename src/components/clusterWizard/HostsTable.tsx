@@ -1,4 +1,5 @@
 import React from 'react';
+import * as _ from 'lodash';
 import {
   Table,
   TableHeader,
@@ -8,6 +9,15 @@ import {
   expandable,
 } from '@patternfly/react-table';
 import { ConnectedIcon } from '@patternfly/react-icons';
+import {
+  Flex,
+  FlexItem,
+  TextContent,
+  TextList,
+  TextListItem,
+  TextListVariants,
+  TextListItemVariants,
+} from '@patternfly/react-core';
 import Humanize from 'humanize-plus';
 import { EmptyState, ErrorState } from '../ui/uiState';
 import { getColSpanRow } from '../ui/table/utils';
@@ -16,23 +26,32 @@ import { Host, Introspection, BlockDevice } from '../../api/types';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import HostStatus from './HostStatus';
 
-type Props = {
+type HostsTableProps = {
   hosts?: Host[];
   uiState: ResourceUIState;
   fetchHosts: () => void;
   variant?: TableVariant;
 };
 
-type HostRowHwInfo = {
+type HostDetailProps = {
+  hwInfo: HostHardwareInfo;
+};
+
+type OpenRows = {
+  [id: string]: boolean;
+};
+
+export type HostHardwareInfo = {
   cpu: string;
   memory: string;
   disk: string;
 };
 
-const getHostRowHardwareInfo = (hwInfoString: string): HostRowHwInfo => {
+const getHostRowHardwareInfo = (hwInfoString: string): HostHardwareInfo => {
   let hwInfo: Introspection = {};
   try {
     hwInfo = JSON.parse(hwInfoString);
+    console.log('--- hwInfo: ', hwInfo);
   } catch (e) {
     console.error('Failed to parse Hardware Info', e);
   }
@@ -47,22 +66,69 @@ const getHostRowHardwareInfo = (hwInfoString: string): HostRowHwInfo => {
   };
 };
 
-const hostToHostTableRow = (host: Host): IRow => {
-  // console.log('--- host: ', host);
+const HostDetail: React.FC<HostDetailProps> = (props) => (
+  <Flex>
+    <FlexItem>
+      <TextContent>
+        <TextList component={TextListVariants.dl}>
+          <TextListItem component={TextListItemVariants.dt}>Web</TextListItem>
+          <TextListItem component={TextListItemVariants.dd}>
+            The part of the Internet that contains websites and web pages
+          </TextListItem>
+          <TextListItem component={TextListItemVariants.dt}>HTML</TextListItem>
+          <TextListItem component={TextListItemVariants.dd}>
+            A markup language for creating web pages
+          </TextListItem>
+          <TextListItem component={TextListItemVariants.dt}>CSS</TextListItem>
+          <TextListItem component={TextListItemVariants.dd}>
+            A technology to make HTML look better
+          </TextListItem>
+        </TextList>
+      </TextContent>{' '}
+    </FlexItem>
+    <FlexItem>
+      <TextContent>
+        <TextList component={TextListVariants.dl}>
+          <TextListItem component={TextListItemVariants.dt}>HTML</TextListItem>
+          <TextListItem component={TextListItemVariants.dd}>
+            A markup language for creating web pages
+          </TextListItem>
+          <TextListItem component={TextListItemVariants.dt}>CSS</TextListItem>
+          <TextListItem component={TextListItemVariants.dd}>
+            A technology to make HTML look better
+          </TextListItem>
+        </TextList>
+      </TextContent>{' '}
+    </FlexItem>
+  </Flex>
+);
+
+const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IRow => {
   const { id, status, statusInfo, hardwareInfo = '' } = host;
-  const { cpu, memory, disk } = getHostRowHardwareInfo(hardwareInfo);
-  return {
-    isOpen: false,
-    cells: [
-      id, // TODO: should be "name"
-      'Master', // TODO: should be flexible (a dropdown for master/worker)
-      id, // TODO: should be serial number
-      { title: <HostStatus status={status} statusInfo={statusInfo} /> },
-      cpu,
-      memory,
-      disk,
-    ],
-  };
+  const hwInfo = getHostRowHardwareInfo(hardwareInfo);
+  const { cpu, memory, disk } = hwInfo;
+
+  return [
+    {
+      // visible row
+      isOpen: !!openRows[id],
+      cells: [
+        id, // TODO: should be "name"
+        'Master', // TODO: should be flexible (a dropdown for master/worker)
+        id, // TODO: should be serial number
+        { title: <HostStatus status={status} statusInfo={statusInfo} /> },
+        cpu,
+        memory,
+        disk,
+      ],
+    },
+    {
+      // expandable detail
+      parent: idx * 2, // every row has these two items
+      fullWidth: true,
+      cells: [{ title: <HostDetail key={id} hwInfo={hwInfo} /> }],
+    },
+  ];
 };
 
 const HostsTableEmptyState: React.FC = () => (
@@ -84,13 +150,16 @@ const columns = [
   { title: 'Disk' },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const rowKey = (params: any) => params.rowData.id.title;
 
-const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant }) => {
-  const [hostRows, setHostRows] = React.useState([] as IRow[]);
-  React.useEffect(() => {
-    setHostRows(hosts.map(hostToHostTableRow));
-  }, [hosts]);
+const HostsTable: React.FC<HostsTableProps> = ({ hosts = [], uiState, fetchHosts, variant }) => {
+  const [openRows, setOpenRows] = React.useState({} as OpenRows);
+
+  const hostRows = React.useMemo(() => _.flatten(hosts.map(hostToHostTableRow(openRows))), [
+    hosts,
+    openRows,
+  ]);
 
   const rows = React.useMemo(() => {
     const errorState = <ErrorState title="Failed to fetch hosts" fetchData={fetchHosts} />;
@@ -112,11 +181,13 @@ const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant 
 
   const onCollapse = React.useCallback(
     (_event, rowKey) => {
-      const newHostRows = [...hostRows];
-      newHostRows[rowKey].isOpen = !newHostRows[rowKey].isOpen;
-      setHostRows(newHostRows);
+      const cells = hostRows[rowKey].cells;
+      const id = (cells && cells[0]) as string;
+      if (id) {
+        setOpenRows(Object.assign({}, openRows, { [id]: !openRows[id] }));
+      }
     },
-    [hostRows],
+    [hostRows, openRows],
   );
 
   return (
