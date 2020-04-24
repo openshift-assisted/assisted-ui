@@ -1,13 +1,16 @@
 import React from 'react';
 import { Table, TableHeader, TableBody, TableVariant, IRowData } from '@patternfly/react-table';
+import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
 import { ClusterTableRows } from '../../types/clusters';
 
-interface Props {
+const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
+
+interface ClustersTableProps {
   rows: ClusterTableRows;
   deleteCluster: (id: string) => void;
 }
 
-const ClustersTable: React.FC<Props> = ({ rows, deleteCluster }) => {
+const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) => {
   const headerStyle = {
     position: 'sticky',
     top: 0,
@@ -46,7 +49,7 @@ const ClustersTable: React.FC<Props> = ({ rows, deleteCluster }) => {
       aria-label="Clusters table"
     >
       <TableHeader />
-      <TableBody />
+      <TableBody rowKey={rowKey} />
     </Table>
   );
 };

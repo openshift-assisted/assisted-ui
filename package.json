@@ -46,6 +46,7 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
+    "sw2dts": "^2.6.2",
     "typesafe-actions": "^5.1.0",
     "typescript": "^3.8.3",
     "unique-names-generator": "^4.2.0",
@@ -60,7 +61,7 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --color .",
     "test-suite": "babel-node node_modules/.bin/protractor integration_tests/protractor.conf.js",
     "webdriver-update": "webdriver-manager update",
-    "swagger": "npx sw2dts -w -o src/api/types.ts src/api/swagger.json"
+    "swagger": "sw2dts -w -o src/api/types.ts src/api/swagger.json"
   },
   "browserslist": [
     ">0.2%",
