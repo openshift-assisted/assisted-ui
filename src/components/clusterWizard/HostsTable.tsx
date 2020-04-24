@@ -16,7 +16,8 @@ import { Host } from '../../api/types';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
-import { getHostRowHardwareInfo, getHardwareInfo } from './harwareInfo';
+import { getHostRowHardwareInfo, getHardwareInfo } from './hardwareInfo';
+import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 
 type HostsTableProps = {
   hosts?: Host[];
@@ -76,8 +77,7 @@ const HostsTableEmptyState: React.FC = () => (
   />
 );
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const rowKey = (params: any) => params.rowData.id.title;
+const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
 
 const HostsTable: React.FC<HostsTableProps> = ({ hosts = [], uiState, fetchHosts, variant }) => {
   const [openRows, setOpenRows] = React.useState({} as OpenRows);

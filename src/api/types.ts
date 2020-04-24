@@ -224,7 +224,7 @@ export interface HostCreateParams {
   hostId: string; // uuid
 }
 export type HostList = Host[];
-export interface HardwareInfo {
+export interface Introspection {
   cpu?: Cpu;
   'block-devices'?: BlockDevice[];
   memory?: Memory[];

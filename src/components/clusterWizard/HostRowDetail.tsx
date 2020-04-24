@@ -12,13 +12,13 @@ import {
   TextVariants,
   FlexModifiers,
 } from '@patternfly/react-core';
-import { HardwareInfo } from '../../api/types';
-import { getMemoryCapacity, getDisks, getNics } from './harwareInfo';
+import { Introspection } from '../../api/types';
+import { getMemoryCapacity, getDisks, getNics } from './hardwareInfo';
 
 import './HostRowDetail.scss';
 
 type HostDetailProps = {
-  hwInfo: HardwareInfo;
+  hwInfo: Introspection;
 };
 
 type HostDetailItemProps = {
