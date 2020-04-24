@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import {
   Table,
   TableHeader,
@@ -7,98 +8,87 @@ import {
   IRow,
   expandable,
 } from '@patternfly/react-table';
-import Humanize from 'humanize-plus';
+import { ConnectedIcon } from '@patternfly/react-icons';
 import { EmptyState, ErrorState } from '../ui/uiState';
 import { getColSpanRow } from '../ui/table/utils';
 import { ResourceUIState } from '../../types';
-import { Host, Introspection, BlockDevice } from '../../api/types';
+import { Host } from '../../api/types';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import HostStatus from './HostStatus';
-import { ConnectedIcon } from '@patternfly/react-icons';
+import { HostDetail } from './HostRowDetail';
+import { getHostRowHardwareInfo, getHardwareInfo } from './hardwareInfo';
+import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 
-type Props = {
+type HostsTableProps = {
   hosts?: Host[];
   uiState: ResourceUIState;
   fetchHosts: () => void;
   variant?: TableVariant;
 };
 
-const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant }) => {
-  // const headerStyle = {
-  //   position: 'sticky',
-  //   top: 0,
-  //   background: 'white',
-  //   zIndex: 1,
-  // };
-  // const headerStyle = {};
-  // const headerConfig = { header: { props: { style: headerStyle } } };
+type OpenRows = {
+  [id: string]: boolean;
+};
 
-  const columns = [
-    { title: 'ID', cellFormatters: [expandable] },
-    { title: 'Role' },
-    { title: 'Serial Number' },
-    { title: 'Status' },
-    { title: 'CPU' },
-    { title: 'Memory' },
-    { title: 'Disk' },
-  ];
+const columns = [
+  { title: 'ID', cellFormatters: [expandable] },
+  { title: 'Role' },
+  { title: 'Serial Number' },
+  { title: 'Status' },
+  { title: 'vCPU' },
+  { title: 'Memory' },
+  { title: 'Disk' },
+];
 
-  type HostRowHwInfo = { cpu: string; memory: string; disk: string };
+const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IRow => {
+  const { id, status, statusInfo, role, hardwareInfo = '' } = host;
+  const hwInfo = getHardwareInfo(hardwareInfo) || {};
+  const { cpu, memory, disk } = getHostRowHardwareInfo(hwInfo);
 
-  const getHostRowHardwareInfo = (hwInfoString: string): HostRowHwInfo => {
-    let hwInfo: Introspection = {};
-    try {
-      hwInfo = JSON.parse(hwInfoString);
-    } catch (e) {
-      console.error('Failed to parse Hardware Info', e);
-    }
-    return {
-      cpu: `${hwInfo?.cpu?.cpus}x ${Humanize.formatNumber(hwInfo?.cpu?.['cpu-mhz'] || 0)} MHz`,
-      memory: Humanize.fileSize(hwInfo?.memory?.[0]?.total || 0),
-      disk: Humanize.fileSize(
-        hwInfo?.['block-devices']
-          ?.filter((device: BlockDevice) => device['device-type'] === 'disk')
-          .reduce((diskSize: number, device: BlockDevice) => diskSize + (device?.size || 0), 0) ||
-          0,
-      ),
-    };
-  };
-
-  const hostToHostTableRow = (host: Host): IRow => {
-    const { id, status, statusInfo, hardwareInfo = '' } = host;
-    const { cpu, memory, disk } = getHostRowHardwareInfo(hardwareInfo);
-    return {
-      // isOpen: true,
+  return [
+    {
+      // visible row
+      isOpen: !!openRows[id],
       cells: [
         id,
-        'Master',
-        id,
+        role,
+        id, // TODO: should be serial number
         { title: <HostStatus status={status} statusInfo={statusInfo} /> },
         cpu,
         memory,
         disk,
       ],
-    };
-  };
+    },
+    {
+      // expandable detail
+      parent: idx * 2, // every row has these two items
+      fullWidth: true,
+      cells: [{ title: <HostDetail key={id} hwInfo={hwInfo} /> }],
+    },
+  ];
+};
 
-  const hostRows = hosts.map(hostToHostTableRow);
-  // const hostRows = hosts.map(hostToHostTableRow).reduce((newRows: IRow[], currentRow) => {
-  //   newRows.push(currentRow);
-  //   newRows.push({ parent: currentRow[0], fullWidth: true, cells: ['hello'] } as IRow);
-  //   return newRows;
-  // }, []);
+const HostsTableEmptyState: React.FC = () => (
+  <EmptyState
+    icon={ConnectedIcon}
+    title="Waiting for hosts..."
+    content="Boot the discovery ISO on a hardware that should become part of this bare metal cluster. After booting the ISO the hosts get inspected and register to the cluster. At least 3 bare metal hosts are required to form the cluster."
+    primaryAction={<DiscoveryImageModalButton />}
+  />
+);
 
-  const emptyState = (
-    <EmptyState
-      icon={ConnectedIcon}
-      title="Waiting for hosts..."
-      content="Boot the discovery ISO on a hardware that should become part of this bare metal cluster. After booting the ISO the hosts get inspected and register to the cluster. At least 3 bare metal hosts are required to form the cluster."
-      primaryAction={<DiscoveryImageModalButton />}
-    />
-  );
-  const errorState = <ErrorState title="Failed to fetch hosts" fetchData={fetchHosts} />;
+const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
 
-  const getRows = () => {
+const HostsTable: React.FC<HostsTableProps> = ({ hosts = [], uiState, fetchHosts, variant }) => {
+  const [openRows, setOpenRows] = React.useState({} as OpenRows);
+
+  const hostRows = React.useMemo(() => _.flatten(hosts.map(hostToHostTableRow(openRows))), [
+    hosts,
+    openRows,
+  ]);
+
+  const rows = React.useMemo(() => {
+    const errorState = <ErrorState title="Failed to fetch hosts" fetchData={fetchHosts} />;
     const columnCount = columns.length;
     switch (uiState) {
       // case ResourceUIState.LOADING:
@@ -111,24 +101,31 @@ const HostsTable: React.FC<Props> = ({ hosts = [], uiState, fetchHosts, variant 
         if (hostRows.length) {
           return hostRows;
         }
-        return getColSpanRow(emptyState, columnCount);
+        return getColSpanRow(HostsTableEmptyState, columnCount);
     }
-  };
+  }, [uiState, fetchHosts, hostRows]);
 
-  const rows = getRows();
+  const onCollapse = React.useCallback(
+    (_event, rowKey) => {
+      const cells = hostRows[rowKey].cells;
+      const id = (cells && cells[0]) as string;
+      if (id) {
+        setOpenRows(Object.assign({}, openRows, { [id]: !openRows[id] }));
+      }
+    },
+    [hostRows, openRows],
+  );
+
   return (
     <Table
       rows={rows}
       cells={columns}
-      // onCollapse={(event, rowKey, isOpen) => {
-      //   console.log('rowKey', rowKey);
-      //   console.log('isOpen', isOpen);
-      // }}
+      onCollapse={onCollapse}
       variant={variant ? variant : rows.length > 10 ? TableVariant.compact : undefined}
       aria-label="Hosts table"
     >
       <TableHeader />
-      <TableBody />
+      <TableBody rowKey={rowKey} />
     </Table>
   );
 };
