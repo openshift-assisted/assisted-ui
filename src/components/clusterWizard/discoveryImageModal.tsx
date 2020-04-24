@@ -10,7 +10,7 @@ import {
 } from '@patternfly/react-core';
 // import { saveAs } from 'file-saver';
 import { ToolbarButton } from '../ui/Toolbar';
-import { InputField } from '../ui/formik';
+import { InputField, TextAreaField } from '../ui/formik';
 import { Formik, FormikHelpers } from 'formik';
 // import useApi from '../../api/useApi';
 import { GetClusterDownloadsImageParams } from '../../api/clusters';
@@ -128,7 +128,7 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
                   name="proxyPort"
                   helperText="The port of the HTTP proxy"
                 />
-                <InputField
+                <TextAreaField
                   label="SSH public key"
                   name="sshPublicKey"
                   helperText="SSH public key for debugging the installation"
