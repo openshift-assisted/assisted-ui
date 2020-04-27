@@ -1,4 +1,5 @@
 import React from 'react';
+import Axios, { CancelTokenSource } from 'axios';
 import {
   Modal,
   Button,
@@ -7,6 +8,9 @@ import {
   TextContent,
   Text,
   ModalBoxFooter,
+  AlertVariant,
+  Alert,
+  AlertActionCloseButton,
 } from '@patternfly/react-core';
 import { saveAs } from 'file-saver';
 import { ToolbarButton } from '../ui/Toolbar';
@@ -16,6 +20,7 @@ import { createClusterDownloadsImage, getClusterDownloadsImageUrl } from '../../
 import { useParams } from 'react-router-dom';
 import { LoadingState } from '../ui/uiState';
 import { ImageCreateParams } from '../../api/types';
+import { handleApiError } from '../../api/utils';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -27,6 +32,7 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const closeModal = () => setIsModalOpen(false);
+
   return (
     <>
       <ButtonComponent variant={ButtonVariant.primary} onClick={() => setIsModalOpen(true)}>
@@ -42,7 +48,13 @@ type DiscoveryImageModalProps = {
 };
 
 export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeModal }) => {
+  const cancelSourceRef = React.useRef<CancelTokenSource>();
   const { clusterId } = useParams();
+
+  React.useEffect(() => {
+    cancelSourceRef.current = Axios.CancelToken.source();
+    return () => cancelSourceRef.current?.cancel('Image generation cancelled by user.');
+  }, []);
 
   const handleSubmit = async (
     values: ImageCreateParams,
@@ -52,13 +64,15 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
       try {
         const {
           data: { imageId },
-        } = await createClusterDownloadsImage(clusterId, values);
+        } = await createClusterDownloadsImage(clusterId, values, {
+          cancelToken: cancelSourceRef.current?.token,
+        });
         saveAs(getClusterDownloadsImageUrl(clusterId, imageId), `discovery-image-${clusterId}.iso`);
         closeModal();
-      } catch (e) {
-        formikActions.setStatus({ error: 'Failed to download the discovery Image' });
-        console.error(e);
-        console.error('Response data:', e.response?.data);
+      } catch (error) {
+        handleApiError<ImageCreateParams>(error, () => {
+          formikActions.setStatus({ error: 'Failed to download the discovery Image' });
+        });
       }
     }
   };
@@ -77,7 +91,7 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
         // validate={validate}
         onSubmit={handleSubmit}
       >
-        {({ handleSubmit, isSubmitting }) => (
+        {({ handleSubmit, isSubmitting, status, setStatus }) => (
           <Form onSubmit={handleSubmit}>
             {isSubmitting ? (
               <LoadingState
@@ -90,10 +104,22 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
               />
             ) : (
               <>
+                {status.error && (
+                  <Alert
+                    variant={AlertVariant.danger}
+                    title={status.error}
+                    action={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
+                    isInline
+                  />
+                )}
                 <TextContent>
                   <Text component="p">
-                    Provide configuration for discovery image so the hosts which boot the image can
-                    access the internet to register as a cluster inventory.
+                    Hosts must be connected to the internet to form a cluster using this installer.
+                    If hosts need to connect through a proxy, provide the proxy's information below.
+                  </Text>
+                  <Text component="p">
+                    Each host will need a valid IP address assigned by a DHCP server with DNS
+                    records that fully resolve.
                   </Text>
                 </TextContent>
                 <InputField

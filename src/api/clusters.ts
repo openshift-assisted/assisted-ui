@@ -1,4 +1,4 @@
-import axios, { AxiosPromise } from 'axios';
+import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 // import { saveAs } from 'file-saver';
 import { Cluster, ClusterCreateParams, Host, ImageCreateParams } from './types';
 import { API_ROOT } from '.';
@@ -26,8 +26,13 @@ type ImageCreateResponse = {
 export const createClusterDownloadsImage = (
   id: string,
   params: ImageCreateParams,
+  axiosOptions: AxiosRequestConfig,
 ): AxiosPromise<ImageCreateResponse> =>
-  axios.post(`${API_ROOT}/clusters/${id}/downloads/image`, params);
+  axios.post<ImageCreateResponse>(
+    `${API_ROOT}/clusters/${id}/downloads/image`,
+    params,
+    axiosOptions,
+  );
 
 export const getClusterDownloadsImageUrl = (clusterId: string, imageId: string) =>
   `/api/bm-inventory/v1/clusters/${clusterId}/downloads/image?imageId=${imageId}`;
