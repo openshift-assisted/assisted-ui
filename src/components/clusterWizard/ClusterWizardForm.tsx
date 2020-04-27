@@ -12,6 +12,7 @@ import {
   Alert,
   AlertVariant,
   AlertActionCloseButton,
+  TextInputTypes,
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
@@ -24,7 +25,7 @@ import GridGap from '../ui/GridGap';
 import { Cluster, ClusterUpdateParams, Host } from '../../api/types';
 import { WizardStep } from '../../types/wizard';
 import { patchCluster } from '../../api/clusters';
-import AlertsSection from './AlertsSection';
+import AlertsSection from '../ui/AlertsSection';
 
 interface ClusterWizardFormProps {
   cluster: Cluster;
@@ -71,7 +72,7 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
       console.log('data', data);
       // TODO(jtomasek): update cluster in redux
     } catch (e) {
-      formikActions.setStatus({ error: 'Failed to update the cluster' });
+      formikActions.setStatus({ error: 'Failed to update the cluster.' });
       console.error(e);
       console.error('Response data:', e.response?.data);
     }
@@ -131,6 +132,7 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
                     <InputField
                       name="clusterNetworkHostPrefix"
                       label="Cluster Network Host Prefix"
+                      type={TextInputTypes.number}
                       helperText="The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic."
                       isRequired
                     />
@@ -215,20 +217,17 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
               Back
             </ToolbarButton>
             <ToolbarButton
+              type="submit"
               variant={ButtonVariant.secondary}
-              onClick={submitForm}
               isDisabled={isSubmitting || !isValid}
+              onClick={submitForm}
             >
               Save Configuration
             </ToolbarButton>
-            <ToolbarButton
-              variant={ButtonVariant.primary}
-              // onClick={submitForm}
-              isDisabled
-            >
+            <ToolbarButton variant={ButtonVariant.primary} isDisabled>
               Deploy cluster
             </ToolbarButton>
-            {isSubmitting && <ToolbarText>Form is being submitted</ToolbarText>}
+            {isSubmitting && <ToolbarText>Saving...</ToolbarText>}
           </ClusterWizardToolbar>
         </>
       )}
