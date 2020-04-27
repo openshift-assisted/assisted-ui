@@ -8,15 +8,14 @@ import {
   Text,
   ModalBoxFooter,
 } from '@patternfly/react-core';
-// import { saveAs } from 'file-saver';
+import { saveAs } from 'file-saver';
 import { ToolbarButton } from '../ui/Toolbar';
 import { InputField, TextAreaField } from '../ui/formik';
 import { Formik, FormikHelpers } from 'formik';
-// import useApi from '../../api/useApi';
-import { GetClusterDownloadsImageParams } from '../../api/clusters';
-// import { ResourceUIState } from '../../types';
+import { createClusterDownloadsImage, getClusterDownloadsImageUrl } from '../../api/clusters';
 import { useParams } from 'react-router-dom';
 import { LoadingState } from '../ui/uiState';
+import { ImageCreateParams } from '../../api/types';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -45,68 +44,47 @@ type DiscoveryImageModalProps = {
 export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeModal }) => {
   const { clusterId } = useParams();
 
-  // const [{ data, uiState }, downloadImage] = useApi(getClusterDownloadsImage, undefined, {
-  //   manual: true,
-  //   initialUIState: ResourceUIState.LOADED,
-  // });
-  // console.log('DATA', data);
-  // console.log('DATATYPE', typeof data);
-
-  // React.useEffect(() => {
-  //   if (data) saveAs(data, 'discoveryImage.iso');
-  // }, [data]);
-
-  const handleSubmit = (
-    values: GetClusterDownloadsImageParams,
-    actions: FormikHelpers<GetClusterDownloadsImageParams>,
+  const handleSubmit = async (
+    values: ImageCreateParams,
+    formikActions: FormikHelpers<ImageCreateParams>,
   ) => {
-    actions.setSubmitting(true);
-    // clusterId && downloadImage([clusterId, values]);
+    if (clusterId) {
+      try {
+        const {
+          data: { imageId },
+        } = await createClusterDownloadsImage(clusterId, values);
+        saveAs(getClusterDownloadsImageUrl(clusterId, imageId), `discovery-image-${clusterId}.iso`);
+        closeModal();
+      } catch (e) {
+        formikActions.setStatus({ error: 'Failed to download the discovery Image' });
+        console.error(e);
+        console.error('Response data:', e.response?.data);
+      }
+    }
   };
 
   return (
     <Modal
-      title="Configure discovery ISO"
+      title="Download discovery ISO"
       isOpen={true}
       onClose={closeModal}
-      // actions={[
-      //   <Button
-      //     key="confirm"
-      //     variant="primary"
-      //     href={`/api/bm-inventory/v1/clusters/${clusterId}/downloads/image`}
-      //     component="a"
-      //     download="discovery.iso"
-      //     onClick={() => setSubmitting(true)}
-      //   >
-      //     Download discovery ISO
-      //   </Button>,
-      //   <Button key="cancel" variant="link" onClick={closeModal}>
-      //     Cancel
-      //   </Button>,
-      // ]}
       isFooterLeftAligned
       isSmall
     >
       <Formik
-        initialValues={
-          { proxyIp: '', proxyPort: '', sshPublicKey: '' } as GetClusterDownloadsImageParams
-        }
+        initialValues={{ proxyIp: '', proxyPort: undefined, sshPublicKey: '' } as ImageCreateParams}
         initialStatus={{ error: null }}
         // validate={validate}
         onSubmit={handleSubmit}
       >
         {({ handleSubmit, isSubmitting }) => (
-          <Form
-            action={`/api/bm-inventory/v1/clusters/${clusterId}/downloads/image`}
-            method="get"
-            onSubmit={() => handleSubmit()}
-          >
+          <Form onSubmit={handleSubmit}>
             {isSubmitting ? (
               <LoadingState
                 content="Discovery image is being prepared, the download will start in a moment."
                 secondaryActions={[
                   <Button key="close" variant={ButtonVariant.secondary} onClick={closeModal}>
-                    Close
+                    Cancel
                   </Button>,
                 ]}
               />

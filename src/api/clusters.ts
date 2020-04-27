@@ -1,6 +1,6 @@
 import axios, { AxiosPromise } from 'axios';
 // import { saveAs } from 'file-saver';
-import { Cluster, ClusterCreateParams, Host } from './types';
+import { Cluster, ClusterCreateParams, Host, ImageCreateParams } from './types';
 import { API_ROOT } from '.';
 
 export const getClusters = (): AxiosPromise<Cluster[]> => axios.get(`${API_ROOT}/clusters`);
@@ -20,24 +20,14 @@ export const deleteCluster = (id: string): AxiosPromise<void> =>
 export const getClusterHosts = (id: string): AxiosPromise<Host[]> =>
   axios.get(`${API_ROOT}/clusters/${id}/hosts`);
 
-export type GetClusterDownloadsImageParams = {
-  proxyIp?: string;
-  proxyPort?: string;
-  sshPublicKey?: string;
+type ImageCreateResponse = {
+  imageId: string;
 };
-export type GetClusterDownloadsImageArgs = [string, GetClusterDownloadsImageParams];
+export const createClusterDownloadsImage = (
+  id: string,
+  params: ImageCreateParams,
+): AxiosPromise<ImageCreateResponse> =>
+  axios.post(`${API_ROOT}/clusters/${id}/downloads/image`, params);
 
-export const getClusterDownloadsImage = ([id, params]: GetClusterDownloadsImageArgs): AxiosPromise<
-  string
-> =>
-  axios.get(`${API_ROOT}/clusters/${id}/downloads/image`, {
-    params,
-    responseType: 'blob',
-    onDownloadProgress: function (progressEvent) {
-      console.log('onDownloadProgress', progressEvent);
-    },
-    headers: {
-      accept: 'application/octet-stream',
-      'Content-Disposition': 'attachment; filename="discovery.iso"; filename*="discovery.iso"',
-    },
-  });
+export const getClusterDownloadsImageUrl = (clusterId: string, imageId: string) =>
+  `/api/bm-inventory/v1/clusters/${clusterId}/downloads/image?imageId=${imageId}`;

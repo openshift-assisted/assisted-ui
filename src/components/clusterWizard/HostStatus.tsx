@@ -13,7 +13,8 @@ type HostStatus =
   | 'insufficient'
   | 'disabled'
   | 'installing'
-  | 'installed';
+  | 'installed'
+  | 'error';
 
 const statusTitles = {
   discovering: 'Discovering',
@@ -23,6 +24,7 @@ const statusTitles = {
   disabled: 'Disabled',
   installing: 'Installing',
   installed: 'Installed',
+  error: 'Error',
 };
 
 const getStatusIcon = (status: HostStatus) => {
