@@ -7,6 +7,7 @@ import {
   TableVariant,
   IRow,
   expandable,
+  IRowData,
 } from '@patternfly/react-table';
 import { ConnectedIcon } from '@patternfly/react-icons';
 import { EmptyState, ErrorState } from '../ui/uiState';
@@ -18,9 +19,15 @@ import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
 import { getHostRowHardwareInfo, getHardwareInfo } from './hardwareInfo';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
+import { enableClusterHost, disableClusterHost } from '../../api/clusters';
+import { Alerts, Alert } from '../ui/Alerts';
+import { AlertVariant } from '@patternfly/react-core';
+
+import './HostsTable.scss';
 
 type HostsTableProps = {
   hosts?: Host[];
+  clusterId: string;
   uiState: ResourceUIState;
   fetchHosts: () => void;
   variant?: TableVariant;
@@ -58,6 +65,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IR
         memory,
         disk,
       ],
+      extraData: host,
     },
     {
       // expandable detail
@@ -79,8 +87,15 @@ const HostsTableEmptyState: React.FC = () => (
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
 
-const HostsTable: React.FC<HostsTableProps> = ({ hosts = [], uiState, fetchHosts, variant }) => {
+const HostsTable: React.FC<HostsTableProps> = ({
+  hosts = [],
+  uiState,
+  fetchHosts,
+  variant,
+  clusterId,
+}) => {
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
+  const [alerts, setAlerts] = React.useState([] as Alert[]);
 
   const hostRows = React.useMemo(() => _.flatten(hosts.map(hostToHostTableRow(openRows))), [
     hosts,
@@ -116,17 +131,90 @@ const HostsTable: React.FC<HostsTableProps> = ({ hosts = [], uiState, fetchHosts
     [hostRows, openRows],
   );
 
+  const addAlert = React.useCallback(
+    (alert: Alert) => {
+      if (alert.key) {
+        alert.onClose = () => {
+          setAlerts(alerts.filter((a) => a.key !== alert.key));
+        };
+      }
+      setAlerts([alert, ...alerts]);
+    },
+    [alerts, setAlerts],
+  );
+
+  const onHostEnable = React.useCallback(
+    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+      const hostId = rowData.extraData.id;
+      enableClusterHost(clusterId, hostId).catch((err) => {
+        console.error('Failed to enable host in cluster: ', err);
+        addAlert({
+          key: `enable-${hostId}`,
+          variant: AlertVariant.warning,
+          text: `Failed to enable host ${hostId}`,
+        });
+      });
+    },
+    [clusterId, addAlert],
+  );
+
+  const onHostDisable = React.useCallback(
+    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+      const hostId = rowData.extraData.id;
+      disableClusterHost(clusterId, hostId).catch((err) => {
+        console.error('Failed to disable host in cluster: ', err);
+        addAlert({
+          key: `disable-${hostId}`,
+          variant: AlertVariant.warning,
+          text: `Failed to disable host ${hostId}`,
+        });
+      });
+    },
+    [clusterId, addAlert],
+  );
+
+  const actionResolver = React.useCallback(
+    (rowData: IRowData) => {
+      const host = rowData.extraData;
+      if (!host) {
+        // I.e. row with detail
+        return [];
+      }
+
+      const actions = [];
+      if (host.status === 'disabled') {
+        actions.push({
+          title: 'Enable in cluster',
+          onClick: onHostEnable,
+        });
+      }
+      if (['discovering', 'disconnected', 'known', 'insufficient'].includes(host.status)) {
+        actions.push({
+          title: 'Disable in cluster',
+          onClick: onHostDisable,
+        });
+      }
+
+      return actions;
+    },
+    [onHostEnable, onHostDisable],
+  );
+
   return (
-    <Table
-      rows={rows}
-      cells={columns}
-      onCollapse={onCollapse}
-      variant={variant ? variant : rows.length > 10 ? TableVariant.compact : undefined}
-      aria-label="Hosts table"
-    >
-      <TableHeader />
-      <TableBody rowKey={rowKey} />
-    </Table>
+    <>
+      <Table
+        rows={rows}
+        cells={columns}
+        onCollapse={onCollapse}
+        variant={variant ? variant : rows.length > 10 ? TableVariant.compact : undefined}
+        aria-label="Hosts table"
+        actionResolver={actionResolver}
+      >
+        <TableHeader />
+        <TableBody rowKey={rowKey} />
+      </Table>
+      <Alerts alerts={alerts} className="host-table-alerts" />
+    </>
   );
 };
 

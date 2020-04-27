@@ -59,7 +59,12 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster, setSte
         </TextContent>
       </PageSection>
       <PageSection variant={PageSectionVariants.light} isMain>
-        <HostsTable hosts={hosts || cluster.hosts} uiState={uiState} fetchHosts={fetchHosts} />
+        <HostsTable
+          hosts={hosts || cluster.hosts}
+          uiState={uiState}
+          fetchHosts={fetchHosts}
+          clusterId={cluster.id}
+        />
       </PageSection>
       <ClusterWizardToolbar>
         <ToolbarButton
