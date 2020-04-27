@@ -1,1 +1,1 @@
-export const API_ROOT = '/api/bm-inventory/v1';
+export const API_ROOT = process.env.REACT_APP_API_ROOT;

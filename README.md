@@ -38,8 +38,7 @@ For further details about the Metal³ architecture, see [http://github.com/metal
 - Start the backend server with `go run main.go server`
 - Start the yarn server with:
 ```
-  export BM_INVENTORY=`minikube service bm-inventory --url`
-  yarn start
+  REACT_APP_API_URL=`minikube service bm-inventory --url` yarn start
 ```
 - Open the UI at `http://localhost:3000`
 
