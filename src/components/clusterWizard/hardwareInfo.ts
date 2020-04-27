@@ -25,7 +25,9 @@ export const getDisks = (hwInfo: Introspection): BlockDevice[] =>
 export const getNics = (hwInfo: Introspection): Nic[] => hwInfo.nics || [];
 
 export const getHostRowHardwareInfo = (hwInfo: Introspection): HostRowHardwareInfo => ({
-  cpu: `${hwInfo.cpu?.cpus}x ${Humanize.formatNumber(hwInfo.cpu?.['cpu-mhz'] || 0)} MHz`,
+  cpu: `${hwInfo.cpu?.cpus ? `${hwInfo.cpu?.cpus}x ` : ''}${Humanize.formatNumber(
+    hwInfo.cpu?.['cpu-mhz'] || 0,
+  )} MHz`,
   memory: Humanize.fileSize(getMemoryCapacity(hwInfo)),
   disk: Humanize.fileSize(
     getDisks(hwInfo).reduce(
