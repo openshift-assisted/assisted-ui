@@ -66,7 +66,7 @@ export interface Cluster {
    * SSH public key for debugging OpenShift nodes
    */
   sshPublicKey?: string;
-  status: 'creating' | 'ready' | 'error';
+  status: 'insufficient' | 'ready' | 'error' | 'installing' | 'installed';
   hosts?: Host[];
   updatedAt?: string; // date-time
   createdAt?: string; // date-time
@@ -212,7 +212,8 @@ export interface Host {
     | 'insufficient'
     | 'disabled'
     | 'installing'
-    | 'installed';
+    | 'installed'
+    | 'error';
   statusInfo?: string;
   connectivity?: ConnectivityReport;
   hardwareInfo?: string;
@@ -223,6 +224,20 @@ export interface HostCreateParams {
   hostId: string; // uuid
 }
 export type HostList = Host[];
+export interface ImageCreateParams {
+  /**
+   * The IP address of the HTTP proxy that agents should use to access the discovery service
+   */
+  proxyIp?: string; // hostname
+  /**
+   * The port of the HTTP proxy
+   */
+  proxyPort?: number;
+  /**
+   * SSH public key for debugging the installation
+   */
+  sshPublicKey?: string;
+}
 export interface Introspection {
   cpu?: Cpu;
   'block-devices'?: BlockDevice[];
