@@ -23,7 +23,7 @@ import { enableClusterHost, disableClusterHost } from '../../api/clusters';
 import { Alerts, Alert } from '../ui/Alerts';
 import { AlertVariant } from '@patternfly/react-core';
 
-import './HostsTable.scss';
+import './HostsTable.css';
 
 type HostsTableProps = {
   hosts?: Host[];
@@ -137,8 +137,12 @@ const HostsTable: React.FC<HostsTableProps> = ({
         alert.onClose = () => {
           setAlerts(alerts.filter((a) => a.key !== alert.key));
         };
+
+        // remove existing and place new on the top
+        setAlerts([alert, ...alerts.filter((a) => a.key !== alert.key)]);
+      } else {
+        setAlerts([alert, ...alerts]);
       }
-      setAlerts([alert, ...alerts]);
     },
     [alerts, setAlerts],
   );

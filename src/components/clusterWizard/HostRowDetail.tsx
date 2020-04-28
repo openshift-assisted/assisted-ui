@@ -15,7 +15,7 @@ import {
 import { Introspection } from '../../api/types';
 import { getMemoryCapacity, getDisks, getNics } from './hardwareInfo';
 
-import './HostRowDetail.scss';
+import './HostRowDetail.css';
 
 type HostDetailProps = {
   hwInfo: Introspection;
