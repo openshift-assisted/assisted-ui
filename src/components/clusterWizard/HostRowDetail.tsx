@@ -15,7 +15,7 @@ import {
 import { Introspection } from '../../api/types';
 import { getMemoryCapacity, getDisks, getNics } from './hardwareInfo';
 
-import './HostRowDetail.scss';
+import './HostRowDetail.css';
 
 type HostDetailProps = {
   hwInfo: Introspection;
@@ -38,20 +38,22 @@ const HostDetailItem: React.FC<HostDetailItemProps> = ({ title, value = '' }) =>
       <Text component={TextVariants.h3} className="host-row-detail-item__title">
         {title}
       </Text>
-      <Text component={TextVariants.p} className="host-row-detail-item__value">
+      <div className="host-row-detail-item__value">
         {Array.isArray(value) ? (
           <TextList component={TextListVariants.dl}>
-            {value.map((item) => (
-              <>
-                <TextListItem component={TextListItemVariants.dt}>{item.title}</TextListItem>
-                <TextListItem component={TextListItemVariants.dd}>{item.value}</TextListItem>
-              </>
-            ))}
+            {value.map((item) => [
+              <TextListItem key={item.title} component={TextListItemVariants.dt}>
+                {item.title}
+              </TextListItem>,
+              <TextListItem key={`dd-${item.title}`} component={TextListItemVariants.dd}>
+                {item.value}
+              </TextListItem>,
+            ])}
           </TextList>
         ) : (
           value
         )}
-      </Text>
+      </div>
     </>
   );
 };

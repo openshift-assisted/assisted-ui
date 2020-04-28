@@ -10,7 +10,6 @@ export type HostRowHardwareInfo = {
 export const getHardwareInfo = (hwInfoString: string): Introspection | undefined => {
   try {
     const hwInfo = JSON.parse(hwInfoString);
-    console.log('--- hwInfo: ', JSON.stringify(hwInfo));
     return hwInfo;
   } catch (e) {
     console.error('Failed to parse Hardware Info', e, hwInfoString);
@@ -26,7 +25,9 @@ export const getDisks = (hwInfo: Introspection): BlockDevice[] =>
 export const getNics = (hwInfo: Introspection): Nic[] => hwInfo.nics || [];
 
 export const getHostRowHardwareInfo = (hwInfo: Introspection): HostRowHardwareInfo => ({
-  cpu: `${hwInfo.cpu?.cpus}x ${Humanize.formatNumber(hwInfo.cpu?.['cpu-mhz'] || 0)} MHz`,
+  cpu: `${hwInfo.cpu?.cpus ? `${hwInfo.cpu?.cpus}x ` : ''}${Humanize.formatNumber(
+    hwInfo.cpu?.['cpu-mhz'] || 0,
+  )} MHz`,
   memory: Humanize.fileSize(getMemoryCapacity(hwInfo)),
   disk: Humanize.fileSize(
     getDisks(hwInfo).reduce(
