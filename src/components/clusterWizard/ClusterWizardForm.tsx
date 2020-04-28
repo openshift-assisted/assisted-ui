@@ -22,9 +22,11 @@ import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import { InputField, TextAreaField, SelectField } from '../ui/formik';
 import validationSchema from './validationSchema';
 import GridGap from '../ui/GridGap';
-import { Cluster, ClusterUpdateParams, Host } from '../../api/types';
+import { Cluster, ClusterUpdateParams } from '../../api/types';
 import { WizardStep } from '../../types/wizard';
 import { patchCluster } from '../../api/clusters';
+import { handleApiError } from '../../api/utils';
+import { OPENSHIFT_VERSION_OPTIONS, CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 
 interface ClusterWizardFormProps {
@@ -35,7 +37,7 @@ interface ClusterWizardFormProps {
 const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep }) => {
   const initialValues: ClusterUpdateParams = {
     name: cluster.name || '',
-    openshiftVersion: cluster.openshiftVersion || '4.4',
+    openshiftVersion: cluster.openshiftVersion || OPENSHIFT_VERSION_OPTIONS[0].value,
     baseDnsDomain: cluster.baseDnsDomain || '',
     clusterNetworkCIDR: cluster.clusterNetworkCIDR || '',
     clusterNetworkHostPrefix: cluster.clusterNetworkHostPrefix || 0,
@@ -45,11 +47,6 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
     ingressVip: cluster.ingressVip || '',
     pullSecret: cluster.pullSecret || '',
     sshPublicKey: cluster.sshPublicKey || '',
-    hostsRoles:
-      cluster.hosts?.map((host: Host) => ({
-        id: host.id,
-        role: host.role as 'master' | 'worker',
-      })) || [],
   };
 
   const validate = (values: ClusterUpdateParams) => {
@@ -72,9 +69,9 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
       console.log('data', data);
       // TODO(jtomasek): update cluster in redux
     } catch (e) {
-      formikActions.setStatus({ error: 'Failed to update the cluster.' });
-      console.error(e);
-      console.error('Response data:', e.response?.data);
+      handleApiError<ClusterUpdateParams>(e, () =>
+        formikActions.setStatus({ error: 'Failed to update the cluster' }),
+      );
     }
   };
 
@@ -107,11 +104,7 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
                     <SelectField
                       label="OpenShift Version"
                       name="openshiftVersion"
-                      options={[
-                        { label: 'OpenShift 4.4', value: '4.4' },
-                        { label: 'OpenShift 4.5', value: '4.5' },
-                        { label: 'OpenShift 4.6', value: '4.6' },
-                      ]}
+                      options={OPENSHIFT_VERSION_OPTIONS}
                       isRequired
                     />
                     <InputField
@@ -171,7 +164,7 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
                           The pull secret obtained from the Pull Secret page on the{' '}
                           {
                             <a
-                              href="https://cloud.redhat.com/openshift/install/metal/user-provisioned"
+                              href={CLUSTER_MANAGER_SITE_LINK}
                               target="_blank"
                               rel="noopener noreferrer"
                             >
