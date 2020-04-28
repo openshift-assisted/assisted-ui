@@ -1,6 +1,12 @@
 import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 // import { saveAs } from 'file-saver';
-import { Cluster, ClusterCreateParams, Host, ImageCreateParams } from './types';
+import {
+  Cluster,
+  ClusterCreateParams,
+  Host,
+  ClusterUpdateParams,
+  ImageCreateParams,
+} from './types';
 import { API_ROOT } from '.';
 
 export const getClusters = (): AxiosPromise<Cluster[]> => axios.get(`${API_ROOT}/clusters`);
@@ -11,8 +17,8 @@ export const getCluster = (id: string): AxiosPromise<Cluster> =>
 export const postCluster = (params: ClusterCreateParams): AxiosPromise<Cluster> =>
   axios.post(`${API_ROOT}/clusters`, params);
 
-// export const patchCluster = (id?: string, params?: ClusterUpdateParams): AxiosPromise<Cluster> =>
-//   axios.patch(`${API_ROOT}/clusters/${id}`, params);
+export const patchCluster = (id: string, params: ClusterUpdateParams): AxiosPromise<Cluster> =>
+  axios.patch(`${API_ROOT}/clusters/${id}`, params);
 
 export const deleteCluster = (id: string): AxiosPromise<void> =>
   axios.delete(`${API_ROOT}/clusters/${id}`);
