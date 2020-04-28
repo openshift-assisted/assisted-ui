@@ -206,7 +206,7 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
               variant={ButtonVariant.secondary}
               component={(props) => <Link to="/clusters" {...props} />}
             >
-              Cancel
+              Close
             </ToolbarButton>
             <ToolbarButton
               variant={ButtonVariant.secondary}

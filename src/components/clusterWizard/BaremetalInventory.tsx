@@ -71,7 +71,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster, setSte
           variant={ButtonVariant.secondary}
           component={(props) => (
             <Link to="/clusters" {...props}>
-              Cancel
+              Close
             </Link>
           )}
         ></ToolbarButton>
