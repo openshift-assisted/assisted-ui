@@ -10,11 +10,7 @@ import {
 
 import { RootState } from '../../store/rootReducer';
 import PageSection from '../ui/PageSection';
-import {
-  getClustersError,
-  getClustersUIState,
-  getClusterTableRows,
-} from '../../selectors/clusters';
+import { selectClusterTableRows, selectClustersUIState } from '../../selectors/clusters';
 import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
 import { ToolbarButton } from '../ui/Toolbar';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
@@ -22,7 +18,7 @@ import { AddCircleOIcon } from '@patternfly/react-icons';
 import { ResourceUIState } from '../../types';
 import { ClusterTableRows } from '../../types/clusters';
 import ClustersTable from './ClustersTable';
-import { fetchClustersAsync, deleteClusterAsync } from '../../actions/clusters';
+import { deleteClusterAsync, fetchClustersAsync } from '../../features/clusters/clustersSlice';
 import { Link } from 'react-router-dom';
 
 interface ClustersProps {
@@ -38,7 +34,6 @@ const Clusters: React.FC<ClustersProps> = ({
   deleteCluster,
   clusterRows,
   clustersUIState,
-  clustersError,
 }) => {
   React.useEffect(() => {
     fetchClusters();
@@ -46,7 +41,7 @@ const Clusters: React.FC<ClustersProps> = ({
 
   const errorState = (
     <PageSection variant={PageSectionVariants.light} isMain>
-      <ErrorState title={clustersError} fetchData={fetchClusters} />;
+      <ErrorState title="Failed to fetch clusters." fetchData={fetchClusters} />;
     </PageSection>
   );
   const loadingState = (
@@ -105,9 +100,8 @@ const Clusters: React.FC<ClustersProps> = ({
 };
 
 const mapStateToProps = (state: RootState) => ({
-  clusterRows: getClusterTableRows(state),
-  clustersUIState: getClustersUIState(state),
-  clustersError: getClustersError(state),
+  clusterRows: selectClusterTableRows(state),
+  clustersUIState: selectClustersUIState(state),
 });
 
 export default connect(mapStateToProps, {

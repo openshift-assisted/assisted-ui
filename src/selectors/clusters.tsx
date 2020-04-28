@@ -2,14 +2,20 @@ import React from 'react';
 import { createSelector } from 'reselect';
 
 import { ClusterTableRows } from '../types/clusters';
-import { Cluster, Host } from '../api/types';
-import { ApiResourceKindPlural } from '../types';
-import { createGetResourcesError, createGetResources, createGetResourcesUIState } from './utils';
+import { Cluster } from '../api/types';
+import { ResourceUIState } from '../types';
 import { Link } from 'react-router-dom';
 import { IRow } from '@patternfly/react-table';
-import { HostTableRows } from '../types/hosts';
+import { RootState } from '../store/rootReducer';
 
-export const getClustersError = createGetResourcesError(ApiResourceKindPlural.clusters);
+const selectClusters = (state: RootState) => state.clusters.data;
+const clustersUIState = (state: RootState) => state.clusters.uiState;
+
+export const selectClustersUIState = createSelector(
+  [selectClusters, clustersUIState],
+  (clusters, uiState): ResourceUIState =>
+    !clusters.length && uiState === ResourceUIState.LOADED ? ResourceUIState.EMPTY : uiState,
+);
 
 const clusterToClusterTableRow = (cluster: Cluster): IRow => {
   const { id, name, status, hosts } = cluster;
@@ -29,21 +35,7 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
   };
 };
 
-export const getClusterTableRows = createSelector(
-  createGetResources<Cluster>(ApiResourceKindPlural.clusters),
+export const selectClusterTableRows = createSelector(
+  selectClusters,
   (clusters): ClusterTableRows => clusters.map(clusterToClusterTableRow),
-);
-
-export const getClustersUIState = createGetResourcesUIState(ApiResourceKindPlural.clusters);
-
-export const getClusterHosts = (cluster: Cluster) => cluster.hosts || [];
-
-const hostToHostTableRow = (host: Host): string[] => {
-  const { id, status, statusInfo } = host;
-  return [id, 'Master', 'SN00000', status, statusInfo || '-', '-', '-', '-'];
-};
-
-export const getHostsTableRows = createSelector(
-  getClusterHosts,
-  (hosts: Host[]): HostTableRows => hosts.map(hostToHostTableRow),
 );
