@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
 import { PageSectionVariants, ButtonVariant, Button } from '@patternfly/react-core';
+import { useSelector, useDispatch } from 'react-redux';
 import PageSection from '../ui/PageSection';
 import { ErrorState, LoadingState } from '../ui/uiState';
-import { getCluster } from '../../api/clusters';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
-import useApi from '../../api/useApi';
 import { ResourceUIState } from '../../types';
+import { selectCurrentClusterState } from '../../selectors/currentCluster';
+import { fetchClusterAsync } from '../../features/clusters/currentClusterSlice';
 
 type MatchParams = {
   clusterId: string;
@@ -14,7 +15,16 @@ type MatchParams = {
 
 const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const { clusterId } = match.params;
-  const [{ data: cluster, uiState }, fetchCluster] = useApi(getCluster, clusterId);
+  const { data: cluster, uiState } = useSelector(selectCurrentClusterState);
+  const dispatch = useDispatch();
+  const fetchCluster = React.useCallback(() => dispatch(fetchClusterAsync(clusterId)), [
+    clusterId,
+    dispatch,
+  ]);
+
+  React.useEffect(() => {
+    fetchCluster();
+  }, [clusterId, fetchCluster]);
 
   const cancel = (
     <Button

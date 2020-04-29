@@ -15,6 +15,7 @@ import {
   TextInputTypes,
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { useDispatch } from 'react-redux';
 
 import ClusterWizardToolbar from './ClusterWizardToolbar';
 import PageSection from '../ui/PageSection';
@@ -28,6 +29,7 @@ import { patchCluster } from '../../api/clusters';
 import { handleApiError } from '../../api/utils';
 import { OPENSHIFT_VERSION_OPTIONS, CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
+import { updateCluster } from '../../features/clusters/currentClusterSlice';
 
 interface ClusterWizardFormProps {
   cluster: Cluster;
@@ -35,6 +37,8 @@ interface ClusterWizardFormProps {
 }
 
 const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep }) => {
+  const dispatch = useDispatch();
+
   const initialValues: ClusterUpdateParams = {
     name: cluster.name || '',
     openshiftVersion: cluster.openshiftVersion || OPENSHIFT_VERSION_OPTIONS[0].value,
@@ -66,8 +70,7 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
   ) => {
     try {
       const { data } = await patchCluster(cluster.id, values); // eslint-disable-line @typescript-eslint/no-non-null-assertion
-      console.log('data', data);
-      // TODO(jtomasek): update cluster in redux
+      dispatch(updateCluster(data));
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         formikActions.setStatus({ error: 'Failed to update the cluster' }),
