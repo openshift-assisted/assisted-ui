@@ -5,7 +5,7 @@ import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../types';
 
 export const fetchClusterAsync = createAsyncThunk(
-  'cluster/fetchClusterAsync',
+  'currentCluster/fetchClusterAsync',
   async (clusterId: string) => {
     try {
       const { data } = await getCluster(clusterId);
@@ -28,9 +28,10 @@ const initialState: CurrentClusterStateSlice = {
 
 export const currentClusterSlice = createSlice({
   initialState,
-  name: 'cluster',
+  name: 'currentCluster',
   reducers: {
     updateCluster: (state, action: PayloadAction<Cluster>) => ({ ...state, data: action.payload }),
+    cleanCluster: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -50,5 +51,5 @@ export const currentClusterSlice = createSlice({
   },
 });
 
-export const { updateCluster } = currentClusterSlice.actions;
+export const { updateCluster, cleanCluster } = currentClusterSlice.actions;
 export default currentClusterSlice.reducer;

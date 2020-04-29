@@ -1,40 +1,35 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   PageSectionVariants,
   ButtonVariant,
   TextContent,
   Text,
   Button,
+  TextVariants,
+  Spinner,
 } from '@patternfly/react-core';
 
-import { RootState } from '../../store/rootReducer';
 import PageSection from '../ui/PageSection';
 import { selectClusterTableRows, selectClustersUIState } from '../../selectors/clusters';
 import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
-import { ToolbarButton } from '../ui/Toolbar';
+import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';
 import { ResourceUIState } from '../../types';
-import { ClusterTableRows } from '../../types/clusters';
 import ClustersTable from './ClustersTable';
 import { deleteClusterAsync, fetchClustersAsync } from '../../features/clusters/clustersSlice';
 import { Link } from 'react-router-dom';
 
-interface ClustersProps {
-  clusterRows: ClusterTableRows;
-  clustersUIState: ResourceUIState;
-  clustersError: string;
-  fetchClusters: () => void;
-  deleteCluster: (id: string) => void;
-}
+const Clusters: React.FC = () => {
+  const clusterRows = useSelector(selectClusterTableRows);
+  const clustersUIState = useSelector(selectClustersUIState);
+  const dispatch = useDispatch();
+  const fetchClusters = React.useCallback(() => dispatch(fetchClustersAsync()), [dispatch]);
+  const deleteCluster = React.useCallback((clusterId) => dispatch(deleteClusterAsync(clusterId)), [
+    dispatch,
+  ]);
 
-const Clusters: React.FC<ClustersProps> = ({
-  fetchClusters,
-  deleteCluster,
-  clusterRows,
-  clustersUIState,
-}) => {
   React.useEffect(() => {
     fetchClusters();
   }, [fetchClusters]);
@@ -67,12 +62,13 @@ const Clusters: React.FC<ClustersProps> = ({
     </PageSection>
   );
 
+  const { LOADING, EMPTY, ERROR, RELOADING } = ResourceUIState;
   switch (clustersUIState) {
-    case ResourceUIState.LOADING:
+    case LOADING:
       return loadingState;
-    case ResourceUIState.ERROR:
+    case ERROR:
       return errorState;
-    case ResourceUIState.EMPTY:
+    case EMPTY:
       return emptyState;
     default:
       // TODO(jtomasek): if there is just one cluster, redirect to it's detail
@@ -93,18 +89,17 @@ const Clusters: React.FC<ClustersProps> = ({
             >
               Create New Cluster
             </ToolbarButton>
+            <ToolbarText component={TextVariants.small}>
+              {clustersUIState === RELOADING && (
+                <>
+                  <Spinner size="sm" /> Fetching clusters...
+                </>
+              )}
+            </ToolbarText>
           </ClusterWizardToolbar>
         </>
       );
   }
 };
 
-const mapStateToProps = (state: RootState) => ({
-  clusterRows: selectClusterTableRows(state),
-  clustersUIState: selectClustersUIState(state),
-});
-
-export default connect(mapStateToProps, {
-  fetchClusters: fetchClustersAsync,
-  deleteCluster: deleteClusterAsync,
-})(Clusters);
+export default Clusters;

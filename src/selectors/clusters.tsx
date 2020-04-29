@@ -13,8 +13,10 @@ const clustersUIState = (state: RootState) => state.clusters.uiState;
 
 export const selectClustersUIState = createSelector(
   [selectClusters, clustersUIState],
-  (clusters, uiState): ResourceUIState =>
-    !clusters.length && uiState === ResourceUIState.LOADED ? ResourceUIState.EMPTY : uiState,
+  (clusters, uiState): ResourceUIState => {
+    const { LOADED, EMPTY } = ResourceUIState;
+    return !clusters.length && uiState === LOADED ? EMPTY : uiState;
+  },
 );
 
 const clusterToClusterTableRow = (cluster: Cluster): IRow => {

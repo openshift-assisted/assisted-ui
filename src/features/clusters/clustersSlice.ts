@@ -37,19 +37,20 @@ export const clustersSlice = createSlice({
   name: 'clusters',
   reducers: {},
   extraReducers: (builder) => {
+    const { LOADED, LOADING, RELOADING, ERROR } = ResourceUIState;
     builder
-      .addCase(fetchClustersAsync.pending, (state) => ({
-        ...state,
-        uiState: ResourceUIState.LOADING,
-      }))
+      .addCase(fetchClustersAsync.pending, (state) => {
+        const uiState = state.uiState === LOADED ? RELOADING : LOADING;
+        return { ...state, uiState };
+      })
       .addCase(fetchClustersAsync.fulfilled, (state, action) => ({
         ...state,
         data: [...(action.payload as Cluster[])],
-        uiState: ResourceUIState.LOADED,
+        uiState: LOADED,
       }))
       .addCase(fetchClustersAsync.rejected, (state) => ({
         ...state,
-        uiState: ResourceUIState.ERROR,
+        uiState: ERROR,
       }))
       .addCase(deleteClusterAsync.fulfilled, (state, action) => ({
         ...state,
