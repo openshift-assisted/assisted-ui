@@ -7,7 +7,7 @@ import { ErrorState, LoadingState } from '../ui/uiState';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
 import { ResourceUIState } from '../../types';
 import { selectCurrentClusterState } from '../../selectors/currentCluster';
-import { fetchClusterAsync } from '../../features/clusters/currentClusterSlice';
+import { fetchClusterAsync, cleanCluster } from '../../features/clusters/currentClusterSlice';
 
 type MatchParams = {
   clusterId: string;
@@ -24,7 +24,10 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
 
   React.useEffect(() => {
     fetchCluster();
-  }, [clusterId, fetchCluster]);
+    return () => {
+      dispatch(cleanCluster());
+    };
+  }, [clusterId, fetchCluster, dispatch]);
 
   const cancel = (
     <Button

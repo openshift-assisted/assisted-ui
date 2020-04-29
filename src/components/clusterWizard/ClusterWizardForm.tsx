@@ -13,6 +13,8 @@ import {
   AlertVariant,
   AlertActionCloseButton,
   TextInputTypes,
+  TextVariants,
+  Spinner,
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { useDispatch } from 'react-redux';
@@ -223,7 +225,11 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
             <ToolbarButton variant={ButtonVariant.primary} isDisabled>
               Deploy cluster
             </ToolbarButton>
-            {isSubmitting && <ToolbarText>Saving...</ToolbarText>}
+            {isSubmitting && (
+              <ToolbarText component={TextVariants.small}>
+                <Spinner size="sm" /> Saving...
+              </ToolbarText>
+            )}
           </ClusterWizardToolbar>
         </>
       )}
