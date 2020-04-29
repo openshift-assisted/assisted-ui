@@ -2,7 +2,7 @@ import Axios, { AxiosError } from 'axios';
 
 type OnError = <T>(arg0: AxiosError<T>) => void;
 
-export const handleApiError = <T>(error: AxiosError<T>, onError: OnError) => {
+export const handleApiError = <T>(error: AxiosError<T>, onError?: OnError) => {
   if (Axios.isCancel(error)) {
     console.error('Request canceled:', error.message);
   } else {
@@ -22,6 +22,6 @@ export const handleApiError = <T>(error: AxiosError<T>, onError: OnError) => {
       console.error('Error', error.message);
     }
     console.error('Error config:', error.config);
-    onError(error);
+    if (onError) return onError(error);
   }
 };
