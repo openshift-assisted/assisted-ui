@@ -7,4 +7,4 @@ export const OPENSHIFT_VERSION_OPTIONS = [
 export const CLUSTER_MANAGER_SITE_LINK =
   'https://cloud.redhat.com/openshift/install/metal/user-provisioned';
 
-export const POLLING_INTERVAL = 5000;
+export const POLLING_INTERVAL = 10000;

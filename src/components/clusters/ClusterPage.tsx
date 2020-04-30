@@ -18,30 +18,41 @@ type MatchParams = {
   clusterId: string;
 };
 
-const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
-  const { clusterId } = match.params;
-  const { data: cluster, uiState, forceReload } = useSelector(selectCurrentClusterState);
+const useFetchCluster = (clusterId: string) => {
   const dispatch = useDispatch();
+  return React.useCallback(() => dispatch(fetchClusterAsync(clusterId)), [clusterId, dispatch]);
+};
 
-  const fetchCluster = React.useCallback(() => dispatch(fetchClusterAsync(clusterId)), [
-    clusterId,
-    dispatch,
-  ]);
+const useClusterPolling = (clusterId: string) => {
+  const { forceReload, uiState } = useSelector(selectCurrentClusterState);
+  const dispatch = useDispatch();
+  const fetchCluster = useFetchCluster(clusterId);
+
   React.useEffect(() => {
     if (forceReload) {
-      dispatch(forceReloadAction(false));
-      fetchCluster();
+      if (![ResourceUIState.LOADING, ResourceUIState.RELOADING].includes(uiState)) {
+        fetchCluster();
+      }
     }
-    const timmer = setTimeout(() => dispatch(forceReloadAction(true)), POLLING_INTERVAL);
-    return () => clearTimeout(timmer);
-  }, [fetchCluster, dispatch, forceReload]);
+    dispatch(forceReloadAction(false));
+  }, [fetchCluster, dispatch, forceReload, uiState]);
+
   React.useEffect(() => {
-    dispatch(forceReloadAction(true));
+    fetchCluster();
+    const timmer = setInterval(() => dispatch(forceReloadAction(true)), POLLING_INTERVAL);
     return () => {
+      clearInterval(timmer);
       dispatch(forceReloadAction(false));
       dispatch(cleanCluster());
     };
-  }, [dispatch]);
+  }, [dispatch, fetchCluster]);
+};
+
+const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
+  const { clusterId } = match.params;
+  const { data: cluster, uiState } = useSelector(selectCurrentClusterState);
+  const fetchCluster = useFetchCluster(clusterId);
+  useClusterPolling(clusterId);
 
   const cancel = (
     <Button
