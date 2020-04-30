@@ -38,7 +38,7 @@ const HostDetailItem: React.FC<HostDetailItemProps> = ({ title, value = '' }) =>
       <Text component={TextVariants.h3} className="host-row-detail-item__title">
         {title}
       </Text>
-      <div className="host-row-detail-item__value">
+      <div>
         {Array.isArray(value) ? (
           <TextList component={TextListVariants.dl}>
             {value.map((item) => [

@@ -1,7 +1,3 @@
-.host-row-detail-item__value {
-  margin-left: 1rem;
-}
-
 .host-row-detail-item__title {
   font-weight: var(--pf-global--FontWeight--bold) !important;
 }
