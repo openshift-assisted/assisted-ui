@@ -12,12 +12,12 @@ import {
   TextVariants,
   FlexModifiers,
 } from '@patternfly/react-core';
-import { Introspection, BlockDevice } from '../../api/types';
-import { getMemoryCapacity, getDisks, getNics } from './hardwareInfo';
-
-import './HostRowDetail.css';
 import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
+import { Introspection, BlockDevice, Nic } from '../../api/types';
+import { getHostRowHardwareInfo } from './hardwareInfo';
+
+import './HostRowDetail.css';
 
 type HostDetailProps = {
   hwInfo: Introspection;
@@ -44,6 +44,10 @@ type SectionColumnProps = {
 
 type DisksTableProps = {
   disks: BlockDevice[];
+};
+
+type NicsTableProps = {
+  nics: Nic[];
 };
 
 const HostDetailItem: React.FC<HostDetailItemProps> = ({ title, value = '' }) => {
@@ -73,7 +77,10 @@ const HostDetailItem: React.FC<HostDetailItemProps> = ({ title, value = '' }) =>
 };
 
 const SectionTitle: React.FC<SectionTitleProps> = ({ title }) => (
-  <FlexItem breakpointMods={[{ modifier: FlexModifiers['full-width'] }]}>
+  <FlexItem
+    breakpointMods={[{ modifier: FlexModifiers['full-width'] }]}
+    className="host-row-detail__section"
+  >
     <TextContent>
       <Text component={TextVariants.h2}>{title}</Text>
     </TextContent>
@@ -121,6 +128,7 @@ const DisksTable: React.FC<DisksTableProps> = ({ disks }) => {
       cells={diskColumns}
       variant={TableVariant.compact}
       aria-label="Host's disks table"
+      borders={false}
     >
       <TableHeader />
       <TableBody rowKey={diskRowKey} />
@@ -128,12 +136,47 @@ const DisksTable: React.FC<DisksTableProps> = ({ disks }) => {
   );
 };
 
-export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
-  const memoryCapacity = Humanize.fileSize(getMemoryCapacity(hwInfo));
-  const disks = getDisks(hwInfo);
+const nicsColumns = [
+  { title: 'Name' },
+  { title: 'MAC address' },
+  { title: 'IP address' },
+  // { title: 'Latency' }, TODO(mlibra)
+  { title: 'State' },
+];
+
+const nicsRowKey = ({ rowData }: ExtraParamsType) => rowData?.name?.title;
+
+const NicsTable: React.FC<NicsTableProps> = ({ nics }) => {
+  const rows = nics
+    .sort((nicA, nicB) => nicA.name?.localeCompare(nicB.name || '') || 0)
+    .map((nic) => ({
+      cells: [
+        nic.name,
+        nic.mac,
+        nic.cidrs?.map((cidr) => `${cidr['ip-address']}/${cidr.mask}`).join(','),
+        // TODO(mlibra): latency
+        nic.state,
+      ],
+    }));
 
   return (
-    <Flex>
+    <Table
+      rows={rows}
+      cells={nicsColumns}
+      variant={TableVariant.compact}
+      aria-label="Host's network interfaces table"
+      borders={false}
+    >
+      <TableHeader />
+      <TableBody rowKey={nicsRowKey} />
+    </Table>
+  );
+};
+
+export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
+  const rowInfo = getHostRowHardwareInfo(hwInfo);
+  return (
+    <Flex className="host-row-detail">
       <SectionTitle title="Host Details" />
       <SectionColumn>
         <HostDetailItem title="CPU architecture" value={hwInfo.cpu?.architecture} />
@@ -141,42 +184,22 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
         {/* TODO(mlibra): <HostDetailItem title="Motherboard serial number" value={} /> */}
       </SectionColumn>
       <SectionColumn>
-        <HostDetailItem title="Memory capacity" value={memoryCapacity} />
-        <HostDetailItem title="CPU clock speed" value={hwInfo.cpu?.['cpu-mhz']} />
+        <HostDetailItem title="Memory capacity" value={rowInfo.memory} />
+        <HostDetailItem title="CPU clock speed" value={rowInfo.cpu} />
       </SectionColumn>
       <SectionColumn>
-        <HostDetailItem title="CPUs" value={hwInfo.cpu?.cpus} />
         <HostDetailItem title="Sockets" value={hwInfo.cpu?.sockets} />
         <HostDetailItem title="Threads per core" value={hwInfo.cpu?.['threads-per-core']} />
       </SectionColumn>
 
-      <SectionTitle title={`Disks (${disks.length})`} />
+      <SectionTitle title={`Disks (${rowInfo.disks.length})`} />
       <SectionColumn>
-        <DisksTable disks={disks} />
+        <DisksTable disks={rowInfo.disks} />
       </SectionColumn>
 
-      <SectionTitle title="NICs" />
+      <SectionTitle title={`NICs (${rowInfo.nics.length})`} />
       <SectionColumn>
-        {getNics(hwInfo).map((nic, idx) => (
-          <HostDetailItem
-            key={nic.name}
-            title={`NIC ${nic.name || idx}`}
-            value={[
-              {
-                title: 'IP',
-                value: nic.cidrs?.map((cidr) => `${cidr['ip-address']}/${cidr.mask}`).join(','),
-              },
-              {
-                title: 'MAC',
-                value: nic.mac,
-              },
-              {
-                title: 'State',
-                value: nic.state,
-              },
-            ]}
-          />
-        ))}
+        <NicsTable nics={rowInfo.nics} />
       </SectionColumn>
     </Flex>
   );
