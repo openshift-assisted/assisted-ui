@@ -27,10 +27,10 @@ export const getClusterHosts = (id: string): AxiosPromise<Host[]> =>
   axios.get(`${API_ROOT}/clusters/${id}/hosts`);
 
 export const enableClusterHost = (clusterId: string, hostId: string): AxiosPromise<void> =>
-  axios.post(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/actions/enableX`);
+  axios.post(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
 
 export const disableClusterHost = (clusterId: string, hostId: string): AxiosPromise<void> =>
-  axios.delete(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/actions/enableX`);
+  axios.delete(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
 
 type ImageCreateResponse = {
   imageId: string;
