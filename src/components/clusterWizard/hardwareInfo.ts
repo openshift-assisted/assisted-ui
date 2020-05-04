@@ -5,6 +5,8 @@ export type HostRowHardwareInfo = {
   cpu: string;
   memory: string;
   disk: string;
+  disks: BlockDevice[];
+  nics: Nic[];
 };
 
 export const getHardwareInfo = (hwInfoString: string): Introspection | undefined => {
@@ -24,10 +26,11 @@ export const getDisks = (hwInfo: Introspection): BlockDevice[] =>
 
 export const getNics = (hwInfo: Introspection): Nic[] => hwInfo.nics || [];
 
+export const getHumanizedCpuClockSpeed = (hwInfo: Introspection) =>
+  Humanize.formatNumber(hwInfo.cpu?.['cpu-mhz'] || 0);
+
 export const getHostRowHardwareInfo = (hwInfo: Introspection): HostRowHardwareInfo => ({
-  cpu: `${hwInfo.cpu?.cpus ? `${hwInfo.cpu?.cpus}x ` : ''}${Humanize.formatNumber(
-    hwInfo.cpu?.['cpu-mhz'] || 0,
-  )} MHz`,
+  cpu: `${hwInfo.cpu?.cpus ? `${hwInfo.cpu?.cpus}x ` : ''}${getHumanizedCpuClockSpeed(hwInfo)} MHz`,
   memory: Humanize.fileSize(getMemoryCapacity(hwInfo)),
   disk: Humanize.fileSize(
     getDisks(hwInfo).reduce(
@@ -35,4 +38,6 @@ export const getHostRowHardwareInfo = (hwInfo: Introspection): HostRowHardwareIn
       0,
     ) || 0,
   ),
+  disks: getDisks(hwInfo),
+  nics: getNics(hwInfo),
 });
