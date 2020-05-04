@@ -8,3 +8,7 @@ export const CLUSTER_MANAGER_SITE_LINK =
   'https://cloud.redhat.com/openshift/install/metal/user-provisioned';
 
 export const POLLING_INTERVAL = 10000;
+
+export const HOST_ROLES = ['worker', 'master'];
+// Without undefined. Otherwise must conform generated Host['roles'] - see api/types.ts
+export type HostRolesType = 'master' | 'worker';

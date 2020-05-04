@@ -10,18 +10,19 @@ import {
   IRowData,
 } from '@patternfly/react-table';
 import { ConnectedIcon } from '@patternfly/react-icons';
+import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
+import { AlertVariant } from '@patternfly/react-core';
 import { EmptyState, ErrorState } from '../ui/uiState';
 import { getColSpanRow } from '../ui/table/utils';
 import { ResourceUIState } from '../../types';
 import { Host } from '../../api/types';
+import { enableClusterHost, disableClusterHost } from '../../api/clusters';
+import { Alerts, Alert } from '../ui/Alerts';
+import { getHostRowHardwareInfo, getHardwareInfo } from './hardwareInfo';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
-import { getHostRowHardwareInfo, getHardwareInfo } from './hardwareInfo';
-import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { enableClusterHost, disableClusterHost } from '../../api/clusters';
-import { Alerts, Alert } from '../ui/Alerts';
-import { AlertVariant } from '@patternfly/react-core';
+import { RoleDropdown } from './RoleDropdown';
 
 import './HostsTable.css';
 
@@ -58,8 +59,10 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IR
       isOpen: !!openRows[id],
       cells: [
         id,
-        role,
-        id, // TODO: should be serial number
+        {
+          title: <RoleDropdown role={role} host={host} />,
+        },
+        id, // TODO(mlibra): should be serial number
         { title: <HostStatus status={status} statusInfo={statusInfo} /> },
         cpu,
         memory,
@@ -213,6 +216,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
         variant={variant ? variant : rows.length > 10 ? TableVariant.compact : undefined}
         aria-label="Hosts table"
         actionResolver={actionResolver}
+        className="hosts-table"
       >
         <TableHeader />
         <TableBody rowKey={rowKey} />
