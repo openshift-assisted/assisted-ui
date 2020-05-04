@@ -19,13 +19,13 @@ export const fetchClusterAsync = createAsyncThunk(
 type CurrentClusterStateSlice = {
   data?: Cluster;
   uiState: ResourceUIState;
-  forceReload: number;
+  isReloadScheduled: number;
 };
 
 const initialState: CurrentClusterStateSlice = {
   data: undefined,
   uiState: ResourceUIState.LOADING,
-  forceReload: 0,
+  isReloadScheduled: 0,
 };
 
 export const currentClusterSlice = createSlice({
@@ -34,9 +34,13 @@ export const currentClusterSlice = createSlice({
   reducers: {
     updateCluster: (state, action: PayloadAction<Cluster>) => ({ ...state, data: action.payload }),
     cleanCluster: () => initialState,
-    forceReload: (state, action: PayloadAction<boolean>) => ({
+    forceReload: (state) => ({
       ...state,
-      forceReload: action.payload ? state.forceReload + 1 : 0,
+      isReloadScheduled: state.isReloadScheduled + 1,
+    }),
+    cancelForceReload: (state) => ({
+      ...state,
+      isReloadScheduled: 0,
     }),
   },
   extraReducers: (builder) => {
@@ -60,5 +64,10 @@ export const currentClusterSlice = createSlice({
   },
 });
 
-export const { updateCluster, cleanCluster, forceReload } = currentClusterSlice.actions;
+export const {
+  updateCluster,
+  cleanCluster,
+  forceReload,
+  cancelForceReload,
+} = currentClusterSlice.actions;
 export default currentClusterSlice.reducer;

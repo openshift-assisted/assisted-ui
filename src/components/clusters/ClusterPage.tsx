@@ -10,7 +10,8 @@ import { selectCurrentClusterState } from '../../selectors/currentCluster';
 import {
   fetchClusterAsync,
   cleanCluster,
-  forceReload as forceReloadAction,
+  forceReload,
+  cancelForceReload,
 } from '../../features/clusters/currentClusterSlice';
 import { POLLING_INTERVAL } from '../../config/constants';
 
@@ -24,25 +25,25 @@ const useFetchCluster = (clusterId: string) => {
 };
 
 const useClusterPolling = (clusterId: string) => {
-  const { forceReload, uiState } = useSelector(selectCurrentClusterState);
+  const { isReloadScheduled, uiState } = useSelector(selectCurrentClusterState);
   const dispatch = useDispatch();
   const fetchCluster = useFetchCluster(clusterId);
 
   React.useEffect(() => {
-    if (forceReload) {
+    if (isReloadScheduled) {
       if (![ResourceUIState.LOADING, ResourceUIState.RELOADING].includes(uiState)) {
         fetchCluster();
       }
     }
-    dispatch(forceReloadAction(false));
-  }, [fetchCluster, dispatch, forceReload, uiState]);
+    dispatch(cancelForceReload());
+  }, [fetchCluster, dispatch, isReloadScheduled, uiState]);
 
   React.useEffect(() => {
     fetchCluster();
-    const timmer = setInterval(() => dispatch(forceReloadAction(true)), POLLING_INTERVAL);
+    const timer = setInterval(() => dispatch(forceReload()), POLLING_INTERVAL);
     return () => {
-      clearInterval(timmer);
-      dispatch(forceReloadAction(false));
+      clearInterval(timer);
+      dispatch(cancelForceReload());
       dispatch(cleanCluster());
     };
   }, [dispatch, fetchCluster]);
