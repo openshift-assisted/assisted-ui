@@ -192,12 +192,12 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
         <HostDetailItem title="Threads per core" value={hwInfo.cpu?.['threads-per-core']} />
       </SectionColumn>
 
-      <SectionTitle title={`Disks (${rowInfo.disks.length})`} />
+      <SectionTitle title={`${rowInfo.disks.length} Disks`} />
       <SectionColumn>
         <DisksTable disks={rowInfo.disks} />
       </SectionColumn>
 
-      <SectionTitle title={`NICs (${rowInfo.nics.length})`} />
+      <SectionTitle title={`${rowInfo.nics.length} NICs`} />
       <SectionColumn>
         <NicsTable nics={rowInfo.nics} />
       </SectionColumn>
