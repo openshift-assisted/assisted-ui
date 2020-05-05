@@ -1,3 +1,5 @@
+![](https://github.com/openshift-metal3/facet/workflows/buildAndPush.yaml/badge.svg)
+
 # Facet
 
 OpenShift Metal³ installer UI.
