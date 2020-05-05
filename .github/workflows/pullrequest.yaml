@@ -1,7 +1,7 @@
-name: Build and push
+name: Build on pull request to master
 
 on:
-  push:
+  pull_request:
     branches:
       - master
 
@@ -25,11 +25,3 @@ jobs:
           NODE_OPTIONS: "--max-old-space-size=8192"
         with:
           cmd: build
-      - name: Publish to quay.io
-        uses: elgohr/Publish-Docker-Github-Action@2.14
-        with:
-          name: ocpmetal/ocp-metal-ui:latest
-          username: ${{ secrets.QUAYIO_OCPMETAL_USERNAME }}
-          password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
-          registry: quay.io
-          dockerfile: Dockerfile
