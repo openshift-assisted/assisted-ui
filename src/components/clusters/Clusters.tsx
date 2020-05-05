@@ -9,17 +9,17 @@ import {
   TextVariants,
   Spinner,
 } from '@patternfly/react-core';
-
+import { Link } from 'react-router-dom';
 import PageSection from '../ui/PageSection';
 import { selectClusterTableRows, selectClustersUIState } from '../../selectors/clusters';
 import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
-import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
+import { ToolbarText } from '../ui/Toolbar';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';
 import { ResourceUIState } from '../../types';
 import ClustersTable from './ClustersTable';
 import { deleteClusterAsync, fetchClustersAsync } from '../../features/clusters/clustersSlice';
-import { Link } from 'react-router-dom';
+import { NewClusterModalButton } from './newClusterModal';
 
 const Clusters: React.FC = () => {
   const clusterRows = useSelector(selectClusterTableRows);
@@ -83,12 +83,7 @@ const Clusters: React.FC = () => {
             <ClustersTable rows={clusterRows} deleteCluster={deleteCluster} />
           </PageSection>
           <ClusterWizardToolbar>
-            <ToolbarButton
-              variant={ButtonVariant.primary}
-              component={(props) => <Link to="/clusters/new" {...props} />}
-            >
-              Create New Cluster
-            </ToolbarButton>
+            <NewClusterModalButton />
             <ToolbarText component={TextVariants.small}>
               {clustersUIState === RELOADING && (
                 <>

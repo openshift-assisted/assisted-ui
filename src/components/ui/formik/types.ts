@@ -11,6 +11,8 @@ export interface FieldProps {
   disableAddRow?: boolean;
   className?: string;
   isDisabled?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  innerRef?: React.Ref<any>;
 }
 
 export interface SelectFieldProps extends FieldProps {
@@ -28,7 +30,7 @@ export interface InputFieldProps extends FieldProps {
 
 export interface TextAreaProps extends FieldProps {
   placeholder?: string;
-  onChange?: (event: React.FormEvent<HTMLInputElement>) => void;
+  onChange?: (event: React.FormEvent<HTMLTextAreaElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
 }
 

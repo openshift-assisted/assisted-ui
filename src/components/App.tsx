@@ -1,22 +1,21 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router, Switch, Route, Redirect } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
 import { Page } from '@patternfly/react-core';
 import { store } from '../store';
+import history from '../history';
 import Header from './ui/Header';
 import Sidebar from './Sidebar';
 import BackgroundImage from './ui/BackgroundImage';
 import LoginForm from './login/LoginForm';
 import Clusters from './clusters/Clusters';
-import NewCluster from './clusters/NewCluster';
 import ClusterPage from './clusters/ClusterPage';
 
 import '../styles/index.css';
 
 const App: React.FC = () => (
   <Provider store={store}>
-    <Router history={createBrowserHistory()}>
+    <Router history={history}>
       <BackgroundImage />
       <Page
         header={<Header />}
@@ -26,7 +25,6 @@ const App: React.FC = () => (
         defaultManagedSidebarIsOpen={false}
       >
         <Switch>
-          <Route path="/clusters/new" component={NewCluster} />
           <Route path={`/clusters/:clusterId`} component={ClusterPage} />
           <Route path="/clusters" component={Clusters} />
           <Route path="/login" component={LoginForm} />
