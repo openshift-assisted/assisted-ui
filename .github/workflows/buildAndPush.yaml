@@ -1,0 +1,29 @@
+name: Build and push
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: Install dependencies
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: install
+      - name: Build code
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: build
+      - name: Publish to quay.io
+        uses: elgohr/Publish-Docker-Github-Action@2.14
+        with:
+          name: ocpmetal/ocp-metal-ui:latest
+          username: ${{ secrets.QUAYIO_OCPMETAL_USERNAME }}
+          password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
+          registry: quay.io
+          dockerfile: Dockerfile
