@@ -10,11 +10,15 @@ export type HostRowHardwareInfo = {
 };
 
 export const getHardwareInfo = (hwInfoString: string): Introspection | undefined => {
-  try {
-    const hwInfo = JSON.parse(hwInfoString);
-    return hwInfo;
-  } catch (e) {
-    console.error('Failed to parse Hardware Info', e, hwInfoString);
+  if (hwInfoString) {
+    try {
+      const hwInfo = JSON.parse(hwInfoString);
+      return hwInfo;
+    } catch (e) {
+      console.error('Failed to parse Hardware Info', e, hwInfoString);
+    }
+  } else {
+    console.info('Empty hardwareInfo received.');
   }
   return undefined;
 };
