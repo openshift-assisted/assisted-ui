@@ -1,5 +1,6 @@
 import Humanize from 'humanize-plus';
 import { BlockDevice, Introspection, Nic } from '../../api/types';
+import { DASH } from '../constants';
 
 export type HostRowHardwareInfo = {
   cpu: string;
@@ -33,15 +34,31 @@ export const getNics = (hwInfo: Introspection): Nic[] => hwInfo.nics || [];
 export const getHumanizedCpuClockSpeed = (hwInfo: Introspection) =>
   Humanize.formatNumber(hwInfo.cpu?.['cpu-mhz'] || 0);
 
-export const getHostRowHardwareInfo = (hwInfo: Introspection): HostRowHardwareInfo => ({
-  cpu: `${hwInfo.cpu?.cpus ? `${hwInfo.cpu?.cpus}x ` : ''}${getHumanizedCpuClockSpeed(hwInfo)} MHz`,
-  memory: Humanize.fileSize(getMemoryCapacity(hwInfo)),
-  disk: Humanize.fileSize(
-    getDisks(hwInfo).reduce(
-      (diskSize: number, device: BlockDevice) => diskSize + (device?.size || 0),
-      0,
-    ) || 0,
-  ),
-  disks: getDisks(hwInfo),
-  nics: getNics(hwInfo),
-});
+export const getHostRowHardwareInfo = (hwInfo: Introspection): HostRowHardwareInfo => {
+  let cpu = DASH;
+  if (hwInfo.cpu?.cpus) {
+    cpu = `${hwInfo.cpu?.cpus}x ${getHumanizedCpuClockSpeed(hwInfo)} MHz`;
+  }
+
+  let memory = DASH;
+  if (getMemoryCapacity(hwInfo)) {
+    memory = Humanize.fileSize(getMemoryCapacity(hwInfo));
+  }
+
+  let disk = DASH;
+  const disksCapacity = getDisks(hwInfo).reduce(
+    (diskSize: number, device: BlockDevice) => diskSize + (device?.size || 0),
+    0,
+  );
+  if (disksCapacity) {
+    disk = Humanize.fileSize(disksCapacity);
+  }
+
+  return {
+    cpu,
+    memory,
+    disk,
+    disks: getDisks(hwInfo),
+    nics: getNics(hwInfo),
+  };
+};

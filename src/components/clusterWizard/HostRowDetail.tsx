@@ -18,6 +18,7 @@ import { Introspection, BlockDevice, Nic } from '../../api/types';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 
 import './HostRowDetail.css';
+import { DASH } from '../constants';
 
 type HostDetailProps = {
   hwInfo: Introspection;
@@ -179,8 +180,8 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
     <Flex className="host-row-detail">
       <SectionTitle title="Host Details" />
       <SectionColumn>
-        <HostDetailItem title="CPU architecture" value={hwInfo.cpu?.architecture} />
-        <HostDetailItem title="Model name" value={hwInfo.cpu?.['model-name']} />
+        <HostDetailItem title="CPU architecture" value={hwInfo.cpu?.architecture || DASH} />
+        <HostDetailItem title="Model name" value={hwInfo.cpu?.['model-name'] || DASH} />
         {/* TODO(mlibra): <HostDetailItem title="Motherboard serial number" value={} /> */}
       </SectionColumn>
       <SectionColumn>
@@ -188,8 +189,8 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
         <HostDetailItem title="CPU clock speed" value={rowInfo.cpu} />
       </SectionColumn>
       <SectionColumn>
-        <HostDetailItem title="Sockets" value={hwInfo.cpu?.sockets} />
-        <HostDetailItem title="Threads per core" value={hwInfo.cpu?.['threads-per-core']} />
+        <HostDetailItem title="Sockets" value={hwInfo.cpu?.sockets || DASH} />
+        <HostDetailItem title="Threads per core" value={hwInfo.cpu?.['threads-per-core'] || DASH} />
       </SectionColumn>
 
       <SectionTitle title={`${rowInfo.disks.length} Disks`} />
