@@ -42,3 +42,7 @@ export const selectClusterTableRows = createSelector(
   selectClusters,
   (clusters): ClusterTableRows => clusters.map(clusterToClusterTableRow),
 );
+
+export const selectClusterNames = createSelector(selectClusters, (clusters) =>
+  clusters.map((c) => c.name),
+);
