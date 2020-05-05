@@ -51,10 +51,10 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster, setSte
       </PageSection>
       <PageSection variant={PageSectionVariants.light}>
         <TextContent>
-          <Text component="h2">Bare Metal Hosts</Text>
+          <Text component="h2">Bare metal inventory</Text>
           <Text component="p">
-            Boot the discovery ISO on hosts that are connected to the internet. At least 3 hosts are
-            required to create a cluster.
+            Boot the discovery ISO on hardware that should become part of this bare metal cluster.
+            Hosts connected to the internet will automatically appear below.
           </Text>
         </TextContent>
       </PageSection>
