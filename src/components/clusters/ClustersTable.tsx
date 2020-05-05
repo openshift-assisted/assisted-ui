@@ -30,6 +30,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
   const columns = [
     { title: 'Name', ...headerConfig, ...columnConfig },
     { title: 'ID', ...headerConfig, ...columnConfig },
+    { title: 'Version', ...headerConfig, ...columnConfig },
     { title: 'Status', ...headerConfig, ...columnConfig },
     { title: 'Hosts', ...headerConfig, ...columnConfig },
   ];
