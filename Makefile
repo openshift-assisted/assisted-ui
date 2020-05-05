@@ -1,6 +1,9 @@
 .PHONY: all build deploy clean
 
 IMAGE := $(or ${IMAGE},quay.io/ocpmetal/ocp-metal-ui:latest)
+BM_INVENTORY_URL := $(or ${BM_INVENTORY_URL},http://bm-inventory.default.svc.cluster.local:8090)
+
+DEPLOY_FILE="deploy/ocp-metal-ui.yaml"
 
 all: build deploy
 
@@ -10,9 +13,10 @@ build:
 	sudo podman push $(IMAGE)
 
 deploy:
-	sed "s#__IMAGE__#${IMAGE}#g;s#__BM_INVENTORY_URL__#${BM_INVENTORY_URL}#g" deploy/ocp-metal-ui-template.yaml > deploy/ocp-metal-ui.yaml
-	kubectl apply -f deploy/ocp-metal-ui.yaml
-	rm deploy/ocp-metal-ui.yaml
+	mkdir -p build/deploy/
+	deploy/deploy_config.sh -u "${BM_INVENTORY_URL}" -i "${IMAGE}" -t deploy/ocp-metal-ui-template.yaml > ${DEPLOY_FILE}
+	kubectl apply -f ${DEPLOY_FILE}
 
 clean:
-	kubectl delete deployment,service,configmap ocp-metal-ui
+	rm -f ${DEPLOY_FILE}
+	-kubectl delete deployment,service,configmap ocp-metal-ui
