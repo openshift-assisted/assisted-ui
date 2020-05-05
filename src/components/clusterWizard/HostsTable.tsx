@@ -15,7 +15,7 @@ import { AlertVariant } from '@patternfly/react-core';
 import { EmptyState, ErrorState } from '../ui/uiState';
 import { getColSpanRow } from '../ui/table/utils';
 import { ResourceUIState } from '../../types';
-import { Host } from '../../api/types';
+import { Host, Cluster } from '../../api/types';
 import { enableClusterHost, disableClusterHost } from '../../api/clusters';
 import { Alerts, Alert } from '../ui/Alerts';
 import { getHostRowHardwareInfo, getHardwareInfo } from './hardwareInfo';
@@ -27,10 +27,8 @@ import { RoleDropdown } from './RoleDropdown';
 import './HostsTable.css';
 
 type HostsTableProps = {
-  hosts?: Host[];
-  clusterId: string;
+  cluster: Cluster;
   uiState: ResourceUIState;
-  fetchHosts: () => void;
   variant?: TableVariant;
 };
 
@@ -90,38 +88,32 @@ const HostsTableEmptyState: React.FC = () => (
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
 
-const HostsTable: React.FC<HostsTableProps> = ({
-  hosts = [],
-  uiState,
-  fetchHosts,
-  variant,
-  clusterId,
-}) => {
+const HostsTable: React.FC<HostsTableProps> = ({ uiState, variant, cluster }) => {
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
   const [alerts, setAlerts] = React.useState([] as Alert[]);
 
-  const hostRows = React.useMemo(() => _.flatten(hosts.map(hostToHostTableRow(openRows))), [
-    hosts,
-    openRows,
-  ]);
+  const hostRows = React.useMemo(
+    () => _.flatten((cluster.hosts || []).map(hostToHostTableRow(openRows))),
+    [cluster.hosts, openRows],
+  );
 
   const rows = React.useMemo(() => {
-    const errorState = <ErrorState title="Failed to fetch hosts" fetchData={fetchHosts} />;
+    const errorState = <ErrorState title="Failed to fetch hosts" />;
     const columnCount = columns.length;
     switch (uiState) {
       // case ResourceUIState.LOADING:
       //   return getColSpanRow(loadingState, columnCount);
-      case ResourceUIState.ERROR:
-        return getColSpanRow(errorState, columnCount);
       // case ResourceUIState.EMPTY:
       //   return getColSpanRow(emptyState, columnCount);
+      case ResourceUIState.ERROR:
+        return getColSpanRow(errorState, columnCount);
       default:
         if (hostRows.length) {
           return hostRows;
         }
         return getColSpanRow(HostsTableEmptyState, columnCount);
     }
-  }, [uiState, fetchHosts, hostRows]);
+  }, [uiState, hostRows]);
 
   const onCollapse = React.useCallback(
     (_event, rowKey) => {
@@ -153,7 +145,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
   const onHostEnable = React.useCallback(
     (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.extraData.id;
-      enableClusterHost(clusterId, hostId).catch((err) => {
+      enableClusterHost(cluster.id, hostId).catch((err) => {
         console.error('Failed to enable host in cluster: ', err);
         addAlert({
           key: `enable-${hostId}`,
@@ -162,13 +154,13 @@ const HostsTable: React.FC<HostsTableProps> = ({
         });
       });
     },
-    [clusterId, addAlert],
+    [cluster.id, addAlert],
   );
 
   const onHostDisable = React.useCallback(
     (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.extraData.id;
-      disableClusterHost(clusterId, hostId).catch((err) => {
+      disableClusterHost(cluster.id, hostId).catch((err) => {
         console.error('Failed to disable host in cluster: ', err);
         addAlert({
           key: `disable-${hostId}`,
@@ -177,7 +169,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
         });
       });
     },
-    [clusterId, addAlert],
+    [cluster.id, addAlert],
   );
 
   const actionResolver = React.useCallback(

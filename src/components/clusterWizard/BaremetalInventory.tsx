@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   ButtonVariant,
   Breadcrumb,
@@ -8,7 +9,6 @@ import {
   Text,
   TextContent,
 } from '@patternfly/react-core';
-
 import PageSection from '../ui/PageSection';
 import HostsTable from './HostsTable';
 import ClusterWizardToolbar from './ClusterWizardToolbar';
@@ -16,10 +16,9 @@ import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import { Cluster } from '../../api/types';
 import { Link } from 'react-router-dom';
 import { WizardStep } from '../../types/wizard';
-import { getClusterHosts } from '../../api/clusters';
-import useApi from '../../api/useApi';
 import { ResourceUIState } from '../../types';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
+import { selectCurrentClusterUIState } from '../../selectors/currentCluster';
 
 interface BareMetalInventoryProps {
   cluster: Cluster;
@@ -27,17 +26,7 @@ interface BareMetalInventoryProps {
 }
 
 const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster, setStep }) => {
-  const [{ data: hosts, uiState }, fetchHosts] = useApi(getClusterHosts, cluster.id, {
-    manual: true,
-    initialUIState: cluster.hosts?.length ? ResourceUIState.LOADED : ResourceUIState.EMPTY,
-  });
-
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchHosts();
-    }, 5000);
-    return () => clearTimeout(timer);
-  });
+  const uiState = useSelector(selectCurrentClusterUIState);
 
   return (
     <>
@@ -59,12 +48,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster, setSte
         </TextContent>
       </PageSection>
       <PageSection variant={PageSectionVariants.light} isMain>
-        <HostsTable
-          hosts={hosts || cluster.hosts}
-          uiState={uiState}
-          fetchHosts={fetchHosts}
-          clusterId={cluster.id}
-        />
+        <HostsTable cluster={cluster} uiState={uiState} />
       </PageSection>
       <ClusterWizardToolbar>
         <ToolbarButton
@@ -76,9 +60,6 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster, setSte
           )}
         ></ToolbarButton>
         <DiscoveryImageModalButton ButtonComponent={ToolbarButton} />
-        {/* <ToolbarButton variant={ButtonVariant.secondary} onClick={() => fetchHosts()}>
-          Reload Hosts
-        </ToolbarButton> */}
         <ToolbarButton
           variant={ButtonVariant.secondary}
           onClick={() => setStep(WizardStep.ClusterConfiguration)}
