@@ -27,6 +27,7 @@ import { RoleDropdown } from './RoleDropdown';
 
 import './HostsTable.css';
 import { forceReload } from '../../features/clusters/currentClusterSlice';
+import { handleApiError } from '../../api/utils';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -153,11 +154,12 @@ const HostsTable: React.FC<HostsTableProps> = ({ uiState, variant, cluster }) =>
           dispatch(forceReload());
         })
         .catch((err) => {
-          console.error('Failed to enable host in cluster: ', err);
-          addAlert({
-            key: `enable-${hostId}`,
-            variant: AlertVariant.warning,
-            text: `Failed to enable host ${hostId}`,
+          handleApiError(err, () => {
+            addAlert({
+              key: `enable-${hostId}`,
+              variant: AlertVariant.warning,
+              text: `Failed to enable host ${hostId}`,
+            });
           });
         });
     },
@@ -172,11 +174,12 @@ const HostsTable: React.FC<HostsTableProps> = ({ uiState, variant, cluster }) =>
           dispatch(forceReload());
         })
         .catch((err) => {
-          console.error('Failed to disable host in cluster: ', err);
-          addAlert({
-            key: `disable-${hostId}`,
-            variant: AlertVariant.warning,
-            text: `Failed to disable host ${hostId}`,
+          handleApiError(err, () => {
+            addAlert({
+              key: `disable-${hostId}`,
+              variant: AlertVariant.warning,
+              text: `Failed to disable host ${hostId}`,
+            });
           });
         });
     },
