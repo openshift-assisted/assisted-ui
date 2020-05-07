@@ -1,8 +1,10 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Host, ClusterUpdateParams } from '../../api/types';
 import { SimpleDropdown } from '../ui/SimpleDropdown';
 import { patchCluster } from '../../api/clusters';
 import { HostRolesType, HOST_ROLES } from '../../config/constants';
+import { updateCluster } from '../../features/clusters/currentClusterSlice';
 
 type RoleDropdownProps = {
   role: Host['role'];
@@ -11,6 +13,7 @@ type RoleDropdownProps = {
 
 export const RoleDropdown: React.FC<RoleDropdownProps> = ({ role, host }) => {
   const [isDisabled, setDisabled] = React.useState(false);
+  const dispatch = useDispatch();
 
   const setRole = async (role?: string) => {
     const params: ClusterUpdateParams = {};
@@ -21,9 +24,8 @@ export const RoleDropdown: React.FC<RoleDropdownProps> = ({ role, host }) => {
         role: role as HostRolesType,
       },
     ];
-    // TODO(mlibra): store updatedCluster (infra WIP) or initiate reload
-    // const updatedCluster =
-    await patchCluster(host.clusterId as string, params);
+    const { data } = await patchCluster(host.clusterId as string, params);
+    dispatch(updateCluster(data));
     setDisabled(false);
   };
 
