@@ -1,4 +1,4 @@
-![](https://github.com/openshift-metal3/facet/workflows/buildAndPush.yaml/badge.svg)
+![](https://github.com/openshift-metal3/facet/workflows/Build%20and%20push/badge.svg)
 
 # Facet
 
