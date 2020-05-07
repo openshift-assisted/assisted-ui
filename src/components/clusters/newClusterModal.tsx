@@ -10,6 +10,7 @@ import {
   ModalBoxFooter,
 } from '@patternfly/react-core';
 import { uniqueNamesGenerator, Config, adjectives, colors, animals } from 'unique-names-generator';
+import * as Yup from 'yup';
 import history from '../../history';
 import { LoadingState } from '../ui/uiState';
 import { postCluster } from '../../api/clusters';
@@ -19,6 +20,10 @@ import { ClusterCreateParams } from '../../api/types';
 import { InputField, SelectField } from '../ui/formik';
 import { handleApiError } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
+import { nameValidationSchema } from '../ui/formik/validationSchemas';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectClusterNames } from '../../selectors/clusters';
+import { fetchClustersAsync } from '../../features/clusters/clustersSlice';
 
 const namesConfig: Config = {
   dictionaries: [adjectives, colors, animals],
@@ -48,11 +53,33 @@ type NewClusterModalProps = {
 };
 
 export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) => {
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(fetchClustersAsync());
+  }, [dispatch]);
+
+  const clusterNames = useSelector(selectClusterNames);
+
   const nameInputRef = React.useCallback((node) => {
     if (node !== null) {
       node.focus();
     }
   }, []);
+
+  const validationSchema = React.useCallback(
+    () =>
+      Yup.object().shape({
+        name: Yup.mixed()
+          .test(
+            'unique-name',
+            'Name "${value}" is already taken.', // eslint-disable-line no-template-curly-in-string
+            (value) => !clusterNames.includes(value),
+          )
+          .concat(nameValidationSchema),
+        openshiftVersion: Yup.string().required('Required'),
+      }),
+    [clusterNames],
+  );
 
   const handleSubmit = async (
     values: ClusterCreateParams,
@@ -80,9 +107,10 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
       <Formik
         initialValues={{
           name: uniqueNamesGenerator(namesConfig),
-          version: OPENSHIFT_VERSION_OPTIONS[0].value,
+          openshiftVersion: OPENSHIFT_VERSION_OPTIONS[0].value,
         }}
         initialStatus={{ error: null }}
+        validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {({ handleSubmit, isSubmitting, isValid, status, setStatus }) => (
