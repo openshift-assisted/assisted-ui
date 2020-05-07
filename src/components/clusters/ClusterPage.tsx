@@ -4,7 +4,6 @@ import { PageSectionVariants, ButtonVariant, Button } from '@patternfly/react-co
 import { useSelector, useDispatch } from 'react-redux';
 import PageSection from '../ui/PageSection';
 import { ErrorState, LoadingState } from '../ui/uiState';
-import ClusterWizard from '../clusterWizard/ClusterWizard';
 import { ResourceUIState } from '../../types';
 import { selectCurrentClusterState } from '../../selectors/currentCluster';
 import {
@@ -14,6 +13,7 @@ import {
   cancelForceReload,
 } from '../../features/clusters/currentClusterSlice';
 import { POLLING_INTERVAL } from '../../config/constants';
+import ClusterConfiguration from '../clusterConfiguration/ClusterConfiguration';
 
 type MatchParams = {
   clusterId: string;
@@ -83,7 +83,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   if (uiState === ResourceUIState.LOADING) return loadingState;
   if (uiState === ResourceUIState.ERROR) return errorState; // TODO(jtomasek): redirect to cluster list instead?
   // TODO(jtomasek): handle cases when cluster is not-deployed/deploying/deployed
-  if (cluster) return <ClusterWizard cluster={cluster} />;
+  if (cluster) return <ClusterConfiguration cluster={cluster} />;
   return <Redirect to="/clusters" />;
 };
 

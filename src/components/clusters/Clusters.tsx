@@ -9,8 +9,8 @@ import {
 } from '@patternfly/react-core';
 import PageSection from '../ui/PageSection';
 import { selectClusterTableRows, selectClustersUIState } from '../../selectors/clusters';
-import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
 import { ToolbarText, ToolbarButton } from '../ui/Toolbar';
+import ClusterToolbar from './ClusterToolbar';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';
 import { ResourceUIState } from '../../types';
@@ -72,7 +72,7 @@ const Clusters: React.FC = () => {
           <PageSection variant={PageSectionVariants.light} isMain>
             <ClustersTable rows={clusterRows} deleteCluster={deleteCluster} />
           </PageSection>
-          <ClusterWizardToolbar>
+          <ClusterToolbar>
             <NewClusterModalButton ButtonComponent={ToolbarButton} />
             <ToolbarText component={TextVariants.small}>
               {clustersUIState === RELOADING && (
@@ -81,7 +81,7 @@ const Clusters: React.FC = () => {
                 </>
               )}
             </ToolbarText>
-          </ClusterWizardToolbar>
+          </ClusterToolbar>
         </>
       );
   }
