@@ -1,6 +1,6 @@
 {
   "name": "metal3-facet",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "dependencies": {
     "@patternfly/patternfly": "^2.68.4",
