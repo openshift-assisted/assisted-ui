@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import { useDispatch } from 'react-redux';
 import {
   Table,
   TableHeader,
@@ -25,6 +26,8 @@ import { HostDetail } from './HostRowDetail';
 import { RoleDropdown } from './RoleDropdown';
 
 import './HostsTable.css';
+import { forceReload } from '../../features/clusters/currentClusterSlice';
+import { handleApiError } from '../../api/utils';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -91,6 +94,7 @@ const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
 const HostsTable: React.FC<HostsTableProps> = ({ uiState, variant, cluster }) => {
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
   const [alerts, setAlerts] = React.useState([] as Alert[]);
+  const dispatch = useDispatch();
 
   const hostRows = React.useMemo(
     () => _.flatten((cluster.hosts || []).map(hostToHostTableRow(openRows))),
@@ -145,31 +149,41 @@ const HostsTable: React.FC<HostsTableProps> = ({ uiState, variant, cluster }) =>
   const onHostEnable = React.useCallback(
     (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.extraData.id;
-      enableClusterHost(cluster.id, hostId).catch((err) => {
-        console.error('Failed to enable host in cluster: ', err);
-        addAlert({
-          key: `enable-${hostId}`,
-          variant: AlertVariant.warning,
-          text: `Failed to enable host ${hostId}`,
+      enableClusterHost(cluster.id, hostId)
+        .then(() => {
+          dispatch(forceReload());
+        })
+        .catch((err) => {
+          handleApiError(err, () => {
+            addAlert({
+              key: `enable-${hostId}`,
+              variant: AlertVariant.warning,
+              text: `Failed to enable host ${hostId}`,
+            });
+          });
         });
-      });
     },
-    [cluster.id, addAlert],
+    [cluster.id, dispatch, addAlert],
   );
 
   const onHostDisable = React.useCallback(
     (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.extraData.id;
-      disableClusterHost(cluster.id, hostId).catch((err) => {
-        console.error('Failed to disable host in cluster: ', err);
-        addAlert({
-          key: `disable-${hostId}`,
-          variant: AlertVariant.warning,
-          text: `Failed to disable host ${hostId}`,
+      disableClusterHost(cluster.id, hostId)
+        .then(() => {
+          dispatch(forceReload());
+        })
+        .catch((err) => {
+          handleApiError(err, () => {
+            addAlert({
+              key: `disable-${hostId}`,
+              variant: AlertVariant.warning,
+              text: `Failed to disable host ${hostId}`,
+            });
+          });
         });
-      });
     },
-    [cluster.id, addAlert],
+    [cluster.id, dispatch, addAlert],
   );
 
   const actionResolver = React.useCallback(
