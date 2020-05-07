@@ -1,5 +1,6 @@
 import React from 'react';
 import Axios, { CancelTokenSource } from 'axios';
+import * as Yup from 'yup';
 import {
   Modal,
   Button,
@@ -19,8 +20,8 @@ import { Formik, FormikHelpers } from 'formik';
 import { createClusterDownloadsImage, getClusterDownloadsImageUrl } from '../../api/clusters';
 import { useParams } from 'react-router-dom';
 import { LoadingState } from '../ui/uiState';
-import { ImageCreateParams } from '../../api/types';
 import { handleApiError } from '../../api/utils';
+import { ImageCreateParams } from '../../api/types';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -42,6 +43,10 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
     </>
   );
 };
+
+const validationSchema = Yup.object().shape({
+  proxyURL: Yup.string().url('Provide a valid URL.'),
+});
 
 type DiscoveryImageModalProps = {
   closeModal: () => void;
@@ -86,9 +91,9 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
       isSmall
     >
       <Formik
-        initialValues={{ proxyIp: '', proxyPort: undefined, sshPublicKey: '' } as ImageCreateParams}
+        initialValues={{ proxyURL: '', sshPublicKey: '' } as ImageCreateParams}
         initialStatus={{ error: null }}
-        // validate={validate}
+        validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {({ handleSubmit, isSubmitting, status, setStatus }) => (
@@ -113,24 +118,21 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
                   />
                 )}
                 <TextContent>
-                  <Text component="p">
+                  <Text component="small">
                     Hosts must be connected to the internet to form a cluster using this installer.
-                    If hosts need to connect through a proxy, provide the proxy's information below.
+                    If hosts are behind a firewall that requires use of a proxy, provide proxy URL
+                    below.
                   </Text>
-                  <Text component="p">
+                  <Text component="small">
                     Each host will need a valid IP address assigned by a DHCP server with DNS
                     records that fully resolve.
                   </Text>
                 </TextContent>
                 <InputField
-                  label="Proxy IP"
-                  name="proxyIp"
-                  helperText="The IP address of the HTTP proxy that agents should use to access the discovery service"
-                />
-                <InputField
-                  label="Proxy port"
-                  name="proxyPort"
-                  helperText="The port of the HTTP proxy"
+                  label="HTTP Proxy URL"
+                  name="proxyURL"
+                  placeholder="http://<user>:<password>@<ipaddr>:<port>"
+                  helperText="HTTP proxy URL that agents should use to access the discovery service"
                 />
                 <TextAreaField
                   label="SSH public key"
