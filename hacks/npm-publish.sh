@@ -16,7 +16,8 @@ export BRANCH=rel-${VERSION}
 git checkout -b ${BRANCH}
 git push --set-upstream origin ${BRANCH} 
 git push --tags
-xdg-open https://github.com/openshift-metal3/facet/compare/${BRANCH}?expand=1
+xdg-open https://github.com/openshift-metal3/facet/compare/${BRANCH}?expand=1 # to open pull-request with version change
 
 yarn publish --non-interactive --access public
+xdg-open https://www.npmjs.com/package/metal3-facet # just because ...
 
