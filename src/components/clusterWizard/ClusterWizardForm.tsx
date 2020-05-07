@@ -105,7 +105,7 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
                     <TextContent>
                       <Text component="h1">Configure a bare metal OpenShift cluster</Text>
                     </TextContent>
-                    <InputField label="Cluster name" name="name" isRequired />
+                    <InputField label="Cluster Name" name="name" isRequired />
                     <SelectField
                       label="OpenShift Version"
                       name="openshiftVersion"
