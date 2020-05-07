@@ -110,6 +110,7 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
                       label="OpenShift Version"
                       name="openshiftVersion"
                       options={OPENSHIFT_VERSION_OPTIONS}
+                      isDisabled
                       isRequired
                     />
                     <InputField
