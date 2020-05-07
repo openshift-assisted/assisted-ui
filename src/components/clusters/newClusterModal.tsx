@@ -21,8 +21,9 @@ import { InputField, SelectField } from '../ui/formik';
 import { handleApiError } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
 import { nameValidationSchema } from '../ui/formik/validationSchemas';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectClusterNames } from '../../selectors/clusters';
+import { fetchClustersAsync } from '../../features/clusters/clustersSlice';
 
 const namesConfig: Config = {
   dictionaries: [adjectives, colors, animals],
@@ -30,10 +31,6 @@ const namesConfig: Config = {
   separator: '-',
   length: 3,
   style: 'lowerCase',
-};
-
-type NewClusterModalButtonProps = {
-  ButtonComponent?: typeof Button | typeof ToolbarButton;
 };
 
 export const NewClusterModalButton: React.FC = () => {
@@ -56,6 +53,11 @@ type NewClusterModalProps = {
 };
 
 export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) => {
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(fetchClustersAsync());
+  }, [dispatch]);
+
   const clusterNames = useSelector(selectClusterNames);
 
   const nameInputRef = React.useCallback((node) => {
