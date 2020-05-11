@@ -22,7 +22,7 @@ jobs:
       - name: Build code
         uses: borales/actions-yarn@v2.0.0
         env:
-          NODE_OPTIONS: "--max-old-space-size=8192"
+          NODE_OPTIONS: '--max-old-space-size=8192'
         with:
           cmd: build
       - name: Publish to quay.io
