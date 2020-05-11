@@ -66,7 +66,10 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --color .",
     "test-suite": "babel-node node_modules/.bin/protractor integration_tests/protractor.conf.js",
     "webdriver-update": "webdriver-manager update",
-    "swagger": "sw2dts -w -o src/api/types.ts src/api/swagger.json"
+    "update-api": "curl https://raw.githubusercontent.com/filanov/bm-inventory/master/swagger.yaml > src/api/swagger.yaml",
+    "postupdate-api": "yarn swagger",
+    "swagger": "sw2dts -w -o src/api/types.ts src/api/swagger.yaml",
+    "postswagger": "yarn prettier"
   },
   "browserslist": [
     ">0.2%",
