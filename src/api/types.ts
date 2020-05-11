@@ -67,6 +67,7 @@ export interface Cluster {
    */
   sshPublicKey?: string;
   status: 'insufficient' | 'ready' | 'error' | 'installing' | 'installed';
+  statusInfo?: string;
   hosts?: Host[];
   updatedAt?: string; // date-time
   createdAt?: string; // date-time
@@ -81,7 +82,7 @@ export interface ClusterCreateParams {
   /**
    * OpenShift cluster version
    */
-  openshiftVersion?: string; // ^4\.\d$
+  openshiftVersion: string; // ^4\.\d$
   /**
    * The base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
    */
@@ -125,10 +126,6 @@ export interface ClusterUpdateParams {
    * OpenShift cluster name
    */
   name?: string;
-  /**
-   * OpenShift cluster version
-   */
-  openshiftVersion?: string; // ^4\.\d$
   /**
    * The base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
    */
@@ -219,20 +216,20 @@ export interface Host {
   hardwareInfo?: string;
   role?: 'undefined' | 'master' | 'worker';
   updatedAt?: string; // date-time
+  createdAt?: string; // date-time
 }
 export interface HostCreateParams {
   hostId: string; // uuid
 }
+export type HostInstallProgressParams = string;
 export type HostList = Host[];
 export interface ImageCreateParams {
   /**
-   * The IP address of the HTTP proxy that agents should use to access the discovery service
+   * The URL of the HTTP/S proxy that agents should use to access the discovery service
+   * http://\<user\>:\<password\>@\<server\>:\<port\>/
+   *
    */
-  proxyIp?: string; // hostname
-  /**
-   * The port of the HTTP proxy
-   */
-  proxyPort?: number;
+  proxyURL?: string;
   /**
    * SSH public key for debugging the installation
    */

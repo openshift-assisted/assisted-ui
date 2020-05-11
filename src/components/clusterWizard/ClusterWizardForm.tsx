@@ -22,14 +22,14 @@ import { useDispatch } from 'react-redux';
 import ClusterWizardToolbar from './ClusterWizardToolbar';
 import PageSection from '../ui/PageSection';
 import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
-import { InputField, TextAreaField, SelectField } from '../ui/formik';
+import { InputField, TextAreaField } from '../ui/formik';
 import validationSchema from './validationSchema';
 import GridGap from '../ui/GridGap';
 import { Cluster, ClusterUpdateParams } from '../../api/types';
 import { WizardStep } from '../../types/wizard';
 import { patchCluster } from '../../api/clusters';
 import { handleApiError } from '../../api/utils';
-import { OPENSHIFT_VERSION_OPTIONS, CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
+import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 
@@ -43,7 +43,6 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
 
   const initialValues: ClusterUpdateParams = {
     name: cluster.name || '',
-    openshiftVersion: cluster.openshiftVersion || OPENSHIFT_VERSION_OPTIONS[0].value,
     baseDnsDomain: cluster.baseDnsDomain || '',
     clusterNetworkCIDR: cluster.clusterNetworkCIDR || '',
     clusterNetworkHostPrefix: cluster.clusterNetworkHostPrefix || 0,
@@ -106,13 +105,6 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
                       <Text component="h1">Configure a bare metal OpenShift cluster</Text>
                     </TextContent>
                     <InputField label="Cluster Name" name="name" isRequired />
-                    <SelectField
-                      label="OpenShift Version"
-                      name="openshiftVersion"
-                      options={OPENSHIFT_VERSION_OPTIONS}
-                      isDisabled
-                      isRequired
-                    />
                     <InputField
                       label="Base DNS domain"
                       name="baseDnsDomain"

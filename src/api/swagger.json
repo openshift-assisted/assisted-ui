@@ -489,6 +489,45 @@
         }
       }
     },
+    "/clusters/{clusterId}/hosts/{hostId}/progress": {
+      "put": {
+        "tags": ["inventory"],
+        "summary": "Update installation progress",
+        "operationId": "UpdateHostInstallProgress",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "clusterId",
+            "description": "The ID of the cluster to retrieve",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "hostId",
+            "description": "The ID of the host to retrieve",
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "host-install-progress-params",
+            "description": "New progress value",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/host-install-progress-params"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update install progress"
+          }
+        }
+      }
+    },
     "/clusters/{clusterId}/hosts/{hostId}/actions/debug": {
       "post": {
         "tags": ["inventory"],
@@ -717,16 +756,9 @@
     "image-create-params": {
       "type": "object",
       "properties": {
-        "proxyIp": {
+        "proxyURL": {
           "type": "string",
-          "format": "hostname",
-          "description": "The IP address of the HTTP proxy that agents should use to access the discovery service"
-        },
-        "proxyPort": {
-          "type": "integer",
-          "description": "The port of the HTTP proxy",
-          "minimum": 0,
-          "maximum": 65535
+          "description": "The URL of the HTTP/S proxy that agents should use to access the discovery service\nhttp://\\<user\\>:\\<password\\>@\\<server\\>:\\<port\\>/\n"
         },
         "sshPublicKey": {
           "type": "string",
@@ -790,6 +822,11 @@
               "enum": ["undefined", "master", "worker"]
             },
             "updatedAt": {
+              "type": "string",
+              "format": "date-time",
+              "x-go-custom-tag": "gorm:\"type:datetime\""
+            },
+            "createdAt": {
               "type": "string",
               "format": "date-time",
               "x-go-custom-tag": "gorm:\"type:datetime\""
@@ -897,7 +934,7 @@
     },
     "cluster-create-params": {
       "type": "object",
-      "required": ["name"],
+      "required": ["name", "openshiftVersion"],
       "properties": {
         "name": {
           "type": "string",
@@ -959,11 +996,6 @@
         "name": {
           "type": "string",
           "description": "OpenShift cluster name"
-        },
-        "openshiftVersion": {
-          "type": "string",
-          "pattern": "^4\\.\\d$",
-          "description": "OpenShift cluster version"
         },
         "baseDnsDomain": {
           "type": "string",
@@ -1094,6 +1126,9 @@
             "status": {
               "type": "string",
               "enum": ["insufficient", "ready", "error", "installing", "installed"]
+            },
+            "statusInfo": {
+              "type": "string"
             },
             "hosts": {
               "x-go-custom-tag": "gorm:\"foreignkey:ClusterID;association_foreignkey:ID\"",
@@ -1348,6 +1383,9 @@
           }
         }
       }
+    },
+    "host-install-progress-params": {
+      "type": "string"
     }
   }
 }
