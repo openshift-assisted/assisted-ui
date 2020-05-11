@@ -30,9 +30,11 @@ For further details about the Metal³ architecture, see [http://github.com/metal
 - Install [yarn][1]
 - Install javascript dependencies with `yarn install`
 - Start the yarn server with:
+
 ```
   REACT_APP_API_URL=`minikube service bm-inventory --url` yarn start
 ```
+
 - Open the UI at `http://localhost:3000`
 
 [1]: https://yarnpkg.com/en/
