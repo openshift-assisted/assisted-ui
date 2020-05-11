@@ -32,6 +32,9 @@ export const enableClusterHost = (clusterId: string, hostId: string): AxiosPromi
 export const disableClusterHost = (clusterId: string, hostId: string): AxiosPromise<void> =>
   axios.delete(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
 
+export const postInstallCluster = (clusterId: string): AxiosPromise<Cluster> =>
+  axios.post(`${API_ROOT}/clusters/${clusterId}/actions/install`);
+
 type ImageCreateResponse = {
   imageId: string;
 };

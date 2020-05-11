@@ -32,6 +32,7 @@ export const validJSONSchema = Yup.string().test(
   'is-json',
   'Value must be valid JSON.',
   (value) => {
+    if (!value) return true;
     try {
       JSON.parse(value);
       return true;
@@ -41,12 +42,10 @@ export const validJSONSchema = Yup.string().test(
   },
 );
 
-export const ipValidationSchema = Yup.string()
-  .matches(IP_ADDRESS_REGEX, {
-    message: 'Value "${value}" is not valid IP address.', // eslint-disable-line no-template-curly-in-string
-    excludeEmptyString: true,
-  })
-  .required('Required');
+export const ipValidationSchema = Yup.string().matches(IP_ADDRESS_REGEX, {
+  message: 'Value "${value}" is not valid IP address.', // eslint-disable-line no-template-curly-in-string
+  excludeEmptyString: true,
+});
 
 export const ipBlockValidationSchema = Yup.string().matches(IP_ADDRESS_BLOCK_REGEX, {
   message:

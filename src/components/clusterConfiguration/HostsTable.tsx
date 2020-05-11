@@ -59,6 +59,11 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IR
   const { id, status, statusInfo, role, createdAt, hardwareInfo = '' } = host;
   const hwInfo = getHardwareInfo(hardwareInfo) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(hwInfo);
+  const roleCellTitle = ['installing', 'installed', 'error'].includes(status) ? (
+    role
+  ) : (
+    <RoleDropdown role={role} host={host} />
+  );
 
   return [
     {
@@ -67,8 +72,8 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IR
       cells: [
         id,
         {
-          title: <RoleDropdown role={role} host={host} />,
-          sortableValue: host.role,
+          title: roleCellTitle,
+          sortableValue: role,
         },
         id, // TODO(mlibra): should be serial number
         {

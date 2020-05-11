@@ -14,6 +14,7 @@ import {
 } from '../../features/clusters/currentClusterSlice';
 import { POLLING_INTERVAL } from '../../config/constants';
 import ClusterConfiguration from '../clusterConfiguration/ClusterConfiguration';
+import ClusterProgress from '../clusterProgress/ClusterProgress';
 
 type MatchParams = {
   clusterId: string;
@@ -82,8 +83,13 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
 
   if (uiState === ResourceUIState.LOADING) return loadingState;
   if (uiState === ResourceUIState.ERROR) return errorState; // TODO(jtomasek): redirect to cluster list instead?
-  // TODO(jtomasek): handle cases when cluster is not-deployed/deploying/deployed
-  if (cluster) return <ClusterConfiguration cluster={cluster} />;
+  if (cluster) {
+    if (['installing', 'error'].includes(cluster.status)) {
+      return <ClusterProgress cluster={cluster} />;
+    } else {
+      return <ClusterConfiguration cluster={cluster} />;
+    }
+  }
   return <Redirect to="/clusters" />;
 };
 
