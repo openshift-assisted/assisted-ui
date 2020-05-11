@@ -33,16 +33,22 @@ const namesConfig: Config = {
   style: 'lowerCase',
 };
 
-export const NewClusterModalButton: React.FC = () => {
+type NewClusterModalButtonProps = {
+  ButtonComponent?: typeof Button | typeof ToolbarButton;
+};
+
+export const NewClusterModalButton: React.FC<NewClusterModalButtonProps> = ({
+  ButtonComponent = Button,
+}) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const closeModal = () => setIsModalOpen(false);
 
   return (
     <>
-      <ToolbarButton variant={ButtonVariant.primary} onClick={() => setIsModalOpen(true)}>
+      <ButtonComponent variant={ButtonVariant.primary} onClick={() => setIsModalOpen(true)}>
         Create New Cluster
-      </ToolbarButton>
+      </ButtonComponent>
       {isModalOpen && <NewClusterModal closeModal={closeModal} />}
     </>
   );
