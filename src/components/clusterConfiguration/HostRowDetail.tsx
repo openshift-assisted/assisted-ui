@@ -54,7 +54,7 @@ type NicsTableProps = {
 const HostDetailItem: React.FC<HostDetailItemProps> = ({ title, value = '' }) => {
   return (
     <>
-      <Text component={TextVariants.h3} className="host-row-detail-item__title">
+      <Text component={TextVariants.h6} className="host-row-detail-item__title">
         {title}
       </Text>
       <div>
@@ -83,7 +83,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({ title }) => (
     className="host-row-detail__section"
   >
     <TextContent>
-      <Text component={TextVariants.h2}>{title}</Text>
+      <Text component={TextVariants.h3}>{title}</Text>
     </TextContent>
   </FlexItem>
 );
