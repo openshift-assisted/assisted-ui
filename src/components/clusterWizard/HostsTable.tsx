@@ -32,7 +32,6 @@ import { handleApiError } from '../../api/utils';
 type HostsTableProps = {
   cluster: Cluster;
   uiState: ResourceUIState;
-  variant?: TableVariant;
 };
 
 type OpenRows = {
@@ -91,7 +90,7 @@ const HostsTableEmptyState: React.FC = () => (
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
 
-const HostsTable: React.FC<HostsTableProps> = ({ uiState, variant, cluster }) => {
+const HostsTable: React.FC<HostsTableProps> = ({ uiState, cluster }) => {
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
   const [alerts, setAlerts] = React.useState([] as Alert[]);
   const dispatch = useDispatch();
@@ -219,7 +218,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ uiState, variant, cluster }) =>
         rows={rows}
         cells={columns}
         onCollapse={onCollapse}
-        variant={variant ? variant : rows.length > 10 ? TableVariant.compact : undefined}
+        variant={TableVariant.compact}
         aria-label="Hosts table"
         actionResolver={actionResolver}
         className="hosts-table"
