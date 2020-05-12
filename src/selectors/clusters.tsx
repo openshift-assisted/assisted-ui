@@ -10,6 +10,7 @@ import { RootState } from '../store/rootReducer';
 
 const selectClusters = (state: RootState) => state.clusters.data;
 const clustersUIState = (state: RootState) => state.clusters.uiState;
+const currentClusterName = (state: RootState) => state.currentCluster.data?.name;
 
 export const selectClustersUIState = createSelector(
   [selectClusters, clustersUIState],
@@ -45,4 +46,10 @@ export const selectClusterTableRows = createSelector(
 
 export const selectClusterNames = createSelector(selectClusters, (clusters) =>
   clusters.map((c) => c.name),
+);
+
+export const selectClusterNamesButCurrent = createSelector(
+  selectClusterNames,
+  currentClusterName,
+  (clusterNames, currentName) => clusterNames.filter((n) => n !== currentName),
 );

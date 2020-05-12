@@ -12,7 +12,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster }) => {
   return (
     <>
       <TextContent>
-        <Text component="h2">Bare metal inventory</Text>
+        <Text component="h2">Bare Metal Inventory</Text>
         <Text component="p">
           <DiscoveryImageModalButton ButtonComponent={Button} />
         </Text>

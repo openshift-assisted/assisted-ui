@@ -36,7 +36,7 @@ import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import BaremetalInventory from './BaremetalInventory';
 import { nameValidationSchema } from '../ui/formik/validationSchemas';
-import { selectClusterNames } from '../../selectors/clusters';
+import { selectClusterNamesButCurrent } from '../../selectors/clusters';
 
 interface ClusterConfigurationProps {
   cluster: Cluster;
@@ -44,7 +44,7 @@ interface ClusterConfigurationProps {
 
 const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) => {
   const dispatch = useDispatch();
-  const clusterNames = useSelector(selectClusterNames);
+  const clusterNames = useSelector(selectClusterNamesButCurrent);
 
   const initialValues: ClusterUpdateParams = {
     name: cluster.name || '',
