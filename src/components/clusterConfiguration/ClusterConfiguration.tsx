@@ -1,5 +1,6 @@
 import React from 'react';
-import { Formik, FormikHelpers, validateYupSchema, yupToFormErrors, FormikProps } from 'formik';
+import { Formik, FormikHelpers, FormikProps } from 'formik';
+import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 import {
   Form,
@@ -15,31 +16,35 @@ import {
   TextInputTypes,
   TextVariants,
   Spinner,
+  Breadcrumb,
+  BreadcrumbItem,
 } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import { useDispatch } from 'react-redux';
+import { ExternalLinkAltIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
+import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens';
+import { useDispatch, useSelector } from 'react-redux';
 
-import ClusterWizardToolbar from './ClusterWizardToolbar';
+import ClusterToolbar from '../clusters/ClusterToolbar';
 import PageSection from '../ui/PageSection';
 import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import { InputField, TextAreaField } from '../ui/formik';
-import validationSchema from './validationSchema';
 import GridGap from '../ui/GridGap';
 import { Cluster, ClusterUpdateParams } from '../../api/types';
-import { WizardStep } from '../../types/wizard';
 import { patchCluster } from '../../api/clusters';
 import { handleApiError } from '../../api/utils';
 import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import BaremetalInventory from './BaremetalInventory';
+import { nameValidationSchema } from '../ui/formik/validationSchemas';
+import { selectClusterNamesButCurrent } from '../../selectors/clusters';
 
-interface ClusterWizardFormProps {
+interface ClusterConfigurationProps {
   cluster: Cluster;
-  setStep: React.Dispatch<React.SetStateAction<WizardStep>>;
 }
 
-const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep }) => {
+const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) => {
   const dispatch = useDispatch();
+  const clusterNames = useSelector(selectClusterNamesButCurrent);
 
   const initialValues: ClusterUpdateParams = {
     name: cluster.name || '',
@@ -54,16 +59,19 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
     sshPublicKey: cluster.sshPublicKey || '',
   };
 
-  const validate = (values: ClusterUpdateParams) => {
-    // NOTE(jtomasek): This allows passing context to Yup schema
-    // https://github.com/jaredpalmer/formik/issues/506#issuecomment-372229014
-    try {
-      validateYupSchema<ClusterUpdateParams>(values, validationSchema, true);
-    } catch (err) {
-      return yupToFormErrors(err);
-    }
-    return {};
-  };
+  const validationSchema = React.useCallback(
+    () =>
+      Yup.object().shape({
+        name: Yup.mixed()
+          .test(
+            'unique-name',
+            'Name "${value}" is already taken.', // eslint-disable-line no-template-curly-in-string
+            (value) => !clusterNames.includes(value),
+          )
+          .concat(nameValidationSchema),
+      }),
+    [clusterNames],
+  );
 
   const handleSubmit = async (
     values: ClusterUpdateParams,
@@ -83,7 +91,7 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
     <Formik
       initialValues={initialValues}
       initialStatus={{ error: null }}
-      validate={validate}
+      validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
       {({
@@ -95,6 +103,14 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
         status,
       }: FormikProps<ClusterUpdateParams>) => (
         <>
+          <PageSection variant={PageSectionVariants.light}>
+            <Breadcrumb>
+              <BreadcrumbItem>
+                <Link to="/clusters">Clusters</Link>
+              </BreadcrumbItem>
+              <BreadcrumbItem isActive>{cluster.name}</BreadcrumbItem>
+            </Breadcrumb>
+          </PageSection>
           <PageSection variant={PageSectionVariants.light} isMain>
             <Form onSubmit={handleSubmit}>
               <Grid gutter="md">
@@ -111,6 +127,13 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
                       helperText="The base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name."
                       isRequired
                     />
+                  </GridGap>
+                </GridItem>
+                <GridItem span={12}>
+                  <BaremetalInventory cluster={cluster} />
+                </GridItem>
+                <GridItem span={12} lg={10} xl={6}>
+                  <GridGap>
                     <TextContent>
                       <Text component="h2">Networking</Text>
                     </TextContent>
@@ -194,18 +217,12 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
               />
             )}
           </AlertsSection>
-          <ClusterWizardToolbar>
+          <ClusterToolbar>
             <ToolbarButton
-              variant={ButtonVariant.secondary}
+              variant={ButtonVariant.link}
               component={(props) => <Link to="/clusters" {...props} />}
             >
               Close
-            </ToolbarButton>
-            <ToolbarButton
-              variant={ButtonVariant.secondary}
-              onClick={() => setStep(WizardStep.BaremetalInventory)}
-            >
-              Back
             </ToolbarButton>
             <ToolbarButton
               type="submit"
@@ -223,11 +240,16 @@ const ClusterWizardForm: React.FC<ClusterWizardFormProps> = ({ cluster, setStep 
                 <Spinner size="sm" /> Saving...
               </ToolbarText>
             )}
-          </ClusterWizardToolbar>
+            {!isValid && (
+              <ToolbarText component={TextVariants.small}>
+                <ExclamationCircleIcon color={dangerColor.value} /> There are validation errors.
+              </ToolbarText>
+            )}
+          </ClusterToolbar>
         </>
       )}
     </Formik>
   );
 };
 
-export default ClusterWizardForm;
+export default ClusterConfiguration;

@@ -7,10 +7,10 @@ interface Props {
   children: React.ReactNode;
 }
 
-const ClusterWizardToolbar: React.FC<Props> = ({ children }) => (
+const ClusterToolbar: React.FC<Props> = ({ children }) => (
   <PageSection variant={PageSectionVariants.light} className="pf-u-box-shadow-lg-top">
     <Toolbar>{children}</Toolbar>
   </PageSection>
 );
 
-export default ClusterWizardToolbar;
+export default ClusterToolbar;

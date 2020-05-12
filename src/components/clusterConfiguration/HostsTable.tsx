@@ -13,9 +13,8 @@ import {
 import { ConnectedIcon } from '@patternfly/react-icons';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { AlertVariant } from '@patternfly/react-core';
-import { EmptyState, ErrorState } from '../ui/uiState';
+import { EmptyState } from '../ui/uiState';
 import { getColSpanRow } from '../ui/table/utils';
-import { ResourceUIState } from '../../types';
 import { Host, Cluster } from '../../api/types';
 import { enableClusterHost, disableClusterHost } from '../../api/clusters';
 import { Alerts, Alert } from '../ui/Alerts';
@@ -31,8 +30,6 @@ import { handleApiError } from '../../api/utils';
 
 type HostsTableProps = {
   cluster: Cluster;
-  uiState: ResourceUIState;
-  variant?: TableVariant;
 };
 
 type OpenRows = {
@@ -44,7 +41,7 @@ const columns = [
   { title: 'Role' },
   { title: 'Serial Number' },
   { title: 'Status' },
-  { title: 'vCPU' },
+  { title: 'CPU Cores' }, // cores per machine (sockets x cores)
   { title: 'Memory' },
   { title: 'Disk' },
 ];
@@ -52,7 +49,7 @@ const columns = [
 const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IRow => {
   const { id, status, statusInfo, role, hardwareInfo = '' } = host;
   const hwInfo = getHardwareInfo(hardwareInfo) || {};
-  const { cpu, memory, disk } = getHostRowHardwareInfo(hwInfo);
+  const { cores, memory, disk } = getHostRowHardwareInfo(hwInfo);
 
   return [
     {
@@ -65,7 +62,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IR
         },
         id, // TODO(mlibra): should be serial number
         { title: <HostStatus status={status} statusInfo={statusInfo} /> },
-        cpu,
+        cores,
         memory,
         disk,
       ],
@@ -91,7 +88,7 @@ const HostsTableEmptyState: React.FC = () => (
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
 
-const HostsTable: React.FC<HostsTableProps> = ({ uiState, variant, cluster }) => {
+const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
   const [alerts, setAlerts] = React.useState([] as Alert[]);
   const dispatch = useDispatch();
@@ -102,22 +99,11 @@ const HostsTable: React.FC<HostsTableProps> = ({ uiState, variant, cluster }) =>
   );
 
   const rows = React.useMemo(() => {
-    const errorState = <ErrorState title="Failed to fetch hosts" />;
-    const columnCount = columns.length;
-    switch (uiState) {
-      // case ResourceUIState.LOADING:
-      //   return getColSpanRow(loadingState, columnCount);
-      // case ResourceUIState.EMPTY:
-      //   return getColSpanRow(emptyState, columnCount);
-      case ResourceUIState.ERROR:
-        return getColSpanRow(errorState, columnCount);
-      default:
-        if (hostRows.length) {
-          return hostRows;
-        }
-        return getColSpanRow(HostsTableEmptyState, columnCount);
+    if (hostRows.length) {
+      return hostRows;
     }
-  }, [uiState, hostRows]);
+    return getColSpanRow(HostsTableEmptyState, columns.length);
+  }, [hostRows]);
 
   const onCollapse = React.useCallback(
     (_event, rowKey) => {
@@ -219,7 +205,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ uiState, variant, cluster }) =>
         rows={rows}
         cells={columns}
         onCollapse={onCollapse}
-        variant={variant ? variant : rows.length > 10 ? TableVariant.compact : undefined}
+        variant={TableVariant.compact}
         aria-label="Hosts table"
         actionResolver={actionResolver}
         className="hosts-table"

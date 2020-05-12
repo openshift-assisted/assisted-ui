@@ -1,0 +1,1107 @@
+swagger: '2.0'
+info:
+  description: 'Bare metal inventory'
+  version: 1.0.0
+  title: BMInventory
+host: api.openshift.com
+basePath: /api/bm-inventory/v1
+tags:
+  - name: Bare metal inventory
+    description: Manage bare metal inventory
+
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+  /clusters:
+    post:
+      tags:
+        - inventory
+      summary: Create a new OpenShift bare metal cluster definition
+      operationId: RegisterCluster
+      parameters:
+        - in: body
+          name: new-cluster-params
+          description: New cluster parameters
+          required: true
+          schema:
+            $ref: '#/definitions/cluster-create-params'
+      responses:
+        201:
+          description: Registered cluster
+          schema:
+            $ref: '#/definitions/cluster'
+        400:
+          description: Invalid input
+        500:
+          description: Internal server error
+
+    get:
+      tags:
+        - inventory
+      summary: List OpenShift bare metal clusters
+      operationId: ListClusters
+      responses:
+        200:
+          description: Cluster list
+          schema:
+            $ref: '#/definitions/cluster-list'
+        500:
+          description: Internal server error
+
+  /clusters/{clusterId}:
+    get:
+      tags:
+        - inventory
+      summary: Retrieve OpenShift bare metal cluster information
+      operationId: GetCluster
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster to retrieve
+          type: string
+          format: uuid
+          required: true
+      responses:
+        200:
+          description: Cluster information
+          schema:
+            $ref: '#/definitions/cluster'
+        404:
+          description: Cluster not found
+        500:
+          description: Internal server error
+
+    patch:
+      tags:
+        - inventory
+      summary: Update an OpenShift bare metal cluster definition
+      operationId: UpdateCluster
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster to retrieve
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: cluster-update-params
+          description: New cluster parameters
+          required: true
+          schema:
+            $ref: '#/definitions/cluster-update-params'
+      responses:
+        201:
+          description: Registered cluster
+          schema:
+            $ref: '#/definitions/cluster'
+        400:
+          description: Invalid input
+        404:
+          description: Cluster not found
+        409:
+          description: Invalid state
+        500:
+          description: Internal server error
+
+    delete:
+      tags:
+        - inventory
+      summary: Delete an OpenShift bare metal cluster definition
+      operationId: DeregisterCluster
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster to retrieve
+          format: uuid
+          type: string
+          required: true
+      responses:
+        204:
+          description: Cluster deregistered
+        404:
+          description: Cluster not found
+        409:
+          description: Invalid state
+        500:
+          description: Internal server error
+
+  /clusters/{clusterId}/downloads/image:
+    post:
+      tags:
+        - inventory
+      summary: Create a new OpenShift per-cluster discovery ISO
+      operationId: GenerateClusterISO
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster whose ISO to create
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: image-create-params
+          description: New ISO parameters
+          required: true
+          schema:
+            $ref: '#/definitions/image-create-params'
+      responses:
+        201:
+          description: Created ISO
+          schema:
+            type: object
+            properties:
+              imageId:
+                type: string
+                format: uuid
+        400:
+          description: Invalid input
+        404:
+          description: Cluster not found
+        500:
+          description: Internal server error
+
+    get:
+      tags:
+        - inventory
+      summary: Download OpenShift per-cluster discovery ISO
+      operationId: DownloadClusterISO
+      produces:
+        # application/vnd.efi.iso is not supported
+        - application/octet-stream
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster whose ISO to download
+          type: string
+          format: uuid
+          required: true
+        - in: query
+          name: imageId
+          description: The ID of a previously-created image
+          type: string
+          format: uuid
+          required: true
+      responses:
+        200:
+          description: The ISO file
+          schema:
+            type: string
+            format: binary
+        400:
+          description: Invalid parameters
+        404:
+          description: Cluster or image not found
+        500:
+          description: Internal server error
+
+  /clusters/{clusterId}/downloads/files:
+    get:
+      tags:
+        - inventory
+      summary: Download files relating to the installed/installing cluster
+      operationId: DownloadClusterFiles
+      produces:
+        - application/octet-stream
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the installed/installing cluster
+          type: string
+          format: uuid
+          required: true
+        - in: query
+          name: fileName
+          description: The desired file to download
+          type: string
+          enum:
+            [bootstrap.ign, master.ign, metadata.json, worker.ign, kubeadmin-password, kubeconfig]
+          required: true
+      responses:
+        200:
+          description: The requested file
+          schema:
+            type: file
+        404:
+          description: Cluster not found
+        409:
+          description: Conflict
+        500:
+          description: Internal server error
+
+  /clusters/{clusterId}/actions/install:
+    post:
+      tags:
+        - inventory
+      summary: Install a new OpenShift bare metal cluster
+      operationId: InstallCluster
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster to begin installing
+          type: string
+          format: uuid
+          required: true
+      responses:
+        200:
+          description: Installing cluster
+          schema:
+            $ref: '#/definitions/cluster'
+        400:
+          description: Invalid input
+        404:
+          description: Cluster not found
+        409:
+          description: Invalid state
+        500:
+          description: Internal server error
+
+  /clusters/{clusterId}/hosts:
+    post:
+      tags:
+        - inventory
+      summary: Register a new OpenShift bare metal host
+      operationId: RegisterHost
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster to register host to
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: new-host-params
+          description: New host parameters
+          required: true
+          schema:
+            $ref: '#/definitions/host-create-params'
+      responses:
+        201:
+          description: Registered host
+          schema:
+            $ref: '#/definitions/host'
+        400:
+          description: Invalid input
+        500:
+          description: Internal server error
+
+    get:
+      tags:
+        - inventory
+      summary: List OpenShift bare metal hosts
+      operationId: ListHosts
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster to get hosts from
+          type: string
+          format: uuid
+          required: true
+      responses:
+        200:
+          description: Host list
+          schema:
+            $ref: '#/definitions/host-list'
+        500:
+          description: Internal server error
+
+  /clusters/{clusterId}/hosts/{hostId}:
+    get:
+      tags:
+        - inventory
+      summary: Retrieve OpenShift bare metal host information
+      operationId: GetHost
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster to get hosts from
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: hostId
+          description: The ID of the host to retrieve
+          type: string
+          format: uuid
+          required: true
+      responses:
+        200:
+          description: Host information
+          schema:
+            $ref: '#/definitions/host'
+        404:
+          description: Host not found
+        500:
+          description: Internal server error
+
+    delete:
+      tags:
+        - inventory
+      summary: Deregister OpenShift bare metal host
+      operationId: DeregisterHost
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster to deregister host from
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: hostId
+          description: The ID of the host to retrieve
+          type: string
+          format: uuid
+          required: true
+      responses:
+        204:
+          description: Host deregistered
+        400:
+          description: Host in use
+        404:
+          description: Host not found
+        500:
+          description: Internal server error
+
+  /clusters/{clusterId}/hosts/{hostId}/progress:
+    put:
+      tags:
+        - inventory
+      summary: Update installation progress
+      operationId: UpdateHostInstallProgress
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster to retrieve
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: hostId
+          description: The ID of the host to retrieve
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: host-install-progress-params
+          description: New progress value
+          required: true
+          schema:
+            $ref: '#/definitions/host-install-progress-params'
+      responses:
+        200:
+          description: Update install progress
+
+  /clusters/{clusterId}/hosts/{hostId}/actions/debug:
+    post:
+      tags:
+        - inventory
+      summary:
+        Set a single shot debug step that will be sent next time the agent will ask for a command
+      operationId: SetDebugStep
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster of the host
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: hostId
+          description: The ID of the host to debug
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: step
+          description: Next debug step
+          required: true
+          schema:
+            $ref: '#/definitions/debug-step'
+      responses:
+        200:
+          description: Registered
+        404:
+          description: Host not found
+        500:
+          description: Internal server error
+
+  /clusters/{clusterId}/hosts/{hostId}/actions/enable:
+    post:
+      tags:
+        - inventory
+      summary: Enable a host for use
+      operationId: EnableHost
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster of the host
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: hostId
+          description: The ID of the host to enable
+          type: string
+          format: uuid
+          required: true
+      responses:
+        204:
+          description: Enabled
+        404:
+          description: Host not found
+        409:
+          description: Conflict
+        500:
+          description: Internal server error
+
+    delete:
+      tags:
+        - inventory
+      summary: Disable a host for use
+      operationId: DisableHost
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster of the host
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: hostId
+          description: The ID of the host to disable
+          type: string
+          format: uuid
+          required: true
+      responses:
+        204:
+          description: Disabled
+        404:
+          description: Host not found
+        409:
+          description: Conflict
+        500:
+          description: Internal server error
+
+  /clusters/{clusterId}/hosts/{hostId}/instructions:
+    get:
+      tags:
+        - inventory
+      summary: Retrieve the next operations that the agent need to perform
+      operationId: GetNextSteps
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster of the host
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: hostId
+          description: ID of host
+          type: string
+          format: uuid
+          required: true
+      responses:
+        200:
+          description: Instruction information
+          schema:
+            $ref: '#/definitions/steps'
+        404:
+          description: Host not found
+        500:
+          description: Internal server error
+
+    post:
+      tags:
+        - inventory
+      summary: Post the result of the operations from the server
+      operationId: PostStepReply
+      parameters:
+        - in: path
+          name: clusterId
+          description: The ID of the cluster of the host
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: hostId
+          description: ID of host
+          type: string
+          format: uuid
+          required: true
+        - name: reply
+          in: body
+          schema:
+            $ref: '#/definitions/step-reply'
+      responses:
+        204:
+          description: Reply accepted
+        400:
+          description: Invalid input
+        404:
+          description: Host not found
+        500:
+          description: Internal server error
+
+definitions:
+  base:
+    type: object
+    required:
+      - kind
+      - id
+      - href
+    properties:
+      kind:
+        type: string
+        enum: ['image', 'host', 'cluster']
+      id:
+        type: string
+        format: uuid
+        x-go-custom-tag: gorm:"primary_key"
+      href:
+        type: string
+        format: uri
+
+  image-create-params:
+    type: object
+    properties:
+      proxyURL:
+        type: string
+        description: |
+          The URL of the HTTP/S proxy that agents should use to access the discovery service
+          http://\<user\>:\<password\>@\<server\>:\<port\>/
+      sshPublicKey:
+        type: string
+        description: SSH public key for debugging the installation
+
+  host-create-params:
+    type: object
+    required:
+      - hostId
+    properties:
+      hostId:
+        type: string
+        format: uuid
+
+  host:
+    type: object
+    allOf:
+      - $ref: '#/definitions/base'
+      - $ref: '#/definitions/host-create-params'
+      - type: object
+        required:
+          - kind
+          - status
+        properties:
+          clusterId:
+            type: string
+            format: uuid
+            x-go-custom-tag: gorm:"primary_key;foreignkey:Cluster"
+          status:
+            type: string
+            enum:
+              - discovering
+              - known
+              - disconnected
+              - insufficient
+              - disabled
+              - installing
+              - installed
+              - error
+          statusInfo:
+            type: string
+          connectivity:
+            $ref: '#/definitions/connectivity-report'
+          hardwareInfo:
+            x-go-custom-tag: gorm:"type:text"
+            type: string
+          role:
+            type: string
+            enum: ['undefined', 'master', 'worker']
+          updatedAt:
+            type: string
+            format: date-time
+            x-go-custom-tag: gorm:"type:datetime"
+          createdAt:
+            type: string
+            format: date-time
+            x-go-custom-tag: gorm:"type:datetime"
+
+  steps:
+    type: array
+    items:
+      $ref: '#/definitions/step'
+
+  step-type:
+    type: string
+    enum:
+      - hardware-info
+      - connectivity-check
+      - execute
+
+  step:
+    type: object
+    properties:
+      step-type:
+        $ref: '#/definitions/step-type'
+      step-id:
+        type: string
+      command:
+        type: string
+      args:
+        type: array
+        items:
+          type: string
+
+  steps-reply:
+    type: array
+    items:
+      $ref: '#/definitions/step-reply'
+
+  step-reply:
+    type: object
+    properties:
+      step-id:
+        type: string
+      exit-code:
+        type: integer
+      output:
+        type: string
+      error:
+        type: string
+
+  connectivity-check-nic:
+    type: object
+    properties:
+      name:
+        type: string
+      mac:
+        type: string
+      ip-addresses:
+        type: array
+        items:
+          type: string
+
+  connectivity-check-host:
+    type: object
+    properties:
+      host-id:
+        type: string
+        format: uuid
+      nics:
+        type: array
+        items:
+          $ref: '#/definitions/connectivity-check-nic'
+
+  connectivity-check-params:
+    type: array
+    items:
+      $ref: '#/definitions/connectivity-check-host'
+
+  host-list:
+    type: array
+    items:
+      $ref: '#/definitions/host'
+
+  cluster-create-params:
+    type: object
+    required:
+      - name
+      - openshiftVersion
+    properties:
+      name:
+        type: string
+        description: OpenShift cluster name
+      openshiftVersion:
+        type: string
+        pattern: '^4\.\d$'
+        description: OpenShift cluster version
+      baseDnsDomain:
+        type: string
+        description:
+          The base domain of the cluster. All DNS records must be sub-domains of this base and
+          include the cluster name.
+      clusterNetworkCIDR:
+        type: string
+        description:
+          IP address block from which Pod IPs are allocated This block must not overlap with
+          existing physical networks. These IP addresses are used for the Pod network, and if you
+          need to access the Pods from an external network, configure load balancers and routers to
+          manage the traffic.
+        pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$'
+      clusterNetworkHostPrefix:
+        type: integer
+        description:
+          The subnet prefix length to assign to each individual node. For example, if
+          clusterNetworkHostPrefix is set to 23, then each node is assigned a /23 subnet out of the
+          given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses.
+          If you are required to provide access to nodes from an external network, configure load
+          balancers and routers to manage the traffic.
+        minimum: 1
+        maximum: 32
+      serviceNetworkCIDR:
+        type: string
+        description:
+          The IP address pool to use for service IP addresses. You can enter only one IP address
+          pool. If you need to access the services from an external network, configure load
+          balancers and routers to manage the traffic.
+        pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$'
+      apiVip:
+        type: string
+        format: hostname
+        description: Virtual IP used to reach the OpenShift cluster API
+      dnsVip:
+        type: string
+        format: hostname
+        description:
+          Virtual IP used internally by the cluster for automating internal DNS requirements
+      ingressVip:
+        type: string
+        format: hostname
+        description: Virtual IP used for cluster ingress traffic
+      pullSecret:
+        type: string
+        description:
+          The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster
+          Manager site
+      sshPublicKey:
+        type: string
+        description: SSH public key for debugging OpenShift nodes
+
+  cluster-update-params:
+    type: object
+    properties:
+      name:
+        type: string
+        description: OpenShift cluster name
+      baseDnsDomain:
+        type: string
+        description:
+          The base domain of the cluster. All DNS records must be sub-domains of this base and
+          include the cluster name.
+      clusterNetworkCIDR:
+        type: string
+        description:
+          IP address block from which Pod IPs are allocated This block must not overlap with
+          existing physical networks. These IP addresses are used for the Pod network, and if you
+          need to access the Pods from an external network, configure load balancers and routers to
+          manage the traffic.
+        pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$'
+      clusterNetworkHostPrefix:
+        type: integer
+        description:
+          The subnet prefix length to assign to each individual node. For example, if
+          clusterNetworkHostPrefix is set to 23, then each node is assigned a /23 subnet out of the
+          given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses.
+          If you are required to provide access to nodes from an external network, configure load
+          balancers and routers to manage the traffic.
+        minimum: 1
+        maximum: 32
+      serviceNetworkCIDR:
+        type: string
+        description:
+          The IP address pool to use for service IP addresses. You can enter only one IP address
+          pool. If you need to access the services from an external network, configure load
+          balancers and routers to manage the traffic.
+        pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$'
+      apiVip:
+        type: string
+        format: hostname
+        description: Virtual IP used to reach the OpenShift cluster API
+      dnsVip:
+        type: string
+        format: hostname
+        description:
+          Virtual IP used internally by the cluster for automating internal DNS requirements
+      ingressVip:
+        type: string
+        format: hostname
+        description: Virtual IP used for cluster ingress traffic
+      pullSecret:
+        type: string
+        description:
+          The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster
+          Manager site
+      sshPublicKey:
+        type: string
+        description: SSH public key for debugging OpenShift nodes
+      hostsRoles:
+        type: array
+        x-go-custom-tag: gorm:"type:varchar(64)[]"
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            role:
+              type: string
+              enum: ['master', 'worker']
+
+  cluster:
+    type: object
+    allOf:
+      - $ref: '#/definitions/base'
+      - type: object
+        required:
+          - status
+        properties:
+          name:
+            type: string
+            description: OpenShift cluster name
+          openshiftVersion:
+            type: string
+            pattern: '^4\.\d$'
+            description: OpenShift cluster version
+          baseDnsDomain:
+            type: string
+            description:
+              The base domain of the cluster. All DNS records must be sub-domains of this base and
+              include the cluster name.
+          clusterNetworkCIDR:
+            type: string
+            description:
+              IP address block from which Pod IPs are allocated This block must not overlap with
+              existing physical networks. These IP addresses are used for the Pod network, and if
+              you need to access the Pods from an external network, configure load balancers and
+              routers to manage the traffic.
+            pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$'
+          clusterNetworkHostPrefix:
+            type: integer
+            description:
+              The subnet prefix length to assign to each individual node. For example, if
+              clusterNetworkHostPrefix is set to 23, then each node is assigned a /23 subnet out of
+              the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs
+              addresses. If you are required to provide access to nodes from an external network,
+              configure load balancers and routers to manage the traffic.
+            minimum: 1
+            maximum: 32
+          serviceNetworkCIDR:
+            type: string
+            description:
+              The IP address pool to use for service IP addresses. You can enter only one IP address
+              pool. If you need to access the services from an external network, configure load
+              balancers and routers to manage the traffic.
+            pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$'
+          apiVip:
+            type: string
+            format: hostname
+            description: Virtual IP used to reach the OpenShift cluster API
+          dnsVip:
+            type: string
+            format: hostname
+            description:
+              Virtual IP used internally by the cluster for automating internal DNS requirements
+          ingressVip:
+            type: string
+            format: hostname
+            description: Virtual IP used for cluster ingress traffic
+          pullSecret:
+            type: string
+            x-go-custom-tag: gorm:"type:varchar(4096)"
+            description:
+              The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift
+              Cluster Manager site
+          sshPublicKey:
+            type: string
+            x-go-custom-tag: gorm:"type:varchar(1024)"
+            description: SSH public key for debugging OpenShift nodes
+          status:
+            type: string
+            enum:
+              - insufficient
+              - ready
+              - error
+              - installing
+              - installed
+          statusInfo:
+            type: string
+          hosts:
+            x-go-custom-tag: gorm:"foreignkey:ClusterID;association_foreignkey:ID"
+            type: array
+            items:
+              type: object
+              $ref: '#/definitions/host'
+          updatedAt:
+            type: string
+            format: date-time
+            x-go-custom-tag: gorm:"type:datetime"
+          createdAt:
+            type: string
+            format: date-time
+            x-go-custom-tag: gorm:"type:datetime"
+          installStartedAt:
+            type: string
+            format: date-time
+            x-go-custom-tag: gorm:"type:datetime;default:0"
+          installCompletedAt:
+            type: string
+            format: date-time
+            x-go-custom-tag: gorm:"type:datetime;default:0"
+
+  cluster-list:
+    type: array
+    items:
+      $ref: '#/definitions/cluster'
+
+  debug-step:
+    type: object
+    required:
+      - command
+    properties:
+      command:
+        type: string
+
+  cpu:
+    type: object
+    properties:
+      architecture:
+        type: string
+      model-name:
+        type: string
+      cpus:
+        type: integer
+      threads-per-core:
+        type: integer
+      sockets:
+        type: integer
+      cpu-mhz:
+        type: number
+
+  block-device:
+    type: object
+    properties:
+      name:
+        type: string
+      major-device-number:
+        type: integer
+      minor-device-number:
+        type: integer
+      removable-device:
+        type: integer
+      size:
+        type: integer
+      read-only:
+        type: boolean
+      device-type:
+        type: string
+      mountpoint:
+        type: string
+      fstype:
+        type: string
+
+  memory:
+    type: object
+    properties:
+      name:
+        type: string
+      total:
+        type: integer
+      used:
+        type: integer
+      free:
+        type: integer
+      shared:
+        type: integer
+      buff-cached:
+        type: integer
+      available:
+        type: integer
+
+  cidr:
+    type: object
+    properties:
+      ip-address:
+        type: string
+      mask:
+        type: integer
+
+  nic:
+    type: object
+    properties:
+      name:
+        type: string
+      state:
+        type: string
+      mtu:
+        type: integer
+      mac:
+        type: string
+      cidrs:
+        type: array
+        items:
+          $ref: '#/definitions/cidr'
+
+  # Return value of hardware info
+  introspection:
+    type: object
+    properties:
+      cpu:
+        $ref: '#/definitions/cpu'
+      block-devices:
+        type: array
+        items:
+          $ref: '#/definitions/block-device'
+      memory:
+        type: array
+        items:
+          $ref: '#/definitions/memory'
+      nics:
+        type: array
+        items:
+          $ref: '#/definitions/nic'
+
+  l2-connectivity:
+    type: object
+    properties:
+      outgoing-nic:
+        type: string
+      outgoing-ip-address:
+        type: string
+      remote-ip-address:
+        type: string
+      remote-mac:
+        type: string
+      successful:
+        type: boolean
+
+  l3-connectivity:
+    type: object
+    properties:
+      outgoing-nic:
+        type: string
+      remote-ip-address:
+        type: string
+      successful:
+        type: boolean
+
+  connectivity-remote-host:
+    type: object
+    properties:
+      host-id:
+        type: string
+        format: uuid
+      l2-connectivity:
+        type: array
+        items:
+          $ref: '#/definitions/l2-connectivity'
+      l3-connectivity:
+        type: array
+        items:
+          $ref: '#/definitions/l3-connectivity'
+
+  # Return value of connectivity check
+  connectivity-report:
+    type: object
+    properties:
+      remote-hosts:
+        type: array
+        items:
+          $ref: '#/definitions/connectivity-remote-host'
+
+  host-install-progress-params:
+    type: string

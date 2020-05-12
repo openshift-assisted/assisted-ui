@@ -3,7 +3,8 @@ import { BlockDevice, Introspection, Nic } from '../../api/types';
 import { DASH } from '../constants';
 
 export type HostRowHardwareInfo = {
-  cpu: string;
+  cores: string;
+  cpuSpeed: string;
   memory: string;
   disk: string;
   disks: BlockDevice[];
@@ -35,9 +36,12 @@ export const getHumanizedCpuClockSpeed = (hwInfo: Introspection) =>
   Humanize.formatNumber(hwInfo.cpu?.['cpu-mhz'] || 0);
 
 export const getHostRowHardwareInfo = (hwInfo: Introspection): HostRowHardwareInfo => {
-  let cpu = DASH;
+  let cores = DASH;
+  let cpuSpeed = DASH;
   if (hwInfo.cpu?.cpus) {
-    cpu = `${hwInfo.cpu?.cpus}x ${getHumanizedCpuClockSpeed(hwInfo)} MHz`;
+    cpuSpeed = `${hwInfo.cpu?.cpus}x ${getHumanizedCpuClockSpeed(hwInfo)} MHz`;
+    // already total per mahcine (cores x sockets). WIll be changed by https://github.com/filanov/bm-inventory/pull/108
+    cores = hwInfo.cpu?.cpus.toString();
   }
 
   let memory = DASH;
@@ -55,7 +59,8 @@ export const getHostRowHardwareInfo = (hwInfo: Introspection): HostRowHardwareIn
   }
 
   return {
-    cpu,
+    cores,
+    cpuSpeed,
     memory,
     disk,
     disks: getDisks(hwInfo),
