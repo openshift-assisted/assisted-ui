@@ -55,6 +55,18 @@ $ yarn build
 
 In the project directory, you can run:
 
+### `hacks/npm-publish.sh`
+
+Increases `patch` version (`.z`) of the package, opens PR with this change and **publishes** the package to the [npmjs.com](https://www.npmjs.com/package/metal3-facet) repository.
+
+New tag conforming the version is created.
+
+Prior running this script, please be sure you
+
+- are logged in npmjs.com (call `yarn login`)
+
+- can create branches and open PRs in [https://github.com/openshift-metal3/facet](https://github.com/openshift-metal3/facet)
+
 ### `yarn install`
 
 Installs dependencies to node_modules directory

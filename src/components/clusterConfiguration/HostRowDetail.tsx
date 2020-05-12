@@ -186,7 +186,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
       </SectionColumn>
       <SectionColumn>
         <HostDetailItem title="Memory capacity" value={rowInfo.memory} />
-        <HostDetailItem title="CPU clock speed" value={rowInfo.cpu} />
+        <HostDetailItem title="CPU clock speed" value={rowInfo.cpuSpeed} />
       </SectionColumn>
       <SectionColumn>
         <HostDetailItem title="Sockets" value={hwInfo.cpu?.sockets || DASH} />
