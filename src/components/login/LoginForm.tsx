@@ -10,7 +10,7 @@ import {
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
-import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
+import ClusterToolbar from '../clusters/ClusterToolbar';
 import RedHatAccountFields from './RedHatAccountFields';
 import PageSection from '../ui/PageSection';
 import PullSecretFields from './PullSecretFields';
@@ -94,7 +94,7 @@ const LoginForm: React.FC = () => {
               </GridItem>
             </Grid>
           </PageSection>
-          <ClusterWizardToolbar>
+          <ClusterToolbar>
             <ToolbarButton
               variant="primary"
               onClick={submitForm}
@@ -108,7 +108,7 @@ const LoginForm: React.FC = () => {
                 <ExclamationCircleIcon /> {status.error}
               </ToolbarText>
             )}
-          </ClusterWizardToolbar>
+          </ClusterToolbar>
         </>
       )}
     </Formik>
