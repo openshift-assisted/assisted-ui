@@ -35,6 +35,15 @@ export const getNics = (hwInfo: Introspection): Nic[] => hwInfo.nics || [];
 export const getHumanizedCpuClockSpeed = (hwInfo: Introspection) =>
   Humanize.formatNumber(hwInfo.cpu?.['cpu-mhz'] || 0);
 
+export const getHumanizedTime = (time: string | undefined): string => {
+  if (!time) {
+    return DASH;
+  }
+
+  const date = new Date(time);
+  return date.toLocaleString();
+};
+
 export const getHostRowHardwareInfo = (hwInfo: Introspection): HostRowHardwareInfo => {
   let cores = DASH;
   let cpuSpeed = DASH;
