@@ -6,7 +6,6 @@
   "bugs": {
     "url": "https://github.com/openshift-metal3/facet/issues"
   },
-  "homepage": "https://github.com/openshift-metal3/facet",
   "dependencies": {
     "@patternfly/patternfly": "^2.68.4",
     "@patternfly/react-core": "^3.146.0",
