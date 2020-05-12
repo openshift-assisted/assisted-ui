@@ -18,7 +18,7 @@ import { getColSpanRow } from '../ui/table/utils';
 import { Host, Cluster } from '../../api/types';
 import { enableClusterHost, disableClusterHost } from '../../api/clusters';
 import { Alerts, Alert } from '../ui/Alerts';
-import { getHostRowHardwareInfo, getHardwareInfo } from './hardwareInfo';
+import { getHostRowHardwareInfo, getHardwareInfo, getHumanizedTime } from './hardwareInfo';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
@@ -41,13 +41,14 @@ const columns = [
   { title: 'Role' },
   { title: 'Serial Number' },
   { title: 'Status' },
+  { title: 'Created At' },
   { title: 'CPU Cores' }, // cores per machine (sockets x cores)
   { title: 'Memory' },
   { title: 'Disk' },
 ];
 
 const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IRow => {
-  const { id, status, statusInfo, role, hardwareInfo = '' } = host;
+  const { id, status, statusInfo, role, createdAt, hardwareInfo = '' } = host;
   const hwInfo = getHardwareInfo(hardwareInfo) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(hwInfo);
 
@@ -62,6 +63,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IR
         },
         id, // TODO(mlibra): should be serial number
         { title: <HostStatus status={status} statusInfo={statusInfo} /> },
+        getHumanizedTime(createdAt),
         cores,
         memory,
         disk,
