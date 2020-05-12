@@ -2,18 +2,15 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   PageSectionVariants,
-  ButtonVariant,
   TextContent,
   Text,
-  Button,
   TextVariants,
   Spinner,
 } from '@patternfly/react-core';
-import { Link } from 'react-router-dom';
 import PageSection from '../ui/PageSection';
 import { selectClusterTableRows, selectClustersUIState } from '../../selectors/clusters';
-import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
-import { ToolbarText } from '../ui/Toolbar';
+import { ToolbarText, ToolbarButton } from '../ui/Toolbar';
+import ClusterToolbar from './ClusterToolbar';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';
 import { ResourceUIState } from '../../types';
@@ -50,14 +47,7 @@ const Clusters: React.FC = () => {
         icon={AddCircleOIcon}
         title="Create new bare metal cluster"
         content="There are no clusters yet. This wizard is going to guide you through the OpenShift bare metal cluster deployment."
-        primaryAction={
-          <Button
-            variant={ButtonVariant.primary}
-            component={(props) => <Link to="/clusters/new" {...props} />}
-          >
-            Create New Cluster
-          </Button>
-        }
+        primaryAction={<NewClusterModalButton />}
       />
     </PageSection>
   );
@@ -82,8 +72,8 @@ const Clusters: React.FC = () => {
           <PageSection variant={PageSectionVariants.light} isMain>
             <ClustersTable rows={clusterRows} deleteCluster={deleteCluster} />
           </PageSection>
-          <ClusterWizardToolbar>
-            <NewClusterModalButton />
+          <ClusterToolbar>
+            <NewClusterModalButton ButtonComponent={ToolbarButton} />
             <ToolbarText component={TextVariants.small}>
               {clustersUIState === RELOADING && (
                 <>
@@ -91,7 +81,7 @@ const Clusters: React.FC = () => {
                 </>
               )}
             </ToolbarText>
-          </ClusterWizardToolbar>
+          </ClusterToolbar>
         </>
       );
   }
