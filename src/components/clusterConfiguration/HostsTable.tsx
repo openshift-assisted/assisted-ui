@@ -41,7 +41,7 @@ const columns = [
   { title: 'Role' },
   { title: 'Serial Number' },
   { title: 'Status' },
-  { title: 'vCPU' },
+  { title: 'CPU Cores' }, // cores per machine (sockets x cores)
   { title: 'Memory' },
   { title: 'Disk' },
 ];
@@ -49,7 +49,7 @@ const columns = [
 const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IRow => {
   const { id, status, statusInfo, role, hardwareInfo = '' } = host;
   const hwInfo = getHardwareInfo(hardwareInfo) || {};
-  const { cpu, memory, disk } = getHostRowHardwareInfo(hwInfo);
+  const { cores, memory, disk } = getHostRowHardwareInfo(hwInfo);
 
   return [
     {
@@ -62,7 +62,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IR
         },
         id, // TODO(mlibra): should be serial number
         { title: <HostStatus status={status} statusInfo={statusInfo} /> },
-        cpu,
+        cores,
         memory,
         disk,
       ],
