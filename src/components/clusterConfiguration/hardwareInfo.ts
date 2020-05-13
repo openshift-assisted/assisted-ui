@@ -1,11 +1,7 @@
 import Humanize from 'humanize-plus';
 import { BlockDevice, Introspection, Nic } from '../../api/types';
 import { DASH } from '../constants';
-
-type HumanizedSortable = {
-  title: string;
-  sortableValue: number | string;
-};
+import { HumanizedSortable } from '../../api/utils';
 
 export type HostRowHardwareInfo = {
   cores: HumanizedSortable;

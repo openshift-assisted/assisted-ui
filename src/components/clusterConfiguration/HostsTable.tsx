@@ -26,11 +26,11 @@ import { DiscoveryImageModalButton } from './discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
 import { RoleDropdown } from './RoleDropdown';
+import { forceReload } from '../../features/clusters/currentClusterSlice';
+import { handleApiError, rowSorter } from '../../api/utils';
+import sortable from '../ui/table/sortable';
 
 import './HostsTable.css';
-import sortable from '../ui/table/sortable';
-import { forceReload } from '../../features/clusters/currentClusterSlice';
-import { handleApiError } from '../../api/utils';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -54,25 +54,6 @@ const columns = [
   { title: 'Memory', transforms: [sortable] },
   { title: 'Disk', transforms: [sortable] },
 ];
-
-const rowSorter = (sortBy: ISortBy) => (a: IRow, b: IRow): number => {
-  const colIndex = (sortBy.index || 1) - 1;
-  const coefficient = sortBy.direction === SortByDirection.asc ? 1 : -1;
-  const cellA = a[0].cells[colIndex];
-  const cellB = b[0].cells[colIndex];
-  let valA = typeof cellA === 'string' ? cellA : cellA.sortableValue;
-  let valB = typeof cellB === 'string' ? cellB : cellB.sortableValue;
-
-  if (typeof valA === 'string' || typeof valB === 'string') {
-    valA = valA || ''; // handle undefined
-    return valA.localeCompare(valB) * coefficient;
-  }
-
-  // numeric (like timestamp or memory)
-  valA = valA || 0; // handle undefined
-  valB = valB || 0;
-  return (valA - valB) * coefficient;
-};
 
 const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IRow => {
   const { id, status, statusInfo, role, createdAt, hardwareInfo = '' } = host;
@@ -132,7 +113,11 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
 
   const hostRows = React.useMemo(
     () =>
-      _.flatten((cluster.hosts || []).map(hostToHostTableRow(openRows)).sort(rowSorter(sortBy))),
+      _.flatten(
+        (cluster.hosts || [])
+          .map(hostToHostTableRow(openRows))
+          .sort(rowSorter(sortBy, (row: IRow, index = 1) => row[0].cells[index - 1])),
+      ),
     [cluster.hosts, openRows, sortBy],
   );
 
