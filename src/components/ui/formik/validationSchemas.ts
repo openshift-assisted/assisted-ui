@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 
 export const CLUSTER_NAME_REGEX = /^([a-z]([-a-z0-9]*[a-z0-9])?)*$/;
+export const SSH_PUBLIC_KEY_REGEX = /^ssh-rsa AAAA[0-9A-Za-z+/]+[=]{0,3}( [^@]+@[^@| |\t|\n]+)?$/;
 
 export const nameValidationSchema = Yup.string()
   .matches(CLUSTER_NAME_REGEX, {
@@ -9,4 +10,11 @@ export const nameValidationSchema = Yup.string()
     excludeEmptyString: true,
   })
   .max(253, 'Cannot be longer than 253 characters.')
+  .required('Required');
+
+export const sshPublicKeyValidationSchema = Yup.string()
+  .matches(SSH_PUBLIC_KEY_REGEX, {
+    message: 'SSH public key must consist of "ssh-rsa key [email]"',
+    excludeEmptyString: true,
+  })
   .required('Required');

@@ -22,6 +22,7 @@ import { useParams } from 'react-router-dom';
 import { LoadingState } from '../ui/uiState';
 import { handleApiError } from '../../api/utils';
 import { ImageCreateParams } from '../../api/types';
+import { sshPublicKeyValidationSchema } from '../ui/formik/validationSchemas';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -46,6 +47,7 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
 
 const validationSchema = Yup.object().shape({
   proxyURL: Yup.string().url('Provide a valid URL.'),
+  sshPublicKey: sshPublicKeyValidationSchema,
 });
 
 type DiscoveryImageModalProps = {

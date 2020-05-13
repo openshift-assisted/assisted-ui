@@ -35,7 +35,7 @@ import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import BaremetalInventory from './BaremetalInventory';
-import { nameValidationSchema } from '../ui/formik/validationSchemas';
+import { nameValidationSchema, sshPublicKeyValidationSchema } from '../ui/formik/validationSchemas';
 import { selectClusterNamesButCurrent } from '../../selectors/clusters';
 
 interface ClusterConfigurationProps {
@@ -76,6 +76,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
             (value) => !clusterNames.includes(value),
           )
           .concat(nameValidationSchema),
+        sshPublicKey: sshPublicKeyValidationSchema,
       }),
     [clusterNames],
   );
