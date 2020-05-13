@@ -35,12 +35,23 @@ import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import BaremetalInventory from './BaremetalInventory';
-import { nameValidationSchema } from '../ui/formik/validationSchemas';
+import {
+  nameValidationSchema,
+  sshPublicKeyValidationSchema,
+  getUniqueNameValidationSchema,
+} from '../ui/formik/validationSchemas';
 import { selectClusterNamesButCurrent } from '../../selectors/clusters';
 
 interface ClusterConfigurationProps {
   cluster: Cluster;
 }
+
+const SshPublicKeyHelperText = () => (
+  <div>
+    SSH public key for debugging OpenShift nodes, value of <em>~/.ssh/id_rsa.pub</em> can be
+    copy&amp;pasted here. To generate new pair, use <em>ssh-keygen -o</em>.
+  </div>
+);
 
 const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) => {
   const dispatch = useDispatch();
@@ -61,13 +72,8 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
   const validationSchema = React.useCallback(
     () =>
       Yup.object().shape({
-        name: Yup.mixed()
-          .test(
-            'unique-name',
-            'Name "${value}" is already taken.', // eslint-disable-line no-template-curly-in-string
-            (value) => !clusterNames.includes(value),
-          )
-          .concat(nameValidationSchema),
+        name: getUniqueNameValidationSchema(clusterNames).concat(nameValidationSchema),
+        sshPublicKey: sshPublicKeyValidationSchema,
       }),
     [clusterNames],
   );
@@ -193,7 +199,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                     <TextAreaField
                       name="sshPublicKey"
                       label="SSH Public Key"
-                      helperText="SSH public key for debugging OpenShift nodes."
+                      helperText={<SshPublicKeyHelperText />}
                       isRequired
                     />
                   </GridGap>
