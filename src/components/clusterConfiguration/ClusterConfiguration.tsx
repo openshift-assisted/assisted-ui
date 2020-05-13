@@ -42,6 +42,13 @@ interface ClusterConfigurationProps {
   cluster: Cluster;
 }
 
+const SshPublicKeyHelperText = () => (
+  <div>
+    SSH public key for debugging OpenShift nodes, value of <em>~/.ssh/id_rsa.pub</em> can be
+    copy&amp;pasted here. To generate new pair, use <em>ssh-keygen -o</em>.
+  </div>
+);
+
 const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) => {
   const dispatch = useDispatch();
   const clusterNames = useSelector(selectClusterNamesButCurrent);
@@ -200,7 +207,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                     <TextAreaField
                       name="sshPublicKey"
                       label="SSH Public Key"
-                      helperText="SSH public key for debugging OpenShift nodes."
+                      helperText={<SshPublicKeyHelperText />}
                       isRequired
                     />
                   </GridGap>
