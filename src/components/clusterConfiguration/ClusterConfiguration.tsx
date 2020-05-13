@@ -64,7 +64,6 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
     clusterNetworkHostPrefix: cluster.clusterNetworkHostPrefix || 0,
     serviceNetworkCIDR: cluster.serviceNetworkCIDR || '',
     apiVip: cluster.apiVip || '',
-    dnsVip: cluster.dnsVip || '',
     ingressVip: cluster.ingressVip || '',
     pullSecret: cluster.pullSecret || '',
     sshPublicKey: cluster.sshPublicKey || '',
@@ -166,12 +165,6 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                       label="API Virtual IP"
                       name="apiVip"
                       helperText="Virtual IP used to reach the OpenShift cluster API."
-                      isRequired
-                    />
-                    <InputField
-                      name="dnsVip"
-                      label="Internal DNS Virtual IP"
-                      helperText="Virtual IP used internally by the cluster for automating internal DNS requirements."
                       isRequired
                     />
                     <InputField
