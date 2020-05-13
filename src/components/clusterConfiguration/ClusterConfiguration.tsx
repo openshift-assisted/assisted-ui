@@ -35,7 +35,11 @@ import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import BaremetalInventory from './BaremetalInventory';
-import { nameValidationSchema, sshPublicKeyValidationSchema } from '../ui/formik/validationSchemas';
+import {
+  nameValidationSchema,
+  sshPublicKeyValidationSchema,
+  getUniqueNameValidationSchema,
+} from '../ui/formik/validationSchemas';
 import { selectClusterNamesButCurrent } from '../../selectors/clusters';
 
 interface ClusterConfigurationProps {
@@ -69,13 +73,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
   const validationSchema = React.useCallback(
     () =>
       Yup.object().shape({
-        name: Yup.mixed()
-          .test(
-            'unique-name',
-            'Name "${value}" is already taken.', // eslint-disable-line no-template-curly-in-string
-            (value) => !clusterNames.includes(value),
-          )
-          .concat(nameValidationSchema),
+        name: getUniqueNameValidationSchema(clusterNames).concat(nameValidationSchema),
         sshPublicKey: sshPublicKeyValidationSchema,
       }),
     [clusterNames],

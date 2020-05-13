@@ -20,7 +20,10 @@ import { ClusterCreateParams } from '../../api/types';
 import { InputField, SelectField } from '../ui/formik';
 import { handleApiError } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
-import { nameValidationSchema } from '../ui/formik/validationSchemas';
+import {
+  nameValidationSchema,
+  getUniqueNameValidationSchema,
+} from '../ui/formik/validationSchemas';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectClusterNames } from '../../selectors/clusters';
 import { fetchClustersAsync } from '../../features/clusters/clustersSlice';
@@ -75,13 +78,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
   const validationSchema = React.useCallback(
     () =>
       Yup.object().shape({
-        name: Yup.mixed()
-          .test(
-            'unique-name',
-            'Name "${value}" is already taken.', // eslint-disable-line no-template-curly-in-string
-            (value) => !clusterNames.includes(value),
-          )
-          .concat(nameValidationSchema),
+        name: getUniqueNameValidationSchema(clusterNames).concat(nameValidationSchema),
         openshiftVersion: Yup.string().required('Required'),
       }),
     [clusterNames],
