@@ -185,7 +185,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
         {/* TODO(mlibra): <HostDetailItem title="Motherboard serial number" value={} /> */}
       </SectionColumn>
       <SectionColumn>
-        <HostDetailItem title="Memory capacity" value={rowInfo.memory} />
+        <HostDetailItem title="Memory capacity" value={rowInfo.memory.title} />
         <HostDetailItem title="CPU clock speed" value={rowInfo.cpuSpeed} />
       </SectionColumn>
       <SectionColumn>

@@ -9,6 +9,10 @@ import {
   IRow,
   expandable,
   IRowData,
+  SortByDirection,
+  ISortBy,
+  OnSort,
+  sortable,
 } from '@patternfly/react-table';
 import { ConnectedIcon } from '@patternfly/react-icons';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
@@ -37,15 +41,34 @@ type OpenRows = {
 };
 
 const columns = [
-  { title: 'ID', cellFormatters: [expandable] },
-  { title: 'Role' },
-  { title: 'Serial Number' },
-  { title: 'Status' },
-  { title: 'Created At' },
-  { title: 'CPU Cores' }, // cores per machine (sockets x cores)
-  { title: 'Memory' },
-  { title: 'Disk' },
+  { title: 'ID', cellFormatters: [expandable], transforms: [sortable] },
+  { title: 'Role', transforms: [sortable] },
+  { title: 'Serial Number', transforms: [sortable] },
+  { title: 'Status', transforms: [sortable] },
+  { title: 'Created At', transforms: [sortable] },
+  { title: 'CPU Cores', transforms: [sortable] }, // cores per machine (sockets x cores)
+  { title: 'Memory', transforms: [sortable] },
+  { title: 'Disk', transforms: [sortable] },
 ];
+
+const rowSorter = (sortBy: ISortBy) => (a: IRow, b: IRow): number => {
+  const colIndex = (sortBy.index || 1) - 1;
+  const coefficient = sortBy.direction === SortByDirection.asc ? 1 : -1;
+  const cellA = a[0].cells[colIndex];
+  const cellB = b[0].cells[colIndex];
+  let valA = typeof cellA === 'string' ? cellA : cellA.sortableValue;
+  let valB = typeof cellB === 'string' ? cellB : cellB.sortableValue;
+
+  if (typeof valA === 'string' || typeof valB === 'string') {
+    valA = valA || ''; // handle undefined
+    return valA.localeCompare(valB) * coefficient;
+  }
+
+  // numeric (like timestamp or memory)
+  valA = valA || 0; // handle undefined
+  valB = valB || 0;
+  return (valA - valB) * coefficient;
+};
 
 const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IRow => {
   const { id, status, statusInfo, role, createdAt, hardwareInfo = '' } = host;
@@ -60,9 +83,13 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IR
         id,
         {
           title: <RoleDropdown role={role} host={host} />,
+          sortableValue: host.role,
         },
         id, // TODO(mlibra): should be serial number
-        { title: <HostStatus status={status} statusInfo={statusInfo} /> },
+        {
+          title: <HostStatus status={status} statusInfo={statusInfo} />,
+          sortableValue: status,
+        },
         getHumanizedTime(createdAt),
         cores,
         memory,
@@ -93,11 +120,16 @@ const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
 const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
   const [alerts, setAlerts] = React.useState([] as Alert[]);
+  const [sortBy, setSortBy] = React.useState({
+    index: 2, // Role-column
+    direction: SortByDirection.asc,
+  } as ISortBy);
   const dispatch = useDispatch();
 
   const hostRows = React.useMemo(
-    () => _.flatten((cluster.hosts || []).map(hostToHostTableRow(openRows))),
-    [cluster.hosts, openRows],
+    () =>
+      _.flatten((cluster.hosts || []).map(hostToHostTableRow(openRows)).sort(rowSorter(sortBy))),
+    [cluster.hosts, openRows, sortBy],
   );
 
   const rows = React.useMemo(() => {
@@ -201,6 +233,16 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     [onHostEnable, onHostDisable],
   );
 
+  const onSort: OnSort = React.useCallback(
+    (_event, index, direction) => {
+      setSortBy({
+        index,
+        direction,
+      });
+    },
+    [setSortBy],
+  );
+
   return (
     <>
       <Table
@@ -211,6 +253,8 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         aria-label="Hosts table"
         actionResolver={actionResolver}
         className="hosts-table"
+        sortBy={sortBy}
+        onSort={onSort}
       >
         <TableHeader />
         <TableBody rowKey={rowKey} />
