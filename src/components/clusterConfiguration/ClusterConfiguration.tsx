@@ -218,11 +218,8 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
             )}
           </AlertsSection>
           <ClusterToolbar>
-            <ToolbarButton
-              variant={ButtonVariant.link}
-              component={(props) => <Link to="/clusters" {...props} />}
-            >
-              Close
+            <ToolbarButton variant={ButtonVariant.primary} isDisabled>
+              Deploy cluster
             </ToolbarButton>
             <ToolbarButton
               type="submit"
@@ -232,8 +229,11 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
             >
               Save Configuration
             </ToolbarButton>
-            <ToolbarButton variant={ButtonVariant.primary} isDisabled>
-              Deploy cluster
+            <ToolbarButton
+              variant={ButtonVariant.link}
+              component={(props) => <Link to="/clusters" {...props} />}
+            >
+              Close
             </ToolbarButton>
             {isSubmitting && (
               <ToolbarText component={TextVariants.small}>
