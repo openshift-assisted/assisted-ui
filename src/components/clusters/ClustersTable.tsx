@@ -21,16 +21,6 @@ interface ClustersTableProps {
   deleteCluster: (id: string) => void;
 }
 
-// TODO(mlibra): let's try to remove it - not needed for HostsTable
-// TODO(jtomasek): Those should not be needed to define as they are optional,
-// needs fixing in @patternfly/react-table
-const headerStyle = {
-  position: 'sticky',
-  top: 0,
-  background: 'white',
-  zIndex: 1,
-};
-
 const columnConfig = {
   transforms: [sortable],
   cellTransforms: [],
@@ -39,14 +29,12 @@ const columnConfig = {
   props: {},
 };
 
-const headerConfig = { header: { props: { style: headerStyle } } };
-
 const columns = [
-  { title: 'Name', ...headerConfig, ...columnConfig },
-  { title: 'ID', ...headerConfig, ...columnConfig },
-  { title: 'Version', ...headerConfig, ...columnConfig },
-  { title: 'Status', ...headerConfig, ...columnConfig },
-  { title: 'Hosts', ...headerConfig, ...columnConfig },
+  { title: 'Name', ...columnConfig },
+  { title: 'ID', ...columnConfig },
+  { title: 'Version', ...columnConfig },
+  { title: 'Status', ...columnConfig },
+  { title: 'Hosts', ...columnConfig },
 ];
 
 const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) => {
