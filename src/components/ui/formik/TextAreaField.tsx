@@ -3,6 +3,7 @@ import { useField } from 'formik';
 import { FormGroup, TextArea } from '@patternfly/react-core';
 import { TextAreaProps } from './types';
 import { getFieldId } from './utils';
+import HelpTooltip from './HelpTooltip';
 
 const TextAreaField: React.FC<TextAreaProps> = ({ label, helperText, isRequired, ...props }) => {
   const [field, { touched, error }] = useField(props.name);
@@ -13,11 +14,11 @@ const TextAreaField: React.FC<TextAreaProps> = ({ label, helperText, isRequired,
     <FormGroup
       fieldId={fieldId}
       label={label}
-      helperText={helperText}
       helperTextInvalid={errorMessage}
       isValid={isValid}
       isRequired={isRequired}
     >
+      <HelpTooltip helperText={helperText} />
       <TextArea
         {...field}
         {...props}

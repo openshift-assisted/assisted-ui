@@ -3,6 +3,7 @@ import { useField } from 'formik';
 import { FormGroup, TextInput } from '@patternfly/react-core';
 import { InputFieldProps } from './types';
 import { getFieldId } from './utils';
+import HelpTooltip from './HelpTooltip';
 
 const InputField: React.FC<InputFieldProps> = ({
   label,
@@ -19,11 +20,11 @@ const InputField: React.FC<InputFieldProps> = ({
     <FormGroup
       fieldId={fieldId}
       label={label}
-      helperText={helperText}
       helperTextInvalid={errorMessage}
       isValid={isValid}
       isRequired={isRequired}
     >
+      <HelpTooltip helperText={helperText} />
       <TextInput
         {...field}
         {...props}
