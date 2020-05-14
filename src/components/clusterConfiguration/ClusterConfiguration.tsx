@@ -40,6 +40,10 @@ import {
   sshPublicKeyValidationSchema,
   getUniqueNameValidationSchema,
   validJSONSchema,
+  ipValidationSchema,
+  ipBlockValidationSchema,
+  dnsNameValidationSchema,
+  hostPrefixValidationSchema,
 } from '../ui/formik/validationSchemas';
 import { selectClusterNamesButCurrent } from '../../selectors/clusters';
 
@@ -74,14 +78,13 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
     () =>
       Yup.object().shape({
         name: getUniqueNameValidationSchema(clusterNames).concat(nameValidationSchema),
-        /*
-        baseDnsDomain: '', // DNS record
-        clusterNetworkCIDR: '', //IP block
-        serviceNetworkCIDR: '', // IP block
-        apiVip: '', // IP
-        ingressVip: '', // IP
-        */
-        pullSecret: validJSONSchema, // valid JSON
+        baseDnsDomain: dnsNameValidationSchema,
+        clusterNetworkHostPrefix: hostPrefixValidationSchema,
+        clusterNetworkCIDR: ipBlockValidationSchema,
+        serviceNetworkCIDR: ipBlockValidationSchema,
+        apiVip: ipValidationSchema,
+        ingressVip: ipValidationSchema,
+        pullSecret: validJSONSchema,
         sshPublicKey: sshPublicKeyValidationSchema,
       }),
     [clusterNames],
