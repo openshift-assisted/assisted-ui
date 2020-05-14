@@ -2,11 +2,16 @@ import Humanize from 'humanize-plus';
 import { BlockDevice, Introspection, Nic } from '../../api/types';
 import { DASH } from '../constants';
 
+type HumanizedSortable = {
+  title: string;
+  sortableValue: number | string;
+};
+
 export type HostRowHardwareInfo = {
-  cores: string;
+  cores: HumanizedSortable;
   cpuSpeed: string;
-  memory: string;
-  disk: string;
+  memory: HumanizedSortable;
+  disk: HumanizedSortable;
   disks: BlockDevice[];
   nics: Nic[];
 };
@@ -35,36 +40,58 @@ export const getNics = (hwInfo: Introspection): Nic[] => hwInfo.nics || [];
 export const getHumanizedCpuClockSpeed = (hwInfo: Introspection) =>
   Humanize.formatNumber(hwInfo.cpu?.['cpu-mhz'] || 0);
 
-export const getHumanizedTime = (time: string | undefined): string => {
+export const getHumanizedTime = (time: string | undefined): HumanizedSortable => {
   if (!time) {
-    return DASH;
+    return {
+      title: DASH,
+      sortableValue: 0,
+    };
   }
 
   const date = new Date(time);
-  return date.toLocaleString();
+  return {
+    title: date.toLocaleString(),
+    sortableValue: date.getTime(),
+  };
+};
+
+const EMPTY = {
+  title: DASH,
+  sortableValue: 0,
 };
 
 export const getHostRowHardwareInfo = (hwInfo: Introspection): HostRowHardwareInfo => {
-  let cores = DASH;
+  let cores = EMPTY;
+  let memory = EMPTY;
+  let disk = EMPTY;
   let cpuSpeed = DASH;
+
   if (hwInfo.cpu?.cpus) {
     cpuSpeed = `${hwInfo.cpu?.cpus}x ${getHumanizedCpuClockSpeed(hwInfo)} MHz`;
     // already total per mahcine (cores x sockets). WIll be changed by https://github.com/filanov/bm-inventory/pull/108
-    cores = hwInfo.cpu?.cpus.toString();
+    cores = {
+      title: hwInfo.cpu?.cpus.toString(),
+      sortableValue: hwInfo.cpu?.cpus,
+    };
   }
 
-  let memory = DASH;
-  if (getMemoryCapacity(hwInfo)) {
-    memory = Humanize.fileSize(getMemoryCapacity(hwInfo));
+  const memCapacity = getMemoryCapacity(hwInfo);
+  if (memCapacity) {
+    memory = {
+      title: Humanize.fileSize(memCapacity),
+      sortableValue: memCapacity,
+    };
   }
 
-  let disk = DASH;
   const disksCapacity = getDisks(hwInfo).reduce(
     (diskSize: number, device: BlockDevice) => diskSize + (device?.size || 0),
     0,
   );
   if (disksCapacity) {
-    disk = Humanize.fileSize(disksCapacity);
+    disk = {
+      title: Humanize.fileSize(disksCapacity),
+      sortableValue: disksCapacity,
+    };
   }
 
   return {
