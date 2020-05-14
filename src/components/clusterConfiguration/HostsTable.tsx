@@ -12,7 +12,6 @@ import {
   SortByDirection,
   ISortBy,
   OnSort,
-  sortable,
 } from '@patternfly/react-table';
 import { ConnectedIcon } from '@patternfly/react-icons';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
@@ -29,6 +28,7 @@ import { HostDetail } from './HostRowDetail';
 import { RoleDropdown } from './RoleDropdown';
 
 import './HostsTable.css';
+import sortable from '../ui/table/sortable';
 import { forceReload } from '../../features/clusters/currentClusterSlice';
 import { handleApiError } from '../../api/utils';
 
@@ -41,7 +41,11 @@ type OpenRows = {
 };
 
 const columns = [
-  { title: 'ID', cellFormatters: [expandable], transforms: [sortable] },
+  {
+    title: 'ID',
+    cellFormatters: [expandable],
+    transforms: [sortable],
+  },
   { title: 'Role', transforms: [sortable] },
   { title: 'Serial Number', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
