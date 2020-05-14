@@ -25,3 +25,14 @@ export const sshPublicKeyValidationSchema = Yup.string()
     excludeEmptyString: true,
   })
   .required('Required');
+
+export const validJSONSchema = Yup.string()
+  .test('is-json', 'Value must be valid JSON.', (value) => {
+    try {
+      JSON.parse(value);
+      return true;
+    } catch {
+      return false;
+    }
+  })
+  .required('Required');
