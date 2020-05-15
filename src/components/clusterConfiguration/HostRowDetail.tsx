@@ -31,8 +31,6 @@ type HostDetailItemProps = {
         title: string;
         value?: string;
       }[]
-    | string
-    | number
     | React.ReactNode;
 };
 
