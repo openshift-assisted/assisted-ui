@@ -7,6 +7,7 @@ import { ResourceUIState } from '../types';
 import { Link } from 'react-router-dom';
 import { IRow } from '@patternfly/react-table';
 import { RootState } from '../store/rootReducer';
+import { HumanizedSortable } from '../components/ui/table/utils';
 
 const selectClusters = (state: RootState) => state.clusters.data;
 const clustersUIState = (state: RootState) => state.clusters.uiState;
@@ -22,6 +23,8 @@ export const selectClustersUIState = createSelector(
 
 const clusterToClusterTableRow = (cluster: Cluster): IRow => {
   const { id, name, status, hosts, openshiftVersion } = cluster;
+  const hostsCount = hosts ? hosts.length : 0;
+
   return {
     cells: [
       {
@@ -30,11 +33,15 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
             {name}
           </Link>
         ),
-      },
+        sortableValue: name,
+      } as HumanizedSortable,
       id,
       openshiftVersion,
       status,
-      hosts ? hosts.length.toString() : '0',
+      {
+        title: hostsCount.toString(),
+        sortableValue: hostsCount,
+      } as HumanizedSortable,
     ],
   };
 };
