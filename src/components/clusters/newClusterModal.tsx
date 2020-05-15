@@ -38,24 +38,17 @@ const namesConfig: Config = {
 
 type NewClusterModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
+  onClick: () => void;
 };
 
 export const NewClusterModalButton: React.FC<NewClusterModalButtonProps> = ({
   ButtonComponent = Button,
-}) => {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-
-  const closeModal = () => setIsModalOpen(false);
-
-  return (
-    <>
-      <ButtonComponent variant={ButtonVariant.primary} onClick={() => setIsModalOpen(true)}>
-        Create New Cluster
-      </ButtonComponent>
-      {isModalOpen && <NewClusterModal closeModal={closeModal} />}
-    </>
-  );
-};
+  onClick,
+}) => (
+  <ButtonComponent variant={ButtonVariant.primary} onClick={onClick}>
+    Create New Cluster
+  </ButtonComponent>
+);
 
 type NewClusterModalProps = {
   closeModal: () => void;
@@ -65,6 +58,9 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
   const dispatch = useDispatch();
   React.useEffect(() => {
     dispatch(fetchClustersAsync());
+    return () => {
+      dispatch(fetchClustersAsync());
+    };
   }, [dispatch]);
 
   const clusterNames = useSelector(selectClusterNames);
