@@ -1,5 +1,4 @@
-import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
-// import { saveAs } from 'file-saver';
+import { AxiosPromise, AxiosRequestConfig } from 'axios';
 import {
   Cluster,
   ClusterCreateParams,
@@ -7,33 +6,34 @@ import {
   ClusterUpdateParams,
   ImageCreateParams,
 } from './types';
+import client from './axiosClient';
 import { API_ROOT } from '.';
 
-export const getClusters = (): AxiosPromise<Cluster[]> => axios.get(`${API_ROOT}/clusters`);
+export const getClusters = (): AxiosPromise<Cluster[]> => client.get(`${API_ROOT}/clusters`);
 
 export const getCluster = (id: string): AxiosPromise<Cluster> =>
-  axios.get(`${API_ROOT}/clusters/${id}`);
+  client.get(`${API_ROOT}/clusters/${id}`);
 
 export const postCluster = (params: ClusterCreateParams): AxiosPromise<Cluster> =>
-  axios.post(`${API_ROOT}/clusters`, params);
+  client.post(`${API_ROOT}/clusters`, params);
 
 export const patchCluster = (id: string, params: ClusterUpdateParams): AxiosPromise<Cluster> =>
-  axios.patch(`${API_ROOT}/clusters/${id}`, params);
+  client.patch(`${API_ROOT}/clusters/${id}`, params);
 
 export const deleteCluster = (id: string): AxiosPromise<void> =>
-  axios.delete(`${API_ROOT}/clusters/${id}`);
+  client.delete(`${API_ROOT}/clusters/${id}`);
 
 export const getClusterHosts = (id: string): AxiosPromise<Host[]> =>
-  axios.get(`${API_ROOT}/clusters/${id}/hosts`);
+  client.get(`${API_ROOT}/clusters/${id}/hosts`);
 
 export const enableClusterHost = (clusterId: string, hostId: string): AxiosPromise<void> =>
-  axios.post(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
+  client.post(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
 
 export const disableClusterHost = (clusterId: string, hostId: string): AxiosPromise<void> =>
-  axios.delete(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
+  client.delete(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
 
 export const postInstallCluster = (clusterId: string): AxiosPromise<Cluster> =>
-  axios.post(`${API_ROOT}/clusters/${clusterId}/actions/install`);
+  client.post(`${API_ROOT}/clusters/${clusterId}/actions/install`);
 
 type ImageCreateResponse = {
   imageId: string;
@@ -43,7 +43,7 @@ export const createClusterDownloadsImage = (
   params: ImageCreateParams,
   axiosOptions: AxiosRequestConfig,
 ): AxiosPromise<ImageCreateResponse> =>
-  axios.post<ImageCreateResponse>(
+  client.post<ImageCreateResponse>(
     `${API_ROOT}/clusters/${id}/downloads/image`,
     params,
     axiosOptions,
