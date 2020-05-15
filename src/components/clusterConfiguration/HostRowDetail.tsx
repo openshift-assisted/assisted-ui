@@ -32,7 +32,8 @@ type HostDetailItemProps = {
         value?: string;
       }[]
     | string
-    | number;
+    | number
+    | React.ReactNode;
 };
 
 type SectionTitleProps = {
