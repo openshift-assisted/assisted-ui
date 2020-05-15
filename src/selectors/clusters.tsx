@@ -7,7 +7,7 @@ import { ResourceUIState } from '../types';
 import { Link } from 'react-router-dom';
 import { IRow } from '@patternfly/react-table';
 import { RootState } from '../store/rootReducer';
-import { HumanizedSortable } from '../api/utils';
+import { HumanizedSortable } from '../components/ui/table/utils';
 
 const selectClusters = (state: RootState) => state.clusters.data;
 const clustersUIState = (state: RootState) => state.clusters.uiState;

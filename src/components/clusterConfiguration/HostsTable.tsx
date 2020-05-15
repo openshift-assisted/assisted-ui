@@ -17,7 +17,7 @@ import { ConnectedIcon } from '@patternfly/react-icons';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { AlertVariant } from '@patternfly/react-core';
 import { EmptyState } from '../ui/uiState';
-import { getColSpanRow } from '../ui/table/utils';
+import { getColSpanRow, rowSorter } from '../ui/table/utils';
 import { Host, Cluster } from '../../api/types';
 import { enableClusterHost, disableClusterHost } from '../../api/clusters';
 import { Alerts, Alert } from '../ui/Alerts';
@@ -27,7 +27,7 @@ import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
 import { RoleDropdown } from './RoleDropdown';
 import { forceReload } from '../../features/clusters/currentClusterSlice';
-import { handleApiError, rowSorter } from '../../api/utils';
+import { handleApiError } from '../../api/utils';
 import sortable from '../ui/table/sortable';
 
 import './HostsTable.css';

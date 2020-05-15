@@ -4,7 +4,6 @@ import {
   TableHeader,
   TableBody,
   IRowData,
-  sortable,
   SortByDirection,
   ISortBy,
   OnSort,
@@ -12,7 +11,8 @@ import {
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
 import { ClusterTableRows } from '../../types/clusters';
-import { rowSorter, HumanizedSortable } from '../../api/utils';
+import { rowSorter, HumanizedSortable } from '../ui/table/utils';
+import sortable from '../ui/table/sortable';
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
 
