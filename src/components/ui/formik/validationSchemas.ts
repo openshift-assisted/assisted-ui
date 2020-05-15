@@ -23,24 +23,23 @@ export const getUniqueNameValidationSchema = (excludedList: (string | undefined)
     (value) => !excludedList.includes(value),
   );
 
-export const sshPublicKeyValidationSchema = Yup.string()
-  .matches(SSH_PUBLIC_KEY_REGEX, {
-    message:
-      'SSH public key must consist of "ssh-rsa key [email]" or "ecdsa-[variant] key [email]"',
-    excludeEmptyString: true,
-  })
-  .required('Required');
+export const sshPublicKeyValidationSchema = Yup.string().matches(SSH_PUBLIC_KEY_REGEX, {
+  message: 'SSH public key must consist of "ssh-rsa key [email]" or "ecdsa-[variant] key [email]"',
+  excludeEmptyString: true,
+});
 
-export const validJSONSchema = Yup.string()
-  .test('is-json', 'Value must be valid JSON.', (value) => {
+export const validJSONSchema = Yup.string().test(
+  'is-json',
+  'Value must be valid JSON.',
+  (value) => {
     try {
       JSON.parse(value);
       return true;
     } catch {
       return false;
     }
-  })
-  .required('Required');
+  },
+);
 
 export const ipValidationSchema = Yup.string()
   .matches(IP_ADDRESS_REGEX, {
@@ -49,22 +48,17 @@ export const ipValidationSchema = Yup.string()
   })
   .required('Required');
 
-export const ipBlockValidationSchema = Yup.string()
-  .matches(IP_ADDRESS_BLOCK_REGEX, {
-    message:
-      'Value "${value}" is not valid IP block address, expected value is IP/netmask. Example: 123.123.123.0/24', // eslint-disable-line no-template-curly-in-string
-    excludeEmptyString: true,
-  })
-  .required('Required');
+export const ipBlockValidationSchema = Yup.string().matches(IP_ADDRESS_BLOCK_REGEX, {
+  message:
+    'Value "${value}" is not valid IP block address, expected value is IP/netmask. Example: 123.123.123.0/24', // eslint-disable-line no-template-curly-in-string
+  excludeEmptyString: true,
+});
 
-export const dnsNameValidationSchema = Yup.string()
-  .matches(DNS_NAME_REGEX, {
-    message: 'Value "${value}" is not valid DNS name.', // eslint-disable-line no-template-curly-in-string
-    excludeEmptyString: true,
-  })
-  .required('Required');
+export const dnsNameValidationSchema = Yup.string().matches(DNS_NAME_REGEX, {
+  message: 'Value "${value}" is not valid DNS name.', // eslint-disable-line no-template-curly-in-string
+  excludeEmptyString: true,
+});
 
 export const hostPrefixValidationSchema = Yup.number()
   .min(0, 'Host prefix is a number between 0 and 32.')
-  .max(32, 'Host prefix is a number between 0 and 32.')
-  .required('Required');
+  .max(32, 'Host prefix is a number between 0 and 32.');
