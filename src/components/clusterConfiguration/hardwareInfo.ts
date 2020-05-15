@@ -29,12 +29,12 @@ export const getHardwareInfo = (hwInfoString: string): Introspection | undefined
 export const getMemoryCapacity = (hwInfo: Introspection) => hwInfo.memory?.[0]?.total || 0;
 
 export const getDisks = (hwInfo: Introspection): BlockDevice[] =>
-  hwInfo['block-devices']?.filter((device: BlockDevice) => device['device-type'] === 'disk') || [];
+  hwInfo.blockDevices?.filter((device: BlockDevice) => device.deviceType === 'disk') || [];
 
 export const getNics = (hwInfo: Introspection): Nic[] => hwInfo.nics || [];
 
 export const getHumanizedCpuClockSpeed = (hwInfo: Introspection) =>
-  Humanize.formatNumber(hwInfo.cpu?.['cpu-mhz'] || 0);
+  Humanize.formatNumber(hwInfo.cpu?.cpuMhz || 0);
 
 export const getHumanizedTime = (time: string | undefined): HumanizedSortable => {
   if (!time) {

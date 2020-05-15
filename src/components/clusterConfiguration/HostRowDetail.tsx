@@ -112,12 +112,10 @@ const DisksTable: React.FC<DisksTableProps> = ({ disks }) => {
       cells: [
         disk.name,
         Humanize.fileSize(disk.size || 0),
-        disk['device-type'],
+        disk.deviceType,
         disk.fstype,
-        disk['removable-device'],
-        disk['major-device-number']
-          ? `(${disk['major-device-number']}, ${disk['minor-device-number']})`
-          : '',
+        disk.removableDevice,
+        disk.majorDeviceNumber ? `(${disk.majorDeviceNumber}, ${disk.minorDeviceNumber})` : '',
         disk.mountpoint,
       ],
     }));
@@ -153,7 +151,7 @@ const NicsTable: React.FC<NicsTableProps> = ({ nics }) => {
       cells: [
         nic.name,
         nic.mac,
-        nic.cidrs?.map((cidr) => `${cidr['ip-address']}/${cidr.mask}`).join(','),
+        nic.cidrs?.map((cidr) => `${cidr.ipAddress}/${cidr.mask}`).join(','),
         // TODO(mlibra): latency
         nic.state,
       ],
@@ -180,7 +178,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
       <SectionTitle title="Host Details" />
       <SectionColumn>
         <HostDetailItem title="CPU architecture" value={hwInfo.cpu?.architecture || DASH} />
-        <HostDetailItem title="Model name" value={hwInfo.cpu?.['model-name'] || DASH} />
+        <HostDetailItem title="Model name" value={hwInfo.cpu?.modelName || DASH} />
         {/* TODO(mlibra): <HostDetailItem title="Motherboard serial number" value={} /> */}
       </SectionColumn>
       <SectionColumn>
@@ -189,7 +187,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
       </SectionColumn>
       <SectionColumn>
         <HostDetailItem title="Sockets" value={hwInfo.cpu?.sockets || DASH} />
-        <HostDetailItem title="Threads per core" value={hwInfo.cpu?.['threads-per-core'] || DASH} />
+        <HostDetailItem title="Threads per core" value={hwInfo.cpu?.threadsPerCore || DASH} />
       </SectionColumn>
 
       <SectionTitle title={`${rowInfo.disks.length} Disks`} />
