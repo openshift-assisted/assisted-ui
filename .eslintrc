@@ -19,6 +19,7 @@
   "plugins": ["prettier", "react", "react-hooks", "@typescript-eslint"],
   "extends": [
     "eslint:recommended",
+    "plugin:cypress/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "plugin:prettier/recommended",
@@ -38,11 +39,5 @@
     "react": {
       "version": "detect"
     }
-  },
-  "globals": {
-    "cy": readonly,
-    "Cypress": readonly,
-    "context": readonly,
-    "assert": readonly
   }
 }
