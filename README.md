@@ -39,6 +39,18 @@ For further details about the Metal³ architecture, see [http://github.com/metal
 
 [1]: https://yarnpkg.com/en/
 
+## Running integration tests
+
+Integration tests are based on [Cypress](https://www.cypress.io/).
+
+Please make sure the application is running prior starting E2E tests (see [Getting started](#2-getting-started))
+
+To open console for integration tests, run
+
+```
+$ CYPRESS_BASE_URL=http://localhost:3000 yarn cypress-open
+```
+
 ## Running the production server
 
 TBD
