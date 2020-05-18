@@ -80,6 +80,7 @@
     "@babel/core": "^7.3.4",
     "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.3.4",
+    "cypress": "^4.5.0",
     "jasmine-console-reporter": "^3.1.0",
     "jasmine-reporters": "^2.3.2",
     "protractor": "^5.4.2"
