@@ -65,8 +65,6 @@
     "eject": "react-scripts eject",
     "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,scss,yaml,yml}'",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --color .",
-    "test-suite": "babel-node node_modules/.bin/protractor integration_tests/protractor.conf.js",
-    "webdriver-update": "webdriver-manager update",
     "update-api": "curl https://raw.githubusercontent.com/filanov/bm-inventory/master/swagger.yaml > src/api/swagger.yaml",
     "postupdate-api": "yarn swagger",
     "swagger": "sw2dts -w -o src/api/types.ts src/api/swagger.yaml",
@@ -84,7 +82,6 @@
     "@babel/preset-env": "^7.3.4",
     "cypress": "^4.5.0",
     "jasmine-console-reporter": "^3.1.0",
-    "jasmine-reporters": "^2.3.2",
-    "protractor": "^5.4.2"
+    "jasmine-reporters": "^2.3.2"
   }
 }
