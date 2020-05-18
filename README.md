@@ -51,6 +51,12 @@ To open console for integration tests, run
 $ CYPRESS_BASE_URL=http://localhost:3000 yarn cypress-open
 ```
 
+To run E2E tests in headless mode:
+
+```
+$ CYPRESS_BASE_URL=http://localhost:3000 yarn cypress-run
+```
+
 ## Running the production server
 
 TBD
