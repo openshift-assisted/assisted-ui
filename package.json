@@ -69,7 +69,8 @@
     "update-api": "curl https://raw.githubusercontent.com/filanov/bm-inventory/master/swagger.yaml > src/api/swagger.yaml",
     "postupdate-api": "yarn swagger",
     "swagger": "sw2dts -w -o src/api/types.ts src/api/swagger.yaml",
-    "postswagger": "sed -i -r 's/([a-z]+)_([a-z])/\\1\\U\\2/g' src/api/types.ts && yarn prettier"
+    "postswagger": "sed -i -r 's/([a-z]+)_([a-z])/\\1\\U\\2/g' src/api/types.ts && yarn prettier",
+    "cypress-open": "yarn run cypress open"
   },
   "browserslist": [
     ">0.2%",
