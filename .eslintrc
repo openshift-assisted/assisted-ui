@@ -38,5 +38,11 @@
     "react": {
       "version": "detect"
     }
+  },
+  "globals": {
+    "cy": readonly,
+    "Cypress": readonly,
+    "context": readonly,
+    "assert": readonly
   }
 }
