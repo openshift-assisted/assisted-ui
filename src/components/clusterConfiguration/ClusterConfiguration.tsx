@@ -69,9 +69,9 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
   const initialValues: ClusterConfigurationValues = {
     name: cluster.name || '',
     baseDnsDomain: cluster.baseDnsDomain || '',
-    clusterNetworkCIDR: cluster.clusterNetworkCIDR || '',
+    clusterNetworkCidr: cluster.clusterNetworkCidr || '',
     clusterNetworkHostPrefix: cluster.clusterNetworkHostPrefix || 0,
-    serviceNetworkCIDR: cluster.serviceNetworkCIDR || '',
+    serviceNetworkCidr: cluster.serviceNetworkCidr || '',
     apiVip: cluster.apiVip || '',
     ingressVip: cluster.ingressVip || '',
     pullSecret: cluster.pullSecret || '',
