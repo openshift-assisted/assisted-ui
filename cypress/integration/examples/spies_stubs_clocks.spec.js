@@ -6,7 +6,8 @@ context('Spies, Stubs, and Clock', () => {
     cy.visit('https://example.cypress.io/commands/spies-stubs-clocks');
 
     const obj = {
-      foo() {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      foo: () => {},
     };
 
     const spy = cy.spy(obj, 'foo').as('anyArgs');

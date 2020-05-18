@@ -73,8 +73,10 @@ context('Misc', () => {
         scale: false,
         disableTimersAndAnimations: true,
         screenshotOnRunFailure: true,
+        /* TODO(mlibra): uncomment
         beforeScreenshot() {},
         afterScreenshot() {},
+        */
       });
     });
   });

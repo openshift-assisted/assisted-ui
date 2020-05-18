@@ -21,7 +21,6 @@ context('Cypress.Commands', () => {
         method = method || 'log';
 
         // log the subject to the console
-        // @ts-ignore TS7017
         console[method]('The subject is', subject);
 
         // whatever we return becomes the new subject
@@ -31,9 +30,9 @@ context('Cypress.Commands', () => {
       },
     );
 
-    // @ts-ignore TS2339
     cy.get('button')
       .console('info')
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .then(($button) => {
         // subject is still $button
       });
@@ -164,7 +163,7 @@ context('Cypress.env()', () => {
     // set multiple environment variables
     Cypress.env({
       host: 'veronica.dev.local',
-      api_server: 'http://localhost:8888/v1/',
+      api_server: 'http://localhost:8888/v1/', // eslint-disable-line @typescript-eslint/camelcase
     });
 
     // get environment variable
