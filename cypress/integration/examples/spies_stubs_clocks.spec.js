@@ -10,6 +10,7 @@ context('Spies, Stubs, and Clock', () => {
       foo: () => {},
     };
 
+    // eslint-disable-next-line cypress/no-assigning-return-values
     const spy = cy.spy(obj, 'foo').as('anyArgs');
 
     obj.foo();
@@ -58,6 +59,7 @@ context('Spies, Stubs, and Clock', () => {
       },
     };
 
+    // eslint-disable-next-line cypress/no-assigning-return-values
     const stub = cy.stub(obj, 'foo').as('foo');
 
     obj.foo('foo', 'bar');
