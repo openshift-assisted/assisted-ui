@@ -1,3 +1,5 @@
+import { assertSingleClusterOnly } from "./shared";
+
 describe('Application', () => {
   it('loads', () => {
     // Set CYPRESS_BASE_URL environemnt variable
@@ -12,5 +14,12 @@ describe('Application', () => {
     cy.get('#nav-toggle').click();
     cy.get('#page-sidebar').should('not.have.class', 'pf-m-expanded');
     cy.get('#page-sidebar').should('have.class', 'pf-m-collapsed');
+  });
+
+  describe('makes sure about expected initial state before testing', () => {
+    it('just a single "ostest" cluster is present', () => {
+      assertSingleClusterOnly(cy);
+    });
+    // TODO(mlibra): verify additional presumptions about initial state prior running other tests
   });
 });

@@ -1,6 +1,9 @@
+import { createDummyCluster, deleteDummyCluster, assertSingleClusterOnly } from './shared';
+
 describe('Managed Clusters list', () => {
   beforeEach(() => {
     cy.visit('/clusters');
+    assertSingleClusterOnly(cy);
   });
 
   it('can render', () => {
@@ -27,28 +30,14 @@ describe('Managed Clusters list', () => {
   });
 
   it('can create and delete dummy cluster', () => {
+    const clusterName = 'test-dummy-cluster';
+
     // still single cluster in the list
     cy.get('#pf-toggle-id-0').click(); // open kebab
     cy.get('.pf-c-dropdown__menu-item').should('have.length', 1);
 
     // create
-    cy.get('.pf-l-toolbar__item > .pf-c-button').click();
-    cy.get('.pf-c-modal-box'); // modal visible
-    cy.get('.pf-c-title').contains('New Bare Metal OpenShift Cluster');
-    cy.get('.pf-m-secondary').click(); // cancel
-
-    cy.get('.pf-c-modal-box').should('not.be.visible'); // modal closed
-    cy.get('.pf-l-toolbar__item > .pf-c-button').click();
-    cy.get('.pf-c-modal-box'); // modal visible
-
-    const clusterName = 'test-dummy-cluster';
-    cy.get('#form-input-name-field').type(`{selectall}{backspace}${clusterName}`);
-    cy.get('.pf-c-modal-box__footer > .pf-m-primary').click();
-
-    // Cluster configuration
-    cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(clusterName);
-    cy.get('#form-input-name-field').should('have.value', clusterName);
-    cy.get(':nth-child(3) > .pf-l-toolbar__item > .pf-c-button').click(); // Close button
+    createDummyCluster(cy, clusterName);
 
     // Managed Clusters list
     cy.get('[data-label="Name"] > a').should('have.length', 2);
@@ -68,11 +57,8 @@ describe('Managed Clusters list', () => {
     cy.get(':nth-child(2) > [data-label="Name"] > a').contains(clusterName);
 
     // Delete
-    cy.get('#pf-toggle-id-21').click(); // open kebab menu
-    cy.get('.pf-c-dropdown__menu-item').click(); // Delete
-    // TODO(mlibra): bug - confirmation modal should appear (not implemented so far)
-    cy.get('[data-label="Name"] > a').should('have.length', 1);
-    cy.get('[data-label="Name"] > a').contains('ostest');
+    deleteDummyCluster(cy, '#pf-toggle-id-21');
+
     // we are back to inital state with just a single cluster
   });
 });
