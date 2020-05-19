@@ -40,11 +40,11 @@ describe('Cluster Detail', () => {
     cy.get(':nth-child(2) > :nth-child(1) > [data-label="ID"]').should('not.be.empty');
     cy.get(':nth-child(2) > :nth-child(1) > [data-label="Role"]').contains('master'); // TODO(mlibra): verify dropdown, not static text
     cy.get(':nth-child(2) > :nth-child(1) > [data-label="Serial Number"]').should('not.be.empty');
-    // cy.get(':nth-child(2) > :nth-child(1) > [data-label="Status"]').contains('known'); // TODO(mlibra)
+    // cy.get(':nth-child(2) > :nth-child(1) > [data-label="Status"]').contains('known'); // TODO(mlibra): not having clean "initial state" cluster ATM
     cy.get(':nth-child(2) > :nth-child(1) > [data-label="Created At"]').should('not.be.empty');
     cy.get(':nth-child(2) > :nth-child(1) > [data-label="CPU Cores"]').contains('4');
     cy.get(':nth-child(2) > :nth-child(1) > [data-label="Memory"]').contains(' GB'); // value can vary over time
-    // cy.get(':nth-child(2) > :nth-child(1) > [data-label="Disk"]').contains(' GB'); // TODO(mlibra): waiting for merge: https://github.com/openshift-metal3/facet/pull/119
+    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Disk"]').contains(' GB');
   });
 
   it('has correct expandable-details for a host', () => {
@@ -72,12 +72,12 @@ describe('Cluster Detail', () => {
     cy.get(hostDetailsSelector(4, 1)).contains('Sockets');
     cy.get(hostDetailsSelector(4, 2)).contains('4');
     cy.get(hostDetailsSelector(2, 3)).contains('Model name');
-    // cy.get(hostDetailsSelector(2, 4)).contains('TODO'); // TODO(mlibra) uncomment after PR 119
+    cy.get(hostDetailsSelector(2, 4)).should('not.be.empty'); // can vary
     cy.get(hostDetailsSelector(3, 3)).contains('CPU clock speed');
     cy.get(hostDetailsSelector(3, 4)).contains('MHz');
-    // cy.get(hostDetailsSelector(3, 4)).contains('4x 0 MHz').should('have.length', 0); // TODO(mlibra) uncomment after PR 119
+    cy.get(hostDetailsSelector(3, 4)).contains('4x 0 MHz').should('have.length', 0);
     cy.get(hostDetailsSelector(4, 3)).contains('Threads per core');
-    // cy.get(hostDetailsSelector(4, 4)).contains('1'); // TODO(mlibra) uncomment after PR 119
+    cy.get(hostDetailsSelector(4, 4)).contains('1');
 
     // Disks
     // cy.get(sectionTitleSelector(5)).contains('3 Disks'); // TODO(mlibra) uncomment after PR 119
@@ -99,7 +99,7 @@ describe('Cluster Detail', () => {
     cy.get(nicsTableCell(1, 'MAC address')).should('not.be.empty');
     cy.get(nicsTableCell(2, 'MAC address')).should('not.be.empty');
     cy.get(nicsTableCell(1, 'IP address')).contains('/16');
-    // cy.get(nicsTableCell(1, 'IP address')).contains('undefined').should('have.length', 0); // TODO(mlibra) uncomment after PR 119
+    cy.get(nicsTableCell(1, 'IP address')).contains('undefined').should('have.length', 0);
     cy.get(nicsTableCell(2, 'IP address')).contains('/24');
     cy.get(nicsTableCell(1, 'State')).contains('BROADCAST');
 

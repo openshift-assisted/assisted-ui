@@ -25,7 +25,7 @@ describe('Managed Clusters list', () => {
     cy.get('tbody > tr > [data-label="Version"]').should('not.be.empty');
     cy.get('tbody > tr > [data-label="Version"]').contains('4.4'); // to raise attention when source data changes
     cy.get('tbody > tr > [data-label="Status"]').should('not.be.empty');
-    // cy.get('tbody > tr > [data-label="Status"]').contains('known'); // TODO(mlibra):
+    // cy.get('tbody > tr > [data-label="Status"]').contains('known'); // TODO(mlibra): not having clean "initial state" cluster ATM
     cy.get('tbody > tr > [data-label="Hosts"]').contains('4');
   });
 
