@@ -1,4 +1,4 @@
-import { assertSingleClusterOnly } from "./shared";
+import { assertSingleClusterOnly } from './shared';
 
 describe('Application', () => {
   it('loads', () => {
