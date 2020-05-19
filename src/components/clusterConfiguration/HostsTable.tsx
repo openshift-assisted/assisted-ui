@@ -229,12 +229,13 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
 
   const onSort: OnSort = React.useCallback(
     (_event, index, direction) => {
+      setOpenRows({}); // collapse all
       setSortBy({
         index,
         direction,
       });
     },
-    [setSortBy],
+    [setSortBy, setOpenRows],
   );
 
   return (
