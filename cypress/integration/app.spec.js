@@ -5,15 +5,12 @@ describe('Application', () => {
     cy.visit('');
   });
 
-  it('has Managed Clusters', () => {
-    cy.visit('/clusters');
-
-    // columns visible
-    cy.get('h1').contains('Managed Clusters');
-    cy.get('th > button.pf-m-plain').first().contains('Name');
-    cy.get('th > button.pf-m-plain').last().contains('Hosts');
-    cy.get('[data-label="ID"] > .pf-c-button');
-    cy.get('[data-label="Version"] > .pf-c-button');
-    cy.get('[data-label="Status"] > .pf-c-button');
+  it('has navigation burger bar menu', () => {
+    cy.get('#page-sidebar').should('have.class', 'pf-m-collapsed');
+    cy.get('#nav-toggle').click();
+    cy.get('#page-sidebar').should('have.class', 'pf-m-expanded');
+    cy.get('#nav-toggle').click();
+    cy.get('#page-sidebar').should('not.have.class', 'pf-m-expanded');
+    cy.get('#page-sidebar').should('have.class', 'pf-m-collapsed');
   });
 });
