@@ -15,6 +15,7 @@ describe('Cluster Detail', () => {
   });
 
   it('can render', () => {
+    const colHeaderSelector = (label) => `[data-label="${label}"] > .pf-c-button`;
     cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(testInfraClusterName);
     cy.get('#form-input-name-field').should('have.value', testInfraClusterName);
     cy.get('#form-input-baseDnsDomain-field').should('have.value', 'redhat');
@@ -23,14 +24,14 @@ describe('Cluster Detail', () => {
     // Column headers
     cy.get('table.hosts-table > thead > tr > td').should('have.length', 2);
     cy.get('table.hosts-table > thead > tr > th').should('have.length', 8);
-    cy.get('[data-label="ID"] > .pf-c-button').contains('ID');
-    cy.get('[data-label="Role"] > .pf-c-button').contains('Role');
-    cy.get('[data-label="Serial Number"] > .pf-c-button').contains('Serial Number');
-    cy.get('[data-label="Status"] > .pf-c-button').contains('Status');
-    cy.get('[data-label="Created At"] > .pf-c-button').contains('Created At');
-    cy.get('[data-label="CPU Cores"] > .pf-c-button').contains('CPU Cores');
-    cy.get('[data-label="Memory"] > .pf-c-button').contains('Memory');
-    cy.get('[data-label="Disk"] > .pf-c-button').contains('Disk');
+    cy.get(colHeaderSelector('ID')).contains('ID');
+    cy.get(colHeaderSelector('Role')).contains('Role');
+    cy.get(colHeaderSelector('Serial Number')).contains('Serial Number');
+    cy.get(colHeaderSelector('Status')).contains('Status');
+    cy.get(colHeaderSelector('Created At')).contains('Created At');
+    cy.get(colHeaderSelector('CPU Cores')).contains('CPU Cores');
+    cy.get(colHeaderSelector('Memory')).contains('Memory');
+    cy.get(colHeaderSelector('Disk')).contains('Disk');
   });
 
   // existing cluster
@@ -162,7 +163,7 @@ describe('Cluster Detail', () => {
     });
   });
 
-  xit('renders empty cluster', () => {
+  it('renders empty cluster', () => {
     const dummyClusterName = 'empty-cluster';
     cy.visit('/clusters');
     createDummyCluster(cy, dummyClusterName);
