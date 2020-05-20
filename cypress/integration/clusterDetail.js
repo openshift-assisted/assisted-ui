@@ -43,14 +43,15 @@ describe('Cluster Detail', () => {
   });
 
   it('has correct row-details for a host', () => {
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="ID"]').should('not.be.empty');
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Role"]').contains('master'); // TODO(mlibra): verify dropdown, not static text
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Serial Number"]').should('not.be.empty');
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Status"]').contains('Known');
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Created At"]').should('not.be.empty');
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="CPU Cores"]').contains('4');
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Memory"]').contains(' GB'); // value can vary over time
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Disk"]').contains(' GB');
+    const hostDetailSelector = (label) => `:nth-child(2) > :nth-child(1) > [data-label="${label}"]`;
+    cy.get(hostDetailSelector('ID')).should('not.be.empty');
+    cy.get(hostDetailSelector('Role')).contains('master'); // TODO(mlibra): verify dropdown, not static text
+    cy.get(hostDetailSelector('Serial Number')).should('not.be.empty');
+    cy.get(hostDetailSelector('Status')).contains('Known');
+    cy.get(hostDetailSelector('Created At')).should('not.be.empty');
+    cy.get(hostDetailSelector('CPU Cores')).contains('4');
+    cy.get(hostDetailSelector('Memory')).contains(' GB'); // value can vary over time
+    cy.get(hostDetailSelector('Disk')).contains(' GB');
   });
 
   it('has correct expandable-details for a host', () => {
@@ -62,6 +63,10 @@ describe('Cluster Detail', () => {
       `#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-flex > :nth-child(8) > .pf-c-content > .pf-c-table > thead > tr > [data-label="${label}"]`;
     const nicsTableCell = (row, label) =>
       `#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-flex > :nth-child(8) > .pf-c-content > .pf-c-table > tbody > :nth-child(${row}) > [data-label="${label}"]`;
+    const disksTableHeader = (label) =>
+      `#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-flex > :nth-child(6) > .pf-c-content > .pf-c-table > thead > tr > [data-label="${label}"]`;
+    const disksTableCell = (row, label) =>
+      `#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-flex > :nth-child(6) > .pf-c-content > .pf-c-table > tbody > :nth-child(${row}) > [data-label="${label}"]`;
 
     // Expand detail
     cy.get('#expandable-toggle0').should('not.have.class', 'pf-m-expanded');
@@ -85,9 +90,20 @@ describe('Cluster Detail', () => {
     cy.get(hostDetailsSelector(4, 3)).contains('Threads per core');
     cy.get(hostDetailsSelector(4, 4)).contains('1');
 
-    // Disks
-    // cy.get(sectionTitleSelector(5)).contains('3 Disks'); // TODO(mlibra) uncomment after PR 119
-    // TODO(mlibra) verify values after PR 119
+    // Disks table format
+    cy.get(sectionTitleSelector(5)).contains('1 Disks');
+    cy.get(
+      '#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-flex > :nth-child(6) > .pf-c-content > .pf-c-table > thead > tr > th',
+    ).should('have.length', 7); // Disks table column count
+    cy.get(disksTableHeader('Name')).contains('Name');
+    cy.get(disksTableHeader('Size')).contains('Size');
+    cy.get(disksTableHeader('Device type')).contains('Device type');
+
+    // Disks values
+    cy.get(disksTableCell(1, 'Name')).contains('vda');
+    cy.get(disksTableCell(1, 'Size')).contains('20.00 GB');
+    cy.get(disksTableCell(1, 'Device type')).contains('disk');
+    // TODO(mlibra): add more once new retrieval of hwInfo is merged
 
     // Nics table format
     cy.get(sectionTitleSelector(7)).contains('2 NICs');
@@ -146,7 +162,7 @@ describe('Cluster Detail', () => {
     });
   });
 
-  it('renders empty cluster', () => {
+  xit('renders empty cluster', () => {
     const dummyClusterName = 'empty-cluster';
     cy.visit('/clusters');
     createDummyCluster(cy, dummyClusterName);
