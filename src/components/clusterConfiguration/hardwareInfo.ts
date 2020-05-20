@@ -12,10 +12,17 @@ export type HostRowHardwareInfo = {
   nics: Nic[];
 };
 
+const toCamelCase = (str: string): string =>
+  str.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('_', ''));
+
 export const getHardwareInfo = (hwInfoString: string): Introspection | undefined => {
   if (hwInfoString) {
     try {
-      const hwInfo = JSON.parse(hwInfoString);
+      const camelCased = hwInfoString.replace(
+        /"([\w]+)":/g,
+        (_match, offset) => `"${toCamelCase(offset)}":`,
+      );
+      const hwInfo = JSON.parse(camelCased);
       return hwInfo;
     } catch (e) {
       console.error('Failed to parse Hardware Info', e, hwInfoString);
