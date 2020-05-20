@@ -4,6 +4,7 @@ import {
   assertSingleClusterOnly,
   testInfraClusterName,
   testInfraClusterHostsCount,
+  withValueOf,
 } from './shared';
 
 describe('Cluster Detail', () => {
@@ -115,33 +116,31 @@ describe('Cluster Detail', () => {
   });
 
   it('can be sorted', () => {
+    const serialNumberSelector = (row) =>
+      `:nth-child(${row}) > :nth-child(1) > [data-label="Serial Number"]`;
+
     cy.get('.pf-m-selected > .pf-c-button').contains('Role'); // default sorting by Role
     cy.get('.pf-m-selected > .pf-c-button').click();
     cy.get('.pf-m-selected > .pf-c-button').click(); // Did it fall?
 
     cy.get('[data-label="Serial Number"] > .pf-c-button').click(); // ASC sort by Serial Number
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Serial Number"]').then((sn) => {
-      const val1 = sn[0].innerText;
-      cy.get(':nth-child(3) > :nth-child(1) > [data-label="Serial Number"]').then((sn) => {
-        const val2 = sn[0].innerText;
+
+    withValueOf(cy, serialNumberSelector(2), (val1) => {
+      withValueOf(cy, serialNumberSelector(3), (val2) => {
         expect(val1.localeCompare(val2)).to.be.lessThan(0);
       });
     });
 
     cy.get('[data-label="Serial Number"] > .pf-c-button').click(); // DESC sort by Serial Number
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Serial Number"]').then((sn) => {
-      const val1 = sn[0].innerText;
-      cy.get(':nth-child(3) > :nth-child(1) > [data-label="Serial Number"]').then((sn) => {
-        const val2 = sn[0].innerText;
+    withValueOf(cy, serialNumberSelector(2), (val1) => {
+      withValueOf(cy, serialNumberSelector(3), (val2) => {
         expect(val1.localeCompare(val2)).to.be.greaterThan(0);
       });
     });
 
     cy.get('[data-label="Serial Number"] > .pf-c-button').click(); // ASC sort by Serial Number
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Serial Number"]').then((sn) => {
-      const val1 = sn[0].innerText;
-      cy.get(':nth-child(3) > :nth-child(1) > [data-label="Serial Number"]').then((sn) => {
-        const val2 = sn[0].innerText;
+    withValueOf(cy, serialNumberSelector(2), (val1) => {
+      withValueOf(cy, serialNumberSelector(3), (val2) => {
         expect(val1.localeCompare(val2)).to.be.lessThan(0);
       });
     });

@@ -1,6 +1,10 @@
 export const testInfraClusterName = 'test-infra-cluster';
 export const testInfraClusterHostsCount = 3;
 
+export const withValueOf = (cy, selector, handler) => {
+  cy.get(selector).then((elem) => handler(elem[0].innerText));
+};
+
 export const createDummyCluster = (cy, clusterName) => {
   cy.get('.pf-l-toolbar__item > .pf-c-button').click();
   cy.get('.pf-c-modal-box'); // modal visible
