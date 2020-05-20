@@ -33,6 +33,7 @@
     "axios-case-converter": "^0.6.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-cypress": "^2.10.3",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.0",
@@ -64,12 +65,12 @@
     "eject": "react-scripts eject",
     "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,scss,yaml,yml}'",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --color .",
-    "test-suite": "babel-node node_modules/.bin/protractor integration_tests/protractor.conf.js",
-    "webdriver-update": "webdriver-manager update",
     "update-api": "curl https://raw.githubusercontent.com/filanov/bm-inventory/master/swagger.yaml > src/api/swagger.yaml",
     "postupdate-api": "yarn swagger",
     "swagger": "sw2dts -w -o src/api/types.ts src/api/swagger.yaml",
-    "postswagger": "sed -i -r 's/([a-z]+)_([a-z])/\\1\\U\\2/g' src/api/types.ts && yarn prettier"
+    "postswagger": "sed -i -r 's/([a-z]+)_([a-z])/\\1\\U\\2/g' src/api/types.ts && yarn prettier",
+    "cypress-open": "yarn run cypress open",
+    "cypress-run": "yarn run cypress run"
   },
   "browserslist": [
     ">0.2%",
@@ -80,8 +81,8 @@
     "@babel/core": "^7.3.4",
     "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.3.4",
+    "cypress": "^4.5.0",
     "jasmine-console-reporter": "^3.1.0",
-    "jasmine-reporters": "^2.3.2",
-    "protractor": "^5.4.2"
+    "jasmine-reporters": "^2.3.2"
   }
 }
