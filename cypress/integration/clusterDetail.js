@@ -8,6 +8,9 @@ import {
 } from './shared';
 
 describe('Cluster Detail', () => {
+  const hostDetailSelector = (label) => `:nth-child(2) > :nth-child(1) > [data-label="${label}"]`;
+  const hostsTableHeaderSelector = (label) => `[data-label="${label}"] > .pf-c-button`;
+
   beforeEach(() => {
     assertSingleClusterOnly(cy);
     cy.visit('/clusters');
@@ -44,9 +47,8 @@ describe('Cluster Detail', () => {
   });
 
   xit('has correct row-details for a host', () => {
-    const hostDetailSelector = (label) => `:nth-child(2) > :nth-child(1) > [data-label="${label}"]`;
     cy.get(hostDetailSelector('ID')).should('not.be.empty');
-    cy.get(hostDetailSelector('Role')).contains('master'); // TODO(mlibra): verify dropdown, not static text
+    cy.get(hostDetailSelector('Role')).contains('master');
     cy.get(hostDetailSelector('Serial Number')).should('not.be.empty');
     cy.get(hostDetailSelector('Status')).contains('Known');
     cy.get(hostDetailSelector('Created At')).should('not.be.empty');
@@ -135,12 +137,13 @@ describe('Cluster Detail', () => {
   xit('can be sorted', () => {
     const serialNumberSelector = (row) =>
       `:nth-child(${row}) > :nth-child(1) > [data-label="Serial Number"]`;
+    const serialNumberHeaderSelector = hostsTableHeaderSelector('Serial Number');
 
     cy.get('.pf-m-selected > .pf-c-button').contains('Role'); // default sorting by Role
     cy.get('.pf-m-selected > .pf-c-button').click();
     cy.get('.pf-m-selected > .pf-c-button').click(); // Did it fall?
 
-    cy.get('[data-label="Serial Number"] > .pf-c-button').click(); // ASC sort by Serial Number
+    cy.get(serialNumberHeaderSelector).click(); // ASC sort by Serial Number
 
     withValueOf(cy, serialNumberSelector(2), (val1) => {
       withValueOf(cy, serialNumberSelector(3), (val2) => {
@@ -148,14 +151,14 @@ describe('Cluster Detail', () => {
       });
     });
 
-    cy.get('[data-label="Serial Number"] > .pf-c-button').click(); // DESC sort by Serial Number
+    cy.get(serialNumberHeaderSelector).click(); // DESC sort by Serial Number
     withValueOf(cy, serialNumberSelector(2), (val1) => {
       withValueOf(cy, serialNumberSelector(3), (val2) => {
         expect(val1.localeCompare(val2)).to.be.greaterThan(0);
       });
     });
 
-    cy.get('[data-label="Serial Number"] > .pf-c-button').click(); // ASC sort by Serial Number
+    cy.get(serialNumberHeaderSelector).click(); // ASC sort by Serial Number
     withValueOf(cy, serialNumberSelector(2), (val1) => {
       withValueOf(cy, serialNumberSelector(3), (val2) => {
         expect(val1.localeCompare(val2)).to.be.lessThan(0);
@@ -177,35 +180,11 @@ describe('Cluster Detail', () => {
     deleteDummyCluster(cy, '#pf-toggle-id-18');
   });
 
-  it('downloads ISO', () => {
-    const proxyURLSelector = '#form-input-proxyURL-field';
-    const proxyURLSelectorHelper = '#form-input-proxyURL-field-helper';
-    const sshPublicKeySelector = ':nth-child(3) > #form-input-sshPublicKey-field';
+  /*
+  it("changes host's role", () => {
+    cy.get(hostsTableHeaderSelector('Serial Number')).click(); // ASC sort by Serial Number
+    cy.get(hostDetailSelector('Role')).contains('master');
 
-    cy.get(':nth-child(2) > :nth-child(1) > :nth-child(2) > .pf-c-button').click(); // Download ISO button
-    cy.get('.pf-c-modal-box'); // modal visible
-    cy.get('.pf-c-title').contains('Download discovery ISO');
-    cy.get('.pf-c-modal-box__footer > .pf-m-link').click(); // cancel
-    cy.get('.pf-c-modal-box').should('not.be.visible'); // modal closed
-
-    cy.get(':nth-child(2) > :nth-child(1) > :nth-child(2) > .pf-c-button').click(); // Download ISO button
-    cy.get('.pf-c-title').contains('Download discovery ISO');
-    cy.get(proxyURLSelector).type('{selectall}{backspace}foobar');
-    cy.get(sshPublicKeySelector).focus();
-    cy.get(proxyURLSelectorHelper).contains('Provide a valid URL.'); // validation error
-    cy.get(proxyURLSelector).type('{selectall}{backspace}http://foo.com/bar');
-    cy.get(sshPublicKeySelector).focus();
-    cy.get(proxyURLSelectorHelper).contains('HTTP proxy URL'); // correct
-
-    cy.get(sshPublicKeySelector).type('ssh-rsa AAAAAAAAdummykey'); // TODO(mlibra): bug - missing validation
-
-    cy.get('.pf-c-modal-box__footer > .pf-m-primary').click(); // in-modal DOwnload ISO button
-    cy.get('.pf-c-title').contains('Download discovery ISO');
-    cy.get('.pf-c-empty-state__body').contains('Discovery image is being prepared');
-
-    // TODO(mlibra): verify actual file download
-
-    cy.get('.pf-c-empty-state__secondary > .pf-c-button').click(); // Cancel
-    cy.get('.pf-c-modal-box').should('not.be.visible'); // modal closed
   });
+  */
 });
