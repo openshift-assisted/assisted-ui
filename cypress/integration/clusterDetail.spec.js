@@ -20,7 +20,7 @@ describe('Cluster Detail', () => {
     cy.get('[data-label="Name"] > a').click();
   });
 
-  xit('can render', () => {
+  it('can render', () => {
     const colHeaderSelector = (label) => `[data-label="${label}"] > .pf-c-button`;
     cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(testInfraClusterName);
     cy.get('#form-input-name-field').should('have.value', testInfraClusterName);
@@ -41,7 +41,7 @@ describe('Cluster Detail', () => {
   });
 
   // existing cluster
-  xit('has all hosts', () => {
+  it('has all hosts', () => {
     cy.get('table.hosts-table > tbody').should('have.length', testInfraClusterHostsCount);
     cy.get('table.hosts-table > tbody > tr.pf-c-table__expandable-row:hidden').should(
       'have.length',
@@ -49,7 +49,7 @@ describe('Cluster Detail', () => {
     );
   });
 
-  xit('has correct row-details for a host', () => {
+  it('has correct row-details for a host', () => {
     cy.get(hostDetailSelector(2, 'ID')).should('not.be.empty');
     cy.get(hostDetailSelector(2, 'Role')).contains('master');
     cy.get(hostDetailSelector(2, 'Serial Number')).should('not.be.empty');
@@ -60,7 +60,7 @@ describe('Cluster Detail', () => {
     cy.get(hostDetailSelector(2, 'Disk')).contains(' GB');
   });
 
-  xit('has correct expandable-details for a host', () => {
+  it('has correct expandable-details for a host', () => {
     const sectionTitleSelector = (index) =>
       `#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-flex > :nth-child(${index}) > .pf-c-content > h3`;
     const hostDetailsSelector = (column, row) =>
@@ -137,7 +137,7 @@ describe('Cluster Detail', () => {
     cy.get('#expandable-toggle0').should('not.have.class', 'pf-m-expanded');
   });
 
-  xit('can be sorted', () => {
+  it('can be sorted', () => {
     const serialNumberSelector = (row) =>
       `:nth-child(${row}) > :nth-child(1) > [data-label="Serial Number"]`;
     const serialNumberHeaderSelector = hostsTableHeaderSelector('Serial Number');
@@ -169,7 +169,7 @@ describe('Cluster Detail', () => {
     });
   });
 
-  xit('renders empty cluster', () => {
+  it('renders empty cluster', () => {
     const dummyClusterName = 'empty-cluster';
     cy.visit('/clusters');
     createDummyCluster(cy, dummyClusterName);
@@ -183,7 +183,7 @@ describe('Cluster Detail', () => {
     deleteDummyCluster(cy, '#pf-toggle-id-18');
   });
 
-  xit("changes host's role", () => {
+  it("changes host's role", () => {
     const clusterListStatusSelector = ':nth-child(1) > [data-label="Status"]';
 
     cy.get(hostsTableHeaderSelector('Serial Number')).click(); // ASC sort by Serial Number
