@@ -1,8 +1,12 @@
-import { createDummyCluster, deleteDummyCluster, assertSingleClusterOnly } from './shared';
+import {
+  createDummyCluster,
+  deleteDummyCluster,
+  assertSingleClusterOnly,
+  testInfraClusterName,
+  testInfraClusterHostsCount,
+} from './shared';
 
 describe('Cluster Detail', () => {
-  const clusterName = 'ostest';
-
   beforeEach(() => {
     assertSingleClusterOnly(cy);
     cy.visit('/clusters');
@@ -10,9 +14,10 @@ describe('Cluster Detail', () => {
   });
 
   it('can render', () => {
-    cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(clusterName);
-    cy.get('h1').contains(clusterName);
-    cy.get('h2').contains('Bare metal inventory');
+    cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(testInfraClusterName);
+    cy.get('#form-input-name-field').should('have.value', testInfraClusterName);
+    cy.get('#form-input-baseDnsDomain-field').should('have.value', 'redhat');
+    cy.get(':nth-child(2) > :nth-child(1) > h2').contains('Bare Metal Inventory');
 
     // Column headers
     cy.get('table.hosts-table > thead > tr > td').should('have.length', 2);
@@ -29,10 +34,10 @@ describe('Cluster Detail', () => {
 
   // existing cluster
   it('has all hosts', () => {
-    cy.get('table.hosts-table > tbody').should('have.length', 4);
+    cy.get('table.hosts-table > tbody').should('have.length', testInfraClusterHostsCount);
     cy.get('table.hosts-table > tbody > tr.pf-c-table__expandable-row:hidden').should(
       'have.length',
-      4,
+      testInfraClusterHostsCount,
     );
   });
 
@@ -40,7 +45,7 @@ describe('Cluster Detail', () => {
     cy.get(':nth-child(2) > :nth-child(1) > [data-label="ID"]').should('not.be.empty');
     cy.get(':nth-child(2) > :nth-child(1) > [data-label="Role"]').contains('master'); // TODO(mlibra): verify dropdown, not static text
     cy.get(':nth-child(2) > :nth-child(1) > [data-label="Serial Number"]').should('not.be.empty');
-    // cy.get(':nth-child(2) > :nth-child(1) > [data-label="Status"]').contains('known'); // TODO(mlibra): not having clean "initial state" cluster ATM
+    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Status"]').contains('Known');
     cy.get(':nth-child(2) > :nth-child(1) > [data-label="Created At"]').should('not.be.empty');
     cy.get(':nth-child(2) > :nth-child(1) > [data-label="CPU Cores"]').contains('4');
     cy.get(':nth-child(2) > :nth-child(1) > [data-label="Memory"]').contains(' GB'); // value can vary over time
@@ -111,20 +116,35 @@ describe('Cluster Detail', () => {
 
   it('can be sorted', () => {
     cy.get('.pf-m-selected > .pf-c-button').contains('Role'); // default sorting by Role
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Role"]').contains('master');
-    cy.get(':nth-child(3) > :nth-child(1) > [data-label="Role"]').contains('master');
-    cy.get(':nth-child(4) > :nth-child(1) > [data-label="Role"]').contains('master');
-    cy.get(':nth-child(5) > :nth-child(1) > [data-label="Role"]').contains('worker');
     cy.get('.pf-m-selected > .pf-c-button').click();
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Role"]').contains('worker');
-    cy.get(':nth-child(3) > :nth-child(1) > [data-label="Role"]').contains('master');
-    cy.get(':nth-child(4) > :nth-child(1) > [data-label="Role"]').contains('master');
-    cy.get(':nth-child(5) > :nth-child(1) > [data-label="Role"]').contains('master');
-    cy.get('.pf-m-selected > .pf-c-button').click();
-    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Role"]').contains('master');
-    cy.get(':nth-child(3) > :nth-child(1) > [data-label="Role"]').contains('master');
-    cy.get(':nth-child(4) > :nth-child(1) > [data-label="Role"]').contains('master');
-    cy.get(':nth-child(5) > :nth-child(1) > [data-label="Role"]').contains('worker');
+    cy.get('.pf-m-selected > .pf-c-button').click(); // Did it fall?
+
+    cy.get('[data-label="Serial Number"] > .pf-c-button').click(); // ASC sort by Serial Number
+    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Serial Number"]').then((sn) => {
+      const val1 = sn[0].innerText;
+      cy.get(':nth-child(3) > :nth-child(1) > [data-label="Serial Number"]').then((sn) => {
+        const val2 = sn[0].innerText;
+        expect(val1.localeCompare(val2)).to.be.lessThan(0);
+      });
+    });
+
+    cy.get('[data-label="Serial Number"] > .pf-c-button').click(); // DESC sort by Serial Number
+    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Serial Number"]').then((sn) => {
+      const val1 = sn[0].innerText;
+      cy.get(':nth-child(3) > :nth-child(1) > [data-label="Serial Number"]').then((sn) => {
+        const val2 = sn[0].innerText;
+        expect(val1.localeCompare(val2)).to.be.greaterThan(0);
+      });
+    });
+
+    cy.get('[data-label="Serial Number"] > .pf-c-button').click(); // ASC sort by Serial Number
+    cy.get(':nth-child(2) > :nth-child(1) > [data-label="Serial Number"]').then((sn) => {
+      const val1 = sn[0].innerText;
+      cy.get(':nth-child(3) > :nth-child(1) > [data-label="Serial Number"]').then((sn) => {
+        const val2 = sn[0].innerText;
+        expect(val1.localeCompare(val2)).to.be.lessThan(0);
+      });
+    });
   });
 
   it('renders empty cluster', () => {

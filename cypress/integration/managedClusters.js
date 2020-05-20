@@ -1,4 +1,10 @@
-import { createDummyCluster, deleteDummyCluster, assertSingleClusterOnly } from './shared';
+import {
+  createDummyCluster,
+  deleteDummyCluster,
+  assertSingleClusterOnly,
+  testInfraClusterName,
+  testInfraClusterHostsCount,
+} from './shared';
 
 describe('Managed Clusters list', () => {
   beforeEach(() => {
@@ -19,14 +25,9 @@ describe('Managed Clusters list', () => {
   });
 
   it('has single cluster with correct details', () => {
-    cy.get('[data-label="Name"] > a').should('have.length', 1);
-    cy.get('[data-label="Name"] > a').contains('ostest');
     cy.get('tbody > tr > [data-label="ID"]').should('not.be.empty');
     cy.get('tbody > tr > [data-label="Version"]').should('not.be.empty');
-    cy.get('tbody > tr > [data-label="Version"]').contains('4.4'); // to raise attention when source data changes
-    cy.get('tbody > tr > [data-label="Status"]').should('not.be.empty');
-    // cy.get('tbody > tr > [data-label="Status"]').contains('known'); // TODO(mlibra): not having clean "initial state" cluster ATM
-    cy.get('tbody > tr > [data-label="Hosts"]').contains('4');
+    cy.get('tbody > tr > [data-label="Hosts"]').contains(testInfraClusterHostsCount);
   });
 
   it('can create and delete dummy cluster', () => {
@@ -41,24 +42,25 @@ describe('Managed Clusters list', () => {
 
     // Managed Clusters list
     cy.get('[data-label="Name"] > a').should('have.length', 2);
-    cy.get(':nth-child(2) > [data-label="Name"]').contains(clusterName);
-    cy.get(':nth-child(2) > [data-label="Version"]').contains('4.4');
-    cy.get(':nth-child(2) > [data-label="Status"]').contains('insufficient');
-    cy.get(':nth-child(2) > [data-label="Hosts"]').contains(0);
+    cy.get(':nth-child(1) > [data-label="Name"]').contains(clusterName);
+    cy.get(':nth-child(1) > [data-label="Version"]').contains('4.4');
+    cy.get(':nth-child(1) > [data-label="Status"]').contains('insufficient');
+    cy.get(':nth-child(1) > [data-label="Hosts"]').contains(0);
 
     // sorting
-    cy.get(':nth-child(1) > [data-label="Name"] > a').contains('ostest');
-    cy.get(':nth-child(2) > [data-label="Name"] > a').contains(clusterName);
-    cy.get('.pf-m-selected > .pf-c-button').click();
-    cy.get(':nth-child(2) > [data-label="Name"] > a').contains('ostest');
+    cy.get(':nth-child(2) > [data-label="Name"] > a').contains(testInfraClusterName);
     cy.get(':nth-child(1) > [data-label="Name"] > a').contains(clusterName);
     cy.get('.pf-m-selected > .pf-c-button').click();
-    cy.get(':nth-child(1) > [data-label="Name"] > a').contains('ostest');
+    cy.get(':nth-child(1) > [data-label="Name"] > a').contains(testInfraClusterName);
     cy.get(':nth-child(2) > [data-label="Name"] > a').contains(clusterName);
+    cy.get('.pf-m-selected > .pf-c-button').click();
+    cy.get(':nth-child(2) > [data-label="Name"] > a').contains(testInfraClusterName);
+    cy.get(':nth-child(1) > [data-label="Name"] > a').contains(clusterName);
 
     // Delete
-    deleteDummyCluster(cy, '#pf-toggle-id-21');
+    deleteDummyCluster(cy, '#pf-toggle-id-20');
 
     // we are back to inital state with just a single cluster
+    assertSingleClusterOnly(cy); // fail fast here to verify that just the dummy cluster is deleted
   });
 });

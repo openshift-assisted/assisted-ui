@@ -1,4 +1,4 @@
-import { assertSingleClusterOnly } from './shared';
+import { assertSingleClusterOnly, testInfraClusterName } from './shared';
 
 describe('Application', () => {
   it('loads', () => {
@@ -17,7 +17,7 @@ describe('Application', () => {
   });
 
   describe('makes sure about expected initial state before testing', () => {
-    it('just a single "ostest" cluster is present', () => {
+    it(`just a single "${testInfraClusterName}" cluster is present`, () => {
       assertSingleClusterOnly(cy);
     });
     // TODO(mlibra): verify additional presumptions about initial state prior running other tests
