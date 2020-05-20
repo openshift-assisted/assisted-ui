@@ -19,3 +19,11 @@ export const POLLING_INTERVAL = 10000;
 export const HOST_ROLES = ['worker', 'master'];
 // Without undefined. Otherwise must conform generated Host['roles'] - see api/types.ts
 export type HostRolesType = 'master' | 'worker';
+
+export const CLUSTER_STATUS_LABELS = {
+  insufficient: 'Draft',
+  ready: 'Draft',
+  error: 'Error',
+  installing: 'Installing',
+  installed: 'Installed',
+};
