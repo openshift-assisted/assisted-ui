@@ -14,7 +14,7 @@ describe('Cluster Detail', () => {
     cy.get('[data-label="Name"] > a').click();
   });
 
-  it('can render', () => {
+  xit('can render', () => {
     const colHeaderSelector = (label) => `[data-label="${label}"] > .pf-c-button`;
     cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(testInfraClusterName);
     cy.get('#form-input-name-field').should('have.value', testInfraClusterName);
@@ -35,7 +35,7 @@ describe('Cluster Detail', () => {
   });
 
   // existing cluster
-  it('has all hosts', () => {
+  xit('has all hosts', () => {
     cy.get('table.hosts-table > tbody').should('have.length', testInfraClusterHostsCount);
     cy.get('table.hosts-table > tbody > tr.pf-c-table__expandable-row:hidden').should(
       'have.length',
@@ -43,7 +43,7 @@ describe('Cluster Detail', () => {
     );
   });
 
-  it('has correct row-details for a host', () => {
+  xit('has correct row-details for a host', () => {
     const hostDetailSelector = (label) => `:nth-child(2) > :nth-child(1) > [data-label="${label}"]`;
     cy.get(hostDetailSelector('ID')).should('not.be.empty');
     cy.get(hostDetailSelector('Role')).contains('master'); // TODO(mlibra): verify dropdown, not static text
@@ -55,7 +55,7 @@ describe('Cluster Detail', () => {
     cy.get(hostDetailSelector('Disk')).contains(' GB');
   });
 
-  it('has correct expandable-details for a host', () => {
+  xit('has correct expandable-details for a host', () => {
     const sectionTitleSelector = (index) =>
       `#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-flex > :nth-child(${index}) > .pf-c-content > h3`;
     const hostDetailsSelector = (column, row) =>
@@ -132,7 +132,7 @@ describe('Cluster Detail', () => {
     cy.get('#expandable-toggle0').should('not.have.class', 'pf-m-expanded');
   });
 
-  it('can be sorted', () => {
+  xit('can be sorted', () => {
     const serialNumberSelector = (row) =>
       `:nth-child(${row}) > :nth-child(1) > [data-label="Serial Number"]`;
 
@@ -163,7 +163,7 @@ describe('Cluster Detail', () => {
     });
   });
 
-  it('renders empty cluster', () => {
+  xit('renders empty cluster', () => {
     const dummyClusterName = 'empty-cluster';
     cy.visit('/clusters');
     createDummyCluster(cy, dummyClusterName);
@@ -175,5 +175,37 @@ describe('Cluster Detail', () => {
     cy.get(':nth-child(3) > .pf-l-toolbar__item > .pf-c-button').click(); // Close button
 
     deleteDummyCluster(cy, '#pf-toggle-id-18');
+  });
+
+  it('downloads ISO', () => {
+    const proxyURLSelector = '#form-input-proxyURL-field';
+    const proxyURLSelectorHelper = '#form-input-proxyURL-field-helper';
+    const sshPublicKeySelector = ':nth-child(3) > #form-input-sshPublicKey-field';
+
+    cy.get(':nth-child(2) > :nth-child(1) > :nth-child(2) > .pf-c-button').click(); // Download ISO button
+    cy.get('.pf-c-modal-box'); // modal visible
+    cy.get('.pf-c-title').contains('Download discovery ISO');
+    cy.get('.pf-c-modal-box__footer > .pf-m-link').click(); // cancel
+    cy.get('.pf-c-modal-box').should('not.be.visible'); // modal closed
+
+    cy.get(':nth-child(2) > :nth-child(1) > :nth-child(2) > .pf-c-button').click(); // Download ISO button
+    cy.get('.pf-c-title').contains('Download discovery ISO');
+    cy.get(proxyURLSelector).type('{selectall}{backspace}foobar');
+    cy.get(sshPublicKeySelector).focus();
+    cy.get(proxyURLSelectorHelper).contains('Provide a valid URL.'); // validation error
+    cy.get(proxyURLSelector).type('{selectall}{backspace}http://foo.com/bar');
+    cy.get(sshPublicKeySelector).focus();
+    cy.get(proxyURLSelectorHelper).contains('HTTP proxy URL'); // correct
+
+    cy.get(sshPublicKeySelector).type('ssh-rsa AAAAAAAAdummykey'); // TODO(mlibra): bug - missing validation
+
+    cy.get('.pf-c-modal-box__footer > .pf-m-primary').click(); // in-modal DOwnload ISO button
+    cy.get('.pf-c-title').contains('Download discovery ISO');
+    cy.get('.pf-c-empty-state__body').contains('Discovery image is being prepared');
+
+    // TODO(mlibra): verify actual file download
+
+    cy.get('.pf-c-empty-state__secondary > .pf-c-button').click(); // Cancel
+    cy.get('.pf-c-modal-box').should('not.be.visible'); // modal closed
   });
 });
