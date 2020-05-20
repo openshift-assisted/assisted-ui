@@ -44,7 +44,7 @@ describe('Managed Clusters list', () => {
     cy.get('[data-label="Name"] > a').should('have.length', 2);
     cy.get(':nth-child(1) > [data-label="Name"]').contains(clusterName);
     cy.get(':nth-child(1) > [data-label="Version"]').contains('4.4');
-    cy.get(':nth-child(1) > [data-label="Status"]').contains('insufficient');
+    cy.get(':nth-child(1) > [data-label="Status"]').contains('insufficient'); // TODO(mlibra): bug - first letter should be capitalized
     cy.get(':nth-child(1) > [data-label="Hosts"]').contains(0);
 
     // sorting

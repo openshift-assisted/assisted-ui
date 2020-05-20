@@ -8,7 +8,8 @@ import {
 } from './shared';
 
 describe('Cluster Detail', () => {
-  const hostDetailSelector = (label) => `:nth-child(2) > :nth-child(1) > [data-label="${label}"]`;
+  const hostDetailSelector = (row, label) =>
+    `:nth-child(${row}) > :nth-child(1) > [data-label="${label}"]`;
   const hostsTableHeaderSelector = (label) => `[data-label="${label}"] > .pf-c-button`;
 
   beforeEach(() => {
@@ -47,14 +48,14 @@ describe('Cluster Detail', () => {
   });
 
   xit('has correct row-details for a host', () => {
-    cy.get(hostDetailSelector('ID')).should('not.be.empty');
-    cy.get(hostDetailSelector('Role')).contains('master');
-    cy.get(hostDetailSelector('Serial Number')).should('not.be.empty');
-    cy.get(hostDetailSelector('Status')).contains('Known');
-    cy.get(hostDetailSelector('Created At')).should('not.be.empty');
-    cy.get(hostDetailSelector('CPU Cores')).contains('4');
-    cy.get(hostDetailSelector('Memory')).contains(' GB'); // value can vary over time
-    cy.get(hostDetailSelector('Disk')).contains(' GB');
+    cy.get(hostDetailSelector(2, 'ID')).should('not.be.empty');
+    cy.get(hostDetailSelector(2, 'Role')).contains('master');
+    cy.get(hostDetailSelector(2, 'Serial Number')).should('not.be.empty');
+    cy.get(hostDetailSelector(2, 'Status')).contains('Known');
+    cy.get(hostDetailSelector(2, 'Created At')).should('not.be.empty');
+    cy.get(hostDetailSelector(2, 'CPU Cores')).contains('4');
+    cy.get(hostDetailSelector(2, 'Memory')).contains(' GB'); // value can vary over time
+    cy.get(hostDetailSelector(2, 'Disk')).contains(' GB');
   });
 
   xit('has correct expandable-details for a host', () => {
@@ -180,11 +181,29 @@ describe('Cluster Detail', () => {
     deleteDummyCluster(cy, '#pf-toggle-id-18');
   });
 
-  /*
   it("changes host's role", () => {
-    cy.get(hostsTableHeaderSelector('Serial Number')).click(); // ASC sort by Serial Number
-    cy.get(hostDetailSelector('Role')).contains('master');
+    const clusterListStatusSelector = ':nth-child(1) > [data-label="Status"]';
 
+    cy.get(hostsTableHeaderSelector('Serial Number')).click(); // ASC sort by Serial Number
+    cy.get(hostDetailSelector(3, 'Role')).contains('master'); // 2nd host in the list
+    cy.get(hostDetailSelector(3, 'Role')).click();
+    cy.get('#worker > .pf-c-dropdown__menu-item').click();
+    cy.get(hostDetailSelector(3, 'Role')).contains('worker');
+
+    // check cluster validation
+    cy.visit('/clusters');
+    cy.get(clusterListStatusSelector).contains('insufficient');
+    cy.get('[data-label="Name"] > a').click();
+
+    // revert change
+    cy.get(hostsTableHeaderSelector('Serial Number')).click(); // ASC sort by Serial Number
+    cy.get(hostDetailSelector(3, 'Role')).contains('worker'); // 2nd host in the list
+    cy.get(hostDetailSelector(3, 'Role')).click();
+    cy.get('#master > .pf-c-dropdown__menu-item').click();
+    cy.get(hostDetailSelector(3, 'Role')).contains('master');
+
+    // check cluster validation
+    cy.visit('/clusters');
+    cy.get(clusterListStatusSelector).contains('ready');
   });
-  */
 });
