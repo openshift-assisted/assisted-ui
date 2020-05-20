@@ -7,6 +7,8 @@ import {
   withValueOf,
 } from './shared';
 
+const DISCOVERING_TIMEOUT = 2 * 60 * 1000; // 2 mins
+
 describe('Cluster Detail', () => {
   const hostDetailSelector = (row, label) =>
     `:nth-child(${row}) > :nth-child(1) > [data-label="${label}"]`;
@@ -181,7 +183,7 @@ describe('Cluster Detail', () => {
     deleteDummyCluster(cy, '#pf-toggle-id-18');
   });
 
-  it("changes host's role", () => {
+  xit("changes host's role", () => {
     const clusterListStatusSelector = ':nth-child(1) > [data-label="Status"]';
 
     cy.get(hostsTableHeaderSelector('Serial Number')).click(); // ASC sort by Serial Number
@@ -205,5 +207,20 @@ describe('Cluster Detail', () => {
     // check cluster validation
     cy.visit('/clusters');
     cy.get(clusterListStatusSelector).contains('ready');
+  });
+
+  it('disables and enables host in a cluster', () => {
+    const kebabMenuSelector =
+      ':nth-child(2) > :nth-child(1) > .pf-c-table__action button.pf-c-dropdown__toggle';
+    cy.get(kebabMenuSelector).click(); // first host kebab menu
+    cy.get('.pf-c-dropdown__menu-item').contains('Disable in cluster');
+    cy.get('.pf-c-dropdown__menu-item').click();
+    cy.get(hostDetailSelector(2, 'Status')).contains('Disabled');
+
+    cy.get(kebabMenuSelector).click(); // first host kebab menu
+    cy.get('.pf-c-dropdown__menu-item').contains('Enable in cluster');
+    cy.get('.pf-c-dropdown__menu-item').click();
+    cy.get(hostDetailSelector(2, 'Status')).contains('Discovering');
+    cy.get(hostDetailSelector(2, 'Status')).contains('Known', { timeout: DISCOVERING_TIMEOUT });
   });
 });
