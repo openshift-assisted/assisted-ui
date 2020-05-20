@@ -17,9 +17,9 @@ import { getHumanizedDateTime } from '../ui/utils';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import ClusterProgress from './ClusterProgress';
 import ClusterCredentials from './ClusterCredentials';
+import ClusterInstallationError from './ClusterInstallationError';
 
 import './clusterDetail.css';
-import ClusterInstallationError from './ClusterInstallationError';
 
 type ClusterDetailProps = {
   cluster: Cluster;
