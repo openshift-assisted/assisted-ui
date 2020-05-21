@@ -8,8 +8,8 @@ import {
 
 describe('Managed Clusters list', () => {
   beforeEach(() => {
-    cy.visit('/clusters');
     assertSingleClusterOnly(cy);
+    cy.visit('/clusters');
   });
 
   it('can render', () => {

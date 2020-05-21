@@ -39,3 +39,9 @@ export const assertSingleClusterOnly = (cy) => {
   cy.get('tbody > tr > [data-label="Status"]').contains('ready');
   cy.get('tbody > tr > [data-label="Version"]').contains('4.4'); // fail to raise attention when source data changes
 };
+
+export const visitOneAndOnlyCluster = (cy) => {
+  assertSingleClusterOnly(cy);
+  cy.visit('/clusters');
+  cy.get('[data-label="Name"] > a').click();
+};
