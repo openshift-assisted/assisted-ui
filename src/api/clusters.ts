@@ -50,4 +50,4 @@ export const createClusterDownloadsImage = (
   );
 
 export const getClusterDownloadsImageUrl = (clusterId: string, imageId: string) =>
-  `${API_ROOT}/clusters/${clusterId}/downloads/image?imageId=${imageId}`;
+  `${API_ROOT}/clusters/${clusterId}/downloads/image?image_id=${imageId}`;

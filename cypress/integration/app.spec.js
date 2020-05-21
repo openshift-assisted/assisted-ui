@@ -1,3 +1,5 @@
+import { assertSingleClusterOnly, testInfraClusterName } from './shared';
+
 describe('Application', () => {
   it('loads', () => {
     // Set CYPRESS_BASE_URL environemnt variable
@@ -5,15 +7,20 @@ describe('Application', () => {
     cy.visit('');
   });
 
-  it('has Managed Clusters', () => {
-    cy.visit('/clusters');
+  it('has navigation burger bar menu', () => {
+    cy.visit('/');
+    cy.get('#page-sidebar').should('have.class', 'pf-m-collapsed');
+    cy.get('#nav-toggle').click();
+    cy.get('#page-sidebar').should('have.class', 'pf-m-expanded');
+    cy.get('#nav-toggle').click();
+    cy.get('#page-sidebar').should('not.have.class', 'pf-m-expanded');
+    cy.get('#page-sidebar').should('have.class', 'pf-m-collapsed');
+  });
 
-    // columns visible
-    cy.get('h1').contains('Managed Clusters');
-    cy.get('th > button.pf-m-plain').first().contains('Name');
-    cy.get('th > button.pf-m-plain').last().contains('Hosts');
-    cy.get('[data-label="ID"] > .pf-c-button');
-    cy.get('[data-label="Version"] > .pf-c-button');
-    cy.get('[data-label="Status"] > .pf-c-button');
+  describe('makes sure about expected initial state before testing', () => {
+    it(`just a single "${testInfraClusterName}" cluster is present`, () => {
+      assertSingleClusterOnly(cy);
+    });
+    // TODO(mlibra): verify additional presumptions about initial state prior running other tests
   });
 });
