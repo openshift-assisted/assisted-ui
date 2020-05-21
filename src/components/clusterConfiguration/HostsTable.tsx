@@ -89,7 +89,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IR
     },
     {
       // expandable detail
-      parent: idx * 2, // every row has these two items
+      // parent will be set after sorting
       fullWidth: true,
       cells: [{ title: <HostDetail key={id} hwInfo={hwInfo} /> }],
     },
@@ -121,7 +121,11 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
       _.flatten(
         (cluster.hosts || [])
           .map(hostToHostTableRow(openRows))
-          .sort(rowSorter(sortBy, (row: IRow, index = 1) => row[0].cells[index - 1])),
+          .sort(rowSorter(sortBy, (row: IRow, index = 1) => row[0].cells[index - 1]))
+          .map((row: IRow, index: number) => {
+            row[1].parent = index * 2;
+            return row;
+          }),
       ),
     [cluster.hosts, openRows, sortBy],
   );
