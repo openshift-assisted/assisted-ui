@@ -1,7 +1,6 @@
-// Theese tests changes state of the cluster permanently
-
 import { visitOneAndOnlyCluster, testInfraClusterName } from './shared';
 
+// Theese tests changes state of the cluster permanently.
 // If enabled, they are called at last.
 describe('Destructive tests need to be enabled manually', () => {
   // TODO: add more thorough checks for field-validations
@@ -64,6 +63,6 @@ describe('Destructive tests need to be enabled manually', () => {
     cy.get(installClusterButtonSelector).click();
     cy.get(perPageErrorMessageSelector).conatins('Starting installation');
 
-    // TODO(mlibra): next steps
+    // TODO(mlibra): next steps (not working ATM)
   });
 });

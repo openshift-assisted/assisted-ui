@@ -8,6 +8,7 @@ describe('Application', () => {
   });
 
   it('has navigation burger bar menu', () => {
+    cy.visit('/');
     cy.get('#page-sidebar').should('have.class', 'pf-m-collapsed');
     cy.get('#nav-toggle').click();
     cy.get('#page-sidebar').should('have.class', 'pf-m-expanded');
