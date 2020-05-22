@@ -16,6 +16,7 @@ import {
 import { ConnectedIcon } from '@patternfly/react-icons';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { AlertVariant } from '@patternfly/react-core';
+import { RoleDropdown } from 'facet-lib';
 import { EmptyState } from '../ui/uiState';
 import { getColSpanRow, rowSorter } from '../ui/table/utils';
 import { Host, Cluster } from '../../api/types';
@@ -25,7 +26,6 @@ import { getHostRowHardwareInfo, getHardwareInfo, getHumanizedTime } from './har
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
-import { RoleDropdown } from './RoleDropdown';
 import { forceReload } from '../../features/clusters/currentClusterSlice';
 import { handleApiError } from '../../api/utils';
 import sortable from '../ui/table/sortable';
