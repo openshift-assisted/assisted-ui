@@ -6191,10 +6191,10 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
-facet-lib@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/facet-lib/-/facet-lib-0.0.5.tgz#5bb310296d0fc3197045c8afe5a0bf3299777778"
-  integrity sha512-oAg12FlnFxwvDT6CHdG00syZhbuiwWmp8VCYGtr3QMx5R8dsLrIzAumCjta51V5/gI72EsA9/8IMGWmvHtAb2Q==
+facet-lib@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/facet-lib/-/facet-lib-0.0.7.tgz#39cbbf4573943a15699203f35c3e9d0037913238"
+  integrity sha512-zcO8TmNJeym1kHIBaPtS26D9VgvnVmUETVew9ws3lpJxVSkpof0DQEiQetT0BqwbGf9KwY9PIxKUHG+yIwZ0fQ==
   dependencies:
     unique-names-generator "^4.2.0"
 
