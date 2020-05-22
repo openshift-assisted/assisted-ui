@@ -1,0 +1,7 @@
+.cluster-detail__details-list {
+  display: block !important;
+}
+
+.cluster-detail__details-list dd {
+  margin-bottom: var(--pf-global--spacer--sm);
+}

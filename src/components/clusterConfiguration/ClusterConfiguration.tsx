@@ -16,8 +16,6 @@ import {
   TextInputTypes,
   TextVariants,
   Spinner,
-  Breadcrumb,
-  BreadcrumbItem,
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens';
@@ -46,6 +44,7 @@ import {
   hostPrefixValidationSchema,
 } from '../ui/formik/validationSchemas';
 import { selectClusterNamesButCurrent } from '../../selectors/clusters';
+import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 
 type ClusterConfigurationValues = ClusterUpdateParams & {
   submitType: 'save' | 'install';
@@ -145,14 +144,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
 
         return (
           <>
-            <PageSection variant={PageSectionVariants.light}>
-              <Breadcrumb>
-                <BreadcrumbItem>
-                  <Link to="/clusters">Clusters</Link>
-                </BreadcrumbItem>
-                <BreadcrumbItem isActive>{cluster.name}</BreadcrumbItem>
-              </Breadcrumb>
-            </PageSection>
+            <ClusterBreadcrumbs clusterName={cluster.name} />
             <PageSection variant={PageSectionVariants.light} isMain>
               <Form>
                 <Grid gutter="md">
@@ -260,7 +252,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                 onClick={handleSubmit}
                 isDisabled={isSubmitting || !isValid}
               >
-                Install cluster
+                Create Cluster
               </ToolbarButton>
               <ToolbarButton
                 type="submit"
