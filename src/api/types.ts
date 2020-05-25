@@ -37,7 +37,7 @@ export interface Cluster {
   /**
    * Version of the OpenShift cluster.
    */
-  openshiftVersion?: '4.4';
+  openshiftVersion?: '4.4' | '4.5';
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
    */
@@ -57,15 +57,15 @@ export interface Cluster {
   /**
    * Virtual IP used to reach the OpenShift cluster API.
    */
-  apiVip?: string; // hostname
+  apiVip?: string; // ipv4
   /**
    * Virtual IP used internally by the cluster for automating internal DNS requirements.
    */
-  dnsVip?: string; // hostname
+  dnsVip?: string; // ipv4
   /**
    * Virtual IP used for cluster ingress traffic.
    */
-  ingressVip?: string; // hostname
+  ingressVip?: string; // ipv4
   /**
    * The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site.
    */
@@ -111,7 +111,7 @@ export interface ClusterCreateParams {
   /**
    * Version of the OpenShift cluster.
    */
-  openshiftVersion: '4.4';
+  openshiftVersion: '4.4' | '4.5';
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
    */
@@ -131,15 +131,15 @@ export interface ClusterCreateParams {
   /**
    * Virtual IP used to reach the OpenShift cluster API.
    */
-  apiVip?: string; // hostname
+  apiVip?: string; // ipv4
   /**
    * Virtual IP used internally by the cluster for automating internal DNS requirements.
    */
-  dnsVip?: string; // hostname
+  dnsVip?: string; // ipv4
   /**
    * Virtual IP used for cluster ingress traffic.
    */
-  ingressVip?: string; // hostname
+  ingressVip?: string; // ipv4
   /**
    * The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site.
    */
@@ -174,15 +174,15 @@ export interface ClusterUpdateParams {
   /**
    * Virtual IP used to reach the OpenShift cluster API.
    */
-  apiVip?: string; // hostname
+  apiVip?: string; // ipv4
   /**
    * Virtual IP used internally by the cluster for automating internal DNS requirements.
    */
-  dnsVip?: string; // hostname
+  dnsVip?: string; // ipv4
   /**
    * Virtual IP used for cluster ingress traffic.
    */
-  ingressVip?: string; // hostname
+  ingressVip?: string; // ipv4
   /**
    * The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site.
    */
@@ -298,6 +298,7 @@ export interface Host {
   statusInfo: string;
   connectivity?: ConnectivityReport;
   hardwareInfo?: string;
+  inventory?: string;
   role?: 'undefined' | 'master' | 'worker';
   bootstrap?: boolean;
   updatedAt?: string; // date-time
