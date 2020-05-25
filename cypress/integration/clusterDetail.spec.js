@@ -22,7 +22,7 @@ describe('Cluster Detail', () => {
     const colHeaderSelector = (label) => `[data-label="${label}"] > .pf-c-button`;
     cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(testInfraClusterName);
     cy.get('#form-input-name-field').should('have.value', testInfraClusterName);
-    cy.get('#form-input-baseDnsDomain-field').should('have.value', 'redhat');
+    cy.get('#form-input-baseDnsDomain-field').should('have.value', 'redhat.example.com');
     cy.get(':nth-child(2) > :nth-child(1) > h2').contains('Bare Metal Inventory');
 
     // Column headers
