@@ -2,6 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: ocp-metal-ui
+  namespace: assisted-installer
 spec:
   type: LoadBalancer
   ports:
@@ -16,6 +17,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: ocp-metal-ui
+  namespace: assisted-installer
 data:
   nginx.conf: |
     server {
@@ -43,6 +45,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: ocp-metal-ui
+  namespace: assisted-installer
 spec:
   replicas: 1
   selector:

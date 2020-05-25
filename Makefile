@@ -1,7 +1,7 @@
 .PHONY: all build deploy clean
 
 IMAGE := $(or ${IMAGE},quay.io/ocpmetal/ocp-metal-ui:latest)
-BM_INVENTORY_URL := $(or ${BM_INVENTORY_URL},http://bm-inventory.default.svc.cluster.local:8090)
+BM_INVENTORY_URL := $(or ${BM_INVENTORY_URL},http://bm-inventory.assisted-installer.svc.cluster.local:8090)
 
 DEPLOY_FILE="deploy/ocp-metal-ui.yaml"
 
