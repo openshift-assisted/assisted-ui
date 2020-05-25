@@ -1,4 +1,4 @@
-import { ClusterCreateParams } from '../api/types';
+import { ClusterCreateParams, Cluster, Host } from '../api/types';
 
 type OpenshiftVersionOptionType = {
   label: string;
@@ -19,3 +19,22 @@ export const POLLING_INTERVAL = 10000;
 export const HOST_ROLES = ['worker', 'master'];
 // Without undefined. Otherwise must conform generated Host['roles'] - see api/types.ts
 export type HostRolesType = 'master' | 'worker';
+
+export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
+  insufficient: 'Draft',
+  ready: 'Ready',
+  installing: 'Installing',
+  error: 'Error',
+  installed: 'Installed',
+};
+
+export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
+  discovering: 'Discovering',
+  known: 'Known',
+  disconnected: 'Disconnected',
+  insufficient: 'Insufficient',
+  disabled: 'Disabled',
+  installing: 'Installing',
+  installed: 'Installed',
+  error: 'Error',
+};

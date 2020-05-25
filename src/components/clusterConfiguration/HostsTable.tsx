@@ -41,13 +41,8 @@ type OpenRows = {
 };
 
 const columns = [
-  {
-    title: 'ID',
-    cellFormatters: [expandable],
-    transforms: [sortable],
-  },
+  { title: 'Serial Number', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
-  { title: 'Serial Number', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
   { title: 'Created At', transforms: [sortable] },
   { title: 'CPU Cores', transforms: [sortable] }, // cores per machine (sockets x cores)
@@ -75,7 +70,6 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IR
           title: roleCellTitle,
           sortableValue: role,
         },
-        id, // TODO(mlibra): should be serial number
         {
           title: <HostStatus status={status} statusInfo={statusInfo} />,
           sortableValue: status,
@@ -105,7 +99,7 @@ const HostsTableEmptyState: React.FC = () => (
   />
 );
 
-const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
+const rowKey = ({ rowData }: ExtraParamsType) => rowData?.['serial-number']?.title;
 
 const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
