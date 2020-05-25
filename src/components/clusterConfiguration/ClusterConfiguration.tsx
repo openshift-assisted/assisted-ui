@@ -84,8 +84,8 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
         name: getUniqueNameValidationSchema(clusterNames).concat(nameValidationSchema),
         baseDnsDomain: dnsNameValidationSchema,
         clusterNetworkHostPrefix: hostPrefixValidationSchema,
-        clusterNetworkCIDR: ipBlockValidationSchema,
-        serviceNetworkCIDR: ipBlockValidationSchema,
+        clusterNetworkCidr: ipBlockValidationSchema,
+        serviceNetworkCidr: ipBlockValidationSchema,
         apiVip: ipValidationSchema,
         ingressVip: ipValidationSchema,
         pullSecret: validJSONSchema,
@@ -172,7 +172,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         <Text component="h2">Networking</Text>
                       </TextContent>
                       <InputField
-                        name="clusterNetworkCIDR"
+                        name="clusterNetworkCidr"
                         label="Cluster Network CIDR"
                         helperText="IP address block from which Pod IPs are allocated This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic."
                         isRequired
@@ -185,7 +185,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         isRequired
                       />
                       <InputField
-                        name="serviceNetworkCIDR"
+                        name="serviceNetworkCidr"
                         label="Service Network CIDR"
                         helperText="The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic."
                         isRequired
