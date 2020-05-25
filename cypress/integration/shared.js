@@ -29,7 +29,7 @@ export const createDummyCluster = (cy, clusterName) => {
 export const deleteDummyCluster = (cy, kebabSelector) => {
   cy.get(kebabSelector).click(); // open kebab menu
   cy.get('.pf-c-dropdown__menu-item').click(); // Delete
-  // TODO(mlibra): bug - confirmation modal should appear now (not implemented so far)
+  cy.get('[data-test-id="delete-cluster-submit"]').click();
   cy.get(clusterNameLinkSelector).should('have.length', 1);
   cy.get(clusterNameLinkSelector).contains(testInfraClusterName); // validate that just one cluster remains
 };
