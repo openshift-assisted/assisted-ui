@@ -19,4 +19,4 @@ deploy:
 
 clean:
 	rm -f ${DEPLOY_FILE}
-	-kubectl delete deployment,service,configmap ocp-metal-ui
+	kubectl delete deployment,service,configmap ocp-metal-ui
