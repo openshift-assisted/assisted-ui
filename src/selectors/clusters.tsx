@@ -46,6 +46,9 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
         sortableValue: hostsCount,
       } as HumanizedSortable,
     ],
+    props: {
+      name,
+    },
   };
 };
 
