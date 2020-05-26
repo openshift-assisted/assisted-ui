@@ -13,20 +13,14 @@ import { uniqueNamesGenerator, Config, adjectives, colors, animals } from 'uniqu
 import * as Yup from 'yup';
 import history from '../../history';
 import { LoadingState } from '../ui/uiState';
-import { postCluster } from '../../api/clusters';
+import { postCluster, getClusters } from '../../api/clusters';
 import { Formik, FormikHelpers } from 'formik';
 import { OPENSHIFT_VERSION_OPTIONS } from '../../config/constants';
 import { ClusterCreateParams } from '../../api/types';
 import { InputField, SelectField } from '../ui/formik';
 import { handleApiError } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
-import {
-  nameValidationSchema,
-  getUniqueNameValidationSchema,
-} from '../ui/formik/validationSchemas';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectClusterNames } from '../../selectors/clusters';
-import { fetchClustersAsync } from '../../features/clusters/clustersSlice';
+import { nameValidationSchema } from '../ui/formik/validationSchemas';
 
 const namesConfig: Config = {
   dictionaries: [adjectives, colors, animals],
@@ -55,16 +49,6 @@ type NewClusterModalProps = {
 };
 
 export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) => {
-  const dispatch = useDispatch();
-  React.useEffect(() => {
-    dispatch(fetchClustersAsync());
-    return () => {
-      dispatch(fetchClustersAsync());
-    };
-  }, [dispatch]);
-
-  const clusterNames = useSelector(selectClusterNames);
-
   const nameInputRef = React.useCallback((node) => {
     if (node !== null) {
       node.focus();
@@ -73,11 +57,11 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
 
   const validationSchema = React.useCallback(
     () =>
-      Yup.object().shape({
-        name: getUniqueNameValidationSchema(clusterNames).concat(nameValidationSchema),
+      Yup.object({
+        name: nameValidationSchema,
         openshiftVersion: Yup.string().required('Required'),
       }),
-    [clusterNames],
+    [],
   );
 
   const handleSubmit = async (
@@ -85,6 +69,18 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
     formikActions: FormikHelpers<ClusterCreateParams>,
   ) => {
     formikActions.setStatus({ error: null });
+
+    // async validation for cluster name - run only on submit
+    try {
+      const { data: clusters } = await getClusters();
+      const names = clusters.map((c) => c.name);
+      if (names.includes(values.name)) {
+        return formikActions.setFieldError('name', `Name "${values.name}" is already taken.`);
+      }
+    } catch (e) {
+      console.error('Failed to perform unique cluster name validation.', e);
+    }
+
     try {
       const { data } = await postCluster(values);
       history.push(`/clusters/${data.id}`);
