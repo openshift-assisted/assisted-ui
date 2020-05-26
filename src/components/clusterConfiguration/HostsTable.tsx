@@ -50,7 +50,7 @@ const columns = [
   { title: 'Disk', transforms: [sortable] },
 ];
 
-const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IRow => {
+const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
   const { id, status, statusInfo, role, createdAt, hardwareInfo = '' } = host;
   const hwInfo = getHardwareInfo(hardwareInfo) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(hwInfo);
