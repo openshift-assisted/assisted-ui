@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { Formik, FormikHelpers, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
@@ -127,6 +128,8 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
       initialStatus={{ error: null }}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
+      initialTouched={_.mapValues(initialValues, () => true)}
+      validateOnMount
     >
       {({
         setStatus,
