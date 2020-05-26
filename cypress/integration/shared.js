@@ -38,7 +38,9 @@ export const assertSingleClusterOnly = (cy) => {
   cy.visit('/clusters');
   cy.get(clusterNameLinkSelector).should('have.length', 1);
   cy.get(clusterNameLinkSelector).contains(testInfraClusterName);
-  cy.get('tbody > tr > [data-label="Status"]').contains('ready');
+  withValueOf(cy, 'tbody > tr > [data-label="Status"]', (val) => {
+    expect(['Ready']).to.include(val.trim());
+  });
   cy.get('tbody > tr > [data-label="Version"]').contains('4.4'); // fail to raise attention when source data changes
 };
 
