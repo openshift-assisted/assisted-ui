@@ -1,4 +1,4 @@
-import { ClusterCreateParams, Cluster } from '../api/types';
+import { ClusterCreateParams, Cluster, Host } from '../api/types';
 
 type OpenshiftVersionOptionType = {
   label: string;
@@ -7,7 +7,7 @@ type OpenshiftVersionOptionType = {
 
 export const OPENSHIFT_VERSION_OPTIONS: OpenshiftVersionOptionType[] = [
   { label: 'OpenShift 4.4', value: '4.4' },
-  // { label: 'OpenShift 4.5', value: '4.5' },
+  { label: 'OpenShift 4.5', value: '4.5' },
   // { label: 'OpenShift 4.6', value: '4.6' },
 ];
 
@@ -26,4 +26,15 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   installing: 'Installing',
   error: 'Error',
   installed: 'Installed',
+};
+
+export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
+  discovering: 'Discovering',
+  known: 'Known',
+  disconnected: 'Disconnected',
+  insufficient: 'Insufficient',
+  disabled: 'Disabled',
+  installing: 'Installing',
+  installed: 'Installed',
+  error: 'Error',
 };

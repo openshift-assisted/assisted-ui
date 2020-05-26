@@ -43,7 +43,8 @@ For further details about the Metal³ architecture, see [http://github.com/metal
 
 Integration tests are based on [Cypress](https://www.cypress.io/).
 
-Please make sure the application is running prior starting E2E tests (see [Getting started](#2-getting-started))
+Please make sure the application is running prior starting E2E tests (see
+[Getting started](#2-getting-started))
 
 To open console for integration tests, run
 
