@@ -13,6 +13,7 @@ import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Tabl
 import { ClusterTableRows } from '../../types/clusters';
 import { rowSorter, HumanizedSortable } from '../ui/table/utils';
 import sortable from '../ui/table/sortable';
+import DeleteClusterModal from './DeleteClusterModal';
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
 
@@ -38,20 +39,22 @@ const columns = [
 ];
 
 const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) => {
-  const [sortBy, setSortBy] = React.useState({
+  const [deleteClusterID, setDeleteClusterID] = React.useState<DeleteClusterID>();
+  const [sortBy, setSortBy] = React.useState<ISortBy>({
     index: 0, // Name-column
     direction: SortByDirection.asc,
-  } as ISortBy);
+  });
 
   const actions = React.useMemo(
     () => [
       {
         title: 'Delete',
-        onClick: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) =>
-          deleteCluster(rowData.id.title),
+        onClick: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+          setDeleteClusterID({ id: rowData.id.title, name: rowData.props.name });
+        },
       },
     ],
-    [deleteCluster],
+    [],
   );
 
   const onSort: OnSort = React.useCallback(
@@ -76,18 +79,35 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
   );
 
   return (
-    <Table
-      rows={sortedRows}
-      cells={columns}
-      actions={actions}
-      aria-label="Clusters table"
-      sortBy={sortBy}
-      onSort={onSort}
-    >
-      <TableHeader />
-      <TableBody rowKey={rowKey} />
-    </Table>
+    <>
+      <Table
+        rows={sortedRows}
+        cells={columns}
+        actions={actions}
+        aria-label="Clusters table"
+        sortBy={sortBy}
+        onSort={onSort}
+      >
+        <TableHeader />
+        <TableBody rowKey={rowKey} />
+      </Table>
+      {deleteClusterID && (
+        <DeleteClusterModal
+          name={deleteClusterID.name}
+          onClose={() => setDeleteClusterID(undefined)}
+          onDelete={() => {
+            deleteCluster(deleteClusterID.id);
+            setDeleteClusterID(undefined);
+          }}
+        />
+      )}
+    </>
   );
+};
+
+type DeleteClusterID = {
+  id: string;
+  name: string;
 };
 
 export default ClustersTable;
