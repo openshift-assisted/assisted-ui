@@ -35,6 +35,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   insufficient: 'Insufficient',
   disabled: 'Disabled',
   installing: 'Installing',
+  'installing-in-progress': 'Installing',
   installed: 'Installed',
   error: 'Error',
 };

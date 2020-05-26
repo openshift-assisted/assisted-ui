@@ -170,11 +170,7 @@ paths:
         201:
           description: Success.
           schema:
-            type: object
-            properties:
-              imageId:
-                type: string
-                format: uuid
+            $ref: '#/definitions/cluster'
         400:
           description: Error.
           schema:
@@ -183,6 +179,8 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
+        409:
+          description: Error.
         500:
           description: Error.
           schema:
@@ -199,11 +197,6 @@ paths:
       parameters:
         - in: path
           name: cluster_id
-          type: string
-          format: uuid
-          required: true
-        - in: query
-          name: image_id
           type: string
           format: uuid
           required: true
@@ -610,7 +603,57 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /events/{entity_id}:
+    get:
+      tags:
+        - events
+      summary: Lists events for an entity_id
+      operationId: ListEvents
+      parameters:
+        - in: path
+          name: entity_id
+          type: string
+          format: uuid
+          required: true
+      responses:
+        200:
+          description: Success.
+          schema:
+            $ref: '#/definitions/event-list'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
 definitions:
+  event-list:
+    type: array
+    items:
+      $ref: '#/definitions/event'
+
+  event:
+    type: object
+    required:
+      - entity_id
+      - message
+      - event_time
+    properties:
+      entity_id:
+        type: string
+        format: uuid
+        description: Unique identifier of the object this event relates to.
+        x-go-custom-tag: gorm:"index"
+      message:
+        type: string
+      event_time:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:datetime"
+      request_id:
+        type: string
+        format: uuid
+        description: Unique identifier for the request that caused this event to occure
+
   image-create-params:
     type: object
     properties:
@@ -669,10 +712,12 @@ definitions:
           - insufficient
           - disabled
           - installing
+          - installing-in-progress
           - installed
           - error
       status_info:
         type: string
+        x-go-custom-tag: gorm:"type:varchar(2048)"
       connectivity:
         $ref: '#/definitions/connectivity-report'
       hardware_info:
@@ -914,6 +959,7 @@ definitions:
       - kind
       - id
       - href
+      - image_info
       - status
       - status_info
     properties:
@@ -938,6 +984,9 @@ definitions:
         type: string
         enum: ['4.4', '4.5']
         description: Version of the OpenShift cluster.
+      image_info:
+        $ref: '#/definitions/image_info'
+        x-go-custom-tag: gorm:"embedded;embedded_prefix:image_"
       base_dns_domain:
         type: string
         description:
@@ -1002,6 +1051,7 @@ definitions:
           - installed
       status_info:
         type: string
+        x-go-custom-tag: gorm:"type:varchar(2048)"
         description: Additional information pertaining to the status of the OpenShift cluster.
       hosts:
         x-go-custom-tag: gorm:"foreignkey:ClusterID;association_foreignkey:ID"
@@ -1030,6 +1080,22 @@ definitions:
         format: date-time
         x-go-custom-tag: gorm:"type:datetime;default:0"
         description: The time that this cluster completed installation.
+
+  image_info:
+    type: object
+    properties:
+      proxy_url:
+        type: string
+        description: |
+          The URL of the HTTP/S proxy that agents should use to access the discovery service
+          http://\<user\>:\<password\>@\<server\>:\<port\>/
+      ssh_public_key:
+        type: string
+        description: SSH public key for debugging the installation
+      created_at:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:datetime"
 
   cluster-list:
     type: array
