@@ -44,3 +44,6 @@ export const createClusterDownloadsImage = (
 
 export const getClusterDownloadsImageUrl = (clusterId: string) =>
   `${API_ROOT}/clusters/${clusterId}/downloads/image`;
+
+export const getClusterFileURL = (clusterID: string, fileName: string) =>
+  `${API_ROOT}/clusters/${clusterID}/downloads/files?file_name=${fileName}`;
