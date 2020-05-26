@@ -21,15 +21,17 @@ import { createClusterDownloadsImage, getClusterDownloadsImageUrl } from '../../
 import { useParams } from 'react-router-dom';
 import { LoadingState } from '../ui/uiState';
 import { handleApiError } from '../../api/utils';
-import { ImageCreateParams } from '../../api/types';
+import { ImageCreateParams, ImageInfo } from '../../api/types';
 import { sshPublicKeyValidationSchema } from '../ui/formik/validationSchemas';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
+  imageInfo: ImageInfo;
 };
 
 export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps> = ({
   ButtonComponent = Button,
+  imageInfo,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -40,23 +42,28 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
       <ButtonComponent variant={ButtonVariant.primary} onClick={() => setIsModalOpen(true)}>
         Download discovery ISO
       </ButtonComponent>
-      {isModalOpen && <DiscoveryImageModal closeModal={closeModal} />}
+      {isModalOpen && <DiscoveryImageModal closeModal={closeModal} imageInfo={imageInfo} />}
     </>
   );
 };
 
 const validationSchema = Yup.object().shape({
-  proxyURL: Yup.string().url('Provide a valid URL.'),
+  proxyUrl: Yup.string().url('Provide a valid URL.'),
   sshPublicKey: sshPublicKeyValidationSchema,
 });
 
 type DiscoveryImageModalProps = {
   closeModal: () => void;
+  imageInfo: ImageInfo;
 };
 
-export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeModal }) => {
+export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
+  closeModal,
+  imageInfo,
+}) => {
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const { clusterId } = useParams();
+  const { proxyUrl, sshPublicKey } = imageInfo;
 
   React.useEffect(() => {
     cancelSourceRef.current = Axios.CancelToken.source();
@@ -69,12 +76,10 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
   ) => {
     if (clusterId) {
       try {
-        const {
-          data: { imageId },
-        } = await createClusterDownloadsImage(clusterId, values, {
+        await createClusterDownloadsImage(clusterId, values, {
           cancelToken: cancelSourceRef.current?.token,
         });
-        saveAs(getClusterDownloadsImageUrl(clusterId, imageId), `discovery-image-${clusterId}.iso`);
+        saveAs(getClusterDownloadsImageUrl(clusterId), `discovery-image-${clusterId}.iso`);
         closeModal();
       } catch (error) {
         handleApiError<ImageCreateParams>(error, () => {
@@ -93,7 +98,7 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
       isSmall
     >
       <Formik
-        initialValues={{ proxyURL: '', sshPublicKey: '' } as ImageCreateParams}
+        initialValues={{ proxyUrl, sshPublicKey } as ImageCreateParams}
         initialStatus={{ error: null }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -132,7 +137,7 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
                 </TextContent>
                 <InputField
                   label="HTTP Proxy URL"
-                  name="proxyURL"
+                  name="proxyUrl"
                   placeholder="http://<user>:<password>@<ipaddr>:<port>"
                   helperText="HTTP proxy URL that agents should use to access the discovery service"
                 />

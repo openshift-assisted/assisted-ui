@@ -35,19 +35,12 @@ export const disableClusterHost = (clusterId: string, hostId: string): AxiosProm
 export const postInstallCluster = (clusterId: string): AxiosPromise<Cluster> =>
   client.post(`${API_ROOT}/clusters/${clusterId}/actions/install`);
 
-type ImageCreateResponse = {
-  imageId: string;
-};
 export const createClusterDownloadsImage = (
   id: string,
   params: ImageCreateParams,
   axiosOptions: AxiosRequestConfig,
-): AxiosPromise<ImageCreateResponse> =>
-  client.post<ImageCreateResponse>(
-    `${API_ROOT}/clusters/${id}/downloads/image`,
-    params,
-    axiosOptions,
-  );
+): AxiosPromise<void> =>
+  client.post(`${API_ROOT}/clusters/${id}/downloads/image`, params, axiosOptions);
 
-export const getClusterDownloadsImageUrl = (clusterId: string, imageId: string) =>
-  `${API_ROOT}/clusters/${clusterId}/downloads/image?image_id=${imageId}`;
+export const getClusterDownloadsImageUrl = (clusterId: string) =>
+  `${API_ROOT}/clusters/${clusterId}/downloads/image`;
