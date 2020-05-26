@@ -27,25 +27,49 @@ For further details about the Metal³ architecture, see [http://github.com/metal
 
 ## Getting started
 
-- Install [yarn][1]
-- Install javascript dependencies with `yarn install`
-- Start the yarn server with:
+### Prerequisite
+- Install [Node.js](https://nodejs.org/en) and [yarn](https://yarnpkg.com/), on Fedora/Centos:
+  ```
+  dnf install -y nodejs yarn
+  ```
+- Clone repo:
+   ```
+  git clone https://github.com/openshift-metal3/facet.git
+  cd facet
+   ```
 
-```
-  REACT_APP_API_URL=`minikube service bm-inventory --url` yarn start
-```
+### Build and run in DEV-mode
+- Install javascript dependencies:
+  ```
+  yarn install
+  ```
+- Start the webpack dev server to run the application in dev-mode with:
+
+  - Environment variables:
+  ```
+  REACT_APP_API_URL: required, URL of the BM Inventory
+  BROWSER: optional, locally installed browser used to open the web application in
+  ```
+  - Command:
+  ```
+  REACT_APP_API_URL=[YOUR_BM-INVENTORY_URL] yarn start
+  ```
+  - Example:
+  ```
+  REACT_APP_API_URL=`minikube service bm-inventory --url` BROWSER=chromium-browser yarn start
+   ```
 
 - Open the UI at `http://localhost:3000`
 
-[1]: https://yarnpkg.com/en/
 
 ## Running integration tests
 
 Integration tests are based on [Cypress](https://www.cypress.io/).
 
-Please make sure the application is running prior starting E2E tests (see [Getting started](#2-getting-started))
+**Please make sure the application** is running prior starting E2E tests (see
+[Getting started](#2-getting-started))
 
-To open console for integration tests, run
+To open console for integration tests (Cypress Test Runner), run
 
 ```
 $ CYPRESS_BASE_URL=http://localhost:3000 yarn cypress-open
