@@ -87,6 +87,11 @@ To run E2E tests in headless mode:
 $ CYPRESS_BASE_URL=http://localhost:3000 yarn cypress-run
 ```
 
+To run E2E tests via pre-built container:
+```
+$ CYPRESS_BASE_URL=http://localhost:3000 hacks/run-tests.sh
+```
+
 ## Running the production server
 
 TBD
