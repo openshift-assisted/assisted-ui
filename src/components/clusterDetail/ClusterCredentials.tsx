@@ -1,12 +1,15 @@
 import React from 'react';
-import { Cluster } from '../../api/types';
+import { saveAs } from 'file-saver';
 import { GridItem, TextContent, ButtonVariant, Button } from '@patternfly/react-core';
+
+import { Cluster } from '../../api/types';
+import { getClusterFileURL } from '../../api/clusters';
 
 type ClusterCredentialsProps = {
   cluster: Cluster;
 };
 
-const ClusterCredentials: React.FC<ClusterCredentialsProps> = () => {
+const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({ cluster }) => {
   // TODO(jtomasek): Fetch cluster credentials data
   // TODO(jtomasek):
   return (
@@ -21,7 +24,10 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = () => {
           <dd>-------------</dd>
         </dl>
       </TextContent>
-      <Button variant={ButtonVariant.secondary} isDisabled>
+      <Button
+        variant={ButtonVariant.secondary}
+        onClick={() => saveAs(getClusterFileURL(cluster.id, 'kubeconfig'))}
+      >
         Download kubeconfig
       </Button>
     </GridItem>
