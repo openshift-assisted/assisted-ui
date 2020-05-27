@@ -19,7 +19,7 @@ import { getHostRowHardwareInfo } from './hardwareInfo';
 
 import './HostRowDetail.css';
 import { DASH } from '../constants';
-import HostEvents from './HostsEvents';
+import EventListFetch, { EventFetchProps } from '../ui/EventListFetch';
 
 type HostDetailProps = {
   hostId: string;
@@ -173,6 +173,10 @@ const NicsTable: React.FC<NicsTableProps> = ({ nics }) => {
   );
 };
 
+const HostEvents: React.FC<EventFetchProps> = ({ entityId }) => (
+  <EventListFetch entityId={entityId} entityKind="host" />
+);
+
 export const HostDetail: React.FC<HostDetailProps> = ({ hostId, hwInfo }) => {
   const rowInfo = getHostRowHardwareInfo(hwInfo);
   return (
@@ -205,7 +209,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hostId, hwInfo }) => {
       {/* TODO(mlibra): will be placed somewhere else */}
       <SectionTitle title="Events" />
       <SectionColumn>
-        <HostEvents hostId={hostId} />
+        <HostEvents entityId={hostId} />
       </SectionColumn>
     </Flex>
   );

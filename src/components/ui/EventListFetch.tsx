@@ -5,24 +5,27 @@ import { getEvents } from '../../api/events';
 import { POLLING_INTERVAL } from '../../config/constants';
 import { Alert, AlertVariant } from '@patternfly/react-core';
 
-type HostEventsProps = {
-  hostId: Event['entityId'];
+export type EventFetchProps = {
+  entityId: Event['entityId'];
 };
 
-const HostEvents: React.FC<HostEventsProps> = ({ hostId }) => {
+type EventListFetchProps = EventFetchProps & {
+  entityKind: string;
+};
+
+const EventListFetch: React.FC<EventListFetchProps> = ({ entityId, entityKind }) => {
   const [events, setEvents] = useState([] as EventList);
   const [lastPolling, setLastPolling] = useState(0);
   const [error, setError] = useState('');
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    getEvents(hostId)
+    getEvents(entityId)
       .catch((error) => {
-        console.warn(`Failed to load events for host ${hostId}: `, error);
+        console.warn(`Failed to load events for ${entityKind} ${entityId}: `, error);
         setError('Failed to load events');
       })
       .then((result) => {
-        console.log('-- result: ', result);
         if (result) {
           setEvents(result.data);
           setError('');
@@ -32,7 +35,7 @@ const HostEvents: React.FC<HostEventsProps> = ({ hostId }) => {
         }, POLLING_INTERVAL);
       });
     return () => clearTimeout(timer);
-  }, [hostId, lastPolling]);
+  }, [entityId, lastPolling, entityKind]);
 
   return error ? (
     <Alert variant={AlertVariant.danger} title={error} />
@@ -41,4 +44,4 @@ const HostEvents: React.FC<HostEventsProps> = ({ hostId }) => {
   );
 };
 
-export default HostEvents;
+export default EventListFetch;
