@@ -8,6 +8,9 @@ type EventsListProps = {
 };
 
 const EventsList: React.FC<EventsListProps> = ({ events }) => {
+  if (events.length === 0) {
+    return null;
+  }
   // Do not memoize result to keep it recomputed since we use "relative" time bellow
   const sortedEvents = events
     .map((event) => ({
