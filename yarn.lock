@@ -2437,6 +2437,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/human-date@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@types/human-date/-/human-date-1.4.0.tgz#6acdd2722c04054ea9372329390f29aa9b5fefd1"
+  integrity sha512-rsDilFfoef3ugCed0mA3nU4v8YidW7l8nWFTDeNt3TGFISKeju/Xz+215/enW5uTv/xTOCeMpkqVLV7shfHV2A==
+
 "@types/humanize-plus@^1.8.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@types/humanize-plus/-/humanize-plus-1.8.0.tgz#ab6bfdb143ca719604dc031449a497fc11f54eb4"
