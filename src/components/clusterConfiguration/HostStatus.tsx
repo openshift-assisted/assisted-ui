@@ -28,6 +28,7 @@ const getStatusIcon = (status: Host['status']) => {
   if (status === 'disabled') return <OffIcon />;
   if (status === 'insufficient') return <WarningTriangleIcon color={warningColor.value} />;
   if (status === 'installing') return <InProgressIcon />;
+  if (status === 'installing-in-progress') return <InProgressIcon />;
   if (status === 'error') return <ExclamationCircleIcon color={dangerColor.value} />;
   if (status === 'installed') return <CheckCircleIcon color={okColor.value} />;
   return <UnknownIcon />;
@@ -50,13 +51,13 @@ const HostStatus: React.FC<HostStatusProps> = ({ status, statusInfo }) => {
   // TODO(jtomasek): mocked steps, remove when progressInfo is available
   const installationSteps = [
     'Starting installation',
-    'Installing as <node role>',
     'Writing image to disk',
+    'Installing as <node role>',
     'Rebooting',
   ];
   const progressInfo = {
     steps: installationSteps,
-    currentStep: 'Writing image to disk' || 'Starting Installation',
+    currentStep: statusInfo || 'Starting Installation',
   };
 
   const currentStepNumber = progressInfo.steps.indexOf(progressInfo.currentStep) + 1;
@@ -64,16 +65,17 @@ const HostStatus: React.FC<HostStatusProps> = ({ status, statusInfo }) => {
   const bodyContent = React.useMemo(
     () => (
       <div>
-        {['installing', 'error', 'installed'].includes(status) && (
+        {['installing', 'installing-in-progress'].includes(status) ? (
           <>
             <HostProgress status={status} progressInfo={progressInfo} />
             <br />
           </>
+        ) : (
+          statusInfo
         )}
-        {statusInfo}
       </div>
     ),
-    [status, statusInfo, progressInfo],
+    [status, progressInfo, statusInfo],
   );
   return (
     <>
@@ -85,7 +87,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ status, statusInfo }) => {
       >
         <Button variant={ButtonVariant.link} className="host-status__button" isInline>
           {icon} {title}{' '}
-          {['installing', 'error'].includes(status) && (
+          {['installing', 'installing-in-progress'].includes(status) && (
             <>
               {currentStepNumber}/{progressInfo.steps.length}
             </>

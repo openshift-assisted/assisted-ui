@@ -19,7 +19,7 @@ import ClusterProgress from './ClusterProgress';
 import ClusterCredentials from './ClusterCredentials';
 import ClusterInstallationError from './ClusterInstallationError';
 
-import './clusterDetail.css';
+import './ClusterDetail.css';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -82,16 +82,20 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
         </Grid>
       </PageSection>
       <ClusterToolbar>
-        {cluster.status === 'installing' && (
+        {
+          // TODO(jtomasek): enable this when available
+          /* {cluster.status === 'installing' && (
           <ToolbarButton type="button" variant={ButtonVariant.danger} isDisabled>
             Abort Installation
           </ToolbarButton>
-        )}
-        {cluster.status === 'installed' && (
+        )} */
+        }
+        {/* TODO(jtomasek): enable this when available */}
+        {/* {cluster.status === 'installed' && (
           <ToolbarButton type="button" variant={ButtonVariant.primary} isDisabled>
             Launch OpenShift Console
           </ToolbarButton>
-        )}
+        )} */}
         <ToolbarButton
           variant={ButtonVariant.link}
           component={(props) => <Link to="/clusters" {...props} />}

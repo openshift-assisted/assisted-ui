@@ -54,7 +54,9 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
   const { id, status, statusInfo, role, createdAt, hardwareInfo = '' } = host;
   const hwInfo = getHardwareInfo(hardwareInfo) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(hwInfo);
-  const roleCellTitle = ['installing', 'installed', 'error'].includes(status) ? (
+  const roleCellTitle = ['installing', 'installing-in-progress', 'installed', 'error'].includes(
+    status,
+  ) ? (
     role
   ) : (
     <RoleDropdown role={role} host={host} />
