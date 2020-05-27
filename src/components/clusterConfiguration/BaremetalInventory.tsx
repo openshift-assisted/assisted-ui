@@ -14,7 +14,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster }) => {
       <TextContent>
         <Text component="h2">Bare Metal Inventory</Text>
         <Text component="p">
-          <DiscoveryImageModalButton ButtonComponent={Button} />
+          <DiscoveryImageModalButton ButtonComponent={Button} imageInfo={cluster.imageInfo} />
         </Text>
         <Text component="p">
           Boot the discovery ISO on hardware that should become part of this bare metal cluster.

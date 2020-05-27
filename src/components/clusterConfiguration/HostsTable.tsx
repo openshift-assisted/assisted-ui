@@ -90,12 +90,12 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
   ];
 };
 
-const HostsTableEmptyState: React.FC = () => (
+const HostsTableEmptyState: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
   <EmptyState
     icon={ConnectedIcon}
     title="Waiting for hosts..."
     content="Boot the discovery ISO on a hardware that should become part of this bare metal cluster. After booting the ISO the hosts get inspected and register to the cluster. At least 3 bare metal hosts are required to form the cluster."
-    primaryAction={<DiscoveryImageModalButton />}
+    primaryAction={<DiscoveryImageModalButton imageInfo={cluster.imageInfo} />}
   />
 );
 
@@ -128,8 +128,8 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     if (hostRows.length) {
       return hostRows;
     }
-    return getColSpanRow(HostsTableEmptyState, columns.length);
-  }, [hostRows]);
+    return getColSpanRow(<HostsTableEmptyState cluster={cluster} />, columns.length);
+  }, [hostRows, cluster]);
 
   const onCollapse = React.useCallback(
     (_event, rowKey) => {

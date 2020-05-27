@@ -7,7 +7,7 @@ type OpenshiftVersionOptionType = {
 
 export const OPENSHIFT_VERSION_OPTIONS: OpenshiftVersionOptionType[] = [
   { label: 'OpenShift 4.4', value: '4.4' },
-  { label: 'OpenShift 4.5', value: '4.5' },
+  // { label: 'OpenShift 4.5', value: '4.5' },
   // { label: 'OpenShift 4.6', value: '4.6' },
 ];
 
@@ -35,6 +35,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   insufficient: 'Insufficient',
   disabled: 'Disabled',
   installing: 'Installing',
+  'installing-in-progress': 'Installing',
   installed: 'Installed',
   error: 'Error',
 };

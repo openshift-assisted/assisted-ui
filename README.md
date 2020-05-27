@@ -28,17 +28,19 @@ For further details about the Metal³ architecture, see [http://github.com/metal
 ## Getting started
 
 ### Prerequisite
+
 - Install [Node.js](https://nodejs.org/en) and [yarn](https://yarnpkg.com/), on Fedora/Centos:
   ```
   dnf install -y nodejs yarn
   ```
 - Clone repo:
-   ```
+  ```
   git clone https://github.com/openshift-metal3/facet.git
   cd facet
-   ```
+  ```
 
 ### Build and run in DEV-mode
+
 - Install javascript dependencies:
   ```
   yarn install
@@ -46,21 +48,25 @@ For further details about the Metal³ architecture, see [http://github.com/metal
 - Start the webpack dev server to run the application in dev-mode with:
 
   - Environment variables:
+
   ```
   REACT_APP_API_URL: required, URL of the BM Inventory
   BROWSER: optional, locally installed browser used to open the web application in
   ```
+
   - Command:
+
   ```
   REACT_APP_API_URL=[YOUR_BM-INVENTORY_URL] yarn start
   ```
+
   - Example:
+
   ```
   REACT_APP_API_URL=`minikube service bm-inventory --url` BROWSER=chromium-browser yarn start
-   ```
+  ```
 
 - Open the UI at `http://localhost:3000`
-
 
 ## Running integration tests
 

@@ -38,6 +38,7 @@ export interface Cluster {
    * Version of the OpenShift cluster.
    */
   openshiftVersion?: '4.4' | '4.5';
+  imageInfo: ImageInfo;
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
    */
@@ -269,6 +270,19 @@ export interface Error {
    */
   reason: string;
 }
+export interface Event {
+  /**
+   * Unique identifier of the object this event relates to.
+   */
+  entityId: string; // uuid
+  message: string;
+  eventTime: string; // date-time
+  /**
+   * Unique identifier for the request that caused this event to occure
+   */
+  requestId?: string; // uuid
+}
+export type EventList = Event[];
 export interface Host {
   /**
    * Indicates the type of this object. Will be 'Host' if this is a complete object or 'HostLink' if it is just a link.
@@ -293,6 +307,7 @@ export interface Host {
     | 'insufficient'
     | 'disabled'
     | 'installing'
+    | 'installing-in-progress'
     | 'installed'
     | 'error';
   statusInfo: string;
@@ -320,6 +335,19 @@ export interface ImageCreateParams {
    * SSH public key for debugging the installation.
    */
   sshPublicKey?: string;
+}
+export interface ImageInfo {
+  /**
+   * The URL of the HTTP/S proxy that agents should use to access the discovery service
+   * http://\<user\>:\<password\>@\<server\>:\<port\>/
+   *
+   */
+  proxyUrl?: string;
+  /**
+   * SSH public key for debugging the installation
+   */
+  sshPublicKey?: string;
+  createdAt?: string; // date-time
 }
 export interface Interface {
   ipv6_addresses?: string[];
