@@ -15,6 +15,7 @@ const HostEvents: React.FC<HostEventsProps> = ({ hostId }) => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
     getEvents(hostId)
       .catch((error) => {
         console.warn(`Failed to load events for host ${hostId}: `, error);
@@ -26,10 +27,11 @@ const HostEvents: React.FC<HostEventsProps> = ({ hostId }) => {
           setEvents(result.data);
           setError('');
         }
-        setTimeout(() => {
+        timer = setTimeout(() => {
           setLastPolling(Date.now());
         }, POLLING_INTERVAL);
       });
+    return () => clearTimeout(timer);
   }, [hostId, lastPolling]);
 
   return error ? (
