@@ -233,6 +233,10 @@ export interface CpuDetails {
   sockets?: number;
   cpuMhz?: number;
 }
+export interface Credentials {
+  username?: string;
+  password?: string;
+}
 export interface DebugStep {
   command: string;
 }
@@ -311,7 +315,7 @@ export interface Host {
     | 'installed'
     | 'error';
   statusInfo: string;
-  connectivity?: ConnectivityReport;
+  connectivity?: string;
   hardwareInfo?: string;
   inventory?: string;
   role?: 'undefined' | 'master' | 'worker';
@@ -349,6 +353,7 @@ export interface ImageInfo {
   sshPublicKey?: string;
   createdAt?: string; // date-time
 }
+export type IngressCertParams = string;
 export interface Interface {
   ipv6_addresses?: string[];
   vendor?: string;

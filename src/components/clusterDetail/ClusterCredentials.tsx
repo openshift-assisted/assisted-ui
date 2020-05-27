@@ -1,35 +1,80 @@
 import React from 'react';
 import { saveAs } from 'file-saver';
-import { GridItem, TextContent, ButtonVariant, Button } from '@patternfly/react-core';
+import {
+  GridItem,
+  TextContent,
+  ButtonVariant,
+  Button,
+  ClipboardCopy,
+  clipboardCopyFunc,
+} from '@patternfly/react-core';
+import { ExternalLinkSquareAltIcon } from '@patternfly/react-icons';
 
-import { Cluster } from '../../api/types';
+import { ClusterCredentials as ClusterCredentialsResp } from '../../api/clusters';
 import { getClusterFileURL } from '../../api/clusters';
+import { LoadingState, ErrorState } from '../ui/uiState';
 
 type ClusterCredentialsProps = {
-  cluster: Cluster;
+  clusterID: string;
+  error: boolean;
+  retry: () => void;
+  credentials?: ClusterCredentialsResp;
 };
 
-const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({ cluster }) => {
-  // TODO(jtomasek): Fetch cluster credentials data
-  // TODO(jtomasek):
-  return (
-    <GridItem>
+const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
+  clusterID,
+  credentials,
+  error,
+  retry,
+}) => {
+  let credentialsBody: JSX.Element;
+  if (error) {
+    credentialsBody = <ErrorState title="Failed to fetch cluster credentials." fetchData={retry} />;
+  } else if (!credentials) {
+    credentialsBody = <LoadingState />;
+  } else {
+    credentialsBody = (
       <TextContent>
         <dl className="cluster-detail__details-list">
           <dt>Web Console URL</dt>
-          <dd>https://console-openshift-console.apps.clusterName.dev.domain.com</dd>
+          <dd>
+            <Button
+              variant="link"
+              icon={<ExternalLinkSquareAltIcon />}
+              iconPosition="right"
+              isInline
+              onClick={() => window.open(credentials.consoleUrl, '_blank', 'noopener')}
+            >
+              {credentials.consoleUrl}
+            </Button>
+          </dd>
           <dt>Username</dt>
-          <dd>kubeadmin</dd>
+          <dd>{credentials.username}</dd>
           <dt>Password</dt>
-          <dd>-------------</dd>
+          <dd>
+            <ClipboardCopy
+              isReadOnly
+              onCopy={(event) => clipboardCopyFunc(event, credentials.password)}
+            >
+              &bull;&bull;&bull;&bull;&bull;
+            </ClipboardCopy>
+          </dd>
         </dl>
       </TextContent>
-      <Button
-        variant={ButtonVariant.secondary}
-        onClick={() => saveAs(getClusterFileURL(cluster.id, 'kubeconfig'))}
-      >
-        Download kubeconfig
-      </Button>
+    );
+  }
+
+  return (
+    <GridItem span={12} lg={10} xl={6}>
+      <div>
+        {credentialsBody}
+        <Button
+          variant={ButtonVariant.secondary}
+          onClick={() => saveAs(getClusterFileURL(clusterID, 'kubeconfig'))}
+        >
+          Download kubeconfig
+        </Button>
+      </div>
     </GridItem>
   );
 };
