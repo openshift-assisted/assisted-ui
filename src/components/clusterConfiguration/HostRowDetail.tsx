@@ -19,8 +19,10 @@ import { getHostRowHardwareInfo } from './hardwareInfo';
 
 import './HostRowDetail.css';
 import { DASH } from '../constants';
+import HostEvents from './HostsEvents';
 
 type HostDetailProps = {
+  hostId: string;
   hwInfo: Introspection;
 };
 
@@ -171,7 +173,7 @@ const NicsTable: React.FC<NicsTableProps> = ({ nics }) => {
   );
 };
 
-export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
+export const HostDetail: React.FC<HostDetailProps> = ({ hostId, hwInfo }) => {
   const rowInfo = getHostRowHardwareInfo(hwInfo);
   return (
     <Flex className="host-row-detail">
@@ -198,6 +200,12 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
       <SectionTitle title={`${rowInfo.nics.length} NICs`} />
       <SectionColumn>
         <NicsTable nics={rowInfo.nics} />
+      </SectionColumn>
+
+      {/* TODO(mlibra): will be placed somewhere else */}
+      <SectionTitle title="Events" />
+      <SectionColumn>
+        <HostEvents hostId={hostId} />
       </SectionColumn>
     </Flex>
   );

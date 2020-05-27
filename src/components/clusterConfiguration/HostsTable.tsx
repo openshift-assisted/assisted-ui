@@ -87,7 +87,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
       // expandable detail
       // parent will be set after sorting
       fullWidth: true,
-      cells: [{ title: <HostDetail key={id} hwInfo={hwInfo} /> }],
+      cells: [{ title: <HostDetail key={id} hwInfo={hwInfo} hostId={id} /> }],
     },
   ];
 };
