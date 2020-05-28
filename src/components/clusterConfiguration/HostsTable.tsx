@@ -73,7 +73,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
           sortableValue: role,
         },
         {
-          title: <HostStatus status={status} statusInfo={statusInfo} />,
+          title: <HostStatus host={host} />,
           sortableValue: status,
         },
         getHumanizedTime(createdAt),

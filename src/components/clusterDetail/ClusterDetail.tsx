@@ -30,14 +30,7 @@ type ClusterDetailProps = {
 };
 
 // TODO(jtomasek): replace this with data from cluster.progressInfo once it is available
-const installationSteps = [
-  'Starting Installation',
-  'Bootstrapping installation',
-  'Waiting for control plane',
-  'Installing as master',
-  'Writing image to disk',
-  'Rebooting',
-];
+const installationSteps = ['Installation in progress'];
 
 const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const [credentials, setCredentials] = React.useState<ClusterCredentialsResp>();

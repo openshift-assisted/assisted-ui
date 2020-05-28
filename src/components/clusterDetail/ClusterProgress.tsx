@@ -34,7 +34,7 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ status, progressInfo 
     <Progress
       value={currentStepNumber}
       title={CLUSTER_STATUS_LABELS[status]}
-      min={1}
+      min={0}
       max={steps.length}
       label={`Step ${currentStepNumber} of ${steps.length}: ${currentStep}`}
       valueText={`Step ${currentStepNumber} of ${steps.length}: ${currentStep}`}
