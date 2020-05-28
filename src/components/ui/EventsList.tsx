@@ -1,13 +1,14 @@
 import React from 'react';
 import hdate from 'human-date';
-import {
-  DataList,
-  DataListItem,
-  DataListCell,
-  DataListItemCells,
-  DataListItemRow,
-} from '@patternfly/react-core';
 import { EventList } from '../../api/types';
+import { TableVariant, Table, TableBody } from '@patternfly/react-table';
+import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
+import { fitContent } from '../ui/table/wrappable';
+import { Tooltip, TooltipPosition } from '@patternfly/react-core';
+import { getHumanizedDateTime } from './utils';
+
+const getEventRowKey = ({ rowData }: ExtraParamsType) =>
+  rowData?.props?.sortableTime + rowData?.message?.title;
 
 type EventsListProps = {
   events: EventList;
@@ -29,28 +30,30 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
       (a, b) => b.sortableTime - a.sortableTime,
     );
 
+  const rows = sortedEvents.map((event) => ({
+    cells: [
+      {
+        title: (
+          <Tooltip content={getHumanizedDateTime(event.eventTime)} position={TooltipPosition.right}>
+            <strong>{event.humanTime}</strong>
+          </Tooltip>
+        ),
+      },
+      event.message,
+    ],
+    props: { sortableTime: event.sortableTime },
+  }));
+
   return (
-    <DataList aria-label="Event list" isCompact>
-      {sortedEvents.map((event) => {
-        const id = event.message + event.sortableTime;
-        return (
-          <DataListItem aria-labelledby={id} key={id}>
-            <DataListItemRow>
-              <DataListItemCells
-                dataListCells={[
-                  <DataListCell key={`${id}-time`} width={1}>
-                    <span id={id}>{event.humanTime}</span>
-                  </DataListCell>,
-                  <DataListCell key={`${id}-message`} width={4}>
-                    {event.message}
-                  </DataListCell>,
-                ]}
-              ></DataListItemCells>
-            </DataListItemRow>
-          </DataListItem>
-        );
-      })}
-    </DataList>
+    <Table
+      rows={rows}
+      cells={[{ title: 'Time', cellTransforms: [fitContent] }, { title: 'Message' }]}
+      variant={TableVariant.compact}
+      aria-label="Host's disks table"
+      borders={false}
+    >
+      <TableBody rowKey={getEventRowKey} />
+    </Table>
   );
 };
 
