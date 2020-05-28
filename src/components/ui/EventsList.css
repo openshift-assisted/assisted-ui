@@ -1,0 +1,4 @@
+.events-list__time {
+  font-weight: var(--pf-global--FontWeight--bold);
+  margin-right: 1rem;
+};

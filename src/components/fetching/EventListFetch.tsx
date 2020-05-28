@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { Alert, AlertVariant } from '@patternfly/react-core';
 import EventsList from '../ui/EventsList';
 import { EventList, Event } from '../../api/types';
 import { getEvents } from '../../api/events';
 import { POLLING_INTERVAL } from '../../config/constants';
-import { Alert, AlertVariant } from '@patternfly/react-core';
 
 export type EventFetchProps = {
   entityId: Event['entityId'];

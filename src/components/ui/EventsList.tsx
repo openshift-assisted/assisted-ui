@@ -3,6 +3,8 @@ import hdate from 'human-date';
 import { EventList } from '../../api/types';
 import { SimpleList, SimpleListItem } from '@patternfly/react-core';
 
+import './EventsList.css';
+
 type EventsListProps = {
   events: EventList;
 };
@@ -27,7 +29,8 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
     <SimpleList>
       {sortedEvents.map((event) => (
         <SimpleListItem key={event.message + event.sortableTime}>
-          {event.humanTime} {event.message}
+          <span className="events-list__time">{event.humanTime}:</span>
+          {event.message}
         </SimpleListItem>
       ))}
     </SimpleList>

@@ -16,10 +16,10 @@ import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-t
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { Introspection, BlockDevice, Nic } from '../../api/types';
 import { getHostRowHardwareInfo } from './hardwareInfo';
+import { DASH } from '../constants';
 
 import './HostRowDetail.css';
-import { DASH } from '../constants';
-import EventListFetch, { EventFetchProps } from '../ui/EventListFetch';
+import HostEvents from '../fetching/HostEvents';
 
 type HostDetailProps = {
   hostId: string;
@@ -172,10 +172,6 @@ const NicsTable: React.FC<NicsTableProps> = ({ nics }) => {
     </Table>
   );
 };
-
-const HostEvents: React.FC<EventFetchProps> = ({ entityId }) => (
-  <EventListFetch entityId={entityId} entityKind="host" />
-);
 
 export const HostDetail: React.FC<HostDetailProps> = ({ hostId, hwInfo }) => {
   const rowInfo = getHostRowHardwareInfo(hwInfo);
