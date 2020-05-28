@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { Formik, FormikHelpers, FormikProps } from 'formik';
+import { Formik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 import {
@@ -11,9 +11,6 @@ import {
   ButtonVariant,
   Grid,
   GridItem,
-  Alert,
-  AlertVariant,
-  AlertActionCloseButton,
   TextInputTypes,
   TextVariants,
   Spinner,
@@ -33,6 +30,11 @@ import { handleApiError } from '../../api/utils';
 import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import alertsReducer, {
+  addAlert,
+  AlertProps,
+  removeAlert,
+} from '../../features/alerts/alertsSlice';
 import BaremetalInventory from './BaremetalInventory';
 import {
   nameValidationSchema,
@@ -65,6 +67,7 @@ const sshPublicKeyHelperText = (
 
 const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) => {
   const dispatch = useDispatch();
+  const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
   const clusterNames = useSelector(selectClusterNamesButCurrent);
 
   const initialValues: ClusterConfigurationValues = {
@@ -96,10 +99,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
     [clusterNames],
   );
 
-  const handleSubmit = async (
-    values: ClusterConfigurationValues,
-    formikActions: FormikHelpers<ClusterConfigurationValues>,
-  ) => {
+  const handleSubmit = async (values: ClusterConfigurationValues) => {
     const { submitType, ...params } = values;
 
     try {
@@ -107,7 +107,9 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
-        formikActions.setStatus({ error: 'Failed to update the cluster.' }),
+        dispatchAlertsAction(
+          addAlert({ title: 'Failed to update the cluster', message: e.response?.data?.reason }),
+        ),
       );
     }
 
@@ -117,7 +119,9 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
         dispatch(updateCluster(data));
       } catch (e) {
         handleApiError(e, () =>
-          formikActions.setStatus({ error: 'Failed to install the cluster.' }),
+          dispatchAlertsAction(
+            addAlert({ title: 'Failed to install the cluster', message: e.response?.data?.reason }),
+          ),
         );
       }
     }
@@ -126,18 +130,15 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
   return (
     <Formik
       initialValues={initialValues}
-      initialStatus={{ error: null }}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
       initialTouched={_.mapValues(initialValues, () => true)}
       validateOnMount
     >
       {({
-        setStatus,
         isSubmitting,
         isValid,
         submitForm,
-        status,
         setFieldValue,
         values,
       }: FormikProps<ClusterConfigurationValues>) => {
@@ -246,15 +247,10 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                 </Grid>
               </Form>
             </PageSection>
-            <AlertsSection>
-              {status.error && (
-                <Alert
-                  variant={AlertVariant.danger}
-                  title={status.error}
-                  action={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
-                />
-              )}
-            </AlertsSection>
+            <AlertsSection
+              alerts={alerts}
+              onClose={(alert: AlertProps) => dispatchAlertsAction(removeAlert(alert.key))}
+            />
             <ClusterToolbar>
               <ToolbarButton
                 variant={ButtonVariant.primary}

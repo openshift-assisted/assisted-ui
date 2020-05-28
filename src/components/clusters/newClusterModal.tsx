@@ -90,7 +90,9 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
       history.push(`/clusters/${data.id}`);
     } catch (e) {
       handleApiError<ClusterCreateParams>(e, () =>
-        formikActions.setStatus({ error: 'Failed to create new cluster' }),
+        formikActions.setStatus({
+          error: { title: 'Failed to create new cluster', message: e.response?.data?.reason },
+        }),
       );
     }
   };
@@ -120,7 +122,9 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
                 title={status.error}
                 action={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
                 isInline
-              />
+              >
+                {status.error.message}
+              </Alert>
             )}
             {isSubmitting ? (
               <LoadingState />
