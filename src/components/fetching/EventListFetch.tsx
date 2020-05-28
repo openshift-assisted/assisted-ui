@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, AlertVariant } from '@patternfly/react-core';
 import EventsList from '../ui/EventsList';
 import { EventList, Event } from '../../api/types';
 import { getEvents } from '../../api/events';
 import { POLLING_INTERVAL } from '../../config/constants';
+import { ErrorState } from '../ui/uiState';
 
 export type EventFetchProps = {
   entityId: Event['entityId'];
@@ -37,8 +37,12 @@ const EventListFetch: React.FC<EventListFetchProps> = ({ entityId, entityKind })
     return () => clearTimeout(timer);
   }, [entityId, lastPolling, entityKind]);
 
+  const forceRefetch = React.useCallback(() => {
+    setLastPolling(Date.now());
+  }, [setLastPolling]);
+
   return error ? (
-    <Alert variant={AlertVariant.danger} title={error} />
+    <ErrorState title={error} fetchData={forceRefetch} />
   ) : (
     <EventsList events={events} />
   );
