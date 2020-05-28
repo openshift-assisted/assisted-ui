@@ -13,7 +13,6 @@ import PageSection from '../ui/PageSection';
 import HostsTable from '../clusterConfiguration/HostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { ToolbarButton } from '../ui/Toolbar';
-import { getHumanizedDateTime } from '../ui/utils';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import ClusterProgress from './ClusterProgress';
 import ClusterCredentials from './ClusterCredentials';
@@ -56,15 +55,9 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             <TextContent>
               <Text component="h2">Creation Progress</Text>
               <dl className="cluster-detail__details-list">
-                <dt>Creation started at</dt>
-                <dd>{getHumanizedDateTime(cluster.installStartedAt)}</dd>
                 <dt>Creation status</dt>
                 <dd>
-                  <ClusterProgress
-                    status={cluster.status}
-                    progressInfo={progressInfo}
-                    installCompletedAt={cluster.installCompletedAt}
-                  />
+                  <ClusterProgress status={cluster.status} progressInfo={progressInfo} />
                 </dd>
               </dl>
             </TextContent>
