@@ -14,18 +14,15 @@ type EventListFetchProps = EventFetchProps & {
 };
 
 const EventListFetch: React.FC<EventListFetchProps> = ({ entityId, entityKind }) => {
-  const [events, setEvents] = useState([] as EventList);
+  const [events, setEvents] = useState<EventList>([]);
   const [lastPolling, setLastPolling] = useState(0);
   const [error, setError] = useState('');
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    getEvents(entityId)
-      .catch((error) => {
-        console.warn(`Failed to load events for ${entityKind} ${entityId}: `, error);
-        setError('Failed to load events');
-      })
-      .then((result) => {
+    const fetch = async () => {
+      try {
+        const result = await getEvents(entityId);
         if (result) {
           setEvents(result.data);
           setError('');
@@ -33,7 +30,12 @@ const EventListFetch: React.FC<EventListFetchProps> = ({ entityId, entityKind })
         timer = setTimeout(() => {
           setLastPolling(Date.now());
         }, POLLING_INTERVAL);
-      });
+      } catch (error) {
+        console.warn(`Failed to load events for ${entityKind} ${entityId}: `, error);
+        setError('Failed to load events');
+      }
+    };
+    fetch();
     return () => clearTimeout(timer);
   }, [entityId, lastPolling, entityKind]);
 
