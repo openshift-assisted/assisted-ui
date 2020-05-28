@@ -29,9 +29,6 @@ type ClusterDetailProps = {
   cluster: Cluster;
 };
 
-// TODO(jtomasek): replace this with data from cluster.progressInfo once it is available
-const installationSteps = ['Installation in progress'];
-
 const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const [credentials, setCredentials] = React.useState<ClusterCredentialsResp>();
   const [credentialsError, setCredentialsError] = React.useState();
@@ -55,12 +52,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
     }
   }, [cluster.status, fetchCredentials]);
 
-  // TODO(jtomasek): replace this with data from cluster.progressInfo once it is available
-  const progressInfo = {
-    steps: installationSteps,
-    currentStep: cluster.statusInfo,
-  };
-
   return (
     <>
       <ClusterBreadcrumbs clusterName={cluster.name} />
@@ -77,13 +68,13 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               <dl className="cluster-detail__details-list">
                 <dt>Creation status</dt>
                 <dd>
-                  <ClusterProgress status={cluster.status} progressInfo={progressInfo} />
+                  <ClusterProgress cluster={cluster} />
                 </dd>
               </dl>
             </TextContent>
           </GridItem>
           {cluster.status === 'error' && (
-            <ClusterInstallationError progressInfo={progressInfo} statusInfo={cluster.statusInfo} />
+            <ClusterInstallationError statusInfo={cluster.statusInfo} />
           )}
           {cluster.status === 'installed' && (
             <ClusterCredentials

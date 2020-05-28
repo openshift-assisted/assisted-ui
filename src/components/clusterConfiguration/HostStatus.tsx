@@ -34,7 +34,7 @@ const getStatusIcon = (status: Host['status']) => {
   return <UnknownIcon />;
 };
 
-const getHostInstallationSteps = (role: Host['role'], bootstrap: Host['bootstrap']) => {
+export const getHostInstallationSteps = (role: Host['role'], bootstrap: Host['bootstrap']) => {
   if (bootstrap) {
     return [
       'Starting installation',
