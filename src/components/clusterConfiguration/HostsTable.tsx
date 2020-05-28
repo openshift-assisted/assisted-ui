@@ -54,12 +54,16 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
   const { id, status, role, createdAt, hardwareInfo = '' } = host;
   const hwInfo = stringToJSON<Introspection>(hardwareInfo) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(hwInfo);
-  const roleCellTitle = ['installing', 'installing-in-progress', 'installed', 'error'].includes(
-    status,
-  ) ? (
-    role
-  ) : (
+  const roleCellTitle = [
+    'discovering',
+    'known',
+    'disconnected',
+    'disabled',
+    'insufficient',
+  ].includes(status) ? (
     <RoleDropdown role={role} host={host} />
+  ) : (
+    role
   );
 
   return [
