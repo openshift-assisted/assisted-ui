@@ -22,18 +22,14 @@ const EventListFetch: React.FC<EventListFetchProps> = ({ entityId, entityKind })
     let timer: NodeJS.Timeout;
     const fetch = async () => {
       try {
-        const result = await getEvents(entityId);
-        if (result) {
-          setEvents(result.data);
-          setError('');
-        }
-        timer = setTimeout(() => {
-          setLastPolling(Date.now());
-        }, POLLING_INTERVAL);
+        const { data } = await getEvents(entityId);
+        setEvents(data);
+        setError('');
       } catch (error) {
         console.warn(`Failed to load events for ${entityKind} ${entityId}: `, error);
         setError('Failed to load events');
       }
+      timer = setTimeout(() => setLastPolling(Date.now()), POLLING_INTERVAL);
     };
     fetch();
     return () => clearTimeout(timer);
