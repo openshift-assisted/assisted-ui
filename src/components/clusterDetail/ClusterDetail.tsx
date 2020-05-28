@@ -23,6 +23,7 @@ import ClusterCredentials from './ClusterCredentials';
 import ClusterInstallationError from './ClusterInstallationError';
 
 import './ClusterDetail.css';
+import ClusterEvents from '../fetching/ClusterEvents';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -104,6 +105,12 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               <Text component="h2">Bare Metal Inventory</Text>
             </TextContent>
             <HostsTable cluster={cluster} />
+          </GridItem>
+          <GridItem>
+            <TextContent>
+              <Text component="h2">Cluster Events</Text>
+            </TextContent>
+            <ClusterEvents entityId={cluster.id} />
           </GridItem>
         </Grid>
       </PageSection>

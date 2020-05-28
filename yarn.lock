@@ -2437,6 +2437,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/human-date@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@types/human-date/-/human-date-1.4.0.tgz#6acdd2722c04054ea9372329390f29aa9b5fefd1"
+  integrity sha512-rsDilFfoef3ugCed0mA3nU4v8YidW7l8nWFTDeNt3TGFISKeju/Xz+215/enW5uTv/xTOCeMpkqVLV7shfHV2A==
+
 "@types/humanize-plus@^1.8.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@types/humanize-plus/-/humanize-plus-1.8.0.tgz#ab6bfdb143ca719604dc031449a497fc11f54eb4"
@@ -7252,6 +7257,11 @@ https-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
   integrity sha1-7AbBDgo0wPL68Zn3/X/Hj//QPHM=
+
+human-date@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/human-date/-/human-date-1.4.0.tgz#88bb62bd804d00fd12ee2f47dc3c3bbb1e55f99a"
+  integrity sha1-iLtivYBNAP0S7i9H3Dw7ux5V+Zo=
 
 humanize-plus@^1.8.2:
   version "1.8.2"
