@@ -238,11 +238,9 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                     </GridGap>
                   </GridItem>
                   <GridItem span={12} lg={10} xl={6}>
-                    <GridGap>
-                      <TextContent>
-                        <Text component="h2">Events</Text>
-                      </TextContent>
-                    </GridGap>
+                    <TextContent>
+                      <Text component="h2">Events</Text>
+                    </TextContent>
                     <ClusterEvents entityId={cluster.id} />
                   </GridItem>
                 </Grid>
