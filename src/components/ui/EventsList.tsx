@@ -1,9 +1,13 @@
 import React from 'react';
 import hdate from 'human-date';
+import {
+  DataList,
+  DataListItem,
+  DataListCell,
+  DataListItemCells,
+  DataListItemRow,
+} from '@patternfly/react-core';
 import { EventList } from '../../api/types';
-import { SimpleList, SimpleListItem } from '@patternfly/react-core';
-
-import './EventsList.css';
 
 type EventsListProps = {
   events: EventList;
@@ -26,14 +30,28 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
     );
 
   return (
-    <SimpleList>
-      {sortedEvents.map((event) => (
-        <SimpleListItem key={event.message + event.sortableTime}>
-          <span className="events-list__time">{event.humanTime}:</span>
-          {event.message}
-        </SimpleListItem>
-      ))}
-    </SimpleList>
+    <DataList aria-label="Event list" isCompact>
+      {sortedEvents.map((event) => {
+        const id = event.message + event.sortableTime;
+        return (
+          <DataListItem aria-labelledby={id} key={id}>
+            <DataListItemRow>
+              <DataListItemCells
+                dataListCells={[
+                  <DataListCell key={`${id}-time`} width={1}>
+                    <span id={id}>{event.humanTime}</span>
+                  </DataListCell>,
+                  <DataListCell key={`${id}-message`} width={4}>
+                    {event.message}
+                  </DataListCell>,
+                ]}
+              ></DataListItemCells>
+            </DataListItemRow>
+          </DataListItem>
+        );
+      })}
+    </DataList>
   );
 };
+
 export default EventsList;
