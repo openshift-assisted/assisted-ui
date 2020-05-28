@@ -46,6 +46,7 @@ import {
 } from '../ui/formik/validationSchemas';
 import { selectClusterNamesButCurrent } from '../../selectors/clusters';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
+import ClusterEvents from '../fetching/ClusterEvents';
 
 type ClusterConfigurationValues = ClusterUpdateParams & {
   submitType: 'save' | 'install';
@@ -235,6 +236,12 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         isRequired
                       />
                     </GridGap>
+                  </GridItem>
+                  <GridItem span={12} lg={10} xl={6}>
+                    <TextContent>
+                      <Text component="h2">Events</Text>
+                    </TextContent>
+                    <ClusterEvents entityId={cluster.id} />
                   </GridItem>
                 </Grid>
               </Form>

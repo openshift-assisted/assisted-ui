@@ -16,11 +16,13 @@ import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-t
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { Introspection, BlockDevice, Nic } from '../../api/types';
 import { getHostRowHardwareInfo } from './hardwareInfo';
-
-import './HostRowDetail.css';
 import { DASH } from '../constants';
 
+import './HostRowDetail.css';
+import HostEvents from '../fetching/HostEvents';
+
 type HostDetailProps = {
+  hostId: string;
   hwInfo: Introspection;
 };
 
@@ -171,7 +173,7 @@ const NicsTable: React.FC<NicsTableProps> = ({ nics }) => {
   );
 };
 
-export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
+export const HostDetail: React.FC<HostDetailProps> = ({ hostId, hwInfo }) => {
   const rowInfo = getHostRowHardwareInfo(hwInfo);
   return (
     <Flex className="host-row-detail">
@@ -198,6 +200,12 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hwInfo }) => {
       <SectionTitle title={`${rowInfo.nics.length} NICs`} />
       <SectionColumn>
         <NicsTable nics={rowInfo.nics} />
+      </SectionColumn>
+
+      {/* TODO(mlibra): will be placed somewhere else */}
+      <SectionTitle title="Events" />
+      <SectionColumn>
+        <HostEvents entityId={hostId} />
       </SectionColumn>
     </Flex>
   );
