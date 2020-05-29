@@ -190,14 +190,14 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hostId, inventory }) => 
     <Flex className="host-row-detail">
       <SectionTitle title="Host Details" />
       <SectionColumn>
-        <HostDetailItem title="Hostname" value={inventory.hostname || DASH} />
         <HostDetailItem title="Manufacturer" value={inventory.systemVendor?.manufacturer || DASH} />
         <HostDetailItem title="Product" value={inventory.systemVendor?.productName || DASH} />
+        <HostDetailItem title="Serial number" value={rowInfo.serialNumber} />
       </SectionColumn>
       <SectionColumn>
         <HostDetailItem title="CPU architecture" value={inventory.cpu?.architecture || DASH} />
         <HostDetailItem title="CPU model name" value={inventory.cpu?.modelName || DASH} />
-        <HostDetailItem title="CPU clock speed" value={rowInfo.cpuSpeed || DASH} />
+        <HostDetailItem title="CPU clock speed" value={rowInfo.cpuSpeed} />
       </SectionColumn>
       <SectionColumn>
         <HostDetailItem title="Memory capacity" value={rowInfo.memory.title} />

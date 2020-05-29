@@ -41,7 +41,7 @@ type OpenRows = {
 };
 
 const columns = [
-  { title: 'Serial Number', transforms: [sortable], cellFormatters: [expandable] },
+  { title: 'Host name', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
   { title: 'Created At', transforms: [sortable] },
@@ -53,14 +53,14 @@ const columns = [
 const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
   const { id, status, role, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
-  const { serialNumber, cores, memory, disk } = getHostRowHardwareInfo(inventory);
+  const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
 
   return [
     {
       // visible row
       isOpen: !!openRows[id],
       cells: [
-        serialNumber,
+        inventory.hostname,
         {
           title: <RoleCell host={host} />,
           sortableValue: role,
@@ -75,12 +75,14 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
         disk,
       ],
       extraData: host,
+      key: `${host.id}-master`,
     },
     {
       // expandable detail
       // parent will be set after sorting
       fullWidth: true,
       cells: [{ title: <HostDetail key={id} inventory={inventory} hostId={id} /> }],
+      key: `${host.id}-detail`,
     },
   ];
 };
@@ -94,7 +96,7 @@ const HostsTableEmptyState: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
   />
 );
 
-const rowKey = ({ rowData }: ExtraParamsType) => rowData?.['serial-number']?.title;
+const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 
 const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
