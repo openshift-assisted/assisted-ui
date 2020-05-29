@@ -3,7 +3,7 @@ import hdate from 'human-date';
 import { EventList } from '../../api/types';
 import { TableVariant, Table, TableBody } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { fitContent } from '../ui/table/wrappable';
+import { fitContent, noPadding } from '../ui/table/wrappable';
 import { Tooltip, TooltipPosition } from '@patternfly/react-core';
 import { getHumanizedDateTime } from './utils';
 
@@ -16,7 +16,7 @@ type EventsListProps = {
 
 const EventsList: React.FC<EventsListProps> = ({ events }) => {
   if (events.length === 0) {
-    return null;
+    return <div>No events</div>;
   }
   // Do not memoize result to keep it recomputed since we use "relative" time bellow
   const sortedEvents = events
@@ -47,7 +47,7 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
   return (
     <Table
       rows={rows}
-      cells={[{ title: 'Time', cellTransforms: [fitContent] }, { title: 'Message' }]}
+      cells={[{ title: 'Time', cellTransforms: [fitContent, noPadding] }, { title: 'Message' }]}
       variant={TableVariant.compact}
       aria-label="Host's disks table"
       borders={false}
