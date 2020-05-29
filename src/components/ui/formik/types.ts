@@ -1,4 +1,5 @@
 import { TextInputTypes, FormSelectOptionProps } from '@patternfly/react-core';
+import { FieldValidator } from 'formik';
 
 export interface FieldProps {
   name: string;
@@ -18,6 +19,7 @@ export interface FieldProps {
 export interface SelectFieldProps extends FieldProps {
   options: FormSelectOptionProps[];
   onChange?: (event: React.FormEvent<HTMLSelectElement>) => void;
+  getHelperText?: (value: string) => string | undefined;
   // onBlur?: (event: React.FormEvent<HTMLSelectElement>) => void;
 }
 
@@ -26,6 +28,7 @@ export interface InputFieldProps extends FieldProps {
   placeholder?: string;
   onChange?: (event: React.FormEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  validate?: FieldValidator;
 }
 
 export interface TextAreaProps extends FieldProps {
