@@ -34,29 +34,32 @@ const getStatusIcon = (status: Host['status']) => {
   return <UnknownIcon />;
 };
 
-type HostStatusProps = {
-  status: Host['status'];
-  statusInfo?: string;
-  // progressInfo?: Host['progressInfo'] // TODO(jtomasek): enable this once progressInfo is available
-  progressInfo?: {
-    steps: string[];
-    currentStep: string;
-  };
+export const getHostInstallationSteps = (role: Host['role'], bootstrap: Host['bootstrap']) => {
+  if (bootstrap) {
+    return [
+      'Starting installation',
+      'Bootstrapping installation',
+      'Waiting for control plane',
+      `Installing as ${role}`,
+      'Writing image to disk',
+      'Rebooting',
+    ];
+  } else {
+    return ['Starting installation', `Installing as ${role}`, 'Writing image to disk', 'Rebooting'];
+  }
 };
 
-const HostStatus: React.FC<HostStatusProps> = ({ status, statusInfo }) => {
+type HostStatusProps = {
+  host: Host;
+};
+
+const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
+  const { status, statusInfo, role, bootstrap } = host;
   const title = HOST_STATUS_LABELS[status] || status;
   const icon = getStatusIcon(status);
 
-  // TODO(jtomasek): mocked steps, remove when progressInfo is available
-  const installationSteps = [
-    'Starting installation',
-    'Writing image to disk',
-    'Installing as <node role>',
-    'Rebooting',
-  ];
   const progressInfo = {
-    steps: installationSteps,
+    steps: getHostInstallationSteps(role, bootstrap),
     currentStep: statusInfo || 'Starting Installation',
   };
 
