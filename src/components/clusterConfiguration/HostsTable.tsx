@@ -51,7 +51,7 @@ const columns = [
 ];
 
 const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
-  const { id, status, statusInfo, role, createdAt, hardwareInfo = '' } = host;
+  const { id, status, role, createdAt, hardwareInfo = '' } = host;
   const hwInfo = getHardwareInfo(hardwareInfo) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(hwInfo);
   const roleCellTitle = ['installing', 'installing-in-progress', 'installed', 'error'].includes(
@@ -73,7 +73,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
           sortableValue: role,
         },
         {
-          title: <HostStatus status={status} statusInfo={statusInfo} />,
+          title: <HostStatus host={host} />,
           sortableValue: status,
         },
         getHumanizedTime(createdAt),

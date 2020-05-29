@@ -1,7 +1,8 @@
 import React from 'react';
-import { Cluster } from '../../api/types';
+import { Cluster, Host } from '../../api/types';
 import { Progress, ProgressVariant, ProgressMeasureLocation } from '@patternfly/react-core';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
+import { getHostInstallationSteps } from '../clusterConfiguration/HostStatus';
 
 const getProgressVariant = (status: Cluster['status']) => {
   switch (status) {
@@ -17,27 +18,45 @@ const getProgressVariant = (status: Cluster['status']) => {
 const getMeasureLocation = (status: Cluster['status']) =>
   status === 'installed' ? ProgressMeasureLocation.none : ProgressMeasureLocation.top;
 
-type ClusterProgressProps = {
-  status: Cluster['status'];
-  // progressInfo: Cluster['progressInfo']; // TODO(jtomasek) replace this once progressInfo is available
-  progressInfo: {
-    steps: string[];
-    currentStep: string;
-  };
+const getProgressLabel = (cluster: Cluster, progress: number): string => {
+  const { status, statusInfo } = cluster;
+  if (['error'].includes(status)) {
+    return `${progress}%`;
+  }
+  return `${statusInfo}: ${progress}%`;
 };
 
-const ClusterProgress: React.FC<ClusterProgressProps> = ({ status, progressInfo }) => {
-  const { steps, currentStep } = progressInfo;
-  const currentStepNumber = steps.indexOf(currentStep) + 1;
+const getProgressPercent = (hosts: Host[] = []) => {
+  const accountedHosts = hosts.filter((host) => !['disabled'].includes(host.status));
+  const totalSteps = accountedHosts.reduce(
+    (steps, host) => steps + getHostInstallationSteps(host.role, host.bootstrap).length,
+    0,
+  );
+  const completedSteps = accountedHosts.reduce(
+    (steps, host) =>
+      steps + (getHostInstallationSteps(host.role, host.bootstrap).indexOf(host.statusInfo) + 1),
+    0,
+  );
+  return (completedSteps / totalSteps) * 100;
+};
+
+type ClusterProgressProps = {
+  cluster: Cluster;
+};
+
+const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
+  const { status, hosts } = cluster;
+  const progress = React.useMemo(
+    () => (status === 'installed' ? 100 : Math.round(getProgressPercent(hosts))),
+    [status, hosts],
+  );
+  const label = getProgressLabel(cluster, progress);
 
   return (
     <Progress
-      value={currentStepNumber}
+      value={progress}
       title={CLUSTER_STATUS_LABELS[status]}
-      min={1}
-      max={steps.length}
-      label={`Step ${currentStepNumber} of ${steps.length}: ${currentStep}`}
-      valueText={`Step ${currentStepNumber} of ${steps.length}: ${currentStep}`}
+      label={label}
       measureLocation={getMeasureLocation(status)}
       variant={getProgressVariant(status)}
     />
