@@ -22,7 +22,7 @@ import { Host, Cluster, Introspection } from '../../api/types';
 import { enableClusterHost, disableClusterHost } from '../../api/clusters';
 import { Alerts, Alert } from '../ui/Alerts';
 import { getHostRowHardwareInfo, getHumanizedTime } from './hardwareInfo';
-import { DiscoveryImageModalButton } from './discoveryImageModal';
+import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
 import { forceReload } from '../../features/clusters/currentClusterSlice';
@@ -30,7 +30,7 @@ import { handleApiError, stringToJSON } from '../../api/utils';
 import sortable from '../ui/table/sortable';
 
 import './HostsTable.css';
-import RoleCell from '../hosts/RoleCell';
+import RoleCell from './RoleCell';
 
 type HostsTableProps = {
   cluster: Cluster;

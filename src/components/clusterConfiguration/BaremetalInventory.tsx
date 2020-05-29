@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TextContent, Button } from '@patternfly/react-core';
-import HostsTable from './HostsTable';
+import HostsTable from '../hosts/HostsTable';
 import { Cluster } from '../../api/types';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 
