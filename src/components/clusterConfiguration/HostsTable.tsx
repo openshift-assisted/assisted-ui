@@ -25,12 +25,12 @@ import { getHostRowHardwareInfo, getHumanizedTime } from './hardwareInfo';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
-import { RoleDropdown } from './RoleDropdown';
 import { forceReload } from '../../features/clusters/currentClusterSlice';
 import { handleApiError, stringToJSON } from '../../api/utils';
 import sortable from '../ui/table/sortable';
 
 import './HostsTable.css';
+import RoleCell from '../hosts/RoleCell';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -54,17 +54,6 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
   const { id, status, role, createdAt, hardwareInfo = '' } = host;
   const hwInfo = stringToJSON<Introspection>(hardwareInfo) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(hwInfo);
-  const roleCellTitle = [
-    'discovering',
-    'known',
-    'disconnected',
-    'disabled',
-    'insufficient',
-  ].includes(status) ? (
-    <RoleDropdown role={role} host={host} />
-  ) : (
-    role
-  );
 
   return [
     {
@@ -73,7 +62,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
       cells: [
         id,
         {
-          title: roleCellTitle,
+          title: <RoleCell host={host} />,
           sortableValue: role,
         },
         {
