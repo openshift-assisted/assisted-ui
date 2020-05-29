@@ -3,18 +3,6 @@ import { Cluster } from '../../api/types';
 import { Progress, ProgressVariant, ProgressMeasureLocation } from '@patternfly/react-core';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
 
-import { getHumanizedDateTime } from '../ui/utils';
-
-const getProgressTitle = (
-  status: Cluster['status'],
-  installCompletedAt: Cluster['installCompletedAt'],
-) => {
-  if (status === 'installed') {
-    return `Finished at ${getHumanizedDateTime(installCompletedAt)}`;
-  }
-  return CLUSTER_STATUS_LABELS[status];
-};
-
 const getProgressVariant = (status: Cluster['status']) => {
   switch (status) {
     case 'error':
@@ -36,21 +24,16 @@ type ClusterProgressProps = {
     steps: string[];
     currentStep: string;
   };
-  installCompletedAt: Cluster['installCompletedAt'];
 };
 
-const ClusterProgress: React.FC<ClusterProgressProps> = ({
-  status,
-  progressInfo,
-  installCompletedAt,
-}) => {
+const ClusterProgress: React.FC<ClusterProgressProps> = ({ status, progressInfo }) => {
   const { steps, currentStep } = progressInfo;
   const currentStepNumber = steps.indexOf(currentStep) + 1;
 
   return (
     <Progress
       value={currentStepNumber}
-      title={getProgressTitle(status, installCompletedAt)}
+      title={CLUSTER_STATUS_LABELS[status]}
       min={1}
       max={steps.length}
       label={`Step ${currentStepNumber} of ${steps.length}: ${currentStep}`}

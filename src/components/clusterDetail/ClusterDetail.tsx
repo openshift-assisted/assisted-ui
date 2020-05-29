@@ -9,17 +9,21 @@ import {
   Grid,
 } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
+import {
+  getClusterCredentials,
+  ClusterCredentials as ClusterCredentialsResp,
+} from '../../api/clusters';
 import PageSection from '../ui/PageSection';
 import HostsTable from '../clusterConfiguration/HostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { ToolbarButton } from '../ui/Toolbar';
-import { getHumanizedDateTime } from '../ui/utils';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import ClusterProgress from './ClusterProgress';
 import ClusterCredentials from './ClusterCredentials';
 import ClusterInstallationError from './ClusterInstallationError';
 
 import './ClusterDetail.css';
+import ClusterEvents from '../fetching/ClusterEvents';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -36,6 +40,28 @@ const installationSteps = [
 ];
 
 const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
+  const [credentials, setCredentials] = React.useState<ClusterCredentialsResp>();
+  const [credentialsError, setCredentialsError] = React.useState();
+
+  const fetchCredentials = React.useCallback(() => {
+    const fetch = async () => {
+      setCredentialsError(undefined);
+      try {
+        const response = await getClusterCredentials(cluster.id);
+        setCredentials(response.data);
+      } catch (err) {
+        setCredentialsError(err);
+      }
+    };
+    fetch();
+  }, [cluster.id]);
+
+  React.useEffect(() => {
+    if (cluster.status === 'installed') {
+      fetchCredentials();
+    }
+  }, [cluster.status, fetchCredentials]);
+
   // TODO(jtomasek): replace this with data from cluster.progressInfo once it is available
   const progressInfo = {
     steps: installationSteps,
@@ -56,15 +82,9 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             <TextContent>
               <Text component="h2">Creation Progress</Text>
               <dl className="cluster-detail__details-list">
-                <dt>Creation started at</dt>
-                <dd>{getHumanizedDateTime(cluster.installStartedAt)}</dd>
                 <dt>Creation status</dt>
                 <dd>
-                  <ClusterProgress
-                    status={cluster.status}
-                    progressInfo={progressInfo}
-                    installCompletedAt={cluster.installCompletedAt}
-                  />
+                  <ClusterProgress status={cluster.status} progressInfo={progressInfo} />
                 </dd>
               </dl>
             </TextContent>
@@ -72,12 +92,25 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
           {cluster.status === 'error' && (
             <ClusterInstallationError progressInfo={progressInfo} statusInfo={cluster.statusInfo} />
           )}
-          {cluster.status === 'installed' && <ClusterCredentials cluster={cluster} />}
+          {cluster.status === 'installed' && (
+            <ClusterCredentials
+              clusterID={cluster.id}
+              credentials={credentials}
+              error={!!credentialsError}
+              retry={fetchCredentials}
+            />
+          )}
           <GridItem>
             <TextContent>
               <Text component="h2">Bare Metal Inventory</Text>
             </TextContent>
             <HostsTable cluster={cluster} />
+          </GridItem>
+          <GridItem>
+            <TextContent>
+              <Text component="h2">Cluster Events</Text>
+            </TextContent>
+            <ClusterEvents entityId={cluster.id} />
           </GridItem>
         </Grid>
       </PageSection>
@@ -90,12 +123,16 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
           </ToolbarButton>
         )} */
         }
-        {/* TODO(jtomasek): enable this when available */}
-        {/* {cluster.status === 'installed' && (
-          <ToolbarButton type="button" variant={ButtonVariant.primary} isDisabled>
+        {cluster.status === 'installed' && (
+          <ToolbarButton
+            type="button"
+            variant={ButtonVariant.primary}
+            isDisabled={!credentials || !!credentialsError}
+            onClick={() => window.open(credentials?.consoleUrl, '_blank', 'noopener')}
+          >
             Launch OpenShift Console
           </ToolbarButton>
-        )} */}
+        )}
         <ToolbarButton
           variant={ButtonVariant.link}
           component={(props) => <Link to="/clusters" {...props} />}
