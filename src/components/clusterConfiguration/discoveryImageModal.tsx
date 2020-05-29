@@ -83,7 +83,12 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
         closeModal();
       } catch (error) {
         handleApiError<ImageCreateParams>(error, () => {
-          formikActions.setStatus({ error: 'Failed to download the discovery Image' });
+          formikActions.setStatus({
+            error: {
+              title: 'Failed to download the discovery Image',
+              message: error.response?.data?.reason,
+            },
+          });
         });
       }
     }
@@ -119,10 +124,12 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
                 {status.error && (
                   <Alert
                     variant={AlertVariant.danger}
-                    title={status.error}
+                    title={status.error.title}
                     action={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
                     isInline
-                  />
+                  >
+                    {status.error.message}
+                  </Alert>
                 )}
                 <TextContent>
                   <Text component="small">
