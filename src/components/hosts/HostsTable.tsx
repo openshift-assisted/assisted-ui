@@ -18,7 +18,7 @@ import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Tabl
 import { AlertVariant } from '@patternfly/react-core';
 import { EmptyState } from '../ui/uiState';
 import { getColSpanRow, rowSorter } from '../ui/table/utils';
-import { Host, Cluster, Introspection } from '../../api/types';
+import { Host, Cluster, Inventory } from '../../api/types';
 import { enableClusterHost, disableClusterHost } from '../../api/clusters';
 import { Alerts, Alert } from '../ui/Alerts';
 import { getHostRowHardwareInfo, getHumanizedTime } from './hardwareInfo';
@@ -28,9 +28,9 @@ import { HostDetail } from './HostRowDetail';
 import { forceReload } from '../../features/clusters/currentClusterSlice';
 import { handleApiError, stringToJSON } from '../../api/utils';
 import sortable from '../ui/table/sortable';
+import RoleCell from './RoleCell';
 
 import './HostsTable.css';
-import RoleCell from './RoleCell';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -51,16 +51,16 @@ const columns = [
 ];
 
 const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
-  const { id, status, role, createdAt, hardwareInfo = '' } = host;
-  const hwInfo = stringToJSON<Introspection>(hardwareInfo) || {};
-  const { cores, memory, disk } = getHostRowHardwareInfo(hwInfo);
+  const { id, status, role, createdAt, inventory: inventoryString = '' } = host;
+  const inventory = stringToJSON<Inventory>(inventoryString) || {};
+  const { serialNumber, cores, memory, disk } = getHostRowHardwareInfo(inventory);
 
   return [
     {
       // visible row
       isOpen: !!openRows[id],
       cells: [
-        id,
+        serialNumber,
         {
           title: <RoleCell host={host} />,
           sortableValue: role,
@@ -80,7 +80,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
       // expandable detail
       // parent will be set after sorting
       fullWidth: true,
-      cells: [{ title: <HostDetail key={id} hwInfo={hwInfo} hostId={id} /> }],
+      cells: [{ title: <HostDetail key={id} inventory={inventory} hostId={id} /> }],
     },
   ];
 };
@@ -128,8 +128,8 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
 
   const onCollapse = React.useCallback(
     (_event, rowKey) => {
-      const cells = hostRows[rowKey].cells;
-      const id = (cells && cells[0]) as string;
+      const host = hostRows[rowKey].extraData;
+      const id = (host && host.id) as string;
       if (id) {
         setOpenRows(Object.assign({}, openRows, { [id]: !openRows[id] }));
       }
