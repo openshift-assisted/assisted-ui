@@ -2,7 +2,7 @@ import React from 'react';
 import { Cluster, Host } from '../../api/types';
 import { Progress, ProgressVariant, ProgressMeasureLocation } from '@patternfly/react-core';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
-import { getHostInstallationSteps } from '../clusterConfiguration/HostStatus';
+import { getHostInstallationSteps } from '../hosts/HostStatus';
 
 const getProgressVariant = (status: Cluster['status']) => {
   switch (status) {

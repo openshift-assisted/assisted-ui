@@ -16,7 +16,7 @@ import {
   UnknownIcon,
 } from '@patternfly/react-icons';
 import { Host } from '../../api/types';
-import HostProgress from '../clusterDetail/HostProgress';
+import HostProgress from './HostProgress';
 import { HOST_STATUS_LABELS } from '../../config/constants';
 
 import './HostStatus.css';

@@ -14,7 +14,7 @@ import {
   ClusterCredentials as ClusterCredentialsResp,
 } from '../../api/clusters';
 import PageSection from '../ui/PageSection';
-import HostsTable from '../clusterConfiguration/HostsTable';
+import HostsTable from '../hosts/HostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { ToolbarButton } from '../ui/Toolbar';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';

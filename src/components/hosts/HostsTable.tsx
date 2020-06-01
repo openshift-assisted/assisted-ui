@@ -22,15 +22,15 @@ import { Host, Cluster, Introspection } from '../../api/types';
 import { enableClusterHost, disableClusterHost } from '../../api/clusters';
 import { Alerts, Alert } from '../ui/Alerts';
 import { getHostRowHardwareInfo, getHumanizedTime } from './hardwareInfo';
-import { DiscoveryImageModalButton } from './discoveryImageModal';
+import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
-import { RoleDropdown } from './RoleDropdown';
 import { forceReload } from '../../features/clusters/currentClusterSlice';
 import { handleApiError, stringToJSON } from '../../api/utils';
 import sortable from '../ui/table/sortable';
 
 import './HostsTable.css';
+import RoleCell from './RoleCell';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -54,13 +54,6 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
   const { id, status, role, createdAt, hardwareInfo = '' } = host;
   const hwInfo = stringToJSON<Introspection>(hardwareInfo) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(hwInfo);
-  const roleCellTitle = ['installing', 'installing-in-progress', 'installed', 'error'].includes(
-    status,
-  ) ? (
-    role
-  ) : (
-    <RoleDropdown role={role} host={host} />
-  );
 
   return [
     {
@@ -69,7 +62,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
       cells: [
         id,
         {
-          title: roleCellTitle,
+          title: <RoleCell host={host} />,
           sortableValue: role,
         },
         {
