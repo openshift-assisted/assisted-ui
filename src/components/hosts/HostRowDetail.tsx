@@ -155,8 +155,8 @@ const NicsTable: React.FC<NicsTableProps> = ({ interfaces = [] }) => {
       cells: [
         nic.name,
         nic.macAddress,
-        (nic.ipv4_addresses || []).join(', '),
-        (nic.ipv6_addresses || []).join(', '),
+        (nic.ipv4Addresses || []).join(', '),
+        (nic.ipv6Addresses || []).join(', '),
         `${nic.speedMbps ? `${nic.speedMbps} Mbps` : ''}`, // TODO(mlibra): do we need to change the unit?
         // nic.vendor, TODO(mlibra): search HW database for humanized values
         // nic.product,

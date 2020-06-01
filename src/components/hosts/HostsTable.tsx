@@ -29,6 +29,7 @@ import { forceReload } from '../../features/clusters/currentClusterSlice';
 import { handleApiError, stringToJSON } from '../../api/utils';
 import sortable from '../ui/table/sortable';
 import RoleCell from './RoleCell';
+import { DASH } from '../constants';
 
 import './HostsTable.css';
 
@@ -41,7 +42,7 @@ type OpenRows = {
 };
 
 const columns = [
-  { title: 'Host name', transforms: [sortable], cellFormatters: [expandable] },
+  { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
   { title: 'Created At', transforms: [sortable] },
@@ -60,7 +61,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
       // visible row
       isOpen: !!openRows[id],
       cells: [
-        inventory.hostname,
+        inventory.hostname || { title: DASH, sortableValue: '' },
         {
           title: <RoleCell host={host} />,
           sortableValue: role,
