@@ -24,7 +24,7 @@ data:
         listen 8080;
         server_name _;
 
-        root /usr/share/nginx/html;
+        root /app;
         index index.html;
 
         location /api {
@@ -36,7 +36,7 @@ data:
             proxy_cache_bypass $http_upgrade;
         }
 
-        location / {
+        location /app {
             try_files $uri /index.html;
         }
     }
@@ -63,7 +63,7 @@ spec:
           ports:
             - containerPort: 8080
           volumeMounts:
-            - mountPath: /etc/nginx/conf.d # mount nginx-conf volumn to /etc/nginx/conf.d
+            - mountPath: /opt/bitnami/nginx/conf # mount nginx-conf volumn to /etc/nginx/conf.d
               readOnly: true
               name: nginx-conf
       volumes:
@@ -72,5 +72,5 @@ spec:
             name: ocp-metal-ui # place ConfigMap `ocp-metal-ui` on /etc/nginx/conf.d
             items:
               - key: nginx.conf
-                path: default.conf
+                path: nginx.conf
       restartPolicy: Always

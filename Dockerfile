@@ -1,7 +1,7 @@
-FROM nginx:1.17
+FROM bitnami/nginx:1.18.0
 
 COPY deploy/deploy_config.sh /deploy/
 COPY deploy/ocp-metal-ui-template.yaml /deploy/
 
-COPY build/ /usr/share/nginx/html/
+COPY build/ /app/
 
