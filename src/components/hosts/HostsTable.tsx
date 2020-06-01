@@ -28,7 +28,7 @@ import { HostDetail } from './HostRowDetail';
 import { forceReload } from '../../features/clusters/currentClusterSlice';
 import { handleApiError, stringToJSON } from '../../api/utils';
 import sortable from '../ui/table/sortable';
-import RoleCell from './RoleCell';
+import RoleCell, { getHostRole } from './RoleCell';
 import { DASH } from '../constants';
 
 import './HostsTable.css';
@@ -52,7 +52,7 @@ const columns = [
 ];
 
 const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
-  const { id, status, role, createdAt, inventory: inventoryString = '' } = host;
+  const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
 
@@ -64,7 +64,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
         inventory.hostname || { title: DASH, sortableValue: '' },
         {
           title: <RoleCell host={host} />,
-          sortableValue: role,
+          sortableValue: getHostRole(host),
         },
         {
           title: <HostStatus host={host} />,
