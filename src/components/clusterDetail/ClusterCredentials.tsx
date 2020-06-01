@@ -10,15 +10,15 @@ import {
 } from '@patternfly/react-core';
 import { ExternalLinkSquareAltIcon } from '@patternfly/react-icons';
 
-import { ClusterCredentials as ClusterCredentialsResp } from '../../api/clusters';
 import { getClusterFileURL } from '../../api/clusters';
 import { LoadingState, ErrorState } from '../ui/uiState';
+import { Credentials } from '../../api/types';
 
 type ClusterCredentialsProps = {
   clusterID: string;
   error: boolean;
   retry: () => void;
-  credentials?: ClusterCredentialsResp;
+  credentials?: Credentials;
 };
 
 const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({

@@ -14,16 +14,16 @@ import {
 } from '@patternfly/react-core';
 import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { Introspection, BlockDevice, Nic } from '../../api/types';
+import { Inventory } from '../../api/types';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import { DASH } from '../constants';
+import HostEvents from '../fetching/HostEvents';
 
 import './HostRowDetail.css';
-import HostEvents from '../fetching/HostEvents';
 
 type HostDetailProps = {
   hostId: string;
-  hwInfo: Introspection;
+  inventory: Inventory;
 };
 
 type HostDetailItemProps = {
@@ -41,15 +41,15 @@ type SectionTitleProps = {
 };
 
 type SectionColumnProps = {
-  children: ReactChild | ReactChild[];
+  children: ReactChild | (ReactChild | undefined)[];
 };
 
 type DisksTableProps = {
-  disks: BlockDevice[];
+  disks?: Inventory['disks'];
 };
 
 type NicsTableProps = {
-  nics: Nic[];
+  interfaces?: Inventory['interfaces'];
 };
 
 const HostDetailItem: React.FC<HostDetailItemProps> = ({ title, value = '' }) => {
@@ -97,28 +97,28 @@ const SectionColumn: React.FC<SectionColumnProps> = ({ children }) => (
 
 const diskColumns = [
   { title: 'Name' },
+  { title: 'Drive type' },
   { title: 'Size' },
-  { title: 'Device type' },
-  { title: 'fstype' },
-  { title: 'Removeable' },
-  { title: 'Device number' },
-  { title: 'Mount point' },
+  { title: 'Serial' },
+  // { title: 'Vendor' }, TODO(mlibra): search HW database for humanized values
+  { title: 'Model' },
+  { title: 'WWN' },
 ];
 
 const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.name?.title;
 
-const DisksTable: React.FC<DisksTableProps> = ({ disks }) => {
+const DisksTable: React.FC<DisksTableProps> = ({ disks = [] }) => {
   const rows = disks
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
     .map((disk) => ({
       cells: [
         disk.name,
-        Humanize.fileSize(disk.size || 0),
-        disk.deviceType,
-        disk.fstype,
-        disk.removableDevice,
-        disk.majorDeviceNumber ? `(${disk.majorDeviceNumber}, ${disk.minorDeviceNumber})` : '',
-        disk.mountpoint,
+        disk.driveType,
+        Humanize.fileSize(disk.sizeBytes || 0),
+        disk.serial,
+        // disk.vendor, TODO(mlibra): search HW database for humanized values
+        disk.model,
+        disk.wwn,
       ],
     }));
 
@@ -139,23 +139,27 @@ const DisksTable: React.FC<DisksTableProps> = ({ disks }) => {
 const nicsColumns = [
   { title: 'Name' },
   { title: 'MAC address' },
-  { title: 'IP address' },
-  // { title: 'Latency' }, TODO(mlibra)
-  { title: 'State' },
+  { title: 'IPv4 address' },
+  { title: 'IPv6 address' },
+  { title: 'Speed' },
+  // { title: 'Vendor' }, TODO(mlibra): search HW database for humanized values
+  // { title: 'Product' },
 ];
 
 const nicsRowKey = ({ rowData }: ExtraParamsType) => rowData?.name?.title;
 
-const NicsTable: React.FC<NicsTableProps> = ({ nics }) => {
-  const rows = nics
+const NicsTable: React.FC<NicsTableProps> = ({ interfaces = [] }) => {
+  const rows = interfaces
     .sort((nicA, nicB) => nicA.name?.localeCompare(nicB.name || '') || 0)
     .map((nic) => ({
       cells: [
         nic.name,
-        nic.mac,
-        nic.cidrs?.map((cidr) => `${cidr.ipAddress}/${cidr.mask}`).join(','),
-        // TODO(mlibra): latency
-        nic.state,
+        nic.macAddress,
+        (nic.ipv4Addresses || []).join(', '),
+        (nic.ipv6Addresses || []).join(', '),
+        `${nic.speedMbps ? `${nic.speedMbps} Mbps` : ''}`, // TODO(mlibra): do we need to change the unit?
+        // nic.vendor, TODO(mlibra): search HW database for humanized values
+        // nic.product,
       ],
     }));
 
@@ -173,33 +177,45 @@ const NicsTable: React.FC<NicsTableProps> = ({ nics }) => {
   );
 };
 
-export const HostDetail: React.FC<HostDetailProps> = ({ hostId, hwInfo }) => {
-  const rowInfo = getHostRowHardwareInfo(hwInfo);
+export const HostDetail: React.FC<HostDetailProps> = ({ hostId, inventory }) => {
+  const rowInfo = getHostRowHardwareInfo(inventory);
+
+  let bmcAddress = inventory.bmcAddress;
+  if (inventory.bmcV6address) {
+    bmcAddress = bmcAddress ? `${bmcAddress}, ${inventory.bmcV6address}` : inventory.bmcV6address;
+  }
+  bmcAddress = bmcAddress || DASH;
+
   return (
     <Flex className="host-row-detail">
       <SectionTitle title="Host Details" />
       <SectionColumn>
-        <HostDetailItem title="CPU architecture" value={hwInfo.cpu?.architecture || DASH} />
-        <HostDetailItem title="Model name" value={hwInfo.cpu?.modelName || DASH} />
-        {/* TODO(mlibra): <HostDetailItem title="Motherboard serial number" value={} /> */}
+        <HostDetailItem title="Manufacturer" value={inventory.systemVendor?.manufacturer || DASH} />
+        <HostDetailItem title="Product" value={inventory.systemVendor?.productName || DASH} />
+        <HostDetailItem title="Serial number" value={rowInfo.serialNumber} />
       </SectionColumn>
       <SectionColumn>
-        <HostDetailItem title="Memory capacity" value={rowInfo.memory.title} />
+        <HostDetailItem title="CPU architecture" value={inventory.cpu?.architecture || DASH} />
+        <HostDetailItem title="CPU model name" value={inventory.cpu?.modelName || DASH} />
         <HostDetailItem title="CPU clock speed" value={rowInfo.cpuSpeed} />
       </SectionColumn>
       <SectionColumn>
-        <HostDetailItem title="Sockets" value={hwInfo.cpu?.sockets || DASH} />
-        <HostDetailItem title="Threads per core" value={hwInfo.cpu?.threadsPerCore || DASH} />
+        <HostDetailItem title="Memory capacity" value={rowInfo.memory.title} />
+        <HostDetailItem title="BMC address" value={bmcAddress} />
+        <HostDetailItem title="Boot mode" value={inventory.boot?.currentBootMode || DASH} />
+        {inventory.boot?.pxeInterface && (
+          <HostDetailItem title="PXE interface" value={inventory.boot?.pxeInterface} />
+        )}
       </SectionColumn>
 
-      <SectionTitle title={`${rowInfo.disks.length} Disks`} />
+      <SectionTitle title={`${(inventory.disks || []).length} Disks`} />
       <SectionColumn>
-        <DisksTable disks={rowInfo.disks} />
+        <DisksTable disks={inventory.disks} />
       </SectionColumn>
 
-      <SectionTitle title={`${rowInfo.nics.length} NICs`} />
+      <SectionTitle title={`${(inventory.interfaces || []).length} NICs`} />
       <SectionColumn>
-        <NicsTable nics={rowInfo.nics} />
+        <NicsTable interfaces={inventory.interfaces} />
       </SectionColumn>
 
       {/* TODO(mlibra): will be placed somewhere else */}

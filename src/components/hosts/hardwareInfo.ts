@@ -1,26 +1,20 @@
 import Humanize from 'humanize-plus';
-import { BlockDevice, Introspection, Nic } from '../../api/types';
+import { Disk, Inventory } from '../../api/types';
 import { DASH } from '../constants';
 import { HumanizedSortable } from '../ui/table/utils';
 
 export type HostRowHardwareInfo = {
+  serialNumber: string;
   cores: HumanizedSortable;
   cpuSpeed: string;
   memory: HumanizedSortable;
   disk: HumanizedSortable;
-  disks: BlockDevice[];
-  nics: Nic[];
 };
 
-export const getMemoryCapacity = (hwInfo: Introspection) => hwInfo.memory?.[0]?.total || 0;
+export const getMemoryCapacity = (inventory: Inventory) => inventory.memory?.physicalBytes || 0;
 
-export const getDisks = (hwInfo: Introspection): BlockDevice[] =>
-  hwInfo.blockDevices?.filter((device: BlockDevice) => device.deviceType === 'disk') || [];
-
-export const getNics = (hwInfo: Introspection): Nic[] => hwInfo.nics || [];
-
-export const getHumanizedCpuClockSpeed = (hwInfo: Introspection) =>
-  Humanize.formatNumber(hwInfo.cpu?.cpuMhz || 0);
+export const getHumanizedCpuClockSpeed = (inventory: Inventory) =>
+  Humanize.formatNumber(inventory.cpu?.frequency || 0);
 
 export const getHumanizedTime = (time: string | undefined): HumanizedSortable => {
   if (!time) {
@@ -42,22 +36,21 @@ const EMPTY = {
   sortableValue: 0,
 };
 
-export const getHostRowHardwareInfo = (hwInfo: Introspection): HostRowHardwareInfo => {
+export const getHostRowHardwareInfo = (inventory: Inventory): HostRowHardwareInfo => {
   let cores = EMPTY;
   let memory = EMPTY;
   let disk = EMPTY;
   let cpuSpeed = DASH;
 
-  if (hwInfo.cpu?.cpus) {
-    cpuSpeed = `${hwInfo.cpu?.cpus}x ${getHumanizedCpuClockSpeed(hwInfo)} MHz`;
-    // already total per mahcine (cores x sockets). WIll be changed by https://github.com/filanov/bm-inventory/pull/108
+  if (inventory.cpu?.count) {
+    cpuSpeed = `${inventory.cpu?.count}x ${getHumanizedCpuClockSpeed(inventory)} MHz`;
     cores = {
-      title: hwInfo.cpu?.cpus.toString(),
-      sortableValue: hwInfo.cpu?.cpus,
+      title: inventory.cpu?.count.toString(),
+      sortableValue: inventory.cpu?.count,
     };
   }
 
-  const memCapacity = getMemoryCapacity(hwInfo);
+  const memCapacity = getMemoryCapacity(inventory);
   if (memCapacity) {
     memory = {
       title: Humanize.fileSize(memCapacity),
@@ -65,8 +58,8 @@ export const getHostRowHardwareInfo = (hwInfo: Introspection): HostRowHardwareIn
     };
   }
 
-  const disksCapacity = getDisks(hwInfo).reduce(
-    (diskSize: number, device: BlockDevice) => diskSize + (device?.size || 0),
+  const disksCapacity = (inventory.disks || []).reduce(
+    (diskSize: number, disk: Disk) => diskSize + (disk.sizeBytes || 0),
     0,
   );
   if (disksCapacity) {
@@ -77,11 +70,10 @@ export const getHostRowHardwareInfo = (hwInfo: Introspection): HostRowHardwareIn
   }
 
   return {
+    serialNumber: inventory.systemVendor?.serialNumber || DASH,
     cores,
     cpuSpeed,
     memory,
     disk,
-    disks: getDisks(hwInfo),
-    nics: getNics(hwInfo),
   };
 };
