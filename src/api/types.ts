@@ -212,8 +212,8 @@ export interface ConnectivityCheckNic {
 export type ConnectivityCheckParams = ConnectivityCheckHost[];
 export interface ConnectivityRemoteHost {
   hostId?: string; // uuid
-  l2_connectivity?: L2Connectivity[];
-  l3_connectivity?: L3Connectivity[];
+  l2Connectivity?: L2Connectivity[];
+  l3Connectivity?: L3Connectivity[];
 }
 export interface ConnectivityReport {
   remoteHosts?: ConnectivityRemoteHost[];
@@ -355,13 +355,13 @@ export interface ImageInfo {
 }
 export type IngressCertParams = string;
 export interface Interface {
-  ipv6_addresses?: string[];
+  ipv6Addresses?: string[];
   vendor?: string;
   name?: string;
   hasCarrier?: boolean;
   product?: string;
   mtu?: number;
-  ipv4_addresses?: string[];
+  ipv4Addresses?: string[];
   biosdevname?: string;
   clientId?: string;
   macAddress?: string;

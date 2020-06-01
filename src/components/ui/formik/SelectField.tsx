@@ -10,6 +10,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   helperText,
   isRequired,
   onChange,
+  getHelperText,
   ...props
 }) => {
   const [field, { touched, error }] = useField(props.name);
@@ -20,7 +21,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
     <FormGroup
       fieldId={fieldId}
       label={label}
-      helperText={helperText}
+      helperText={getHelperText ? getHelperText(field.value) : helperText}
       helperTextInvalid={errorMessage}
       isValid={isValid}
       isRequired={isRequired}
