@@ -3,7 +3,7 @@ import EventsList from '../ui/EventsList';
 import { EventList, Event } from '../../api/types';
 import { getEvents } from '../../api/events';
 import { POLLING_INTERVAL } from '../../config/constants';
-import { ErrorState } from '../ui/uiState';
+import { ErrorState, LoadingState } from '../ui/uiState';
 
 export type EventFetchProps = {
   entityId: Event['entityId'];
@@ -14,7 +14,7 @@ type EventListFetchProps = EventFetchProps & {
 };
 
 const EventListFetch: React.FC<EventListFetchProps> = ({ entityId, entityKind }) => {
-  const [events, setEvents] = useState<EventList>([]);
+  const [events, setEvents] = useState<EventList>();
   const [lastPolling, setLastPolling] = useState(0);
   const [error, setError] = useState('');
 
@@ -39,11 +39,15 @@ const EventListFetch: React.FC<EventListFetchProps> = ({ entityId, entityKind })
     setLastPolling(Date.now());
   }, [setLastPolling]);
 
-  return error ? (
-    <ErrorState title={error} fetchData={forceRefetch} />
-  ) : (
-    <EventsList events={events} />
-  );
+  if (error) {
+    return <ErrorState title={error} fetchData={forceRefetch} />;
+  }
+
+  if (!events) {
+    return <LoadingState />;
+  }
+
+  return <EventsList events={events} />;
 };
 
 export default EventListFetch;

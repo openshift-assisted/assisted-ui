@@ -2,6 +2,8 @@
 // when available
 import { ITransform } from '@patternfly/react-table';
 
+import './wrappable.css';
+
 export const breakWord: ITransform = () => ({
   className: 'pf-m-break-word',
 });
@@ -20,4 +22,8 @@ export const truncate: ITransform = () => ({
 
 export const wrappable: ITransform = () => ({
   className: 'pf-m-wrap',
+});
+
+export const noPadding: ITransform = () => ({
+  className: 'table-no-padding',
 });
