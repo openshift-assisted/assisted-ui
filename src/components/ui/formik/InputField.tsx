@@ -12,10 +12,7 @@ const InputField: React.FC<InputFieldProps> = ({
   validate,
   ...props
 }) => {
-  const [field, { touched, error }] = useField({
-    name: props.name,
-    validate,
-  });
+  const [field, { touched, error }] = useField({ name: props.name, validate });
   const fieldId = getFieldId(props.name, 'input');
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';

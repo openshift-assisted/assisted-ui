@@ -14,6 +14,7 @@ export interface FieldProps {
   isDisabled?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   innerRef?: React.Ref<any>;
+  validate?: FieldValidator;
 }
 
 export interface SelectFieldProps extends FieldProps {

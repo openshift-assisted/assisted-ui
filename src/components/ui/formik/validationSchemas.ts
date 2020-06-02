@@ -16,13 +16,6 @@ export const nameValidationSchema = Yup.string()
   .max(253, 'Cannot be longer than 253 characters.')
   .required('Required');
 
-export const getUniqueNameValidationSchema = (excludedList: (string | undefined)[]) =>
-  Yup.mixed().test(
-    'unique-name',
-    'Name "${value}" is already taken.', // eslint-disable-line no-template-curly-in-string
-    (value) => !excludedList.includes(value),
-  );
-
 export const sshPublicKeyValidationSchema = Yup.string().matches(SSH_PUBLIC_KEY_REGEX, {
   message:
     'SSH public key must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT]',
