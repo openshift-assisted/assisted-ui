@@ -25,9 +25,9 @@ import PageSection from '../ui/PageSection';
 import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import { InputField, TextAreaField, SelectField } from '../ui/formik';
 import GridGap from '../ui/GridGap';
-import { Cluster, ClusterUpdateParams, Inventory } from '../../api/types';
+import { Cluster, ClusterUpdateParams } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
-import { handleApiError, stringToJSON } from '../../api/utils';
+import { handleApiError } from '../../api/utils';
 import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
@@ -49,15 +49,14 @@ import {
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import ClusterEvents from '../fetching/ClusterEvents';
 
-type SubnetHostMap = {
-  [key: string]: {
-    hostIDs: string[];
-    subnet: Netmask;
-  };
-};
+type HostSubnets = {
+  subnet: Netmask;
+  hostIDs: string[];
+  humanized: string;
+}[];
 
 type ClusterConfigurationValues = ClusterUpdateParams & {
-  subnetHostMap: string;
+  hostSubnet: string;
 };
 
 const requiredSchema = Yup.mixed().required('Required to install the cluster.');
@@ -94,41 +93,38 @@ const sshPublicKeyHelperText = (
 );
 
 const validateVIP = (
-  subnetHostMap: SubnetHostMap,
+  hostSubnets: HostSubnets,
   values: ClusterConfigurationValues,
   value: string,
 ) => {
-  const currentSubnet = subnetHostMap[values.subnetHostMap].subnet;
-  const valid =
-    currentSubnet.contains(value) &&
-    value !== currentSubnet.broadcast &&
-    value !== currentSubnet.base;
+  const { subnet } = hostSubnets.find((hn) => hn.humanized === values.hostSubnet) || {};
+  const valid = subnet?.contains(value) && value !== subnet?.broadcast && value !== subnet?.base;
   return valid ? undefined : 'IP Address is outside of selected subnet';
 };
 
 const findMatchingSubnet = (
   ingressVip: string | undefined,
   apiVip: string | undefined,
-  subnets: SubnetHostMap,
+  hostSubnets: HostSubnets,
 ): string => {
   let matchingSubnet;
-  if (Object.keys(subnets).length) {
+  if (hostSubnets.length) {
     if (!ingressVip && !apiVip) {
-      matchingSubnet = Object.keys(subnets)[0];
+      matchingSubnet = hostSubnets[0];
     } else {
-      matchingSubnet = Object.keys(subnets).find((key) => {
+      matchingSubnet = hostSubnets.find((hn) => {
         let found = true;
         if (ingressVip) {
-          found = found && subnets[key].subnet.contains(ingressVip);
+          found = found && hn.subnet.contains(ingressVip);
         }
         if (apiVip) {
-          found = found && subnets[key].subnet.contains(apiVip);
+          found = found && hn.subnet.contains(apiVip);
         }
         return found;
       });
     }
   }
-  return matchingSubnet || 'No subnets available';
+  return matchingSubnet ? matchingSubnet.humanized : 'No subnets available';
 };
 
 type ClusterConfigurationProps = {
@@ -140,21 +136,15 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
   const dispatch = useDispatch();
   const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
 
-  const subnetHostMap: SubnetHostMap = {};
-  cluster.hosts?.forEach((host) => {
-    const inventory = stringToJSON<Inventory>(host.inventory);
-    const addresses = _.flatten(inventory?.interfaces?.map((i) => i.ipv4Addresses));
-    const hostSubnets = addresses?.filter((a) => !!a).map((a) => new Netmask(a as string));
-    hostSubnets.forEach((subnet) => {
-      const subnetID = `${subnet.first}-${subnet.last}`;
-      subnetHostMap[subnetID]
-        ? subnetHostMap[subnetID].hostIDs.push(host.id)
-        : (subnetHostMap[subnetID] = {
-            hostIDs: [host.id],
-            subnet,
-          });
-    });
-  });
+  const hostSubnets: HostSubnets =
+    cluster.hostNetworks?.map((hn) => {
+      const subnet = new Netmask(hn.cidr as string);
+      return {
+        subnet,
+        hostIDs: hn.hostIds || [],
+        humanized: `${subnet.first}-${subnet.last}`,
+      };
+    }) || [];
 
   const initialValues: ClusterConfigurationValues = {
     name: cluster.name || '',
@@ -166,7 +156,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
     ingressVip: cluster.ingressVip || '',
     pullSecret: cluster.pullSecret || '',
     sshPublicKey: cluster.sshPublicKey || '',
-    subnetHostMap: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, subnetHostMap),
+    hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, hostSubnets),
   };
 
   const handleSubmit = async (
@@ -237,10 +227,10 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
           await setSubmitType((e.target as HTMLButtonElement).name);
           submitForm();
         };
-        if (Object.keys(subnetHostMap).length && !subnetHostMap[values.subnetHostMap]) {
+        if (hostSubnets.length && !hostSubnets.find((hn) => hn.humanized === values.hostSubnet)) {
           setFieldValue(
-            'subnetHostMap',
-            findMatchingSubnet(cluster.ingressVip, cluster.apiVip, subnetHostMap),
+            'hostSubnet',
+            findMatchingSubnet(cluster.ingressVip, cluster.apiVip, hostSubnets),
           );
         }
         return (
@@ -292,20 +282,22 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         isRequired
                       />
                       <SelectField
-                        name="subnetHostMap"
+                        name="hostSubnet"
                         label="Available subnets"
                         options={
-                          Object.keys(subnetHostMap).length
-                            ? Object.keys(subnetHostMap).map((s) => ({ label: s, value: s }))
+                          hostSubnets.length
+                            ? hostSubnets.map((hn) => ({
+                                label: hn.humanized,
+                                value: hn.humanized,
+                              }))
                             : [{ label: 'No subnets available', value: 'nosubnets' }]
                         }
-                        getHelperText={(value) =>
-                          subnetHostMap[value]
-                            ? `Subnet is available on hosts: ${subnetHostMap[value].hostIDs.join(
-                                ', ',
-                              )}`
-                            : undefined
-                        }
+                        getHelperText={(value) => {
+                          const matchingSubnet = hostSubnets.find((hn) => hn.humanized === value);
+                          return matchingSubnet
+                            ? `Subnet is available on hosts: ${matchingSubnet.hostIDs.join(', ')}`
+                            : undefined;
+                        }}
                         onChange={() => {
                           validateField('ingressVip');
                           validateField('apiVip');
@@ -317,16 +309,16 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         name="apiVip"
                         helperText="Virtual IP used to reach the OpenShift cluster API."
                         isRequired
-                        isDisabled={!Object.keys(subnetHostMap).length}
-                        validate={(value: string) => validateVIP(subnetHostMap, values, value)}
+                        isDisabled={!hostSubnets.length}
+                        validate={(value: string) => validateVIP(hostSubnets, values, value)}
                       />
                       <InputField
                         name="ingressVip"
                         label="Ingress Virtual IP"
                         helperText="Virtual IP used for cluster ingress traffic."
                         isRequired
-                        isDisabled={!Object.keys(subnetHostMap).length}
-                        validate={(value: string) => validateVIP(subnetHostMap, values, value)}
+                        isDisabled={!hostSubnets.length}
+                        validate={(value: string) => validateVIP(hostSubnets, values, value)}
                       />
                       <TextContent>
                         <Text component="h2">Security</Text>
