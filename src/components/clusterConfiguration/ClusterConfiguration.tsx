@@ -41,49 +41,46 @@ import {
   nameValidationSchema,
   sshPublicKeyValidationSchema,
   validJSONSchema,
-  ipValidationSchema,
   ipBlockValidationSchema,
   dnsNameValidationSchema,
   hostPrefixValidationSchema,
+  vipValidationSchema,
 } from '../ui/formik/validationSchemas';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import ClusterEvents from '../fetching/ClusterEvents';
-
-type HostSubnets = {
-  subnet: Netmask;
-  hostIDs: string[];
-  humanized: string;
-}[];
-
-type ClusterConfigurationValues = ClusterUpdateParams & {
-  hostSubnet: string;
-};
+import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 
 const requiredSchema = Yup.mixed().required('Required to install the cluster.');
 
-const validationSchema = Yup.object().shape({
-  name: nameValidationSchema,
-  baseDnsDomain: dnsNameValidationSchema,
-  clusterNetworkHostPrefix: hostPrefixValidationSchema,
-  clusterNetworkCidr: ipBlockValidationSchema,
-  serviceNetworkCidr: ipBlockValidationSchema,
-  apiVip: ipValidationSchema,
-  ingressVip: ipValidationSchema,
-  pullSecret: validJSONSchema,
-  sshPublicKey: sshPublicKeyValidationSchema,
-});
+const validationSchema = (hostSubnets: HostSubnets) =>
+  Yup.lazy<ClusterConfigurationValues>((values) =>
+    Yup.object<ClusterConfigurationValues>().shape({
+      name: nameValidationSchema,
+      baseDnsDomain: dnsNameValidationSchema,
+      clusterNetworkHostPrefix: hostPrefixValidationSchema,
+      clusterNetworkCidr: ipBlockValidationSchema,
+      serviceNetworkCidr: ipBlockValidationSchema,
+      apiVip: vipValidationSchema(hostSubnets, values),
+      ingressVip: vipValidationSchema(hostSubnets, values),
+      pullSecret: validJSONSchema,
+      sshPublicKey: sshPublicKeyValidationSchema,
+    }),
+  );
 
-const installValidationSchema = Yup.object().shape({
-  name: nameValidationSchema,
-  baseDnsDomain: requiredSchema.concat(dnsNameValidationSchema),
-  clusterNetworkHostPrefix: requiredSchema.concat(hostPrefixValidationSchema),
-  clusterNetworkCidr: requiredSchema.concat(ipBlockValidationSchema),
-  serviceNetworkCidr: requiredSchema.concat(ipBlockValidationSchema),
-  apiVip: requiredSchema.concat(ipValidationSchema),
-  ingressVip: requiredSchema.concat(ipValidationSchema),
-  pullSecret: requiredSchema.concat(validJSONSchema),
-  sshPublicKey: requiredSchema.concat(sshPublicKeyValidationSchema),
-});
+const installValidationSchema = (hostSubnets: HostSubnets) =>
+  Yup.lazy<ClusterConfigurationValues>((values) =>
+    Yup.object<ClusterConfigurationValues>().shape({
+      name: nameValidationSchema,
+      baseDnsDomain: requiredSchema.concat(dnsNameValidationSchema),
+      clusterNetworkHostPrefix: requiredSchema.concat(hostPrefixValidationSchema),
+      clusterNetworkCidr: requiredSchema.concat(ipBlockValidationSchema),
+      serviceNetworkCidr: requiredSchema.concat(ipBlockValidationSchema),
+      apiVip: requiredSchema.concat(vipValidationSchema(hostSubnets, values)),
+      ingressVip: requiredSchema.concat(vipValidationSchema(hostSubnets, values)),
+      pullSecret: requiredSchema.concat(validJSONSchema),
+      sshPublicKey: requiredSchema.concat(sshPublicKeyValidationSchema),
+    }),
+  );
 
 const sshPublicKeyHelperText = (
   <>
@@ -91,16 +88,6 @@ const sshPublicKeyHelperText = (
     copy&amp;pasted here. To generate new pair, use <em>ssh-keygen -o</em>.
   </>
 );
-
-const validateVIP = (
-  hostSubnets: HostSubnets,
-  values: ClusterConfigurationValues,
-  value: string,
-) => {
-  const { subnet } = hostSubnets.find((hn) => hn.humanized === values.hostSubnet) || {};
-  const valid = subnet?.contains(value) && value !== subnet?.broadcast && value !== subnet?.base;
-  return valid ? undefined : 'IP Address is outside of selected subnet';
-};
 
 const findMatchingSubnet = (
   ingressVip: string | undefined,
@@ -217,7 +204,11 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={submitType === 'install' ? installValidationSchema : validationSchema}
+      validationSchema={
+        submitType === 'install'
+          ? installValidationSchema(hostSubnets)
+          : validationSchema(hostSubnets)
+      }
       onSubmit={handleSubmit}
       initialTouched={_.mapValues(initialValues, () => true)}
       validateOnMount
@@ -320,7 +311,6 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         helperText="Virtual IP used to reach the OpenShift cluster API."
                         isRequired
                         isDisabled={!hostSubnets.length}
-                        validate={(value: string) => validateVIP(hostSubnets, values, value)}
                       />
                       <InputField
                         name="ingressVip"
@@ -328,7 +318,6 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         helperText="Virtual IP used for cluster ingress traffic."
                         isRequired
                         isDisabled={!hostSubnets.length}
-                        validate={(value: string) => validateVIP(hostSubnets, values, value)}
                       />
                       <TextContent>
                         <Text component="h2">Security</Text>
