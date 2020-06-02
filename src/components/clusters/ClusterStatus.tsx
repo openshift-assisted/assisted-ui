@@ -14,6 +14,7 @@ import {
 } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
+import { getHumanizedDateTime } from '../ui/utils';
 
 const getStatusIcon = (status: Cluster['status']) => {
   if (status === 'insufficient') return <WarningTriangleIcon color={warningColor.value} />;
@@ -25,18 +26,28 @@ const getStatusIcon = (status: Cluster['status']) => {
 };
 
 type ClusterStatusProps = {
-  status: Cluster['status'];
-  statusInfo?: string;
+  cluster: Cluster;
 };
 
-const ClusterStatus: React.FC<ClusterStatusProps> = ({ status, statusInfo }) => {
+const ClusterStatus: React.FC<ClusterStatusProps> = ({ cluster }) => {
+  const { status, statusInfo, statusUpdatedAt } = cluster;
   const title = CLUSTER_STATUS_LABELS[status];
   const icon = getStatusIcon(status);
   const headerContent = React.useMemo(() => <div>{title}</div>, [title]);
   const bodyContent = React.useMemo(() => <div>{statusInfo}</div>, [statusInfo]);
+  const footerContent = React.useMemo(
+    () => <small>Status updated at {getHumanizedDateTime(statusUpdatedAt)}</small>,
+    [statusUpdatedAt],
+  );
   if (statusInfo) {
     return (
-      <Popover headerContent={headerContent} bodyContent={bodyContent}>
+      <Popover
+        headerContent={headerContent}
+        bodyContent={bodyContent}
+        footerContent={footerContent}
+        minWidth="30rem"
+        maxWidth="50rem"
+      >
         <Button variant={ButtonVariant.link} isInline>
           {icon} {title}
         </Button>

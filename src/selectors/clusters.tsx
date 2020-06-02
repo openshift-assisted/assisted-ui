@@ -23,7 +23,7 @@ export const selectClustersUIState = createSelector(
 );
 
 const clusterToClusterTableRow = (cluster: Cluster): IRow => {
-  const { id, name, status, statusInfo, hosts, openshiftVersion } = cluster;
+  const { id, name, hosts, openshiftVersion } = cluster;
   const hostsCount = hosts ? hosts.length : 0;
 
   return {
@@ -39,7 +39,7 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
       id,
       openshiftVersion,
       {
-        title: <ClusterStatus status={status} statusInfo={statusInfo} />,
+        title: <ClusterStatus cluster={cluster} />,
       },
       {
         title: hostsCount.toString(),
