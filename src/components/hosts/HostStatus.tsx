@@ -75,8 +75,8 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
           </>
         ) : (
           <>
-            {HOST_STATUS_DETAILS[status] || ''}
-            {statusInfo}
+            <p>{HOST_STATUS_DETAILS[status] || ''}</p>
+            <p>{statusInfo}</p>
           </>
         )}
       </div>
