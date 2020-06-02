@@ -60,9 +60,9 @@ export interface Cluster {
    */
   apiVip?: string; // ipv4
   /**
-   * Virtual IP used internally by the cluster for automating internal DNS requirements.
+   * A CIDR that all hosts belonging to the cluster should have an interfaces with IP address that belongs to this CIDR. The apiVip belongs to this CIDR.
    */
-  dnsVip?: string; // ipv4
+  machineNetworkCidr?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   /**
    * Virtual IP used for cluster ingress traffic.
    */
@@ -84,6 +84,10 @@ export interface Cluster {
    */
   statusInfo: string;
   /**
+   * The last time that the cluster status has been updated
+   */
+  statusUpdatedAt?: string; // date-time
+  /**
    * Hosts that are associated with this cluster.
    */
   hosts?: Host[];
@@ -103,6 +107,14 @@ export interface Cluster {
    * The time that this cluster completed installation.
    */
   installCompletedAt?: string; // date-time
+  /**
+   * List of host networks to be filled during query.
+   */
+  hostNetworks?: HostNetwork[];
+  /**
+   * True if the pull-secret has been added to the cluster
+   */
+  pullSecretSet?: boolean;
 }
 export interface ClusterCreateParams {
   /**
@@ -129,14 +141,6 @@ export interface ClusterCreateParams {
    * The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.
    */
   serviceNetworkCidr?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
-  /**
-   * Virtual IP used to reach the OpenShift cluster API.
-   */
-  apiVip?: string; // ipv4
-  /**
-   * Virtual IP used internally by the cluster for automating internal DNS requirements.
-   */
-  dnsVip?: string; // ipv4
   /**
    * Virtual IP used for cluster ingress traffic.
    */
@@ -176,10 +180,6 @@ export interface ClusterUpdateParams {
    * Virtual IP used to reach the OpenShift cluster API.
    */
   apiVip?: string; // ipv4
-  /**
-   * Virtual IP used internally by the cluster for automating internal DNS requirements.
-   */
-  dnsVip?: string; // ipv4
   /**
    * Virtual IP used for cluster ingress traffic.
    */
@@ -236,6 +236,7 @@ export interface CpuDetails {
 export interface Credentials {
   username?: string;
   password?: string;
+  consoleUrl?: string;
 }
 export interface DebugStep {
   command: string;
@@ -315,6 +316,10 @@ export interface Host {
     | 'installed'
     | 'error';
   statusInfo: string;
+  /**
+   * The last time that the host status has been updated
+   */
+  statusUpdatedAt?: string; // date-time
   connectivity?: string;
   hardwareInfo?: string;
   inventory?: string;
@@ -322,12 +327,20 @@ export interface Host {
   bootstrap?: boolean;
   updatedAt?: string; // date-time
   createdAt?: string; // date-time
+  /**
+   * The last time the host's agent communicated with the service.
+   */
+  checkedInAt?: string; // date-time
 }
 export interface HostCreateParams {
   hostId: string; // uuid
 }
 export type HostInstallProgressParams = string;
 export type HostList = Host[];
+export interface HostNetwork {
+  cidr?: string;
+  hostIds?: string /* uuid */[];
+}
 export interface ImageCreateParams {
   /**
    * The URL of the HTTP/S proxy that agents should use to access the discovery service

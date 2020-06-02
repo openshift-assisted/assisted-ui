@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { Formik, FormikProps } from 'formik';
+import { Formik, FormikProps, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 import {
@@ -17,7 +17,7 @@ import {
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Netmask } from 'netmask';
 
 import ClusterToolbar from '../clusters/ClusterToolbar';
@@ -26,7 +26,7 @@ import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import { InputField, TextAreaField, SelectField } from '../ui/formik';
 import GridGap from '../ui/GridGap';
 import { Cluster, ClusterUpdateParams, Inventory } from '../../api/types';
-import { patchCluster, postInstallCluster } from '../../api/clusters';
+import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
 import { handleApiError, stringToJSON } from '../../api/utils';
 import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
@@ -40,32 +40,50 @@ import BaremetalInventory from './BaremetalInventory';
 import {
   nameValidationSchema,
   sshPublicKeyValidationSchema,
-  getUniqueNameValidationSchema,
   validJSONSchema,
   ipValidationSchema,
   ipBlockValidationSchema,
   dnsNameValidationSchema,
   hostPrefixValidationSchema,
 } from '../ui/formik/validationSchemas';
-import { selectClusterNamesButCurrent } from '../../selectors/clusters';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import ClusterEvents from '../fetching/ClusterEvents';
 
-type SubnetHostMap = {
-  [key: string]: {
-    hostIDs: string[];
-    subnet: Netmask;
-  };
-};
+type HostSubnets = {
+  subnet: Netmask;
+  hostIDs: string[];
+  humanized: string;
+}[];
 
 type ClusterConfigurationValues = ClusterUpdateParams & {
-  submitType: 'save' | 'install';
-  subnetHostMap: string;
+  hostSubnet: string;
 };
 
-interface ClusterConfigurationProps {
-  cluster: Cluster;
-}
+const requiredSchema = Yup.mixed().required('Required to install the cluster.');
+
+const validationSchema = Yup.object().shape({
+  name: nameValidationSchema,
+  baseDnsDomain: dnsNameValidationSchema,
+  clusterNetworkHostPrefix: hostPrefixValidationSchema,
+  clusterNetworkCidr: ipBlockValidationSchema,
+  serviceNetworkCidr: ipBlockValidationSchema,
+  apiVip: ipValidationSchema,
+  ingressVip: ipValidationSchema,
+  pullSecret: validJSONSchema,
+  sshPublicKey: sshPublicKeyValidationSchema,
+});
+
+const installValidationSchema = Yup.object().shape({
+  name: nameValidationSchema,
+  baseDnsDomain: requiredSchema.concat(dnsNameValidationSchema),
+  clusterNetworkHostPrefix: requiredSchema.concat(hostPrefixValidationSchema),
+  clusterNetworkCidr: requiredSchema.concat(ipBlockValidationSchema),
+  serviceNetworkCidr: requiredSchema.concat(ipBlockValidationSchema),
+  apiVip: requiredSchema.concat(ipValidationSchema),
+  ingressVip: requiredSchema.concat(ipValidationSchema),
+  pullSecret: requiredSchema.concat(validJSONSchema),
+  sshPublicKey: requiredSchema.concat(sshPublicKeyValidationSchema),
+});
 
 const sshPublicKeyHelperText = (
   <>
@@ -75,63 +93,68 @@ const sshPublicKeyHelperText = (
 );
 
 const validateVIP = (
-  subnetHostMap: SubnetHostMap,
+  hostSubnets: HostSubnets,
   values: ClusterConfigurationValues,
   value: string,
 ) => {
-  const currentSubnet = subnetHostMap[values.subnetHostMap].subnet;
-  const valid =
-    currentSubnet.contains(value) &&
-    value !== currentSubnet.broadcast &&
-    value !== currentSubnet.base;
+  const { subnet } = hostSubnets.find((hn) => hn.humanized === values.hostSubnet) || {};
+  const valid = subnet?.contains(value) && value !== subnet?.broadcast && value !== subnet?.base;
   return valid ? undefined : 'IP Address is outside of selected subnet';
 };
 
 const findMatchingSubnet = (
   ingressVip: string | undefined,
   apiVip: string | undefined,
-  subnets: SubnetHostMap,
+  hostSubnets: HostSubnets,
 ): string => {
   let matchingSubnet;
-  if (Object.keys(subnets).length) {
+  if (hostSubnets.length) {
     if (!ingressVip && !apiVip) {
-      matchingSubnet = Object.keys(subnets)[0];
+      matchingSubnet = hostSubnets[0];
     } else {
-      matchingSubnet = Object.keys(subnets).find((key) => {
+      matchingSubnet = hostSubnets.find((hn) => {
         let found = true;
         if (ingressVip) {
-          found = found && subnets[key].subnet.contains(ingressVip);
+          found = found && hn.subnet.contains(ingressVip);
         }
         if (apiVip) {
-          found = found && subnets[key].subnet.contains(apiVip);
+          found = found && hn.subnet.contains(apiVip);
         }
         return found;
       });
     }
   }
-  return matchingSubnet || 'No subnets available';
+  return matchingSubnet ? matchingSubnet.humanized : 'No subnets available';
+};
+
+type ClusterConfigurationProps = {
+  cluster: Cluster;
 };
 
 const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) => {
+  const [submitType, setSubmitType] = React.useState('save');
   const dispatch = useDispatch();
   const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
-  const clusterNames = useSelector(selectClusterNamesButCurrent);
 
-  const subnetHostMap: SubnetHostMap = {};
-  cluster.hosts?.forEach((host) => {
-    const inventory = stringToJSON<Inventory>(host.inventory);
-    const addresses = _.flatten(inventory?.interfaces?.map((i) => i.ipv4Addresses));
-    const hostSubnets = addresses?.filter((a) => !!a).map((a) => new Netmask(a as string));
-    hostSubnets.forEach((subnet) => {
-      const subnetID = `${subnet.first}-${subnet.last}`;
-      subnetHostMap[subnetID]
-        ? subnetHostMap[subnetID].hostIDs.push(host.id)
-        : (subnetHostMap[subnetID] = {
-            hostIDs: [host.id],
-            subnet,
-          });
-    });
-  });
+  const hostnameMap: { [id: string]: string } =
+    cluster.hosts?.reduce((acc, host) => {
+      const inventory = stringToJSON<Inventory>(host.inventory) || {};
+      acc = {
+        ...acc,
+        [host.id]: inventory.hostname,
+      };
+      return acc;
+    }, {}) || {};
+
+  const hostSubnets: HostSubnets =
+    cluster.hostNetworks?.map((hn) => {
+      const subnet = new Netmask(hn.cidr as string);
+      return {
+        subnet,
+        hostIDs: hn.hostIds?.map((id) => hostnameMap[id] || id) || [],
+        humanized: `${subnet.first}-${subnet.last}`,
+      };
+    }) || [];
 
   const initialValues: ClusterConfigurationValues = {
     name: cluster.name || '',
@@ -143,31 +166,27 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
     ingressVip: cluster.ingressVip || '',
     pullSecret: cluster.pullSecret || '',
     sshPublicKey: cluster.sshPublicKey || '',
-    submitType: 'save',
-    subnetHostMap: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, subnetHostMap),
+    hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, hostSubnets),
   };
 
-  const validationSchema = React.useCallback(
-    () =>
-      Yup.object().shape({
-        name: getUniqueNameValidationSchema(clusterNames).concat(nameValidationSchema),
-        baseDnsDomain: dnsNameValidationSchema,
-        clusterNetworkHostPrefix: hostPrefixValidationSchema,
-        clusterNetworkCidr: ipBlockValidationSchema,
-        serviceNetworkCidr: ipBlockValidationSchema,
-        apiVip: ipValidationSchema,
-        ingressVip: ipValidationSchema,
-        pullSecret: validJSONSchema,
-        sshPublicKey: sshPublicKeyValidationSchema,
-      }),
-    [clusterNames],
-  );
-
-  const handleSubmit = async (values: ClusterConfigurationValues) => {
-    const { submitType, ...params } = values;
-
+  const handleSubmit = async (
+    values: ClusterConfigurationValues,
+    formikActions: FormikHelpers<ClusterConfigurationValues>,
+  ) => {
+    // async validation for cluster name - run only on submit
     try {
-      const { data } = await patchCluster(cluster.id, params);
+      const { data: clusters } = await getClusters();
+      const names = clusters.map((c) => c.name).filter((n) => n !== cluster.name);
+      if (names.includes(values.name)) {
+        return formikActions.setFieldError('name', `Name "${values.name}" is already taken.`);
+      }
+    } catch (e) {
+      console.error('Failed to perform unique cluster name validation.', e);
+    }
+
+    // update the cluster validation
+    try {
+      const { data } = await patchCluster(cluster.id, values);
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
@@ -177,6 +196,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
       );
     }
 
+    // start cluster installation
     if (submitType === 'install') {
       try {
         const { data } = await postInstallCluster(cluster.id);
@@ -184,7 +204,10 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
       } catch (e) {
         handleApiError(e, () =>
           dispatchAlertsAction(
-            addAlert({ title: 'Failed to install the cluster', message: e.response?.data?.reason }),
+            addAlert({
+              title: 'Failed to start cluster installation',
+              message: e.response?.data?.reason,
+            }),
           ),
         );
       }
@@ -194,7 +217,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={submitType === 'install' ? installValidationSchema : validationSchema}
       onSubmit={handleSubmit}
       initialTouched={_.mapValues(initialValues, () => true)}
       validateOnMount
@@ -207,14 +230,17 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
         values,
         validateField,
       }: FormikProps<ClusterConfigurationValues>) => {
-        const handleSubmit = (e: React.MouseEvent) => {
-          setFieldValue('submitType', (e.target as HTMLButtonElement).name);
+        // TODO(jtomasek): refactor this into ClusterConfigurationForm component and wrap handleSubmit in React.useCallback
+        const handleSubmitButtonClick = async (e: React.MouseEvent) => {
+          // NOTE(jtomasek): await is not exactly expected here but does the job of ensuring that
+          // submitType is updated when we call submitForm
+          await setSubmitType((e.target as HTMLButtonElement).name);
           submitForm();
         };
-        if (Object.keys(subnetHostMap).length && !subnetHostMap[values.subnetHostMap]) {
+        if (hostSubnets.length && !hostSubnets.find((hn) => hn.humanized === values.hostSubnet)) {
           setFieldValue(
-            'subnetHostMap',
-            findMatchingSubnet(cluster.ingressVip, cluster.apiVip, subnetHostMap),
+            'hostSubnet',
+            findMatchingSubnet(cluster.ingressVip, cluster.apiVip, hostSubnets),
           );
         }
         return (
@@ -266,20 +292,22 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         isRequired
                       />
                       <SelectField
-                        name="subnetHostMap"
+                        name="hostSubnet"
                         label="Available subnets"
                         options={
-                          Object.keys(subnetHostMap).length
-                            ? Object.keys(subnetHostMap).map((s) => ({ label: s, value: s }))
+                          hostSubnets.length
+                            ? hostSubnets.map((hn) => ({
+                                label: hn.humanized,
+                                value: hn.humanized,
+                              }))
                             : [{ label: 'No subnets available', value: 'nosubnets' }]
                         }
-                        getHelperText={(value) =>
-                          subnetHostMap[value]
-                            ? `Subnet is available on hosts: ${subnetHostMap[value].hostIDs.join(
-                                ', ',
-                              )}`
-                            : undefined
-                        }
+                        getHelperText={(value) => {
+                          const matchingSubnet = hostSubnets.find((hn) => hn.humanized === value);
+                          return matchingSubnet
+                            ? `Subnet is available on hosts: ${matchingSubnet.hostIDs.join(', ')}`
+                            : undefined;
+                        }}
                         onChange={() => {
                           validateField('ingressVip');
                           validateField('apiVip');
@@ -291,16 +319,16 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         name="apiVip"
                         helperText="Virtual IP used to reach the OpenShift cluster API."
                         isRequired
-                        isDisabled={!Object.keys(subnetHostMap).length}
-                        validate={(value: string) => validateVIP(subnetHostMap, values, value)}
+                        isDisabled={!hostSubnets.length}
+                        validate={(value: string) => validateVIP(hostSubnets, values, value)}
                       />
                       <InputField
                         name="ingressVip"
                         label="Ingress Virtual IP"
                         helperText="Virtual IP used for cluster ingress traffic."
                         isRequired
-                        isDisabled={!Object.keys(subnetHostMap).length}
-                        validate={(value: string) => validateVIP(subnetHostMap, values, value)}
+                        isDisabled={!hostSubnets.length}
+                        validate={(value: string) => validateVIP(hostSubnets, values, value)}
                       />
                       <TextContent>
                         <Text component="h2">Security</Text>
@@ -350,7 +378,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
               <ToolbarButton
                 variant={ButtonVariant.primary}
                 name="install"
-                onClick={handleSubmit}
+                onClick={handleSubmitButtonClick}
                 isDisabled={isSubmitting || !isValid}
               >
                 Create Cluster
@@ -360,7 +388,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                 name="save"
                 variant={ButtonVariant.secondary}
                 isDisabled={isSubmitting || !isValid}
-                onClick={handleSubmit}
+                onClick={handleSubmitButtonClick}
               >
                 Save Draft
               </ToolbarButton>
@@ -373,7 +401,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
               {isSubmitting && (
                 <ToolbarText component={TextVariants.small}>
                   <Spinner size="sm" />{' '}
-                  {values.submitType === 'save' ? 'Saving...' : 'Starting installation...'}
+                  {submitType === 'save' ? 'Saving...' : 'Validating & starting installation...'}
                 </ToolbarText>
               )}
               {!isValid && (

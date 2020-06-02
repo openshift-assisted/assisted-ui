@@ -7,7 +7,7 @@ spec:
   type: LoadBalancer
   ports:
     - port: 80
-      targetPort: 80
+      targetPort: 8080
       protocol: TCP
       # nodePort: 31000
   selector:
@@ -21,24 +21,24 @@ metadata:
 data:
   nginx.conf: |
     server {
-        listen 80;
-        server_name _;
+      listen 8080;
+      server_name _;
 
-        root /usr/share/nginx/html;
-        index index.html;
+      root /app;
+      index index.html;
 
-        location /api {
-            proxy_pass __BM_INVENTORY_URL__;
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection 'upgrade';
-            proxy_set_header Host $host;
-            proxy_cache_bypass $http_upgrade;
-        }
+      location /api {
+          proxy_pass __BM_INVENTORY_URL__;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection 'upgrade';
+          proxy_set_header Host $host;
+          proxy_cache_bypass $http_upgrade;
+      }
 
-        location / {
-            try_files $uri /index.html;
-        }
+      location / {
+         try_files $uri /index.html;
+      }
     }
 ---
 kind: Deployment
@@ -63,13 +63,13 @@ spec:
           ports:
             - containerPort: 80
           volumeMounts:
-            - mountPath: /etc/nginx/conf.d # mount nginx-conf volumn to /etc/nginx/conf.d
+            - mountPath: /opt/bitnami/nginx/conf/server_blocks/
               readOnly: true
               name: nginx-conf
       volumes:
         - name: nginx-conf
           configMap:
-            name: ocp-metal-ui # place ConfigMap `ocp-metal-ui` on /etc/nginx/conf.d
+            name: ocp-metal-ui
             items:
               - key: nginx.conf
                 path: default.conf

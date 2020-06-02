@@ -8,11 +8,8 @@ import {
   GridItem,
   Grid,
 } from '@patternfly/react-core';
-import { Cluster } from '../../api/types';
-import {
-  getClusterCredentials,
-  ClusterCredentials as ClusterCredentialsResp,
-} from '../../api/clusters';
+import { Cluster, Credentials } from '../../api/types';
+import { getClusterCredentials } from '../../api/clusters';
 import PageSection from '../ui/PageSection';
 import HostsTable from '../hosts/HostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
@@ -30,7 +27,7 @@ type ClusterDetailProps = {
 };
 
 const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
-  const [credentials, setCredentials] = React.useState<ClusterCredentialsResp>();
+  const [credentials, setCredentials] = React.useState<Credentials>();
   const [credentialsError, setCredentialsError] = React.useState();
 
   const fetchCredentials = React.useCallback(() => {
