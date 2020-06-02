@@ -63,7 +63,7 @@ spec:
           ports:
             - containerPort: 8080
           volumeMounts:
-            - mountPath: /opt/bitnami/nginx/conf # mount nginx-conf volumn to /etc/nginx/conf.d
+            - mountPath: /etc/nginx/conf.d # mount nginx-conf volumn to /etc/nginx/conf.d
               readOnly: true
               name: nginx-conf
       volumes:
@@ -72,5 +72,5 @@ spec:
             name: ocp-metal-ui # place ConfigMap `ocp-metal-ui` on /etc/nginx/conf.d
             items:
               - key: nginx.conf
-                path: nginx.conf
+                path: default.conf
       restartPolicy: Always
