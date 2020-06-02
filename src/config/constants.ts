@@ -39,3 +39,20 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   installed: 'Installed',
   error: 'Error',
 };
+
+export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
+  discovering:
+    'This host is transmitting its hardware and networking information to the installer. Please wait while this information is received.',
+  known:
+    'This host meets the minimum hardware and networking requirements and will be included in the cluster.',
+  disconnected:
+    'This host has lost its connection to the installer and will not be included in the cluster unless connectivity is restored.',
+  insufficient:
+    'This host does not meet the minimum hardware or networking requirements and will not be included in the cluster.',
+  disabled:
+    'This host was manually disabled and will not be included in the cluster. Enable this host to include it again.',
+  installing: '', // not rendered
+  'installing-in-progress': '', // not rendered
+  installed: 'This host completed its installation successfully',
+  error: 'This host failed its installation.',
+};
