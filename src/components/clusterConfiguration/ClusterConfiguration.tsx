@@ -25,9 +25,9 @@ import PageSection from '../ui/PageSection';
 import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import { InputField, TextAreaField, SelectField } from '../ui/formik';
 import GridGap from '../ui/GridGap';
-import { Cluster, ClusterUpdateParams } from '../../api/types';
+import { Cluster, ClusterUpdateParams, Inventory } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
-import { handleApiError } from '../../api/utils';
+import { handleApiError, stringToJSON } from '../../api/utils';
 import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
@@ -136,12 +136,22 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
   const dispatch = useDispatch();
   const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
 
+  const hostnameMap: { [id: string]: string } =
+    cluster.hosts?.reduce((acc, host) => {
+      const inventory = stringToJSON<Inventory>(host.inventory) || {};
+      acc = {
+        ...acc,
+        [host.id]: inventory.hostname,
+      };
+      return acc;
+    }, {}) || {};
+
   const hostSubnets: HostSubnets =
     cluster.hostNetworks?.map((hn) => {
       const subnet = new Netmask(hn.cidr as string);
       return {
         subnet,
-        hostIDs: hn.hostIds || [],
+        hostIDs: hn.hostIds?.map((id) => hostnameMap[id] || id) || [],
         humanized: `${subnet.first}-${subnet.last}`,
       };
     }) || [];
