@@ -32,6 +32,7 @@ const columnConfig = {
 
 const columns = [
   { title: 'Name', ...columnConfig },
+  { title: 'Base domain', ...columnConfig },
   { title: 'Version', ...columnConfig },
   { title: 'Status', ...columnConfig },
   { title: 'Hosts', ...columnConfig },
