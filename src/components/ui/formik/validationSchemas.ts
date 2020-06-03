@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { ClusterConfigurationValues, HostSubnets } from '../../../types/clusters';
 
 const CLUSTER_NAME_REGEX = /^([a-z]([-a-z0-9]*[a-z0-9])?)*$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( [^@]+@[^@| |\t|\n]+)?$/;
@@ -40,6 +41,20 @@ export const ipValidationSchema = Yup.string().matches(IP_ADDRESS_REGEX, {
   message: 'Value "${value}" is not valid IP address.', // eslint-disable-line no-template-curly-in-string
   excludeEmptyString: true,
 });
+
+export const vipValidationSchema = (hostSubnets: HostSubnets, values: ClusterConfigurationValues) =>
+  Yup.string().test('vip-validation', 'IP Address is outside of selected subnet', function (value) {
+    if (!value) {
+      return true;
+    }
+    try {
+      ipValidationSchema.validateSync(value);
+    } catch (err) {
+      return this.createError({ message: err.message });
+    }
+    const { subnet } = hostSubnets.find((hn) => hn.humanized === values.hostSubnet) || {};
+    return !!subnet?.contains(value) && value !== subnet?.broadcast && value !== subnet?.base;
+  });
 
 export const ipBlockValidationSchema = Yup.string().matches(IP_ADDRESS_BLOCK_REGEX, {
   message:
