@@ -36,7 +36,6 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
         ),
         sortableValue: name,
       } as HumanizedSortable,
-      id,
       openshiftVersion,
       {
         title: <ClusterStatus cluster={cluster} />,
@@ -48,6 +47,7 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
     ],
     props: {
       name,
+      id,
     },
   };
 };
