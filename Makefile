@@ -10,10 +10,10 @@ all: build deploy
 
 build:
 	yarn build
-	sudo podman build -t $(IMAGE) .
-	sudo podman build -f Dockerfile.cypress -t $(TESTS_IMAGE) .
-	sudo podman push $(IMAGE)
-	sudo podman push $(TESTS_IMAGE)
+	podman build -t $(IMAGE) .
+	podman build -f Dockerfile.cypress -t $(TESTS_IMAGE) .
+	podman push $(IMAGE)
+	podman push $(TESTS_IMAGE)
 
 deploy:
 	mkdir -p build/deploy/
