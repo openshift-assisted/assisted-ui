@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import EventsList from '../ui/EventsList';
 import { EventList, Event } from '../../api/types';
 import { getEvents } from '../../api/events';
-import { POLLING_INTERVAL } from '../../config/constants';
+import { EVENTS_POLLING_INTERVAL } from '../../config/constants';
 import { ErrorState, LoadingState } from '../ui/uiState';
 
 export type EventFetchProps = {
@@ -29,7 +29,7 @@ const EventListFetch: React.FC<EventListFetchProps> = ({ entityId, entityKind })
         console.warn(`Failed to load events for ${entityKind} ${entityId}: `, error);
         setError('Failed to load events');
       }
-      timer = setTimeout(() => setLastPolling(Date.now()), POLLING_INTERVAL);
+      timer = setTimeout(() => setLastPolling(Date.now()), EVENTS_POLLING_INTERVAL);
     };
     fetch();
     return () => clearTimeout(timer);
