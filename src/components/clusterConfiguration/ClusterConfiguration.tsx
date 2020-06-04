@@ -25,10 +25,10 @@ import PageSection from '../ui/PageSection';
 import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import { InputField, TextAreaField, SelectField } from '../ui/formik';
 import GridGap from '../ui/GridGap';
-import { Cluster, ClusterUpdateParams, Inventory } from '../../api/types';
+import { Cluster, ClusterUpdateParams, Inventory, Host } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
 import { handleApiError, stringToJSON } from '../../api/utils';
-import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
+import { CLUSTER_MANAGER_SITE_LINK, HostRole } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import alertsReducer, {
@@ -114,6 +114,13 @@ const findMatchingSubnet = (
   return matchingSubnet ? matchingSubnet.humanized : 'No subnets available';
 };
 
+const getHostRolesInitialValue = (hosts: Host[] = []): ClusterUpdateParams['hostsRoles'] => {
+  return hosts.reduce<NonNullable<ClusterUpdateParams['hostsRoles']>>(
+    (acc, host) => [...acc, { id: host.id, role: host.role as HostRole }],
+    [],
+  );
+};
+
 type ClusterConfigurationProps = {
   cluster: Cluster;
 };
@@ -151,8 +158,9 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
     serviceNetworkCidr: cluster.serviceNetworkCidr || '',
     apiVip: cluster.apiVip || '',
     ingressVip: cluster.ingressVip || '',
-    pullSecret: cluster.pullSecret || '',
+    pullSecret: cluster.pullSecret,
     sshPublicKey: cluster.sshPublicKey || '',
+    hostsRoles: getHostRolesInitialValue(cluster.hosts),
     hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, hostSubnets),
   };
 

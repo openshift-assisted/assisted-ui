@@ -6,7 +6,7 @@ type SimpleDropdownProps = {
   current?: string;
   values: string[];
   setValue: (value?: string) => void;
-  isDisabled: boolean;
+  isDisabled?: boolean;
 };
 
 export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({

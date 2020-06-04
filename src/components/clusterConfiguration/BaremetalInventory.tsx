@@ -3,6 +3,7 @@ import { Text, TextContent, Button } from '@patternfly/react-core';
 import HostsTable from '../hosts/HostsTable';
 import { Cluster } from '../../api/types';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
+import HostsRolesField from '../hosts/HostsRolesField';
 
 interface BareMetalInventoryProps {
   cluster: Cluster;
@@ -21,7 +22,9 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster }) => {
           Hosts connected to the internet will automatically appear below.
         </Text>
       </TextContent>
-      <HostsTable cluster={cluster} />
+      <HostsRolesField>
+        <HostsTable cluster={cluster} />
+      </HostsRolesField>
     </>
   );
 };
