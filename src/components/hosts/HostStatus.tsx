@@ -20,6 +20,7 @@ import HostProgress from './HostProgress';
 import { HOST_STATUS_LABELS, HOST_STATUS_DETAILS } from '../../config/constants';
 
 import './HostStatus.css';
+import { getHumanizedDateTime } from '../ui/utils';
 
 const getStatusIcon = (status: Host['status']) => {
   if (status === 'discovering') return <ConnectedIcon />;
@@ -54,7 +55,7 @@ type HostStatusProps = {
 };
 
 const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
-  const { status, statusInfo, role, bootstrap } = host;
+  const { status, statusInfo, statusUpdatedAt, role, bootstrap } = host;
   const title = HOST_STATUS_LABELS[status] || status;
   const icon = getStatusIcon(status);
 
@@ -64,7 +65,6 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
   };
 
   const currentStepNumber = progressInfo.steps.indexOf(progressInfo.currentStep) + 1;
-  const headerContent = React.useMemo(() => <div>{title}</div>, [title]);
   const bodyContent = React.useMemo(
     () => (
       <div>
@@ -83,12 +83,12 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
     ),
     [status, progressInfo, statusInfo],
   );
-
   return (
     <>
       <Popover
-        headerContent={headerContent}
+        headerContent={<div>{title}</div>}
         bodyContent={bodyContent}
+        footerContent={<small>Status updated at {getHumanizedDateTime(statusUpdatedAt)}</small>}
         minWidth="30rem"
         maxWidth="50rem"
       >
