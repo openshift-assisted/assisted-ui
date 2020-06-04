@@ -15,6 +15,8 @@ export interface FieldProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   innerRef?: React.Ref<any>;
   validate?: FieldValidator;
+  min?: number;
+  max?: number;
 }
 
 export interface SelectFieldProps extends FieldProps {
