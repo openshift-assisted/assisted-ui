@@ -21,7 +21,7 @@ import { getColSpanRow, rowSorter } from '../ui/table/utils';
 import { Host, Cluster, Inventory } from '../../api/types';
 import { enableClusterHost, disableClusterHost } from '../../api/clusters';
 import { Alerts, Alert } from '../ui/Alerts';
-import { getHostRowHardwareInfo, getHumanizedTime } from './hardwareInfo';
+import { getHostRowHardwareInfo, getDateTimeCell } from './hardwareInfo';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
@@ -70,7 +70,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
           title: <HostStatus host={host} />,
           sortableValue: status,
         },
-        getHumanizedTime(createdAt),
+        getDateTimeCell(createdAt),
         cores,
         memory,
         disk,
