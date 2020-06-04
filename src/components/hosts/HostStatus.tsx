@@ -65,7 +65,6 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
   };
 
   const currentStepNumber = progressInfo.steps.indexOf(progressInfo.currentStep) + 1;
-  const headerContent = React.useMemo(() => <div>{title}</div>, [title]);
   const bodyContent = React.useMemo(
     () => (
       <div>
@@ -84,16 +83,12 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
     ),
     [status, progressInfo, statusInfo],
   );
-  const footerContent = React.useMemo(
-    () => <small>Status updated at {getHumanizedDateTime(statusUpdatedAt)}</small>,
-    [statusUpdatedAt],
-  );
   return (
     <>
       <Popover
-        headerContent={headerContent}
+        headerContent={<div>{title}</div>}
         bodyContent={bodyContent}
-        footerContent={footerContent}
+        footerContent={<small>Status updated at {getHumanizedDateTime(statusUpdatedAt)}</small>}
         minWidth="30rem"
         maxWidth="50rem"
       >

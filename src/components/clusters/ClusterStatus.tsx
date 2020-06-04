@@ -33,18 +33,12 @@ const ClusterStatus: React.FC<ClusterStatusProps> = ({ cluster }) => {
   const { status, statusInfo, statusUpdatedAt } = cluster;
   const title = CLUSTER_STATUS_LABELS[status];
   const icon = getStatusIcon(status);
-  const headerContent = React.useMemo(() => <div>{title}</div>, [title]);
-  const bodyContent = React.useMemo(() => <div>{statusInfo}</div>, [statusInfo]);
-  const footerContent = React.useMemo(
-    () => <small>Status updated at {getHumanizedDateTime(statusUpdatedAt)}</small>,
-    [statusUpdatedAt],
-  );
   if (statusInfo) {
     return (
       <Popover
-        headerContent={headerContent}
-        bodyContent={bodyContent}
-        footerContent={footerContent}
+        headerContent={<div>{title}</div>}
+        bodyContent={<div>{statusInfo}</div>}
+        footerContent={<small>Status updated at {getHumanizedDateTime(statusUpdatedAt)}</small>}
         minWidth="30rem"
         maxWidth="50rem"
       >
