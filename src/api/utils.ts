@@ -46,3 +46,5 @@ export const stringToJSON = <T>(string: string | undefined): T | undefined => {
   }
   return undefined;
 };
+
+export const removeProtocolFromURL = (url = '') => url.replace(/^(http|https):\/\//, '');
