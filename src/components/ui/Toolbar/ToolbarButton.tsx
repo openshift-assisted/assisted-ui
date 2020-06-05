@@ -1,13 +1,11 @@
 import React from 'react';
 
-import { ToolbarGroup, ToolbarItem, Button } from '@patternfly/react-core';
+import { Button, DataToolbarItem } from '@patternfly/react-core';
 
 const ToolbarButton: React.FC<React.ComponentProps<typeof Button>> = (props) => (
-  <ToolbarGroup>
-    <ToolbarItem>
-      <Button {...props} />
-    </ToolbarItem>
-  </ToolbarGroup>
+  <DataToolbarItem>
+    <Button {...props} />
+  </DataToolbarItem>
 );
 
 export default ToolbarButton;

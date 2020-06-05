@@ -21,8 +21,8 @@ import { Netmask } from 'netmask';
 
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import PageSection from '../ui/PageSection';
-import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import { InputField, TextAreaField, TextAreaSecretField } from '../ui/formik';
+import { ToolbarButton, ToolbarText, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import GridGap from '../ui/GridGap';
 import { Cluster, ClusterUpdateParams, Inventory } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
@@ -46,9 +46,9 @@ import {
   vipValidationSchema,
 } from '../ui/formik/validationSchemas';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
-import ClusterEvents from '../fetching/ClusterEvents';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import NetworkConfiguration from './NetworkConfiguration';
+import { ClusterEventsModalButton } from '../clusters/clusterEventsModal';
 
 const requiredSchema = Yup.mixed().required('Required to install the cluster.');
 
@@ -309,12 +309,6 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                       />
                     </GridGap>
                   </GridItem>
-                  <GridItem span={12} lg={10} xl={6}>
-                    <TextContent>
-                      <Text component="h2">Events</Text>
-                    </TextContent>
-                    <ClusterEvents entityId={cluster.id} />
-                  </GridItem>
                 </Grid>
               </Form>
             </PageSection>
@@ -357,6 +351,13 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                   <ExclamationCircleIcon color={dangerColor.value} /> There are validation errors.
                 </ToolbarText>
               )}
+              <ToolbarSecondaryGroup>
+                <ClusterEventsModalButton
+                  clusterId={cluster.id}
+                  variant={ButtonVariant.link}
+                  style={{ textAlign: 'right' }}
+                />
+              </ToolbarSecondaryGroup>
             </ClusterToolbar>
           </>
         );
