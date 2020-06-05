@@ -9,6 +9,7 @@ import { IRow } from '@patternfly/react-table';
 import { RootState } from '../store/rootReducer';
 import { HumanizedSortable } from '../components/ui/table/utils';
 import ClusterStatus from '../components/clusters/ClusterStatus';
+import { DASH } from '../components/constants';
 
 const selectClusters = (state: RootState) => state.clusters.data;
 const clustersUIState = (state: RootState) => state.clusters.uiState;
@@ -23,7 +24,7 @@ export const selectClustersUIState = createSelector(
 );
 
 const clusterToClusterTableRow = (cluster: Cluster): IRow => {
-  const { id, name, hosts, openshiftVersion } = cluster;
+  const { id, name, hosts, openshiftVersion, baseDnsDomain } = cluster;
   const hostsCount = hosts ? hosts.length : 0;
 
   return {
@@ -36,7 +37,7 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
         ),
         sortableValue: name,
       } as HumanizedSortable,
-      id,
+      baseDnsDomain || DASH,
       openshiftVersion,
       {
         title: <ClusterStatus cluster={cluster} />,
@@ -48,6 +49,7 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
     ],
     props: {
       name,
+      id,
     },
   };
 };

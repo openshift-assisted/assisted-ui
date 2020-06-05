@@ -15,7 +15,7 @@ import { rowSorter, HumanizedSortable } from '../ui/table/utils';
 import sortable from '../ui/table/sortable';
 import DeleteClusterModal from './DeleteClusterModal';
 
-const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
+const rowKey = ({ rowData }: ExtraParamsType) => rowData?.props.id;
 
 interface ClustersTableProps {
   rows: ClusterTableRows;
@@ -32,7 +32,7 @@ const columnConfig = {
 
 const columns = [
   { title: 'Name', ...columnConfig },
-  { title: 'ID', ...columnConfig },
+  { title: 'Base domain', ...columnConfig },
   { title: 'Version', ...columnConfig },
   { title: 'Status', ...columnConfig },
   { title: 'Hosts', ...columnConfig },
