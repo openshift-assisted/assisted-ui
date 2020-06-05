@@ -5,7 +5,7 @@ import { Page } from '@patternfly/react-core';
 import { store } from '../store';
 import history from '../history';
 import Header from './ui/Header';
-import Sidebar from './Sidebar';
+// import Sidebar from './Sidebar';
 import BackgroundImage from './ui/BackgroundImage';
 import LoginForm from './login/LoginForm';
 import Clusters from './clusters/Clusters';
@@ -19,7 +19,7 @@ const App: React.FC = () => (
       <BackgroundImage />
       <Page
         header={<Header />}
-        sidebar={<Sidebar />}
+        sidebar={undefined /*<Sidebar />*/}
         style={{ height: '100vh', background: 'transparent' }}
         isManagedSidebar // enable this to automatically hide sidebar in mobile
         defaultManagedSidebarIsOpen={false}

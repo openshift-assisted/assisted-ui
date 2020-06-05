@@ -7,7 +7,7 @@ const Header: React.FC = () => (
     logo={<Brand src={logo} alt="Metal&sup3; Facet UI" />}
     // toolbar={PageToolbar}
     //avatar={<Avatar src={avatarImg} alt="Avatar image" />}
-    showNavToggle
+    // showNavToggle
     // onNavToggle={this.onNavToggle}
   />
 );
