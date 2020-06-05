@@ -37,7 +37,7 @@ export interface Cluster {
   /**
    * Version of the OpenShift cluster.
    */
-  openshiftVersion?: '4.4' | '4.5';
+  openshiftVersion?: '4.5';
   imageInfo: ImageInfo;
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
@@ -124,7 +124,7 @@ export interface ClusterCreateParams {
   /**
    * Version of the OpenShift cluster.
    */
-  openshiftVersion: '4.4' | '4.5';
+  openshiftVersion: '4.5';
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
    */

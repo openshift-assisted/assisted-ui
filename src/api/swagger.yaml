@@ -942,7 +942,7 @@ definitions:
         description: Name of the OpenShift cluster.
       openshift_version:
         type: string
-        enum: ['4.4', '4.5']
+        enum: ['4.5']
         description: Version of the OpenShift cluster.
       base_dns_domain:
         type: string
@@ -957,6 +957,7 @@ definitions:
           need to access the Pods from an external network, configure load balancers and routers to
           manage the traffic.
         pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$'
+        default: '10.128.0.0/14'
       cluster_network_host_prefix:
         type: integer
         description:
@@ -967,6 +968,7 @@ definitions:
           balancers and routers to manage the traffic.
         minimum: 1
         maximum: 32
+        default: 23
       service_network_cidr:
         type: string
         description:
@@ -974,6 +976,7 @@ definitions:
           pool. If you need to access the services from an external network, configure load
           balancers and routers to manage the traffic.
         pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$'
+        default: '172.30.0.0/16'
       ingress_vip:
         type: string
         format: ipv4
@@ -1092,7 +1095,7 @@ definitions:
         description: Name of the OpenShift cluster.
       openshift_version:
         type: string
-        enum: ['4.4', '4.5']
+        enum: ['4.5']
         description: Version of the OpenShift cluster.
       image_info:
         $ref: '#/definitions/image_info'
@@ -1110,7 +1113,6 @@ definitions:
           need to access the Pods from an external network, configure load balancers and routers to
           manage the traffic.
         pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$'
-        default: '10.128.0.0/14'
       cluster_network_host_prefix:
         type: integer
         description:
@@ -1121,7 +1123,6 @@ definitions:
           balancers and routers to manage the traffic.
         minimum: 1
         maximum: 32
-        default: 23
       service_network_cidr:
         type: string
         description:
@@ -1129,7 +1130,6 @@ definitions:
           pool. If you need to access the services from an external network, configure load
           balancers and routers to manage the traffic.
         pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$'
-        default: '172.30.0.0/16'
       api_vip:
         type: string
         format: ipv4

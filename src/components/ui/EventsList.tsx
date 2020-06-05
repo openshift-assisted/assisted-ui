@@ -1,10 +1,8 @@
 import React from 'react';
-import hdate from 'human-date';
 import { EventList } from '../../api/types';
 import { TableVariant, Table, TableBody } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { fitContent, noPadding } from '../ui/table/wrappable';
-import { Tooltip, TooltipPosition } from '@patternfly/react-core';
 import { getHumanizedDateTime } from './utils';
 
 const getEventRowKey = ({ rowData }: ExtraParamsType) =>
@@ -22,7 +20,6 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
   const sortedEvents = events
     .map((event) => ({
       ...event,
-      humanTime: hdate.relativeTime(event.eventTime),
       sortableTime: new Date(event.eventTime).getTime(),
     }))
     .sort(
@@ -33,11 +30,7 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
   const rows = sortedEvents.map((event) => ({
     cells: [
       {
-        title: (
-          <Tooltip content={getHumanizedDateTime(event.eventTime)} position={TooltipPosition.right}>
-            <strong>{event.humanTime}</strong>
-          </Tooltip>
-        ),
+        title: <strong>{getHumanizedDateTime(event.eventTime)}</strong>,
       },
       event.message,
     ],

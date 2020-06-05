@@ -115,7 +115,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
             {status.error && (
               <Alert
                 variant={AlertVariant.danger}
-                title={status.error}
+                title={status.error.title}
                 action={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
                 isInline
               >
