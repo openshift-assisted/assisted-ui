@@ -30,6 +30,7 @@ import { handleApiError, stringToJSON } from '../../api/utils';
 import sortable from '../ui/table/sortable';
 import RoleCell, { getHostRole } from './RoleCell';
 import { DASH } from '../constants';
+import { HostEventsModal } from './hostEventsModal';
 
 import './HostsTable.css';
 
@@ -82,7 +83,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
       // expandable detail
       // parent will be set after sorting
       fullWidth: true,
-      cells: [{ title: <HostDetail key={id} inventory={inventory} hostId={id} /> }],
+      cells: [{ title: <HostDetail key={id} inventory={inventory} /> }],
       key: `${host.id}-detail`,
     },
   ];
@@ -100,6 +101,7 @@ const HostsTableEmptyState: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 
 const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
+  const [showEventsModal, setShowEventsModal] = React.useState<Host['id']>('');
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
   const [alerts, setAlerts] = React.useState([] as Alert[]);
   const [sortBy, setSortBy] = React.useState({
@@ -196,6 +198,14 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     [cluster.id, dispatch, addAlert],
   );
 
+  const onViewHostEvents = React.useCallback(
+    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+      const hostId = rowData.extraData.id;
+      setShowEventsModal(hostId);
+    },
+    [],
+  );
+
   const actionResolver = React.useCallback(
     (rowData: IRowData) => {
       const host = rowData.extraData;
@@ -217,10 +227,14 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
           onClick: onHostDisable,
         });
       }
+      actions.push({
+        title: 'View Host Events History',
+        onClick: onViewHostEvents,
+      });
 
       return actions;
     },
-    [onHostEnable, onHostDisable],
+    [onHostEnable, onHostDisable, onViewHostEvents],
   );
 
   const onSort: OnSort = React.useCallback(
@@ -250,6 +264,11 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         <TableHeader />
         <TableBody rowKey={rowKey} />
       </Table>
+      <HostEventsModal
+        hostId={showEventsModal}
+        onClose={() => setShowEventsModal('')}
+        isOpen={!!showEventsModal}
+      />
       <Alerts alerts={alerts} className="host-table-alerts" />
     </>
   );
