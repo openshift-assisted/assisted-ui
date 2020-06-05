@@ -21,6 +21,7 @@ import { getColSpanRow, rowSorter } from '../ui/table/utils';
 import { Host, Cluster, Inventory } from '../../api/types';
 import { enableClusterHost, disableClusterHost } from '../../api/clusters';
 import { Alerts, Alert } from '../ui/Alerts';
+import { EventsModal } from '../ui/eventsModal';
 import { getHostRowHardwareInfo, getDateTimeCell } from './hardwareInfo';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import HostStatus from './HostStatus';
@@ -30,7 +31,6 @@ import { handleApiError, stringToJSON } from '../../api/utils';
 import sortable from '../ui/table/sortable';
 import RoleCell, { getHostRole } from './RoleCell';
 import { DASH } from '../constants';
-import { HostEventsModal } from './hostEventsModal';
 
 import './HostsTable.css';
 
@@ -264,8 +264,10 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         <TableHeader />
         <TableBody rowKey={rowKey} />
       </Table>
-      <HostEventsModal
-        hostId={showEventsModal}
+      <EventsModal
+        title="Host Events"
+        entityKind="host"
+        entityId={showEventsModal}
         onClose={() => setShowEventsModal('')}
         isOpen={!!showEventsModal}
       />

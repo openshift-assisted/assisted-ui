@@ -24,6 +24,7 @@ import PageSection from '../ui/PageSection';
 import { InputField, TextAreaField, TextAreaSecretField } from '../ui/formik';
 import { ToolbarButton, ToolbarText, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import GridGap from '../ui/GridGap';
+import { EventsModalButton } from '../ui/eventsModal';
 import { Cluster, ClusterUpdateParams, Inventory } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
 import { handleApiError, stringToJSON } from '../../api/utils';
@@ -48,7 +49,6 @@ import {
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import NetworkConfiguration from './NetworkConfiguration';
-import { ClusterEventsModalButton } from '../clusters/clusterEventsModal';
 
 const requiredSchema = Yup.mixed().required('Required to install the cluster.');
 
@@ -352,11 +352,15 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                 </ToolbarText>
               )}
               <ToolbarSecondaryGroup>
-                <ClusterEventsModalButton
-                  clusterId={cluster.id}
+                <EventsModalButton
+                  entityKind="cluster"
+                  entityId={cluster.id}
+                  title="Cluster Events"
                   variant={ButtonVariant.link}
                   style={{ textAlign: 'right' }}
-                />
+                >
+                  View Cluster Events History
+                </EventsModalButton>
               </ToolbarSecondaryGroup>
             </ClusterToolbar>
           </>
