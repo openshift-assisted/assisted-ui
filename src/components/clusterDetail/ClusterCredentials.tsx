@@ -7,22 +7,24 @@ import {
   Button,
   ClipboardCopy,
   clipboardCopyFunc,
+  Popover,
 } from '@patternfly/react-core';
-import { ExternalLinkSquareAltIcon } from '@patternfly/react-icons';
+import { ExternalLinkSquareAltIcon, InfoCircleIcon } from '@patternfly/react-icons';
 
 import { getClusterFileURL } from '../../api/clusters';
 import { LoadingState, ErrorState } from '../ui/uiState';
-import { Credentials } from '../../api/types';
+import { Credentials, Cluster } from '../../api/types';
+import { WebConsoleHint } from './ConsoleModal';
 
 type ClusterCredentialsProps = {
-  clusterID: string;
+  cluster: Cluster;
   error: boolean;
   retry: () => void;
   credentials?: Credentials;
 };
 
 const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
-  clusterID,
+  cluster,
   credentials,
   error,
   retry,
@@ -47,6 +49,16 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
             >
               {credentials.consoleUrl}
             </Button>
+            <br />
+            <Popover
+              headerContent={<div>OpenShift Web Console troubleshooting</div>}
+              bodyContent={<WebConsoleHint cluster={cluster} consoleUrl={credentials.consoleUrl} />}
+              minWidth="45rem"
+            >
+              <Button variant="link" icon={<InfoCircleIcon />} iconPosition="left" isInline>
+                Not able to access the Web Console?
+              </Button>
+            </Popover>
           </dd>
           <dt>Username</dt>
           <dd>{credentials.username}</dd>
@@ -70,7 +82,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
         {credentialsBody}
         <Button
           variant={ButtonVariant.secondary}
-          onClick={() => saveAs(getClusterFileURL(clusterID, 'kubeconfig'))}
+          onClick={() => saveAs(getClusterFileURL(cluster.id, 'kubeconfig'))}
         >
           Download kubeconfig
         </Button>
