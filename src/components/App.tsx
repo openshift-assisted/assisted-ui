@@ -19,7 +19,7 @@ const App: React.FC = () => (
       <BackgroundImage />
       <Page
         header={<Header />}
-        sidebar={undefined /*<Sidebar />*/}
+        // sidebar={<Sidebar />}
         style={{ height: '100vh', background: 'transparent' }}
         isManagedSidebar // enable this to automatically hide sidebar in mobile
         defaultManagedSidebarIsOpen={false}

@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import { Formik, FormikProps, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
@@ -11,7 +10,6 @@ import {
   ButtonVariant,
   Grid,
   GridItem,
-  TextInputTypes,
   TextVariants,
   Spinner,
 } from '@patternfly/react-core';
@@ -23,7 +21,7 @@ import { Netmask } from 'netmask';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import PageSection from '../ui/PageSection';
 import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
-import { InputField, TextAreaField, SelectField } from '../ui/formik';
+import { InputField, TextAreaField } from '../ui/formik';
 import GridGap from '../ui/GridGap';
 import { Cluster, ClusterUpdateParams, Inventory } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
@@ -49,6 +47,7 @@ import {
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import ClusterEvents from '../fetching/ClusterEvents';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
+import NetworkConfiguration from './NetworkConfiguration';
 
 const requiredSchema = Yup.mixed().required('Required to install the cluster.');
 
@@ -174,6 +173,8 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
     // update the cluster validation
     try {
       const { data } = await patchCluster(cluster.id, values);
+      console.log('values', values);
+      formikActions.resetForm({ values });
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
@@ -210,16 +211,16 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
           : validationSchema(hostSubnets)
       }
       onSubmit={handleSubmit}
-      initialTouched={_.mapValues(initialValues, () => true)}
+      // initialTouched={_.mapValues(initialValues, () => true)}
       validateOnMount
     >
       {({
         isSubmitting,
         isValid,
+        dirty,
         submitForm,
         setFieldValue,
         values,
-        validateField,
       }: FormikProps<ClusterConfigurationValues>) => {
         // TODO(jtomasek): refactor this into ClusterConfigurationForm component and wrap handleSubmit in React.useCallback
         const handleSubmitButtonClick = async (e: React.MouseEvent) => {
@@ -260,70 +261,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                   </GridItem>
                   <GridItem span={12} lg={10} xl={6}>
                     <GridGap>
-                      <TextContent>
-                        <Text component="h2">Networking</Text>
-                      </TextContent>
-                      <SelectField
-                        name="hostSubnet"
-                        label="Available subnets"
-                        options={
-                          hostSubnets.length
-                            ? hostSubnets.map((hn) => ({
-                                label: hn.humanized,
-                                value: hn.humanized,
-                              }))
-                            : [{ label: 'No subnets available', value: 'nosubnets' }]
-                        }
-                        getHelperText={(value) => {
-                          const matchingSubnet = hostSubnets.find((hn) => hn.humanized === value);
-                          return matchingSubnet
-                            ? `Subnet is available on hosts: ${matchingSubnet.hostIDs.join(', ')}`
-                            : undefined;
-                        }}
-                        onChange={() => {
-                          validateField('ingressVip');
-                          validateField('apiVip');
-                        }}
-                        isRequired
-                      />
-                      <InputField
-                        label="API Virtual IP"
-                        name="apiVip"
-                        helperText="Virtual IP used to reach the OpenShift cluster API."
-                        isRequired
-                        isDisabled={!hostSubnets.length}
-                      />
-                      <InputField
-                        name="ingressVip"
-                        label="Ingress Virtual IP"
-                        helperText="Virtual IP used for cluster ingress traffic."
-                        isRequired
-                        isDisabled={!hostSubnets.length}
-                      />
-                      <TextContent>
-                        <Text component="h2">Advanced Networking</Text>
-                      </TextContent>
-                      <InputField
-                        name="clusterNetworkCidr"
-                        label="Cluster Network CIDR"
-                        helperText="IP address block from which Pod IPs are allocated This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic."
-                        isRequired
-                      />
-                      <InputField
-                        name="clusterNetworkHostPrefix"
-                        label="Cluster Network Host Prefix"
-                        type={TextInputTypes.number}
-                        min={1}
-                        max={32}
-                        helperText="The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic."
-                        isRequired
-                      />
-                      <InputField
-                        name="serviceNetworkCidr"
-                        label="Service Network CIDR"
-                        helperText="The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic."
-                        isRequired
-                      />
+                      <NetworkConfiguration hostSubnets={hostSubnets} />
                       <TextContent>
                         <Text component="h2">Security</Text>
                       </TextContent>
@@ -381,10 +319,10 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                 type="submit"
                 name="save"
                 variant={ButtonVariant.secondary}
-                isDisabled={isSubmitting || !isValid}
+                isDisabled={isSubmitting || !isValid || !dirty}
                 onClick={handleSubmitButtonClick}
               >
-                Save Draft
+                Save Changes
               </ToolbarButton>
               <ToolbarButton
                 variant={ButtonVariant.link}
