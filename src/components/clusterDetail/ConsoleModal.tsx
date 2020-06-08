@@ -11,14 +11,20 @@ import {
 } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import { removeProtocolFromURL } from '../../api/utils';
+import { ToolbarButton } from '../ui/Toolbar';
 
 type WebConsoleHintProps = {
   cluster: Cluster;
   consoleUrl?: string;
 };
 
+type LaunchOpenshiftConsoleButtonProps = WebConsoleHintProps & {
+  isDisabled: boolean;
+};
+
 type ConsoleModalProps = WebConsoleHintProps & {
   closeModal: () => void;
+  isOpen: boolean;
 };
 
 export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, consoleUrl }) => (
@@ -53,11 +59,43 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
   </TextContent>
 );
 
-export const ConsoleModal: React.FC<ConsoleModalProps> = ({ closeModal, cluster, consoleUrl }) => {
+export const LaunchOpenshiftConsoleButton: React.FC<LaunchOpenshiftConsoleButtonProps> = ({
+  cluster,
+  consoleUrl,
+  isDisabled,
+}) => {
+  const [isOpen, setOpen] = React.useState(false);
+
+  return (
+    <>
+      <ToolbarButton
+        type="button"
+        variant={ButtonVariant.primary}
+        isDisabled={isDisabled}
+        onClick={() => setOpen(true)}
+      >
+        Launch OpenShift Console
+      </ToolbarButton>
+      <ConsoleModal
+        closeModal={() => setOpen(false)}
+        consoleUrl={consoleUrl}
+        cluster={cluster}
+        isOpen={isOpen}
+      />
+    </>
+  );
+};
+
+export const ConsoleModal: React.FC<ConsoleModalProps> = ({
+  closeModal,
+  cluster,
+  consoleUrl,
+  isOpen,
+}) => {
   return (
     <Modal
       title="OpenShift Web Console troubleshooting"
-      isOpen={true}
+      isOpen={isOpen}
       onClose={closeModal}
       isFooterLeftAligned
       isLarge

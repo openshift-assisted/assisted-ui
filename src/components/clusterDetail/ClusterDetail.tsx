@@ -21,7 +21,7 @@ import ClusterInstallationError from './ClusterInstallationError';
 
 import './ClusterDetail.css';
 import ClusterEvents from '../fetching/ClusterEvents';
-import { ConsoleModal } from './ConsoleModal';
+import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -30,7 +30,6 @@ type ClusterDetailProps = {
 const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const [credentials, setCredentials] = React.useState<Credentials>();
   const [credentialsError, setCredentialsError] = React.useState();
-  const [isLaunchModalOpen, setLaunchModalOpen] = React.useState(false);
 
   const fetchCredentials = React.useCallback(() => {
     const fetch = async () => {
@@ -107,14 +106,11 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
         )} */
         }
         {cluster.status === 'installed' && (
-          <ToolbarButton
-            type="button"
-            variant={ButtonVariant.primary}
+          <LaunchOpenshiftConsoleButton
             isDisabled={!credentials || !!credentialsError}
-            onClick={() => setLaunchModalOpen(true)}
-          >
-            Launch OpenShift Console
-          </ToolbarButton>
+            cluster={cluster}
+            consoleUrl={credentials?.consoleUrl}
+          />
         )}
         <ToolbarButton
           variant={ButtonVariant.link}
@@ -122,13 +118,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
         >
           Close
         </ToolbarButton>
-        {isLaunchModalOpen && (
-          <ConsoleModal
-            closeModal={() => setLaunchModalOpen(false)}
-            consoleUrl={credentials?.consoleUrl}
-            cluster={cluster}
-          />
-        )}
       </ClusterToolbar>
     </>
   );
