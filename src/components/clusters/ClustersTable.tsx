@@ -50,7 +50,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
       {
         title: 'Delete',
         onClick: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-          setDeleteClusterID({ id: rowData.id.title, name: rowData.props.name });
+          setDeleteClusterID({ id: rowData.props.id, name: rowData.props.name });
         },
       },
     ],
