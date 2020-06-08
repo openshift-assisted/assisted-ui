@@ -375,7 +375,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                 onClick={handleSubmitButtonClick}
                 isDisabled={isSubmitting || !isValid}
               >
-                Create Cluster
+                Install Cluster
               </ToolbarButton>
               <ToolbarButton
                 type="submit"
