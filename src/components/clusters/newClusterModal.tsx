@@ -18,7 +18,7 @@ import { Formik, FormikHelpers } from 'formik';
 import { OPENSHIFT_VERSION_OPTIONS } from '../../config/constants';
 import { ClusterCreateParams } from '../../api/types';
 import { InputField, SelectField } from '../ui/formik';
-import { handleApiError } from '../../api/utils';
+import { handleApiError, getErrorMessage } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
 import { nameValidationSchema } from '../ui/formik/validationSchemas';
 
@@ -87,7 +87,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
     } catch (e) {
       handleApiError<ClusterCreateParams>(e, () =>
         formikActions.setStatus({
-          error: { title: 'Failed to create new cluster', message: e.response?.data?.reason },
+          error: { title: 'Failed to create new cluster', message: getErrorMessage(e) },
         }),
       );
     }
