@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Modal,
-  ModalBoxFooter,
   Button,
   ButtonVariant,
   TextContent,
@@ -92,28 +91,31 @@ export const ConsoleModal: React.FC<ConsoleModalProps> = ({
   consoleUrl,
   isOpen,
 }) => {
+  const actions = [
+    <Button
+      type="submit"
+      key="launch"
+      variant={ButtonVariant.primary}
+      onClick={() => window.open(consoleUrl, '_blank', 'noopener')}
+      isDisabled={!consoleUrl}
+    >
+      Launch OpenShift Console
+    </Button>,
+    <Button variant={ButtonVariant.secondary} onClick={() => closeModal()} key="cancel">
+      Cancel
+    </Button>,
+  ];
+
   return (
     <Modal
       title="OpenShift Web Console troubleshooting"
       isOpen={isOpen}
       onClose={closeModal}
       isFooterLeftAligned
+      actions={actions}
       isLarge
     >
       <WebConsoleHint cluster={cluster} consoleUrl={consoleUrl} />
-      <ModalBoxFooter isLeftAligned>
-        <Button
-          type="submit"
-          variant={ButtonVariant.primary}
-          onClick={() => window.open(consoleUrl, '_blank', 'noopener')}
-          isDisabled={!consoleUrl}
-        >
-          Launch OpenShift Console
-        </Button>
-        <Button variant={ButtonVariant.secondary} onClick={() => closeModal()}>
-          Cancel
-        </Button>
-      </ModalBoxFooter>
     </Modal>
   );
 };
