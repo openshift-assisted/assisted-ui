@@ -1,16 +1,16 @@
 import React from 'react';
 import { Brand, PageHeader } from '@patternfly/react-core';
 import metal3FacetLogo from '../../images/metal3_facet-whitetext.png';
-import redhatLogo from '../../images/redhat.logo.png';
-import { BRANDING } from '../../config/constants';
+import redhatLogo from '../../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
+import { getProductBrandingCode } from '../../config/constants';
 
 const getBrandingDetails = () => {
-  switch (BRANDING) {
+  switch (getProductBrandingCode()) {
     case 'redhat':
       return {
         logo: redhatLogo,
         alt: 'Red Hat OpenShift',
-        href: 'https://www.redhat.com',
+        href: 'https://www.openshift.com/',
       };
     default:
       return {

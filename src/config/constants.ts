@@ -14,7 +14,8 @@ export const OPENSHIFT_VERSION_OPTIONS: OpenshiftVersionOptionType[] = [
 export const CLUSTER_MANAGER_SITE_LINK =
   'https://cloud.redhat.com/openshift/install/metal/user-provisioned';
 
-export const BRANDING = 'redhat';
+// TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
+export const getProductBrandingCode = () => 'redhat';
 
 export const POLLING_INTERVAL = 10 * 1000;
 export const EVENTS_POLLING_INTERVAL = 60 * 1000;
