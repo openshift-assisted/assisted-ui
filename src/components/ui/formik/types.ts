@@ -40,6 +40,13 @@ export interface TextAreaProps extends FieldProps {
   onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
 }
 
+export interface TextAreaSecretProps extends TextAreaProps {
+  isSet?: boolean;
+  isEdit: boolean;
+  helperTextHidden?: string;
+  onToggle: (isHidden: boolean) => void;
+}
+
 export interface CheckboxFieldProps extends FieldProps {
   formLabel?: string;
   value?: string;

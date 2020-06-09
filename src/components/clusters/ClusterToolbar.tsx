@@ -1,7 +1,7 @@
 import React from 'react';
-import { PageSectionVariants, Toolbar } from '@patternfly/react-core';
-
+import { PageSectionVariants, DataToolbar, DataToolbarContent } from '@patternfly/react-core';
 import PageSection from '../ui/PageSection';
+import './ClusterToolbar.css';
 
 interface Props {
   children: React.ReactNode;
@@ -9,7 +9,9 @@ interface Props {
 
 const ClusterToolbar: React.FC<Props> = ({ children }) => (
   <PageSection variant={PageSectionVariants.light} className="pf-u-box-shadow-lg-top">
-    <Toolbar>{children}</Toolbar>
+    <DataToolbar id="cluster-toolbar" className="cluster-toolbar">
+      <DataToolbarContent>{children}</DataToolbarContent>
+    </DataToolbar>
   </PageSection>
 );
 

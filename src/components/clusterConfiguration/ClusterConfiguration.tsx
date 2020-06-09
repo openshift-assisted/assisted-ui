@@ -2,6 +2,7 @@ import React from 'react';
 import { Formik, FormikProps, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
 import {
   Form,
   PageSectionVariants,
@@ -20,9 +21,10 @@ import { Netmask } from 'netmask';
 
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import PageSection from '../ui/PageSection';
-import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
-import { InputField, TextAreaField } from '../ui/formik';
+import { InputField, TextAreaField, TextAreaSecretField } from '../ui/formik';
+import { ToolbarButton, ToolbarText, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import GridGap from '../ui/GridGap';
+import { EventsModalButton } from '../ui/eventsModal';
 import { Cluster, ClusterUpdateParams, Inventory } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
 import { handleApiError, stringToJSON } from '../../api/utils';
@@ -45,7 +47,6 @@ import {
   vipValidationSchema,
 } from '../ui/formik/validationSchemas';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
-import ClusterEvents from '../fetching/ClusterEvents';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import NetworkConfiguration from './NetworkConfiguration';
 
@@ -121,6 +122,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
   const [submitType, setSubmitType] = React.useState('save');
   const dispatch = useDispatch();
   const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
+  const [isPullSecretEdit, setPullSecretEdit] = React.useState(!cluster.pullSecretSet);
 
   const hostnameMap: { [id: string]: string } =
     cluster.hosts?.reduce((acc, host) => {
@@ -150,7 +152,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
     serviceNetworkCidr: cluster.serviceNetworkCidr || '',
     apiVip: cluster.apiVip || '',
     ingressVip: cluster.ingressVip || '',
-    pullSecret: cluster.pullSecret || '',
+    pullSecret: '',
     sshPublicKey: cluster.sshPublicKey || '',
     hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, hostSubnets),
   };
@@ -172,10 +174,11 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
 
     // update the cluster validation
     try {
-      const { data } = await patchCluster(cluster.id, values);
-      console.log('values', values);
+      const params = isPullSecretEdit ? values : _.omit(values, ['pullSecret']);
+      const { data } = await patchCluster(cluster.id, params);
       formikActions.resetForm({ values });
       dispatch(updateCluster(data));
+      setPullSecretEdit(false);
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         dispatchAlertsAction(
@@ -235,6 +238,15 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
             findMatchingSubnet(cluster.ingressVip, cluster.apiVip, hostSubnets),
           );
         }
+        const onPullSecretToggle = (isHidden: boolean) => {
+          if (isHidden) {
+            setPullSecretEdit(false);
+          } else {
+            setPullSecretEdit(true);
+            setFieldValue('pullSecret', '', false);
+          }
+        };
+
         return (
           <>
             <ClusterBreadcrumbs clusterName={cluster.name} />
@@ -265,9 +277,13 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                       <TextContent>
                         <Text component="h2">Security</Text>
                       </TextContent>
-                      <TextAreaField
+                      <TextAreaSecretField
                         name="pullSecret"
                         label="Pull Secret"
+                        isSet={cluster.pullSecretSet}
+                        isEdit={isPullSecretEdit}
+                        onToggle={onPullSecretToggle}
+                        helperTextHidden="The pull secret is already set and its value will not be shown for security reasons."
                         helperText={
                           <>
                             The pull secret obtained from the Pull Secret page on the{' '}
@@ -292,12 +308,6 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         isRequired
                       />
                     </GridGap>
-                  </GridItem>
-                  <GridItem span={12} lg={10} xl={6}>
-                    <TextContent>
-                      <Text component="h2">Events</Text>
-                    </TextContent>
-                    <ClusterEvents entityId={cluster.id} />
                   </GridItem>
                 </Grid>
               </Form>
@@ -341,6 +351,17 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                   <ExclamationCircleIcon color={dangerColor.value} /> There are validation errors.
                 </ToolbarText>
               )}
+              <ToolbarSecondaryGroup>
+                <EventsModalButton
+                  entityKind="cluster"
+                  entityId={cluster.id}
+                  title="Cluster Events"
+                  variant={ButtonVariant.link}
+                  style={{ textAlign: 'right' }}
+                >
+                  View Cluster Events History
+                </EventsModalButton>
+              </ToolbarSecondaryGroup>
             </ClusterToolbar>
           </>
         );
