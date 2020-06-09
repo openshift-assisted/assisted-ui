@@ -252,7 +252,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
             <ClusterBreadcrumbs clusterName={cluster.name} />
             <PageSection variant={PageSectionVariants.light} isMain>
               <Form>
-                <Grid gutter="md">
+                <Grid hasGutter>
                   <GridItem span={12} lg={10} xl={6}>
                     {/* TODO(jtomasek): remove this if we're not putting full width content here (e.g. hosts table)*/}
                     <GridGap>
