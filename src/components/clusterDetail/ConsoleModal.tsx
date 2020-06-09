@@ -27,37 +27,30 @@ type ConsoleModalProps = WebConsoleHintProps & {
   isOpen: boolean;
 };
 
-export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, consoleUrl }) => (
-  <TextContent>
-    <Text component="p">
-      In order to access the OpenShift Web Console, make sure your local or external DNS server is
-      configured to resolve its hostname. To do so, either:
+export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, consoleUrl }) => {
+  const etcHosts =
+    `${cluster.ingressVip}\t${removeProtocolFromURL(consoleUrl)}\n` +
+    `${cluster.ingressVip}\toauth-openshift.apps.${cluster.name}.${cluster.baseDnsDomain}\n` +
+    `${cluster.apiVip}\tapi.${cluster.name}.${cluster.baseDnsDomain}\n`;
+
+  return (
+    <TextContent>
+      <Text component="p">
+        In order to access the OpenShift Web Console, make sure your local or external DNS server is
+        configured to resolve its hostname. To do so, either:
+      </Text>
       <TextList>
         <TextListItem>
           Update your local /etc/hosts or /etc/resolve.conf files to resolve:
-          <TextList>
-            <TextListItem>
-              <strong>{removeProtocolFromURL(consoleUrl)}</strong> to{' '}
-              <strong>{cluster.ingressVip}</strong>
-            </TextListItem>
-            <TextListItem>
-              <strong>{`oauth-openshift.apps.${cluster.name}.${cluster.baseDnsDomain}`}</strong> to{' '}
-              <strong>{cluster.ingressVip}</strong>
-            </TextListItem>
-            <TextListItem>
-              optionally
-              <strong>{`api.${cluster.name}.${cluster.baseDnsDomain}`}</strong> to{' '}
-              <strong>{cluster.apiVip}</strong>
-            </TextListItem>
-          </TextList>
+          <Text component="pre">{etcHosts}</Text>
         </TextListItem>
         <TextListItem>
           Contact your network administrator to configure this resolution in an external DNS server.
         </TextListItem>
       </TextList>
-    </Text>
-  </TextContent>
-);
+    </TextContent>
+  );
+};
 
 export const LaunchOpenshiftConsoleButton: React.FC<LaunchOpenshiftConsoleButtonProps> = ({
   cluster,
