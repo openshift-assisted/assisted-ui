@@ -79,7 +79,7 @@ const LoginForm: React.FC = () => {
       {({ handleSubmit, isSubmitting, isValid, submitForm, status }) => (
         <>
           <PageSection variant={PageSectionVariants.light} isMain>
-            <Grid gutter="md">
+            <Grid hasGutter>
               <GridItem span={12} lg={10} xl={6}>
                 <TextContent>
                   <Text component="h1">Connect to Red Hat Account </Text>

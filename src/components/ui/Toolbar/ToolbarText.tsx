@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { DataToolbarItem, Text } from '@patternfly/react-core';
+import { ToolbarItem, Text } from '@patternfly/react-core';
 
 const ToolbarText: React.FC<React.ComponentProps<typeof Text>> = (props) => (
-  <DataToolbarItem>
+  <ToolbarItem>
     <Text {...props} />
-  </DataToolbarItem>
+  </ToolbarItem>
 );
 
 export default ToolbarText;
