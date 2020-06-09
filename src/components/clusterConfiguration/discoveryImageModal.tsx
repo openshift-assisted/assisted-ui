@@ -132,12 +132,12 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
                   </Alert>
                 )}
                 <TextContent>
-                  <Text component="small">
+                  <Text component="p">
                     Hosts must be connected to the internet to form a cluster using this installer.
-                    If hosts are behind a firewall that requires use of a proxy, provide proxy URL
-                    below.
+                    If hosts are behind a firewall that requires the use of a proxy, provide the
+                    proxy URL below.
                   </Text>
-                  <Text component="small">
+                  <Text component="p">
                     Each host will need a valid IP address assigned by a DHCP server with DNS
                     records that fully resolve.
                   </Text>
