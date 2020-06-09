@@ -105,7 +105,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
   const [alerts, setAlerts] = React.useState([] as Alert[]);
   const [sortBy, setSortBy] = React.useState({
-    index: 2, // Role-column
+    index: 1, // Hostname-column
     direction: SortByDirection.asc,
   } as ISortBy);
   const dispatch = useDispatch();
