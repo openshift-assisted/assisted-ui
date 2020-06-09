@@ -21,6 +21,7 @@ import ClusterInstallationError from './ClusterInstallationError';
 
 import './ClusterDetail.css';
 import ClusterEvents from '../fetching/ClusterEvents';
+import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -75,7 +76,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
           )}
           {cluster.status === 'installed' && (
             <ClusterCredentials
-              clusterID={cluster.id}
+              cluster={cluster}
               credentials={credentials}
               error={!!credentialsError}
               retry={fetchCredentials}
@@ -105,14 +106,11 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
         )} */
         }
         {cluster.status === 'installed' && (
-          <ToolbarButton
-            type="button"
-            variant={ButtonVariant.primary}
+          <LaunchOpenshiftConsoleButton
             isDisabled={!credentials || !!credentialsError}
-            onClick={() => window.open(credentials?.consoleUrl, '_blank', 'noopener')}
-          >
-            Launch OpenShift Console
-          </ToolbarButton>
+            cluster={cluster}
+            consoleUrl={credentials?.consoleUrl}
+          />
         )}
         <ToolbarButton
           variant={ButtonVariant.link}
