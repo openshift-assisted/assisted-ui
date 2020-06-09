@@ -49,5 +49,8 @@ export const getClusterDownloadsImageUrl = (clusterId: string) =>
 export const getClusterFileURL = (clusterID: string, fileName: string) =>
   `${API_ROOT}/clusters/${clusterID}/downloads/files?file_name=${fileName}`;
 
+export const getClusterKubeconfigURL = (clusterID: string) =>
+  `${API_ROOT}/clusters/${clusterID}/downloads/kubeconfig`;
+
 export const getClusterCredentials = (clusterID: string): AxiosPromise<Credentials> =>
   client.get(`${API_ROOT}/clusters/${clusterID}/credentials`);
