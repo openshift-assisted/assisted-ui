@@ -26,6 +26,9 @@ export const handleApiError = <T>(error: AxiosError<T>, onError?: OnError) => {
   }
 };
 
+export const getErrorMessage = (error: AxiosError) =>
+  error.response?.data?.reason || error.response?.data?.message;
+
 const toCamelCase = (str: string): string =>
   str.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('_', ''));
 

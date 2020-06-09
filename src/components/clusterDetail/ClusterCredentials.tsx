@@ -1,9 +1,7 @@
 import React from 'react';
-import { saveAs } from 'file-saver';
 import {
   GridItem,
   TextContent,
-  ButtonVariant,
   Button,
   ClipboardCopy,
   clipboardCopyFunc,
@@ -11,7 +9,6 @@ import {
 } from '@patternfly/react-core';
 import { ExternalLinkSquareAltIcon, InfoCircleIcon } from '@patternfly/react-icons';
 
-import { getClusterFileURL } from '../../api/clusters';
 import { LoadingState, ErrorState } from '../ui/uiState';
 import { Credentials, Cluster } from '../../api/types';
 import { WebConsoleHint } from './ConsoleModal';
@@ -78,15 +75,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
 
   return (
     <GridItem span={12} lg={10} xl={6}>
-      <div>
-        {credentialsBody}
-        <Button
-          variant={ButtonVariant.secondary}
-          onClick={() => saveAs(getClusterFileURL(cluster.id, 'kubeconfig'))}
-        >
-          Download kubeconfig
-        </Button>
-      </div>
+      {credentialsBody}
     </GridItem>
   );
 };

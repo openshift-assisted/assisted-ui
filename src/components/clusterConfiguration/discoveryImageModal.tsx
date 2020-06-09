@@ -21,7 +21,7 @@ import { Formik, FormikHelpers } from 'formik';
 import { createClusterDownloadsImage, getClusterDownloadsImageUrl } from '../../api/clusters';
 import { useParams } from 'react-router-dom';
 import { LoadingState } from '../ui/uiState';
-import { handleApiError } from '../../api/utils';
+import { handleApiError, getErrorMessage } from '../../api/utils';
 import { ImageCreateParams, ImageInfo } from '../../api/types';
 import { sshPublicKeyValidationSchema } from '../ui/formik/validationSchemas';
 
@@ -87,7 +87,7 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
           formikActions.setStatus({
             error: {
               title: 'Failed to download the discovery Image',
-              message: error.response?.data?.reason,
+              message: getErrorMessage(error),
             },
           });
         });
