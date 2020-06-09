@@ -11,7 +11,7 @@ const getProgressVariant = (status: Cluster['status']) => {
     case 'installed':
       return ProgressVariant.success;
     default:
-      return ProgressVariant.info;
+      return ProgressVariant.success;
   }
 };
 

@@ -14,7 +14,7 @@ const getProgressVariant = (status: Host['status']) => {
     case 'installed':
       return ProgressVariant.success;
     default:
-      return ProgressVariant.info;
+      return ProgressVariant.success;
   }
 };
 
