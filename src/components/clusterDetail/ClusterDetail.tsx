@@ -11,6 +11,7 @@ import {
 import { Cluster, Credentials } from '../../api/types';
 import { getClusterCredentials } from '../../api/clusters';
 import PageSection from '../ui/PageSection';
+import { EventsModalButton } from '../ui/eventsModal';
 import HostsTable from '../hosts/HostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { ToolbarButton, ToolbarSecondaryGroup } from '../ui/Toolbar';
@@ -18,7 +19,6 @@ import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import ClusterProgress from './ClusterProgress';
 import ClusterCredentials from './ClusterCredentials';
 import ClusterInstallationError from './ClusterInstallationError';
-import { ClusterEventsModalButton } from '../clusters/clusterEventsModal';
 
 import './ClusterDetail.css';
 import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
@@ -113,11 +113,15 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
           Close
         </ToolbarButton>
         <ToolbarSecondaryGroup>
-          <ClusterEventsModalButton
-            clusterId={cluster.id}
+          <EventsModalButton
+            entityKind="cluster"
+            entityId={cluster.id}
+            title="Cluster Events"
             variant={ButtonVariant.link}
             style={{ textAlign: 'right' }}
-          />
+          >
+            View Cluster Events History
+          </EventsModalButton>
         </ToolbarSecondaryGroup>
       </ClusterToolbar>
     </>

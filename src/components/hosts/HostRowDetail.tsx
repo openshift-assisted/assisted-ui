@@ -17,12 +17,10 @@ import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Tabl
 import { Inventory } from '../../api/types';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import { DASH } from '../constants';
-import HostEvents from '../fetching/HostEvents';
 
 import './HostRowDetail.css';
 
 type HostDetailProps = {
-  hostId: string;
   inventory: Inventory;
 };
 
@@ -177,7 +175,7 @@ const NicsTable: React.FC<NicsTableProps> = ({ interfaces = [] }) => {
   );
 };
 
-export const HostDetail: React.FC<HostDetailProps> = ({ hostId, inventory }) => {
+export const HostDetail: React.FC<HostDetailProps> = ({ inventory }) => {
   const rowInfo = getHostRowHardwareInfo(inventory);
 
   let bmcAddress = inventory.bmcAddress;
@@ -216,12 +214,6 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hostId, inventory }) => 
       <SectionTitle title={`${(inventory.interfaces || []).length} NICs`} />
       <SectionColumn>
         <NicsTable interfaces={inventory.interfaces} />
-      </SectionColumn>
-
-      {/* TODO(mlibra): will be placed somewhere else */}
-      <SectionTitle title="Events" />
-      <SectionColumn>
-        <HostEvents entityId={hostId} />
       </SectionColumn>
     </Flex>
   );
