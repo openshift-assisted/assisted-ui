@@ -78,7 +78,7 @@ const installValidationSchema = (hostSubnets: HostSubnets) =>
       apiVip: requiredSchema.concat(vipValidationSchema(hostSubnets, values)),
       ingressVip: requiredSchema.concat(vipValidationSchema(hostSubnets, values)),
       pullSecret: requiredSchema.concat(validJSONSchema),
-      sshPublicKey: requiredSchema.concat(sshPublicKeyValidationSchema),
+      sshPublicKey: sshPublicKeyValidationSchema,
     }),
   );
 
@@ -305,7 +305,6 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         name="sshPublicKey"
                         label="SSH Public Key"
                         helperText={sshPublicKeyHelperText}
-                        isRequired
                       />
                     </GridGap>
                   </GridItem>
