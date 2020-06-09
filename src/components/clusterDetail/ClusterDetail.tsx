@@ -54,7 +54,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
     <>
       <ClusterBreadcrumbs clusterName={cluster.name} />
       <PageSection variant={PageSectionVariants.light} isMain>
-        <Grid gutter="lg">
+        <Grid hasGutter>
           <GridItem>
             <TextContent>
               <Text component="h1">{cluster.name}</Text>
