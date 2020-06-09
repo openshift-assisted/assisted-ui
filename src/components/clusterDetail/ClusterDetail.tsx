@@ -13,14 +13,14 @@ import { getClusterCredentials } from '../../api/clusters';
 import PageSection from '../ui/PageSection';
 import HostsTable from '../hosts/HostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
-import { ToolbarButton } from '../ui/Toolbar';
+import { ToolbarButton, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import ClusterProgress from './ClusterProgress';
 import ClusterCredentials from './ClusterCredentials';
 import ClusterInstallationError from './ClusterInstallationError';
+import { ClusterEventsModalButton } from '../clusters/clusterEventsModal';
 
 import './ClusterDetail.css';
-import ClusterEvents from '../fetching/ClusterEvents';
 import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
 
 type ClusterDetailProps = {
@@ -88,12 +88,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             </TextContent>
             <HostsTable cluster={cluster} />
           </GridItem>
-          <GridItem>
-            <TextContent>
-              <Text component="h2">Cluster Events</Text>
-            </TextContent>
-            <ClusterEvents entityId={cluster.id} />
-          </GridItem>
         </Grid>
       </PageSection>
       <ClusterToolbar>
@@ -118,6 +112,13 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
         >
           Close
         </ToolbarButton>
+        <ToolbarSecondaryGroup>
+          <ClusterEventsModalButton
+            clusterId={cluster.id}
+            variant={ButtonVariant.link}
+            style={{ textAlign: 'right' }}
+          />
+        </ToolbarSecondaryGroup>
       </ClusterToolbar>
     </>
   );
