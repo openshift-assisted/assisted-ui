@@ -23,14 +23,14 @@ const SelectField: React.FC<SelectFieldProps> = ({
       label={label}
       helperText={getHelperText ? getHelperText(field.value) : helperText}
       helperTextInvalid={errorMessage}
-      isValid={isValid}
+      validated={isValid ? 'default' : 'error'}
       isRequired={isRequired}
     >
       <FormSelect
         {...field}
         {...props}
         id={fieldId}
-        isValid={isValid}
+        validated={isValid ? 'default' : 'error'}
         isRequired={isRequired}
         aria-describedby={`${fieldId}-helper`}
         onChange={(value, event) => {

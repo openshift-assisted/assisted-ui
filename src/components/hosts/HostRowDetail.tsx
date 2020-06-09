@@ -10,7 +10,6 @@ import {
   TextListItemVariants,
   Text,
   TextVariants,
-  FlexModifiers,
 } from '@patternfly/react-core';
 import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
@@ -77,10 +76,7 @@ const HostDetailItem: React.FC<HostDetailItemProps> = ({ title, value = '' }) =>
 };
 
 const SectionTitle: React.FC<SectionTitleProps> = ({ title }) => (
-  <FlexItem
-    breakpointMods={[{ modifier: FlexModifiers['full-width'] }]}
-    className="host-row-detail__section"
-  >
+  <FlexItem className="host-row-detail__section" fullWidth={{ default: 'fullWidth' }}>
     <TextContent>
       <Text component={TextVariants.h3}>{title}</Text>
     </TextContent>
@@ -88,7 +84,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({ title }) => (
 );
 
 const SectionColumn: React.FC<SectionColumnProps> = ({ children }) => (
-  <FlexItem breakpointMods={[{ modifier: FlexModifiers['grow'] }]}>
+  <FlexItem grow={{ default: 'grow' }}>
     <TextContent>{children}</TextContent>
   </FlexItem>
 );
