@@ -2112,14 +2112,7 @@
     react-dropzone "9.0.0"
     tippy.js "5.1.2"
 
-"@patternfly/react-icons@^3.15.12":
-  version "3.15.12"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-3.15.12.tgz#7c80672d5bff4a7ea2d24abdd9e8477d79667e45"
-  integrity sha512-UX2mkfYp7NunBTBrsd4RamPh4pTTqhIxjvx23n19xLs9doXEMjZr1+xMuswrg+68EpCDA5gngeFWKRnb8vYXKg==
-  dependencies:
-    "@fortawesome/free-brands-svg-icons" "^5.8.1"
-
-"@patternfly/react-icons@^3.15.17":
+"@patternfly/react-icons@^3.15.12", "@patternfly/react-icons@^3.15.17":
   version "3.15.17"
   resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-3.15.17.tgz#97a71fd6469a3f6c08dc46575a340b82cfc7e1db"
   integrity sha512-Q0JAlxEvSAl5kcMSUMItLiKi9fweO941g5+lS45t3o/Rv4Eg91Ig7AyK1YWw6m1ah+/eHslLfox0Uqw7m7usLg==
