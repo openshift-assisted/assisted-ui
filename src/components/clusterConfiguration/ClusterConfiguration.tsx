@@ -27,7 +27,7 @@ import GridGap from '../ui/GridGap';
 import { EventsModalButton } from '../ui/eventsModal';
 import { Cluster, ClusterUpdateParams, Inventory } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
-import { handleApiError, stringToJSON } from '../../api/utils';
+import { handleApiError, stringToJSON, getErrorMessage } from '../../api/utils';
 import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
@@ -182,7 +182,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         dispatchAlertsAction(
-          addAlert({ title: 'Failed to update the cluster', message: e.response?.data?.reason }),
+          addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
         ),
       );
     }
@@ -197,7 +197,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
           dispatchAlertsAction(
             addAlert({
               title: 'Failed to start cluster installation',
-              message: e.response?.data?.reason,
+              message: getErrorMessage(e),
             }),
           ),
         );

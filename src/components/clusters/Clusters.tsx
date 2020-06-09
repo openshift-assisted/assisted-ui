@@ -19,7 +19,7 @@ import { fetchClustersAsync, deleteCluster } from '../../features/clusters/clust
 import { deleteCluster as ApiDeleteCluster } from '../../api/clusters';
 import { NewClusterModalButton, NewClusterModal } from './newClusterModal';
 import AlertsSection from '../ui/AlertsSection';
-import { handleApiError } from '../../api/utils';
+import { handleApiError, getErrorMessage } from '../../api/utils';
 import alertsReducer, {
   addAlert,
   AlertProps,
@@ -48,7 +48,7 @@ const Clusters: React.FC = () => {
           dispatchAlertsAction(
             addAlert({
               title: 'Cluster could not be deleted',
-              message: e.response?.data?.reason,
+              message: getErrorMessage(e),
             }),
           ),
         );
