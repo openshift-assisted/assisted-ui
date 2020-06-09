@@ -22,7 +22,7 @@ const TextAreaField: React.FC<TextAreaProps> = ({
       label={label}
       helperText={helperText}
       helperTextInvalid={errorMessage}
-      isValid={isValid}
+      validated={isValid ? 'default' : 'error'}
       isRequired={isRequired}
     >
       {children}
@@ -31,7 +31,7 @@ const TextAreaField: React.FC<TextAreaProps> = ({
         {...props}
         id={fieldId}
         style={{ resize: 'vertical' }}
-        isValid={isValid}
+        validated={isValid ? 'default' : 'error'}
         isRequired={isRequired}
         aria-describedby={`${fieldId}-helper`}
         onChange={(value, event) => field.onChange(event)}
