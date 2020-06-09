@@ -28,10 +28,16 @@ type ConsoleModalProps = WebConsoleHintProps & {
 };
 
 export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, consoleUrl }) => {
+  const clusterUrl = `${cluster.name}.${cluster.baseDnsDomain}`;
+  const appsUrl = `apps.${clusterUrl}`;
   const etcHosts =
     `${cluster.ingressVip}\t${removeProtocolFromURL(consoleUrl)}\n` +
-    `${cluster.ingressVip}\toauth-openshift.apps.${cluster.name}.${cluster.baseDnsDomain}\n` +
-    `${cluster.apiVip}\tapi.${cluster.name}.${cluster.baseDnsDomain}\n`;
+    `${cluster.ingressVip}\toauth-openshift.${appsUrl}\n` +
+    `${cluster.ingressVip}\tgrafana-openshift-monitoring.${appsUrl}\n` +
+    `${cluster.ingressVip}\tprometheus-k8s-openshift-monitoring.${appsUrl}\n` +
+    `${cluster.ingressVip}\tthanos-querier-openshift-monitoring.${appsUrl}\n` +
+    `${cluster.ingressVip}\talertmanager-main-openshift-monitoring.${appsUrl}\n` +
+    `${cluster.apiVip}\tapi.${clusterUrl}\n`;
 
   return (
     <TextContent>
