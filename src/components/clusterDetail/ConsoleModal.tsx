@@ -7,6 +7,7 @@ import {
   Text,
   TextList,
   TextListItem,
+  ModalVariant,
 } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import { removeProtocolFromURL } from '../../api/utils';
@@ -111,9 +112,8 @@ export const ConsoleModal: React.FC<ConsoleModalProps> = ({
       title="OpenShift Web Console troubleshooting"
       isOpen={isOpen}
       onClose={closeModal}
-      isFooterLeftAligned
       actions={actions}
-      isLarge
+      variant={ModalVariant.large}
     >
       <WebConsoleHint cluster={cluster} consoleUrl={consoleUrl} />
     </Modal>
