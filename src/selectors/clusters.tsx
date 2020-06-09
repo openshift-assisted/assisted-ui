@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { IRow } from '@patternfly/react-table';
 import { RootState } from '../store/rootReducer';
 import { HumanizedSortable } from '../components/ui/table/utils';
-import ClusterStatus from '../components/clusters/ClusterStatus';
+import ClusterStatus, { getClusterStatusText } from '../components/clusters/ClusterStatus';
 import { DASH } from '../components/constants';
 
 const selectClusters = (state: RootState) => state.clusters.data;
@@ -41,6 +41,7 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
       openshiftVersion,
       {
         title: <ClusterStatus cluster={cluster} />,
+        sortableValue: getClusterStatusText(cluster),
       },
       {
         title: hostsCount.toString(),
