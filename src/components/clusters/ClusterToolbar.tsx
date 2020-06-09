@@ -10,7 +10,7 @@ interface Props {
 const ClusterToolbar: React.FC<Props> = ({ children }) => (
   <PageSection variant={PageSectionVariants.light} className="pf-u-box-shadow-lg-top">
     <Toolbar id="cluster-toolbar" className="cluster-toolbar">
-      <ToolbarContent>{children}</ToolbarContent>
+      <ToolbarContent className="cluster-toolbar__content">{children}</ToolbarContent>
     </Toolbar>
   </PageSection>
 );
