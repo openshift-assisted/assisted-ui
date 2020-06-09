@@ -76,7 +76,7 @@ const Clusters: React.FC = () => {
     case ERROR:
       body = (
         <PageSection variant={PageSectionVariants.light} isMain>
-          <ErrorState title="Failed to fetch clusters." fetchData={fetchClusters} />;
+          <ErrorState title="Failed to fetch clusters." fetchData={fetchClusters} />
         </PageSection>
       );
       break;
