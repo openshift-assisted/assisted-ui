@@ -22,6 +22,7 @@ import ClusterInstallationError from './ClusterInstallationError';
 
 import './ClusterDetail.css';
 import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
+import KubeconfigDownload from './KubeconfigDownload';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -82,6 +83,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               retry={fetchCredentials}
             />
           )}
+          <KubeconfigDownload status={cluster.status} clusterId={cluster.id} />
           <GridItem>
             <TextContent>
               <Text component="h2">Bare Metal Inventory</Text>
