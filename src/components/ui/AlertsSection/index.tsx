@@ -11,12 +11,12 @@ type AlertsSectionProps = {
 };
 
 const AlertsSection: React.FC<AlertsSectionProps> = ({ alerts, onClose }) => (
-  <PageSection noPadding>
+  <PageSection padding={{ default: 'noPadding' }}>
     <AlertGroup className="alerts-section">
       {alerts.map((alert) => (
         <Alert
           key={alert.key}
-          action={<AlertActionCloseButton onClose={() => onClose(alert)} />}
+          actionClose={<AlertActionCloseButton onClose={() => onClose(alert)} />}
           {...alert}
         >
           {alert.message}
