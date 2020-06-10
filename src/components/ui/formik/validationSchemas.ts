@@ -42,7 +42,10 @@ export const ipValidationSchema = Yup.string().matches(IP_ADDRESS_REGEX, {
   excludeEmptyString: true,
 });
 
-export const vipValidationSchema = (hostSubnets: HostSubnets, values: ClusterConfigurationValues) =>
+export const vipRangeValidationSchema = (
+  hostSubnets: HostSubnets,
+  values: ClusterConfigurationValues,
+) =>
   Yup.string().test('vip-validation', 'IP Address is outside of selected subnet', function (value) {
     if (!value) {
       return true;
@@ -55,6 +58,23 @@ export const vipValidationSchema = (hostSubnets: HostSubnets, values: ClusterCon
     const { subnet } = hostSubnets.find((hn) => hn.humanized === values.hostSubnet) || {};
     return !!subnet?.contains(value) && value !== subnet?.broadcast && value !== subnet?.base;
   });
+
+const vipUniqueValidationSchema = (hostSubnets: HostSubnets, values: ClusterConfigurationValues) =>
+  Yup.string().test(
+    'vip-uniqueness-validation',
+    'Ingress and API IP addresses can not be the same.',
+    (value) => {
+      if (!value) {
+        return true;
+      }
+      return values.ingressVip !== values.apiVip;
+    },
+  );
+
+export const vipValidationSchema = (hostSubnets: HostSubnets, values: ClusterConfigurationValues) =>
+  vipRangeValidationSchema(hostSubnets, values).concat(
+    vipUniqueValidationSchema(hostSubnets, values),
+  );
 
 export const ipBlockValidationSchema = Yup.string().matches(IP_ADDRESS_BLOCK_REGEX, {
   message:
