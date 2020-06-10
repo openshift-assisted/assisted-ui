@@ -12,4 +12,5 @@ export type HostSubnets = {
 
 export type ClusterConfigurationValues = ClusterUpdateParams & {
   hostSubnet: string;
+  pullSecretSet: boolean;
 };

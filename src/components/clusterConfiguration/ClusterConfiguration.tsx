@@ -45,6 +45,7 @@ import {
   dnsNameValidationSchema,
   hostPrefixValidationSchema,
   vipValidationSchema,
+  pullSecretKnownOrRequired,
 } from '../ui/formik/validationSchemas';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
@@ -77,7 +78,7 @@ const installValidationSchema = (hostSubnets: HostSubnets) =>
       serviceNetworkCidr: requiredSchema.concat(ipBlockValidationSchema),
       apiVip: requiredSchema.concat(vipValidationSchema(hostSubnets, values)),
       ingressVip: requiredSchema.concat(vipValidationSchema(hostSubnets, values)),
-      pullSecret: requiredSchema.concat(validJSONSchema),
+      pullSecret: validJSONSchema.concat(pullSecretKnownOrRequired(values)),
       sshPublicKey: sshPublicKeyValidationSchema,
     }),
   );
@@ -154,6 +155,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
     ingressVip: cluster.ingressVip || '',
     pullSecret: '',
     sshPublicKey: cluster.sshPublicKey || '',
+    pullSecretSet: !!cluster.pullSecretSet, // private (read-only), for validations only, set by backend
     hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, hostSubnets),
   };
 
