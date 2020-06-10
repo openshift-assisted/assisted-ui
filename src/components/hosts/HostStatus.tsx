@@ -3,7 +3,7 @@ import { Popover, Button, ButtonVariant } from '@patternfly/react-core';
 import {
   global_danger_color_100 as dangerColor,
   global_warning_color_100 as warningColor,
-  global_success_color_200 as okColor,
+  global_success_color_100 as okColor,
 } from '@patternfly/react-tokens';
 import {
   ExclamationCircleIcon,

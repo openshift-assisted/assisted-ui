@@ -8,12 +8,15 @@ import {
   ISortBy,
   OnSort,
   IRow,
+  IActionsResolver,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
 import { ClusterTableRows } from '../../types/clusters';
 import { rowSorter, HumanizedSortable } from '../ui/table/utils';
 import sortable from '../ui/table/sortable';
 import DeleteClusterModal from './DeleteClusterModal';
+import { getClusterTableStatusCell } from '../../selectors/clusters';
+import { CLUSTER_STATUS_LABELS } from '../../config/constants';
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.props.id;
 
@@ -45,16 +48,18 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
     direction: SortByDirection.asc,
   });
 
-  const actions = React.useMemo(
-    () => [
+  const actionResolver: IActionsResolver = React.useCallback(
+    (rowData) => [
       {
         title: 'Delete',
+        isDisabled:
+          getClusterTableStatusCell(rowData).sortableValue === CLUSTER_STATUS_LABELS.installing,
         onClick: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
           setDeleteClusterID({ id: rowData.props.id, name: rowData.props.name });
         },
       },
     ],
-    [],
+    [setDeleteClusterID],
   );
 
   const onSort: OnSort = React.useCallback(
@@ -83,7 +88,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
       <Table
         rows={sortedRows}
         cells={columns}
-        actions={actions}
+        actionResolver={actionResolver}
         aria-label="Clusters table"
         sortBy={sortBy}
         onSort={onSort}
