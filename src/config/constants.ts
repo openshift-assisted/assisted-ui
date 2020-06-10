@@ -22,7 +22,7 @@ export const EVENTS_POLLING_INTERVAL = 10 * 1000;
 
 export const HOST_ROLES = ['worker', 'master'];
 // Without undefined. Otherwise must conform generated Host['roles'] - see api/types.ts
-export type HostRolesType = 'master' | 'worker';
+export type Role = 'master' | 'worker' | undefined;
 
 export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   insufficient: 'Draft',
@@ -42,6 +42,18 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   'installing-in-progress': 'Installing',
   installed: 'Installed',
   error: 'Error',
+};
+
+export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
+  name: 'Cluster Name',
+  baseDnsDomain: 'Base DNS Domain',
+  clusterNetworkCidr: 'Cluster Network CIDR',
+  clusterNetworkHostPrefix: 'Cluster Network Host Prefix',
+  serviceNetworkCidr: 'Service Network CIDR',
+  apiVip: 'API Virtual IP',
+  ingressVip: 'Ingress Virtual IP',
+  pullSecret: 'Pull Secret',
+  sshPublicKey: 'SSH Public Key',
 };
 
 export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {

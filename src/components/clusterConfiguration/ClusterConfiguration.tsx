@@ -13,11 +13,12 @@ import {
   GridItem,
   TextVariants,
   Spinner,
+  Button,
 } from '@patternfly/react-core';
-import { ExternalLinkAltIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens';
+import { ExternalLinkAltIcon, WarningTriangleIcon, CheckCircleIcon } from '@patternfly/react-icons';
+import { global_success_color_100 as successColor } from '@patternfly/react-tokens';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import { useDispatch } from 'react-redux';
-import { Netmask } from 'netmask';
 
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import PageSection from '../ui/PageSection';
@@ -25,9 +26,9 @@ import { InputField, TextAreaField, TextAreaSecretField } from '../ui/formik';
 import { ToolbarButton, ToolbarText, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import GridGap from '../ui/GridGap';
 import { EventsModalButton } from '../ui/eventsModal';
-import { Cluster, ClusterUpdateParams, Inventory } from '../../api/types';
+import { Cluster, ClusterUpdateParams } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
-import { handleApiError, stringToJSON, getErrorMessage } from '../../api/utils';
+import { handleApiError, getErrorMessage } from '../../api/utils';
 import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
@@ -45,13 +46,13 @@ import {
   dnsNameValidationSchema,
   hostPrefixValidationSchema,
   vipValidationSchema,
-  pullSecretKnownOrRequired,
 } from '../ui/formik/validationSchemas';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import NetworkConfiguration from './NetworkConfiguration';
-
-const requiredSchema = Yup.mixed().required('Required to install the cluster.');
+import ClusterValidationSection from './ClusterValidationSection';
+import { validateCluster } from './clusterValidations';
+import { getInitialValues, getHostSubnets, findMatchingSubnet } from './utils';
 
 const validationSchema = (hostSubnets: HostSubnets) =>
   Yup.lazy<ClusterConfigurationValues>((values) =>
@@ -68,21 +69,6 @@ const validationSchema = (hostSubnets: HostSubnets) =>
     }),
   );
 
-const installValidationSchema = (hostSubnets: HostSubnets) =>
-  Yup.lazy<ClusterConfigurationValues>((values) =>
-    Yup.object<ClusterConfigurationValues>().shape({
-      name: nameValidationSchema,
-      baseDnsDomain: requiredSchema.concat(dnsNameValidationSchema),
-      clusterNetworkHostPrefix: requiredSchema.concat(hostPrefixValidationSchema),
-      clusterNetworkCidr: requiredSchema.concat(ipBlockValidationSchema),
-      serviceNetworkCidr: requiredSchema.concat(ipBlockValidationSchema),
-      apiVip: requiredSchema.concat(vipValidationSchema(hostSubnets, values)),
-      ingressVip: requiredSchema.concat(vipValidationSchema(hostSubnets, values)),
-      pullSecret: validJSONSchema.concat(pullSecretKnownOrRequired(values)),
-      sshPublicKey: sshPublicKeyValidationSchema,
-    }),
-  );
-
 const sshPublicKeyHelperText = (
   <>
     SSH public key for debugging OpenShift nodes, value of <em>~/.ssh/id_rsa.pub</em> can be
@@ -90,77 +76,15 @@ const sshPublicKeyHelperText = (
   </>
 );
 
-const findMatchingSubnet = (
-  ingressVip: string | undefined,
-  apiVip: string | undefined,
-  hostSubnets: HostSubnets,
-): string => {
-  let matchingSubnet;
-  if (hostSubnets.length) {
-    if (!ingressVip && !apiVip) {
-      matchingSubnet = hostSubnets[0];
-    } else {
-      matchingSubnet = hostSubnets.find((hn) => {
-        let found = true;
-        if (ingressVip) {
-          found = found && hn.subnet.contains(ingressVip);
-        }
-        if (apiVip) {
-          found = found && hn.subnet.contains(apiVip);
-        }
-        return found;
-      });
-    }
-  }
-  return matchingSubnet ? matchingSubnet.humanized : 'No subnets available';
-};
-
-const getHostSubnets = (cluster: Cluster): HostSubnets => {
-  const hostnameMap: { [id: string]: string } =
-    cluster.hosts?.reduce((acc, host) => {
-      const inventory = stringToJSON<Inventory>(host.inventory) || {};
-      acc = {
-        ...acc,
-        [host.id]: inventory.hostname,
-      };
-      return acc;
-    }, {}) || {};
-
-  return (
-    cluster.hostNetworks?.map((hn) => {
-      const subnet = new Netmask(hn.cidr as string);
-      return {
-        subnet,
-        hostIDs: hn.hostIds?.map((id) => hostnameMap[id] || id) || [],
-        humanized: `${subnet.first}-${subnet.last}`,
-      };
-    }) || []
-  );
-};
-
-const getInitialValues = (cluster: Cluster): ClusterConfigurationValues => ({
-  name: cluster.name || '',
-  baseDnsDomain: cluster.baseDnsDomain || '',
-  clusterNetworkCidr: cluster.clusterNetworkCidr || '',
-  clusterNetworkHostPrefix: cluster.clusterNetworkHostPrefix || 0,
-  serviceNetworkCidr: cluster.serviceNetworkCidr || '',
-  apiVip: cluster.apiVip || '',
-  ingressVip: cluster.ingressVip || '',
-  pullSecret: '',
-  sshPublicKey: cluster.sshPublicKey || '',
-  isPullSecretEdit: !cluster.pullSecretSet, // toggles edit mode and drives validation
-  hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, getHostSubnets(cluster)),
-});
-
 type ClusterConfigurationProps = {
   cluster: Cluster;
 };
 
 const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) => {
-  const [submitType, setSubmitType] = React.useState('save');
+  const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
+  const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
   const dispatch = useDispatch();
   const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
-
   const hostSubnets = getHostSubnets(cluster);
 
   const handleSubmit = async (
@@ -178,7 +102,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
       console.error('Failed to perform unique cluster name validation.', e);
     }
 
-    // update the cluster validation
+    // update the cluster configuration
     try {
       let params = _.omit(values, ['hostSubnet', 'isPullSecretEdit']);
       if (!values.isPullSecretEdit) {
@@ -194,35 +118,35 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
         ),
       );
     }
-
-    // start cluster installation
-    if (submitType === 'install') {
-      try {
-        const { data } = await postInstallCluster(cluster.id);
-        dispatch(updateCluster(data));
-      } catch (e) {
-        handleApiError(e, () =>
-          dispatchAlertsAction(
-            addAlert({
-              title: 'Failed to start cluster installation',
-              message: getErrorMessage(e),
-            }),
-          ),
-        );
-      }
-    }
   };
+
+  const handleClusterInstall = async () => {
+    setIsStartingInstallation(true);
+    try {
+      const { data } = await postInstallCluster(cluster.id);
+      dispatch(updateCluster(data));
+    } catch (e) {
+      handleApiError(e, () =>
+        dispatchAlertsAction(
+          addAlert({
+            title: 'Failed to start cluster installation',
+            message: getErrorMessage(e),
+          }),
+        ),
+      );
+    }
+    setIsStartingInstallation(false);
+  };
+
+  const clusterErrors = React.useMemo(() => validateCluster(cluster), [cluster]);
+  const initialValues = getInitialValues(cluster);
 
   return (
     <Formik
-      initialValues={getInitialValues(cluster)}
-      validationSchema={
-        submitType === 'install'
-          ? installValidationSchema(hostSubnets)
-          : validationSchema(hostSubnets)
-      }
+      initialValues={initialValues}
+      validationSchema={validationSchema(hostSubnets)}
       onSubmit={handleSubmit}
-      // initialTouched={_.mapValues(initialValues, () => true)}
+      initialTouched={_.mapValues(initialValues, () => true)}
       validateOnMount
     >
       {({
@@ -230,22 +154,18 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
         isValid,
         dirty,
         submitForm,
+        resetForm,
         setFieldValue,
         values,
+        errors,
       }: FormikProps<ClusterConfigurationValues>) => {
-        // TODO(jtomasek): refactor this into ClusterConfigurationForm component and wrap handleSubmit in React.useCallback
-        const handleSubmitButtonClick = async (e: React.MouseEvent) => {
-          // NOTE(jtomasek): await is not exactly expected here but does the job of ensuring that
-          // submitType is updated when we call submitForm
-          await setSubmitType((e.target as HTMLButtonElement).name);
-          submitForm();
-        };
         if (hostSubnets.length && !hostSubnets.find((hn) => hn.humanized === values.hostSubnet)) {
           setFieldValue(
             'hostSubnet',
             findMatchingSubnet(cluster.ingressVip, cluster.apiVip, hostSubnets),
           );
         }
+
         const onPullSecretToggle = (isHidden: boolean) => {
           if (isHidden) {
             setFieldValue('isPullSecretEdit', false, false);
@@ -269,7 +189,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                       </TextContent>
                       <InputField label="Cluster Name" name="name" isRequired />
                       <InputField
-                        label="Base DNS domain"
+                        label="Base DNS Domain"
                         name="baseDnsDomain"
                         helperText="The base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name."
                         isRequired
@@ -323,12 +243,23 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
               alerts={alerts}
               onClose={(alert: AlertProps) => dispatchAlertsAction(removeAlert(alert.key))}
             />
-            <ClusterToolbar>
+            <ClusterToolbar
+              validationSection={
+                isValidationSectionOpen ? (
+                  <ClusterValidationSection
+                    cluster={cluster}
+                    dirty={dirty}
+                    formErrors={errors}
+                    onClose={() => setIsValidationSectionOpen(false)}
+                  />
+                ) : null
+              }
+            >
               <ToolbarButton
                 variant={ButtonVariant.primary}
                 name="install"
-                onClick={handleSubmitButtonClick}
-                isDisabled={isSubmitting || !isValid}
+                onClick={handleClusterInstall}
+                isDisabled={isStartingInstallation || !isValid || dirty || !!clusterErrors.length}
               >
                 Install Cluster
               </ToolbarButton>
@@ -337,9 +268,16 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                 name="save"
                 variant={ButtonVariant.secondary}
                 isDisabled={isSubmitting || !isValid || !dirty}
-                onClick={handleSubmitButtonClick}
+                onClick={submitForm}
               >
-                Save Changes
+                Validate & Save Changes
+              </ToolbarButton>
+              <ToolbarButton
+                variant={ButtonVariant.secondary}
+                isDisabled={isSubmitting || !dirty}
+                onClick={() => resetForm()}
+              >
+                Discard Changes
               </ToolbarButton>
               <ToolbarButton
                 variant={ButtonVariant.link}
@@ -349,15 +287,36 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
               </ToolbarButton>
               {isSubmitting && (
                 <ToolbarText component={TextVariants.small}>
-                  <Spinner size="sm" />{' '}
-                  {submitType === 'save' ? 'Saving...' : 'Validating & starting installation...'}
+                  <Spinner size="sm" /> Saving changes...
                 </ToolbarText>
               )}
-              {!isValid && (
+              {isStartingInstallation && (
                 <ToolbarText component={TextVariants.small}>
-                  <ExclamationCircleIcon color={dangerColor.value} /> There are validation errors.
+                  <Spinner size="sm" /> Starting installation...
                 </ToolbarText>
               )}
+              <ToolbarText component={TextVariants.small}>
+                {!clusterErrors.length &&
+                !Object.keys(errors).length &&
+                !dirty &&
+                cluster.status === 'ready' ? (
+                  <>
+                    <CheckCircleIcon color={successColor.value} /> The cluster is ready to be
+                    installed.
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant={ButtonVariant.link}
+                      onClick={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
+                      isInline
+                    >
+                      <WarningTriangleIcon color={warningColor.value} />{' '}
+                      <small>The cluster is not ready to be installed yet</small>
+                    </Button>
+                  </>
+                )}
+              </ToolbarText>
               <ToolbarSecondaryGroup>
                 <EventsModalButton
                   entityKind="cluster"
