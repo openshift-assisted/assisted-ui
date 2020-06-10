@@ -16,7 +16,7 @@ const getUrl = (clusterId: Cluster['id'], status: Cluster['status']) =>
 
 const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({ clusterId, status }) => {
   return (
-    <GridItem span={12} lg={10} xl={6}>
+    <GridItem>
       <Button variant={ButtonVariant.secondary} onClick={() => saveAs(getUrl(clusterId, status))}>
         Download kubeconfig
       </Button>
