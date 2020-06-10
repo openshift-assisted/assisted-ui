@@ -115,15 +115,7 @@ const findMatchingSubnet = (
   return matchingSubnet ? matchingSubnet.humanized : 'No subnets available';
 };
 
-type ClusterConfigurationProps = {
-  cluster: Cluster;
-};
-
-const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) => {
-  const [submitType, setSubmitType] = React.useState('save');
-  const dispatch = useDispatch();
-  const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
-
+const getHostSubnets = (cluster: Cluster): HostSubnets => {
   const hostnameMap: { [id: string]: string } =
     cluster.hosts?.reduce((acc, host) => {
       const inventory = stringToJSON<Inventory>(host.inventory) || {};
@@ -134,7 +126,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
       return acc;
     }, {}) || {};
 
-  const hostSubnets: HostSubnets =
+  return (
     cluster.hostNetworks?.map((hn) => {
       const subnet = new Netmask(hn.cidr as string);
       return {
@@ -142,21 +134,34 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
         hostIDs: hn.hostIds?.map((id) => hostnameMap[id] || id) || [],
         humanized: `${subnet.first}-${subnet.last}`,
       };
-    }) || [];
+    }) || []
+  );
+};
 
-  const initialValues: ClusterConfigurationValues = {
-    name: cluster.name || '',
-    baseDnsDomain: cluster.baseDnsDomain || '',
-    clusterNetworkCidr: cluster.clusterNetworkCidr || '',
-    clusterNetworkHostPrefix: cluster.clusterNetworkHostPrefix || 0,
-    serviceNetworkCidr: cluster.serviceNetworkCidr || '',
-    apiVip: cluster.apiVip || '',
-    ingressVip: cluster.ingressVip || '',
-    pullSecret: '',
-    sshPublicKey: cluster.sshPublicKey || '',
-    isPullSecretEdit: !cluster.pullSecretSet, // toggles edit mode and drives validation
-    hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, hostSubnets),
-  };
+const getInitialValues = (cluster: Cluster): ClusterConfigurationValues => ({
+  name: cluster.name || '',
+  baseDnsDomain: cluster.baseDnsDomain || '',
+  clusterNetworkCidr: cluster.clusterNetworkCidr || '',
+  clusterNetworkHostPrefix: cluster.clusterNetworkHostPrefix || 0,
+  serviceNetworkCidr: cluster.serviceNetworkCidr || '',
+  apiVip: cluster.apiVip || '',
+  ingressVip: cluster.ingressVip || '',
+  pullSecret: '',
+  sshPublicKey: cluster.sshPublicKey || '',
+  isPullSecretEdit: !cluster.pullSecretSet, // toggles edit mode and drives validation
+  hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, getHostSubnets(cluster)),
+});
+
+type ClusterConfigurationProps = {
+  cluster: Cluster;
+};
+
+const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) => {
+  const [submitType, setSubmitType] = React.useState('save');
+  const dispatch = useDispatch();
+  const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
+
+  const hostSubnets = getHostSubnets(cluster);
 
   const handleSubmit = async (
     values: ClusterConfigurationValues,
@@ -180,12 +185,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
         params = _.omit(params, ['pullSecret']);
       }
       const { data } = await patchCluster(cluster.id, params);
-
-      if (values.isPullSecretEdit) {
-        values.isPullSecretEdit = false;
-        values.pullSecret = '';
-      }
-      formikActions.resetForm({ values });
+      formikActions.resetForm({ values: getInitialValues(data) });
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
@@ -215,7 +215,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={getInitialValues(cluster)}
       validationSchema={
         submitType === 'install'
           ? installValidationSchema(hostSubnets)
