@@ -31,14 +31,15 @@ type ConsoleModalProps = WebConsoleHintProps & {
 export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, consoleUrl }) => {
   const clusterUrl = `${cluster.name}.${cluster.baseDnsDomain}`;
   const appsUrl = `apps.${clusterUrl}`;
-  const etcHosts =
-    `${cluster.ingressVip}\t${removeProtocolFromURL(consoleUrl)}\n` +
-    `${cluster.ingressVip}\toauth-openshift.${appsUrl}\n` +
-    `${cluster.ingressVip}\tgrafana-openshift-monitoring.${appsUrl}\n` +
-    `${cluster.ingressVip}\tprometheus-k8s-openshift-monitoring.${appsUrl}\n` +
-    `${cluster.ingressVip}\tthanos-querier-openshift-monitoring.${appsUrl}\n` +
-    `${cluster.ingressVip}\talertmanager-main-openshift-monitoring.${appsUrl}\n` +
-    `${cluster.apiVip}\tapi.${clusterUrl}\n`;
+  const etcHosts = [
+    `${cluster.ingressVip}\t${removeProtocolFromURL(consoleUrl)}`,
+    `${cluster.ingressVip}\toauth-openshift.${appsUrl}`,
+    `${cluster.ingressVip}\tgrafana-openshift-monitoring.${appsUrl}`,
+    `${cluster.ingressVip}\tprometheus-k8s-openshift-monitoring.${appsUrl}`,
+    `${cluster.ingressVip}\tthanos-querier-openshift-monitoring.${appsUrl}`,
+    `${cluster.ingressVip}\talertmanager-main-openshift-monitoring.${appsUrl}`,
+    `${cluster.apiVip}\tapi.${clusterUrl}`,
+  ];
 
   return (
     <TextContent>
@@ -49,7 +50,11 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
       <TextList>
         <TextListItem>
           Update your local /etc/hosts or /etc/resolve.conf files to resolve:
-          <Text component="pre">{etcHosts}</Text>
+          <Text component="p">
+            {etcHosts.map((item) => (
+              <div key={item}>{item}</div>
+            ))}
+          </Text>
         </TextListItem>
         <TextListItem>
           Contact your network administrator to configure this resolution in an external DNS server.
