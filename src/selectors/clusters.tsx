@@ -5,7 +5,7 @@ import { ClusterTableRows } from '../types/clusters';
 import { Cluster } from '../api/types';
 import { ResourceUIState } from '../types';
 import { Link } from 'react-router-dom';
-import { IRow } from '@patternfly/react-table';
+import { IRow, IRowData } from '@patternfly/react-table';
 import { RootState } from '../store/rootReducer';
 import { HumanizedSortable } from '../components/ui/table/utils';
 import ClusterStatus, { getClusterStatusText } from '../components/clusters/ClusterStatus';
@@ -42,7 +42,7 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
       {
         title: <ClusterStatus cluster={cluster} />,
         sortableValue: getClusterStatusText(cluster),
-      },
+      } as HumanizedSortable,
       {
         title: hostsCount.toString(),
         sortableValue: hostsCount,
@@ -54,6 +54,9 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
     },
   };
 };
+
+export const getClusterTableStatusCell = (rowData: IRowData) =>
+  rowData?.cells?.[3] as HumanizedSortable;
 
 export const selectClusterTableRows = createSelector(
   selectClusters,
