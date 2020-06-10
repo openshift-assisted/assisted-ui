@@ -5,13 +5,12 @@ import {
   Button,
   ClipboardCopy,
   clipboardCopyFunc,
-  Popover,
 } from '@patternfly/react-core';
-import { ExternalLinkSquareAltIcon, InfoCircleIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
 import { LoadingState, ErrorState } from '../ui/uiState';
 import { Credentials, Cluster } from '../../api/types';
-import { WebConsoleHint } from './ConsoleModal';
+import { TroubleshootingOpenshiftConsoleButton } from './ConsoleModal';
 
 type ClusterCredentialsProps = {
   cluster: Cluster;
@@ -39,7 +38,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
           <dd>
             <Button
               variant="link"
-              icon={<ExternalLinkSquareAltIcon />}
+              icon={<ExternalLinkAltIcon />}
               iconPosition="right"
               isInline
               onClick={() => window.open(credentials.consoleUrl, '_blank', 'noopener')}
@@ -47,15 +46,10 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
               {credentials.consoleUrl}
             </Button>
             <br />
-            <Popover
-              headerContent={<div>OpenShift Web Console troubleshooting</div>}
-              bodyContent={<WebConsoleHint cluster={cluster} consoleUrl={credentials.consoleUrl} />}
-              minWidth="45rem"
-            >
-              <Button variant="link" icon={<InfoCircleIcon />} iconPosition="left" isInline>
-                Not able to access the Web Console?
-              </Button>
-            </Popover>
+            <TroubleshootingOpenshiftConsoleButton
+              consoleUrl={credentials.consoleUrl}
+              cluster={cluster}
+            />
           </dd>
           <dt>Username</dt>
           <dd>{credentials.username}</dd>
