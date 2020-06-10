@@ -9,8 +9,8 @@ const getBrandingDetails = () => {
     case 'redhat':
       return {
         logo: redhatLogo,
-        alt: 'Red Hat OpenShift',
-        href: 'https://www.openshift.com/',
+        alt: 'OpenShift Container Platform Assisted Installer',
+        href: '/', // let's go to Clusters List
       };
     default:
       return {
