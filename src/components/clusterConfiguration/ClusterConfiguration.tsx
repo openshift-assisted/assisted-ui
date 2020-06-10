@@ -123,7 +123,6 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
   const [submitType, setSubmitType] = React.useState('save');
   const dispatch = useDispatch();
   const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
-  const [isPullSecretEdit, setPullSecretEdit] = React.useState(!cluster.pullSecretSet);
 
   const hostnameMap: { [id: string]: string } =
     cluster.hosts?.reduce((acc, host) => {
@@ -155,7 +154,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
     ingressVip: cluster.ingressVip || '',
     pullSecret: '',
     sshPublicKey: cluster.sshPublicKey || '',
-    pullSecretSet: !!cluster.pullSecretSet, // private (read-only), for validations only, set by backend
+    isPullSecretEdit: !cluster.pullSecretSet, // toggles edit mode and drives validation
     hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, hostSubnets),
   };
 
@@ -176,11 +175,18 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
 
     // update the cluster validation
     try {
-      const params = isPullSecretEdit ? values : _.omit(values, ['pullSecret']);
+      let params = _.omit(values, ['hostSubnet', 'isPullSecretEdit']);
+      if (!values.isPullSecretEdit) {
+        params = _.omit(params, ['pullSecret']);
+      }
       const { data } = await patchCluster(cluster.id, params);
+
+      if (values.isPullSecretEdit) {
+        values.isPullSecretEdit = false;
+        values.pullSecret = '';
+      }
       formikActions.resetForm({ values });
       dispatch(updateCluster(data));
-      setPullSecretEdit(false);
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         dispatchAlertsAction(
@@ -242,9 +248,9 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
         }
         const onPullSecretToggle = (isHidden: boolean) => {
           if (isHidden) {
-            setPullSecretEdit(false);
+            setFieldValue('isPullSecretEdit', false, false);
           } else {
-            setPullSecretEdit(true);
+            setFieldValue('isPullSecretEdit', true, false);
             setFieldValue('pullSecret', '', false);
           }
         };
@@ -283,7 +289,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         name="pullSecret"
                         label="Pull Secret"
                         isSet={cluster.pullSecretSet}
-                        isEdit={isPullSecretEdit}
+                        isEdit={values.isPullSecretEdit}
                         onToggle={onPullSecretToggle}
                         helperTextHidden="The pull secret is already set and its value will not be shown for security reasons."
                         helperText={
