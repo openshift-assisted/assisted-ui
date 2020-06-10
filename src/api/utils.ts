@@ -26,6 +26,9 @@ export const handleApiError = <T>(error: AxiosError<T>, onError?: OnError) => {
   }
 };
 
+export const getErrorMessage = (error: AxiosError) =>
+  error.response?.data?.reason || error.response?.data?.message;
+
 const toCamelCase = (str: string): string =>
   str.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('_', ''));
 
@@ -46,3 +49,5 @@ export const stringToJSON = <T>(string: string | undefined): T | undefined => {
   }
   return undefined;
 };
+
+export const removeProtocolFromURL = (url = '') => url.replace(/^(http|https):\/\//, '');

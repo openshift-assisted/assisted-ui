@@ -10,19 +10,16 @@ import {
   TextListItemVariants,
   Text,
   TextVariants,
-  FlexModifiers,
 } from '@patternfly/react-core';
 import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { Inventory } from '../../api/types';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import { DASH } from '../constants';
-import HostEvents from '../fetching/HostEvents';
 
 import './HostRowDetail.css';
 
 type HostDetailProps = {
-  hostId: string;
   inventory: Inventory;
 };
 
@@ -79,10 +76,7 @@ const HostDetailItem: React.FC<HostDetailItemProps> = ({ title, value = '' }) =>
 };
 
 const SectionTitle: React.FC<SectionTitleProps> = ({ title }) => (
-  <FlexItem
-    breakpointMods={[{ modifier: FlexModifiers['full-width'] }]}
-    className="host-row-detail__section"
-  >
+  <FlexItem className="host-row-detail__section" fullWidth={{ default: 'fullWidth' }}>
     <TextContent>
       <Text component={TextVariants.h3}>{title}</Text>
     </TextContent>
@@ -90,7 +84,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({ title }) => (
 );
 
 const SectionColumn: React.FC<SectionColumnProps> = ({ children }) => (
-  <FlexItem breakpointMods={[{ modifier: FlexModifiers['grow'] }]}>
+  <FlexItem grow={{ default: 'grow' }}>
     <TextContent>{children}</TextContent>
   </FlexItem>
 );
@@ -177,7 +171,7 @@ const NicsTable: React.FC<NicsTableProps> = ({ interfaces = [] }) => {
   );
 };
 
-export const HostDetail: React.FC<HostDetailProps> = ({ hostId, inventory }) => {
+export const HostDetail: React.FC<HostDetailProps> = ({ inventory }) => {
   const rowInfo = getHostRowHardwareInfo(inventory);
 
   let bmcAddress = inventory.bmcAddress;
@@ -216,12 +210,6 @@ export const HostDetail: React.FC<HostDetailProps> = ({ hostId, inventory }) => 
       <SectionTitle title={`${(inventory.interfaces || []).length} NICs`} />
       <SectionColumn>
         <NicsTable interfaces={inventory.interfaces} />
-      </SectionColumn>
-
-      {/* TODO(mlibra): will be placed somewhere else */}
-      <SectionTitle title="Events" />
-      <SectionColumn>
-        <HostEvents entityId={hostId} />
       </SectionColumn>
     </Flex>
   );

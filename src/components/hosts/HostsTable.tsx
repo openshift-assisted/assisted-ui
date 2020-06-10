@@ -21,6 +21,7 @@ import { getColSpanRow, rowSorter } from '../ui/table/utils';
 import { Host, Cluster, Inventory } from '../../api/types';
 import { enableClusterHost, disableClusterHost } from '../../api/clusters';
 import { Alerts, Alert } from '../ui/Alerts';
+import { EventsModal } from '../ui/eventsModal';
 import { getHostRowHardwareInfo, getDateTimeCell } from './hardwareInfo';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import HostStatus from './HostStatus';
@@ -82,7 +83,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
       // expandable detail
       // parent will be set after sorting
       fullWidth: true,
-      cells: [{ title: <HostDetail key={id} inventory={inventory} hostId={id} /> }],
+      cells: [{ title: <HostDetail key={id} inventory={inventory} /> }],
       key: `${host.id}-detail`,
     },
   ];
@@ -100,10 +101,11 @@ const HostsTableEmptyState: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 
 const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
+  const [showEventsModal, setShowEventsModal] = React.useState<Host['id']>('');
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
   const [alerts, setAlerts] = React.useState([] as Alert[]);
   const [sortBy, setSortBy] = React.useState({
-    index: 2, // Role-column
+    index: 1, // Hostname-column
     direction: SortByDirection.asc,
   } as ISortBy);
   const dispatch = useDispatch();
@@ -196,6 +198,14 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     [cluster.id, dispatch, addAlert],
   );
 
+  const onViewHostEvents = React.useCallback(
+    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+      const hostId = rowData.extraData.id;
+      setShowEventsModal(hostId);
+    },
+    [],
+  );
+
   const actionResolver = React.useCallback(
     (rowData: IRowData) => {
       const host = rowData.extraData;
@@ -217,10 +227,14 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
           onClick: onHostDisable,
         });
       }
+      actions.push({
+        title: 'View Host Events History',
+        onClick: onViewHostEvents,
+      });
 
       return actions;
     },
-    [onHostEnable, onHostDisable],
+    [onHostEnable, onHostDisable, onViewHostEvents],
   );
 
   const onSort: OnSort = React.useCallback(
@@ -250,6 +264,13 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         <TableHeader />
         <TableBody rowKey={rowKey} />
       </Table>
+      <EventsModal
+        title="Host Events"
+        entityKind="host"
+        entityId={showEventsModal}
+        onClose={() => setShowEventsModal('')}
+        isOpen={!!showEventsModal}
+      />
       <Alerts alerts={alerts} className="host-table-alerts" />
     </>
   );

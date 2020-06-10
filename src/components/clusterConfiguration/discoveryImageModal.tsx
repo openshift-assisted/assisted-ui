@@ -12,6 +12,7 @@ import {
   AlertVariant,
   Alert,
   AlertActionCloseButton,
+  ModalVariant,
 } from '@patternfly/react-core';
 import { saveAs } from 'file-saver';
 import { ToolbarButton } from '../ui/Toolbar';
@@ -20,7 +21,7 @@ import { Formik, FormikHelpers } from 'formik';
 import { createClusterDownloadsImage, getClusterDownloadsImageUrl } from '../../api/clusters';
 import { useParams } from 'react-router-dom';
 import { LoadingState } from '../ui/uiState';
-import { handleApiError } from '../../api/utils';
+import { handleApiError, getErrorMessage } from '../../api/utils';
 import { ImageCreateParams, ImageInfo } from '../../api/types';
 import { sshPublicKeyValidationSchema } from '../ui/formik/validationSchemas';
 
@@ -86,7 +87,7 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
           formikActions.setStatus({
             error: {
               title: 'Failed to download the discovery Image',
-              message: error.response?.data?.reason,
+              message: getErrorMessage(error),
             },
           });
         });
@@ -99,8 +100,7 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
       title="Download discovery ISO"
       isOpen={true}
       onClose={closeModal}
-      isFooterLeftAligned
-      isSmall
+      variant={ModalVariant.small}
     >
       <Formik
         initialValues={{ proxyUrl, sshPublicKey } as ImageCreateParams}
@@ -125,19 +125,21 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
                   <Alert
                     variant={AlertVariant.danger}
                     title={status.error.title}
-                    action={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
+                    actionClose={
+                      <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
+                    }
                     isInline
                   >
                     {status.error.message}
                   </Alert>
                 )}
                 <TextContent>
-                  <Text component="small">
+                  <Text component="p">
                     Hosts must be connected to the internet to form a cluster using this installer.
-                    If hosts are behind a firewall that requires use of a proxy, provide proxy URL
-                    below.
+                    If hosts are behind a firewall that requires the use of a proxy, provide the
+                    proxy URL below.
                   </Text>
-                  <Text component="small">
+                  <Text component="p">
                     Each host will need a valid IP address assigned by a DHCP server with DNS
                     records that fully resolve.
                   </Text>
@@ -153,7 +155,7 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
                   name="sshPublicKey"
                   helperText="SSH public key for debugging the installation"
                 />
-                <ModalBoxFooter isLeftAligned>
+                <ModalBoxFooter>
                   <Button key="submit" type="submit">
                     Download Discovery ISO
                   </Button>

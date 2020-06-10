@@ -22,15 +22,14 @@ const InputField: React.FC<InputFieldProps> = ({
       label={label}
       helperText={helperText}
       helperTextInvalid={errorMessage}
-      isValid={isValid}
+      validated={isValid ? 'default' : 'error'}
       isRequired={isRequired}
     >
       <TextInput
         {...field}
         {...props}
-        css={{}} // TODO(jtomasek): remove this once it is not required
         id={fieldId}
-        isValid={isValid}
+        validated={isValid ? 'default' : 'error'}
         isRequired={isRequired}
         aria-describedby={`${fieldId}-helper`}
         onChange={(value, event) => {

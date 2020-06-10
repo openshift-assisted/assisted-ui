@@ -16,6 +16,10 @@ import { Cluster } from '../../api/types';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
 import { getHumanizedDateTime } from '../ui/utils';
 
+type ClusterStatusProps = {
+  cluster: Cluster;
+};
+
 const getStatusIcon = (status: Cluster['status']) => {
   if (status === 'insufficient') return <WarningTriangleIcon color={warningColor.value} />;
   if (status === 'ready') return <CheckCircleIcon color={okColor.value} />;
@@ -25,13 +29,12 @@ const getStatusIcon = (status: Cluster['status']) => {
   return <UnknownIcon />;
 };
 
-type ClusterStatusProps = {
-  cluster: Cluster;
-};
+export const getClusterStatusText = (cluster: Cluster) =>
+  CLUSTER_STATUS_LABELS[cluster.status] || cluster.status;
 
 const ClusterStatus: React.FC<ClusterStatusProps> = ({ cluster }) => {
   const { status, statusInfo, statusUpdatedAt } = cluster;
-  const title = CLUSTER_STATUS_LABELS[status];
+  const title = getClusterStatusText(cluster);
   const icon = getStatusIcon(status);
   if (statusInfo) {
     return (

@@ -8,6 +8,7 @@ import {
   AlertActionCloseButton,
   Modal,
   ModalBoxFooter,
+  ModalVariant,
 } from '@patternfly/react-core';
 import { uniqueNamesGenerator, Config, adjectives, colors, animals } from 'unique-names-generator';
 import * as Yup from 'yup';
@@ -18,7 +19,7 @@ import { Formik, FormikHelpers } from 'formik';
 import { OPENSHIFT_VERSION_OPTIONS } from '../../config/constants';
 import { ClusterCreateParams } from '../../api/types';
 import { InputField, SelectField } from '../ui/formik';
-import { handleApiError } from '../../api/utils';
+import { handleApiError, getErrorMessage } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
 import { nameValidationSchema } from '../ui/formik/validationSchemas';
 
@@ -87,7 +88,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
     } catch (e) {
       handleApiError<ClusterCreateParams>(e, () =>
         formikActions.setStatus({
-          error: { title: 'Failed to create new cluster', message: e.response?.data?.reason },
+          error: { title: 'Failed to create new cluster', message: getErrorMessage(e) },
         }),
       );
     }
@@ -98,8 +99,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
       title="New Bare Metal OpenShift Cluster"
       isOpen={true}
       onClose={closeModal}
-      isFooterLeftAligned
-      isSmall
+      variant={ModalVariant.small}
     >
       <Formik
         initialValues={{
@@ -116,7 +116,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
               <Alert
                 variant={AlertVariant.danger}
                 title={status.error.title}
-                action={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
+                actionClose={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
                 isInline
               >
                 {status.error.message}
@@ -135,7 +135,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
                 />
               </>
             )}
-            <ModalBoxFooter isLeftAligned>
+            <ModalBoxFooter>
               <Button
                 type="submit"
                 variant={ButtonVariant.primary}

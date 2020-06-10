@@ -18,7 +18,7 @@ export const CLUSTER_MANAGER_SITE_LINK =
 export const getProductBrandingCode = () => 'redhat';
 
 export const POLLING_INTERVAL = 10 * 1000;
-export const EVENTS_POLLING_INTERVAL = 60 * 1000;
+export const EVENTS_POLLING_INTERVAL = 10 * 1000;
 
 export const HOST_ROLES = ['worker', 'master'];
 // Without undefined. Otherwise must conform generated Host['roles'] - see api/types.ts

@@ -11,16 +11,18 @@ import {
 import { Cluster, Credentials } from '../../api/types';
 import { getClusterCredentials } from '../../api/clusters';
 import PageSection from '../ui/PageSection';
+import { EventsModalButton } from '../ui/eventsModal';
 import HostsTable from '../hosts/HostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
-import { ToolbarButton } from '../ui/Toolbar';
+import { ToolbarButton, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import ClusterProgress from './ClusterProgress';
 import ClusterCredentials from './ClusterCredentials';
 import ClusterInstallationError from './ClusterInstallationError';
 
 import './ClusterDetail.css';
-import ClusterEvents from '../fetching/ClusterEvents';
+import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
+import KubeconfigDownload from './KubeconfigDownload';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -53,7 +55,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
     <>
       <ClusterBreadcrumbs clusterName={cluster.name} />
       <PageSection variant={PageSectionVariants.light} isMain>
-        <Grid gutter="lg">
+        <Grid hasGutter>
           <GridItem>
             <TextContent>
               <Text component="h1">{cluster.name}</Text>
@@ -75,23 +77,18 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
           )}
           {cluster.status === 'installed' && (
             <ClusterCredentials
-              clusterID={cluster.id}
+              cluster={cluster}
               credentials={credentials}
               error={!!credentialsError}
               retry={fetchCredentials}
             />
           )}
+          <KubeconfigDownload status={cluster.status} clusterId={cluster.id} />
           <GridItem>
             <TextContent>
               <Text component="h2">Bare Metal Inventory</Text>
             </TextContent>
             <HostsTable cluster={cluster} />
-          </GridItem>
-          <GridItem>
-            <TextContent>
-              <Text component="h2">Cluster Events</Text>
-            </TextContent>
-            <ClusterEvents entityId={cluster.id} />
           </GridItem>
         </Grid>
       </PageSection>
@@ -105,14 +102,11 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
         )} */
         }
         {cluster.status === 'installed' && (
-          <ToolbarButton
-            type="button"
-            variant={ButtonVariant.primary}
+          <LaunchOpenshiftConsoleButton
             isDisabled={!credentials || !!credentialsError}
-            onClick={() => window.open(credentials?.consoleUrl, '_blank', 'noopener')}
-          >
-            Launch OpenShift Console
-          </ToolbarButton>
+            cluster={cluster}
+            consoleUrl={credentials?.consoleUrl}
+          />
         )}
         <ToolbarButton
           variant={ButtonVariant.link}
@@ -120,6 +114,17 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
         >
           Close
         </ToolbarButton>
+        <ToolbarSecondaryGroup>
+          <EventsModalButton
+            entityKind="cluster"
+            entityId={cluster.id}
+            title="Cluster Events"
+            variant={ButtonVariant.link}
+            style={{ textAlign: 'right' }}
+          >
+            View Cluster Events History
+          </EventsModalButton>
+        </ToolbarSecondaryGroup>
       </ClusterToolbar>
     </>
   );
