@@ -18,7 +18,12 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster }) => {
         </Text>
         <Text component="p">
           Boot the discovery ISO on hardware that should become part of this bare metal cluster.
-          Hosts connected to the internet will automatically appear below.
+          Hosts connected to the internet will be inspected and automatically appear below.
+        </Text>
+        <Text component="p">
+          Three master hosts are required with at least 4 CPU cores, 16 GB of RAM, and 120 GB of
+          filesystem storage each. Two or more additional worker hosts are recommended with at least
+          2 CPU cores, 8 GB of RAM, and 120 GB of filesystem storage each.
         </Text>
       </TextContent>
       <HostsTable cluster={cluster} />
