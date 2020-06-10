@@ -7,7 +7,7 @@ import {
   clipboardCopyFunc,
   Popover,
 } from '@patternfly/react-core';
-import { ExternalLinkSquareAltIcon, InfoCircleIcon } from '@patternfly/react-icons';
+import { InfoCircleIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
 
 import { LoadingState, ErrorState } from '../ui/uiState';
 import { Credentials, Cluster } from '../../api/types';
@@ -39,7 +39,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
           <dd>
             <Button
               variant="link"
-              icon={<ExternalLinkSquareAltIcon />}
+              icon={<ExternalLinkAltIcon />}
               iconPosition="right"
               isInline
               onClick={() => window.open(credentials.consoleUrl, '_blank', 'noopener')}
