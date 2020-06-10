@@ -32,11 +32,14 @@ const getProgressPercent = (hosts: Host[] = []) => {
     (steps, host) => steps + getHostInstallationSteps(host.role, host.bootstrap).length,
     0,
   );
-  const completedSteps = accountedHosts.reduce(
-    (steps, host) =>
-      steps + (getHostInstallationSteps(host.role, host.bootstrap).indexOf(host.statusInfo) + 1),
-    0,
-  );
+  const completedSteps = accountedHosts.reduce((steps, host) => {
+    const hostInstallationSteps = getHostInstallationSteps(host.role, host.bootstrap);
+    if (['installed', 'error'].includes(host.status)) {
+      return steps + hostInstallationSteps.length;
+    } else {
+      return steps + (hostInstallationSteps.indexOf(host.statusInfo) + 1);
+    }
+  }, 0);
   return (completedSteps / totalSteps) * 100;
 };
 
