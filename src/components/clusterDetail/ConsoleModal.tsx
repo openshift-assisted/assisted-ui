@@ -12,6 +12,7 @@ import {
 import { Cluster } from '../../api/types';
 import { removeProtocolFromURL } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 
 type WebConsoleHintProps = {
   cluster: Cluster;
@@ -75,6 +76,33 @@ export const LaunchOpenshiftConsoleButton: React.FC<LaunchOpenshiftConsoleButton
       >
         Launch OpenShift Console
       </ToolbarButton>
+      <ConsoleModal
+        closeModal={() => setOpen(false)}
+        consoleUrl={consoleUrl}
+        cluster={cluster}
+        isOpen={isOpen}
+      />
+    </>
+  );
+};
+
+export const TroubleshootingOpenshiftConsoleButton: React.FC<WebConsoleHintProps> = ({
+  cluster,
+  consoleUrl,
+}) => {
+  const [isOpen, setOpen] = React.useState(false);
+
+  return (
+    <>
+      <Button
+        variant="link"
+        icon={<InfoCircleIcon />}
+        iconPosition="left"
+        isInline
+        onClick={() => setOpen(true)}
+      >
+        Not able to access the Web Console?
+      </Button>
       <ConsoleModal
         closeModal={() => setOpen(false)}
         consoleUrl={consoleUrl}
