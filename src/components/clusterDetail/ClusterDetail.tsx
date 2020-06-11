@@ -7,6 +7,10 @@ import {
   ButtonVariant,
   GridItem,
   Grid,
+  TextList,
+  TextListVariants,
+  TextListItem,
+  TextListItemVariants,
 } from '@patternfly/react-core';
 import { Cluster, Credentials } from '../../api/types';
 import { getClusterCredentials } from '../../api/clusters';
@@ -19,14 +23,62 @@ import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import ClusterProgress from './ClusterProgress';
 import ClusterCredentials from './ClusterCredentials';
 import ClusterInstallationError from './ClusterInstallationError';
-
-import './ClusterDetail.css';
 import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
 import KubeconfigDownload from './KubeconfigDownload';
+import { getHumanizedDateTime } from '../ui/utils';
+import { DASH } from '../constants';
+
+import './ClusterDetail.css';
 
 type ClusterDetailProps = {
   cluster: Cluster;
 };
+
+const ClusterProperties: React.FC<ClusterDetailProps> = ({ cluster }) => (
+  <>
+    <GridItem>
+      <TextContent>
+        <Text component="h2">Cluster Details</Text>
+      </TextContent>
+    </GridItem>
+    <GridItem span={6}>
+      <TextContent>
+        <TextList component={TextListVariants.dl} className="cluster-detail__details-list">
+          <TextListItem component={TextListItemVariants.dt}>OpenShift version</TextListItem>
+          <TextListItem component={TextListItemVariants.dd}>
+            {cluster.openshiftVersion}
+          </TextListItem>
+
+          <TextListItem component={TextListItemVariants.dt}>Installation started At</TextListItem>
+          <TextListItem component={TextListItemVariants.dd}>
+            {getHumanizedDateTime(cluster.installStartedAt)}
+          </TextListItem>
+
+          <TextListItem component={TextListItemVariants.dt}>Installation finished At</TextListItem>
+          <TextListItem component={TextListItemVariants.dd}>
+            {cluster.status === 'installed'
+              ? getHumanizedDateTime(cluster.installCompletedAt)
+              : DASH}
+          </TextListItem>
+        </TextList>
+      </TextContent>
+    </GridItem>
+    <GridItem span={6}>
+      <TextContent>
+        <TextList className="cluster-detail__details-list">
+          <TextListItem component={TextListItemVariants.dt}>Base DNS domain</TextListItem>
+          <TextListItem component={TextListItemVariants.dd}>{cluster.baseDnsDomain}</TextListItem>
+
+          <TextListItem component={TextListItemVariants.dt}>API virtual IP</TextListItem>
+          <TextListItem component={TextListItemVariants.dd}>{cluster.apiVip}</TextListItem>
+
+          <TextListItem component={TextListItemVariants.dt}>Ingress virtual IP</TextListItem>
+          <TextListItem component={TextListItemVariants.dd}>{cluster.ingressVip}</TextListItem>
+        </TextList>
+      </TextContent>
+    </GridItem>
+  </>
+);
 
 const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const [credentials, setCredentials] = React.useState<Credentials>();
@@ -64,12 +116,12 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
           <GridItem>
             <TextContent>
               <Text component="h2">Creation Progress</Text>
-              <dl className="cluster-detail__details-list">
-                <dt>Creation status</dt>
-                <dd>
+              <TextList component={TextListVariants.dl} className="cluster-detail__details-list">
+                <TextListItem component={TextListItemVariants.dt}>Creation status</TextListItem>
+                <TextListItem component={TextListItemVariants.dd}>
                   <ClusterProgress cluster={cluster} />
-                </dd>
-              </dl>
+                </TextListItem>
+              </TextList>
             </TextContent>
           </GridItem>
           {cluster.status === 'error' && (
@@ -90,6 +142,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             </TextContent>
             <HostsTable cluster={cluster} />
           </GridItem>
+          <ClusterProperties cluster={cluster} />
         </Grid>
       </PageSection>
       <ClusterToolbar>
