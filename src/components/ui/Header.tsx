@@ -23,10 +23,7 @@ const getBrandingDetails = () => {
 
 const Header: React.FC = () => {
   const branding = getBrandingDetails();
-  const logoProps = {
-    href: branding.href,
-    target: '_blank',
-  };
+  const logoProps = { href: branding.href };
   return (
     <PageHeader
       logo={<Brand src={branding.logo} alt={branding.alt} />}
