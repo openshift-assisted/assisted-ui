@@ -58,6 +58,13 @@ const ClusterProperties: React.FC<ClusterDetailProps> = ({ cluster }) => (
         <DetailItem title="Ingress virtual IP" value={cluster.ingressVip} />
       </DetailList>
     </GridItem>
+    <GridItem md={6} lg={4} xl={3}>
+      <DetailList>
+        <DetailItem title="Cluster network CIDR" value={cluster.clusterNetworkCidr} />
+        <DetailItem title="Cluster network host prefix" value={cluster.clusterNetworkHostPrefix} />
+        <DetailItem title="Service network CIDR" value={cluster.serviceNetworkCidr} />
+      </DetailList>
+    </GridItem>
   </>
 );
 
