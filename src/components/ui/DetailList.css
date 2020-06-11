@@ -1,7 +1,7 @@
-.cluster-detail__details-list {
+.detail-list {
   display: block !important;
 }
 
-.cluster-detail__details-list dd {
+.detail-list dd {
   margin-bottom: var(--pf-global--spacer--sm);
 }

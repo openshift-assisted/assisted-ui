@@ -7,10 +7,6 @@ import {
   ButtonVariant,
   GridItem,
   Grid,
-  TextList,
-  TextListVariants,
-  TextListItem,
-  TextListItemVariants,
 } from '@patternfly/react-core';
 import { Cluster, Credentials } from '../../api/types';
 import { getClusterCredentials } from '../../api/clusters';
@@ -27,8 +23,7 @@ import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
 import KubeconfigDownload from './KubeconfigDownload';
 import { getHumanizedDateTime } from '../ui/utils';
 import { DASH } from '../constants';
-
-import './ClusterDetail.css';
+import { DetailList, DetailItem } from '../ui/DetailList';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -42,40 +37,26 @@ const ClusterProperties: React.FC<ClusterDetailProps> = ({ cluster }) => (
       </TextContent>
     </GridItem>
     <GridItem span={6}>
-      <TextContent>
-        <TextList component={TextListVariants.dl} className="cluster-detail__details-list">
-          <TextListItem component={TextListItemVariants.dt}>OpenShift version</TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            {cluster.openshiftVersion}
-          </TextListItem>
-
-          <TextListItem component={TextListItemVariants.dt}>Installation started At</TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            {getHumanizedDateTime(cluster.installStartedAt)}
-          </TextListItem>
-
-          <TextListItem component={TextListItemVariants.dt}>Installation finished At</TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            {cluster.status === 'installed'
-              ? getHumanizedDateTime(cluster.installCompletedAt)
-              : DASH}
-          </TextListItem>
-        </TextList>
-      </TextContent>
+      <DetailList>
+        <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
+        <DetailItem
+          title="Installation started At"
+          value={getHumanizedDateTime(cluster.installStartedAt)}
+        />
+        <DetailItem
+          title="Installation finished At"
+          value={
+            cluster.status === 'installed' ? getHumanizedDateTime(cluster.installCompletedAt) : DASH
+          }
+        />
+      </DetailList>
     </GridItem>
     <GridItem span={6}>
-      <TextContent>
-        <TextList className="cluster-detail__details-list">
-          <TextListItem component={TextListItemVariants.dt}>Base DNS domain</TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>{cluster.baseDnsDomain}</TextListItem>
-
-          <TextListItem component={TextListItemVariants.dt}>API virtual IP</TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>{cluster.apiVip}</TextListItem>
-
-          <TextListItem component={TextListItemVariants.dt}>Ingress virtual IP</TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>{cluster.ingressVip}</TextListItem>
-        </TextList>
-      </TextContent>
+      <DetailList>
+        <DetailItem title="Base DNS domain" value={cluster.baseDnsDomain} />
+        <DetailItem title="API virtual IP" value={cluster.apiVip} />
+        <DetailItem title="Ingress virtual IP" value={cluster.ingressVip} />
+      </DetailList>
     </GridItem>
   </>
 );
@@ -114,15 +95,9 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             </TextContent>
           </GridItem>
           <GridItem>
-            <TextContent>
-              <Text component="h2">Creation Progress</Text>
-              <TextList component={TextListVariants.dl} className="cluster-detail__details-list">
-                <TextListItem component={TextListItemVariants.dt}>Creation status</TextListItem>
-                <TextListItem component={TextListItemVariants.dd}>
-                  <ClusterProgress cluster={cluster} />
-                </TextListItem>
-              </TextList>
-            </TextContent>
+            <DetailList title="Creation Progress">
+              <DetailItem title="Creation status" value={<ClusterProgress cluster={cluster} />} />
+            </DetailList>
           </GridItem>
           {cluster.status === 'error' && (
             <ClusterInstallationError statusInfo={cluster.statusInfo} />

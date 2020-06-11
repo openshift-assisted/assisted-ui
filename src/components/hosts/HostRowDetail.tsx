@@ -1,36 +1,15 @@
-import React, { ReactChild } from 'react';
+import React from 'react';
 import Humanize from 'humanize-plus';
-import {
-  Flex,
-  FlexItem,
-  TextContent,
-  TextList,
-  TextListItem,
-  TextListVariants,
-  TextListItemVariants,
-  Text,
-  TextVariants,
-} from '@patternfly/react-core';
+import { TextContent, Text, TextVariants, Grid, GridItem } from '@patternfly/react-core';
 import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { Inventory } from '../../api/types';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import { DASH } from '../constants';
-
-import './HostRowDetail.css';
+import { DetailList, DetailListProps, DetailItem } from '../ui/DetailList';
 
 type HostDetailProps = {
   inventory: Inventory;
-};
-
-type HostDetailItemProps = {
-  title: string;
-  value?:
-    | {
-        title: string;
-        value?: string;
-      }[]
-    | React.ReactNode;
 };
 
 type SectionTitleProps = {
@@ -38,7 +17,7 @@ type SectionTitleProps = {
 };
 
 type SectionColumnProps = {
-  children: ReactChild | (ReactChild | undefined)[];
+  children: DetailListProps['children'];
 };
 
 type DisksTableProps = {
@@ -49,44 +28,18 @@ type NicsTableProps = {
   interfaces?: Inventory['interfaces'];
 };
 
-const HostDetailItem: React.FC<HostDetailItemProps> = ({ title, value = '' }) => {
-  return (
-    <>
-      <Text component={TextVariants.h6} className="host-row-detail-item__title">
-        {title}
-      </Text>
-      <div>
-        {Array.isArray(value) ? (
-          <TextList component={TextListVariants.dl}>
-            {value.map((item) => [
-              <TextListItem key={item.title} component={TextListItemVariants.dt}>
-                {item.title}
-              </TextListItem>,
-              <TextListItem key={`dd-${item.title}`} component={TextListItemVariants.dd}>
-                {item.value}
-              </TextListItem>,
-            ])}
-          </TextList>
-        ) : (
-          value
-        )}
-      </div>
-    </>
-  );
-};
-
 const SectionTitle: React.FC<SectionTitleProps> = ({ title }) => (
-  <FlexItem className="host-row-detail__section" fullWidth={{ default: 'fullWidth' }}>
+  <GridItem>
     <TextContent>
       <Text component={TextVariants.h3}>{title}</Text>
     </TextContent>
-  </FlexItem>
+  </GridItem>
 );
 
 const SectionColumn: React.FC<SectionColumnProps> = ({ children }) => (
-  <FlexItem grow={{ default: 'grow' }}>
-    <TextContent>{children}</TextContent>
-  </FlexItem>
+  <GridItem span={4}>
+    <DetailList>{children}</DetailList>
+  </GridItem>
 );
 
 const diskColumns = [
@@ -181,24 +134,24 @@ export const HostDetail: React.FC<HostDetailProps> = ({ inventory }) => {
   bmcAddress = bmcAddress || DASH;
 
   return (
-    <Flex className="host-row-detail">
+    <Grid hasGutter>
       <SectionTitle title="Host Details" />
       <SectionColumn>
-        <HostDetailItem title="Manufacturer" value={inventory.systemVendor?.manufacturer || DASH} />
-        <HostDetailItem title="Product" value={inventory.systemVendor?.productName || DASH} />
-        <HostDetailItem title="Serial number" value={rowInfo.serialNumber} />
+        <DetailItem title="Manufacturer" value={inventory.systemVendor?.manufacturer || DASH} />
+        <DetailItem title="Product" value={inventory.systemVendor?.productName || DASH} />
+        <DetailItem title="Serial number" value={rowInfo.serialNumber} />
       </SectionColumn>
       <SectionColumn>
-        <HostDetailItem title="CPU architecture" value={inventory.cpu?.architecture || DASH} />
-        <HostDetailItem title="CPU model name" value={inventory.cpu?.modelName || DASH} />
-        <HostDetailItem title="CPU clock speed" value={rowInfo.cpuSpeed} />
+        <DetailItem title="CPU architecture" value={inventory.cpu?.architecture || DASH} />
+        <DetailItem title="CPU model name" value={inventory.cpu?.modelName || DASH} />
+        <DetailItem title="CPU clock speed" value={rowInfo.cpuSpeed} />
       </SectionColumn>
       <SectionColumn>
-        <HostDetailItem title="Memory capacity" value={rowInfo.memory.title} />
-        <HostDetailItem title="BMC address" value={bmcAddress} />
-        <HostDetailItem title="Boot mode" value={inventory.boot?.currentBootMode || DASH} />
+        <DetailItem title="Memory capacity" value={rowInfo.memory.title} />
+        <DetailItem title="BMC address" value={bmcAddress} />
+        <DetailItem title="Boot mode" value={inventory.boot?.currentBootMode || DASH} />
         {inventory.boot?.pxeInterface && (
-          <HostDetailItem title="PXE interface" value={inventory.boot?.pxeInterface} />
+          <DetailItem title="PXE interface" value={inventory.boot?.pxeInterface} />
         )}
       </SectionColumn>
 
@@ -211,6 +164,6 @@ export const HostDetail: React.FC<HostDetailProps> = ({ inventory }) => {
       <SectionColumn>
         <NicsTable interfaces={inventory.interfaces} />
       </SectionColumn>
-    </Flex>
+    </Grid>
   );
 };
