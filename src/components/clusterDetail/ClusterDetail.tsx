@@ -24,6 +24,7 @@ import KubeconfigDownload from './KubeconfigDownload';
 import { getHumanizedDateTime } from '../ui/utils';
 import { DASH } from '../constants';
 import { DetailList, DetailItem } from '../ui/DetailList';
+import FeedbackAlert from './FeedbackAlert';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -111,6 +112,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             />
           )}
           <KubeconfigDownload status={cluster.status} clusterId={cluster.id} />
+          <FeedbackAlert />
           <GridItem>
             <TextContent>
               <Text component="h2">Bare Metal Inventory</Text>
