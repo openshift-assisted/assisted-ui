@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Host, ClusterUpdateParams } from '../../api/types';
 import { SimpleDropdown } from '../ui/SimpleDropdown';
 import { patchCluster } from '../../api/clusters';
-import { HostRolesType, HOST_ROLES } from '../../config/constants';
+import { Role, HOST_ROLES } from '../../config/constants';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { handleApiError } from '../../api/utils';
 
@@ -19,7 +19,7 @@ export const RoleDropdown: React.FC<RoleDropdownProps> = ({ host }) => {
   const setRole = async (role?: string) => {
     const params: ClusterUpdateParams = {};
     setDisabled(true);
-    params.hostsRoles = [{ id, role: role as HostRolesType }];
+    params.hostsRoles = [{ id, role: role as Role }];
     try {
       const { data } = await patchCluster(clusterId as string, params);
       dispatch(updateCluster(data));
