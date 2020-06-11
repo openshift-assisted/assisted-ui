@@ -156,14 +156,14 @@ export const HostDetail: React.FC<HostDetailProps> = ({ inventory }) => {
       </SectionColumn>
 
       <SectionTitle title={`${(inventory.disks || []).length} Disks`} />
-      <SectionColumn>
+      <GridItem>
         <DisksTable disks={inventory.disks} />
-      </SectionColumn>
+      </GridItem>
 
       <SectionTitle title={`${(inventory.interfaces || []).length} NICs`} />
-      <SectionColumn>
+      <GridItem>
         <NicsTable interfaces={inventory.interfaces} />
-      </SectionColumn>
+      </GridItem>
     </Grid>
   );
 };
