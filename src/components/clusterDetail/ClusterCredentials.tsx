@@ -1,16 +1,10 @@
 import React from 'react';
-import {
-  GridItem,
-  TextContent,
-  Button,
-  ClipboardCopy,
-  clipboardCopyFunc,
-} from '@patternfly/react-core';
+import { GridItem, Button, ClipboardCopy, clipboardCopyFunc } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-
 import { LoadingState, ErrorState } from '../ui/uiState';
 import { Credentials, Cluster } from '../../api/types';
 import { TroubleshootingOpenshiftConsoleButton } from './ConsoleModal';
+import { DetailList, DetailItem } from '../ui/DetailList';
 
 type ClusterCredentialsProps = {
   cluster: Cluster;
@@ -32,38 +26,41 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
     credentialsBody = <LoadingState />;
   } else {
     credentialsBody = (
-      <TextContent>
-        <dl className="cluster-detail__details-list">
-          <dt>Web Console URL</dt>
-          <dd>
-            <Button
-              variant="link"
-              icon={<ExternalLinkAltIcon />}
-              iconPosition="right"
-              isInline
-              onClick={() => window.open(credentials.consoleUrl, '_blank', 'noopener')}
-            >
-              {credentials.consoleUrl}
-            </Button>
-            <br />
-            <TroubleshootingOpenshiftConsoleButton
-              consoleUrl={credentials.consoleUrl}
-              cluster={cluster}
-            />
-          </dd>
-          <dt>Username</dt>
-          <dd>{credentials.username}</dd>
-          <dt>Password</dt>
-          <dd>
+      <DetailList>
+        <DetailItem
+          title="Web Console URL"
+          value={
+            <>
+              <Button
+                variant="link"
+                icon={<ExternalLinkAltIcon />}
+                iconPosition="right"
+                isInline
+                onClick={() => window.open(credentials.consoleUrl, '_blank', 'noopener')}
+              >
+                {credentials.consoleUrl}
+              </Button>
+              <br />
+              <TroubleshootingOpenshiftConsoleButton
+                consoleUrl={credentials.consoleUrl}
+                cluster={cluster}
+              />
+            </>
+          }
+        />
+        <DetailItem title="Username" value={credentials.username} />
+        <DetailItem
+          title="Password"
+          value={
             <ClipboardCopy
               isReadOnly
               onCopy={(event) => clipboardCopyFunc(event, credentials.password)}
             >
               &bull;&bull;&bull;&bull;&bull;
             </ClipboardCopy>
-          </dd>
-        </dl>
-      </TextContent>
+          }
+        />
+      </DetailList>
     );
   }
 
