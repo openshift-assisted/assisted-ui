@@ -36,7 +36,7 @@ const ClusterProperties: React.FC<ClusterDetailProps> = ({ cluster }) => (
         <Text component="h2">Cluster Details</Text>
       </TextContent>
     </GridItem>
-    <GridItem span={6}>
+    <GridItem md={6} lg={4} xl={3}>
       <DetailList>
         <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
         <DetailItem
@@ -51,7 +51,7 @@ const ClusterProperties: React.FC<ClusterDetailProps> = ({ cluster }) => (
         />
       </DetailList>
     </GridItem>
-    <GridItem span={6}>
+    <GridItem md={6} lg={4} xl={3}>
       <DetailList>
         <DetailItem title="Base DNS domain" value={cluster.baseDnsDomain} />
         <DetailItem title="API virtual IP" value={cluster.apiVip} />
