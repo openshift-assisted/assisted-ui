@@ -49,9 +49,18 @@ export const validateRequiredFields = (cluster: Cluster) => {
   try {
     validateYupSchema<ClusterConfigurationValues>(values, installValidationSchema, true);
   } catch (err) {
-    const errors = yupToFormErrors(err);
-    const errorFields = Object.keys(errors).map((field: string) => CLUSTER_FIELD_LABELS[field]);
-    return `Not all required cluster properties are configured yet: ${errorFields.join(', ')}.`;
+    if (err instanceof Yup.ValidationError) {
+      const errors = yupToFormErrors(err);
+      const errorFields = Object.keys(errors).map((field: string) => CLUSTER_FIELD_LABELS[field]);
+      return `Not all required cluster properties are configured yet: ${errorFields.join(', ')}.`;
+    } else {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(
+          `Warning: An unhandled error was caught during validation in 'validateRequiredFields'`,
+          err,
+        );
+      }
+    }
   }
 };
 

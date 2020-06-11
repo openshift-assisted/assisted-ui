@@ -8,6 +8,8 @@ import {
   ButtonVariant,
   Split,
   SplitItem,
+  TextList,
+  TextListItem,
 } from '@patternfly/react-core';
 import { TimesIcon } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
@@ -73,11 +75,11 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
               isInline
             >
               {!!errors.length && (
-                <ul>
+                <TextList>
                   {errors.map((error) => (
-                    <li key={error}>{error}</li>
+                    <TextListItem key={error}>{error}</TextListItem>
                   ))}
-                </ul>
+                </TextList>
               )}
             </Alert>
           )}

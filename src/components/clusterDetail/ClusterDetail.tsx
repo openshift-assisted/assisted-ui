@@ -24,6 +24,7 @@ import KubeconfigDownload from './KubeconfigDownload';
 import { getHumanizedDateTime } from '../ui/utils';
 import { DASH } from '../constants';
 import { DetailList, DetailItem } from '../ui/DetailList';
+import FeedbackAlert from './FeedbackAlert';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -36,7 +37,7 @@ const ClusterProperties: React.FC<ClusterDetailProps> = ({ cluster }) => (
         <Text component="h2">Cluster Details</Text>
       </TextContent>
     </GridItem>
-    <GridItem span={6}>
+    <GridItem md={6} lg={4} xl={3}>
       <DetailList>
         <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
         <DetailItem
@@ -51,11 +52,18 @@ const ClusterProperties: React.FC<ClusterDetailProps> = ({ cluster }) => (
         />
       </DetailList>
     </GridItem>
-    <GridItem span={6}>
+    <GridItem md={6} lg={4} xl={3}>
       <DetailList>
         <DetailItem title="Base DNS domain" value={cluster.baseDnsDomain} />
         <DetailItem title="API virtual IP" value={cluster.apiVip} />
         <DetailItem title="Ingress virtual IP" value={cluster.ingressVip} />
+      </DetailList>
+    </GridItem>
+    <GridItem md={6} lg={4} xl={3}>
+      <DetailList>
+        <DetailItem title="Cluster network CIDR" value={cluster.clusterNetworkCidr} />
+        <DetailItem title="Cluster network host prefix" value={cluster.clusterNetworkHostPrefix} />
+        <DetailItem title="Service network CIDR" value={cluster.serviceNetworkCidr} />
       </DetailList>
     </GridItem>
   </>
@@ -111,6 +119,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             />
           )}
           <KubeconfigDownload status={cluster.status} clusterId={cluster.id} />
+          <FeedbackAlert />
           <GridItem>
             <TextContent>
               <Text component="h2">Bare Metal Inventory</Text>

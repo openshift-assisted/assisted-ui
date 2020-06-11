@@ -1,8 +1,9 @@
 import React from 'react';
-import { Brand, PageHeader } from '@patternfly/react-core';
+import { Brand, PageHeader, PageHeaderTools, Button, ButtonVariant } from '@patternfly/react-core';
 import metal3FacetLogo from '../../images/metal3_facet-whitetext.png';
 import redhatLogo from '../../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
-import { getProductBrandingCode } from '../../config/constants';
+import { getProductBrandingCode, FEEDBACK_FORM_LINK } from '../../config/constants';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
 const getBrandingDetails = () => {
   switch (getProductBrandingCode()) {
@@ -28,6 +29,16 @@ const Header: React.FC = () => {
     <PageHeader
       logo={<Brand src={branding.logo} alt={branding.alt} />}
       logoProps={logoProps}
+      headerTools={
+        <PageHeaderTools>
+          <Button
+            variant={ButtonVariant.plain}
+            onClick={() => window.open(FEEDBACK_FORM_LINK, '_blank', 'noopener noreferrer')}
+          >
+            Provide feedback <ExternalLinkAltIcon />
+          </Button>
+        </PageHeaderTools>
+      }
       // toolbar={PageToolbar}
       //avatar={<Avatar src={avatarImg} alt="Avatar image" />}
       // showNavToggle
