@@ -4,7 +4,7 @@ import metal3FacetLogo from '../../images/metal3_facet-whitetext.png';
 import redhatLogo from '../../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
 import { getProductBrandingCode, FEEDBACK_FORM_LINK } from '../../config/constants';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import { VERSION } from '../../config/standalone';
+import AboutModalButton from '../AboutModal';
 
 const getBrandingDetails = () => {
   switch (getProductBrandingCode()) {
@@ -38,7 +38,7 @@ const Header: React.FC = () => {
           >
             Provide feedback <ExternalLinkAltIcon />
           </Button>
-          {VERSION}
+          <AboutModalButton />
         </PageHeaderTools>
       }
       // toolbar={PageToolbar}
