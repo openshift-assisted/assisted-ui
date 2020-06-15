@@ -46,6 +46,15 @@ export const getHostInstallationSteps = (role: Host['role'], bootstrap: Host['bo
       'Rebooting',
       'Done',
     ];
+  } else if (role === 'master') {
+    return [
+      'Starting installation',
+      `Installing as ${role}`,
+      'Writing image to disk',
+      'Rebooting',
+      'Joined',
+      'Done',
+    ];
   } else {
     return [
       'Starting installation',
