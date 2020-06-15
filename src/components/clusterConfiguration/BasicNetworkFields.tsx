@@ -37,7 +37,7 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets }) 
       <InputField
         label="API Virtual IP"
         name="apiVip"
-        helperText="Virtual IP used to reach the OpenShift cluster API."
+        helperText="Virtual IP used to reach the OpenShift cluster API. Make sure that the VIP's are unique and not used by any other device on your network."
         isRequired
         isDisabled={!hostSubnets.length}
       />
