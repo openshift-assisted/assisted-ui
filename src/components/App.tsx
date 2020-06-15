@@ -2,14 +2,12 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { Router, Switch, Route, Redirect } from 'react-router-dom';
 import { Page } from '@patternfly/react-core';
-import { store } from '../store';
+import { store, Clusters, ClusterPage } from 'facet-lib';
 import history from '../history';
 import Header from './ui/Header';
 // import Sidebar from './Sidebar';
 import BackgroundImage from './ui/BackgroundImage';
 import LoginForm from './login/LoginForm';
-import Clusters from './clusters/Clusters';
-import ClusterPage from './clusters/ClusterPage';
 
 import '../styles/index.css';
 

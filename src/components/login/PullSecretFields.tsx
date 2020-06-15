@@ -1,8 +1,6 @@
 import React from 'react';
 import { TextContent, Text } from '@patternfly/react-core';
-
-import ExternalLink from '../ui/ExternalLink';
-import { TextAreaField } from '../ui/formik';
+import { TextAreaField, ExternalLink } from 'facet-lib';
 
 interface PullSecretFieldsProps {
   onProvideCredentials: () => void;

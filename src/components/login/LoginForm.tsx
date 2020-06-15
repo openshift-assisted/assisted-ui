@@ -9,12 +9,10 @@ import {
   Text,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import { ClusterToolbar, PageSection, ToolbarButton, ToolbarText } from 'facet-lib';
 
-import ClusterToolbar from '../clusters/ClusterToolbar';
 import RedHatAccountFields from './RedHatAccountFields';
-import PageSection from '../ui/PageSection';
 import PullSecretFields from './PullSecretFields';
-import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import validationSchema from './validationSchema';
 
 interface LoginValues {
