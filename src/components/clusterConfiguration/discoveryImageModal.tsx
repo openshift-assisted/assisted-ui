@@ -50,7 +50,9 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
 
 const validationSchema = Yup.object().shape({
   proxyUrl: Yup.string().url('Provide a valid URL.'),
-  sshPublicKey: sshPublicKeyValidationSchema,
+  sshPublicKey: sshPublicKeyValidationSchema.required(
+    'SSH key is required for debugging the host registration.',
+  ),
 });
 
 type DiscoveryImageModalProps = {
@@ -153,7 +155,8 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
                 <TextAreaField
                   label="SSH public key"
                   name="sshPublicKey"
-                  helperText="SSH public key for debugging the installation"
+                  helperText="SSH public key for debugging the host registration/installation"
+                  isRequired
                 />
                 <ModalBoxFooter>
                   <Button key="submit" type="submit">
