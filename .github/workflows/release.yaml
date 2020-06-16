@@ -1,0 +1,48 @@
+name: Build and push
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: Install dependencies
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: install
+      - name: Call linter
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: lint
+      - name: Build code
+        uses: borales/actions-yarn@v2.0.0
+        env:
+          NODE_OPTIONS: '--max-old-space-size=8192'
+        with:
+          cmd: build
+      - name: Get tag
+        id: get_tag
+        run: echo ::set-env name=GIT_TAG::${GITHUB_REF/refs\/tags\//}
+      - name: Publish to quay.io
+        uses: elgohr/Publish-Docker-Github-Action@2.14
+        with:
+          name: ocpmetal/ocp-metal-ui
+          username: ${{ secrets.QUAYIO_OCPMETAL_USERNAME }}
+          password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
+          registry: quay.io
+          dockerfile: Dockerfile
+          tags: '${{ env.GIT_TAG }},${{ github.sha }}'
+      - name: Publish integration tests to quay.io
+        uses: elgohr/Publish-Docker-Github-Action@2.14
+        with:
+          name: ocpmetal/ocp-metal-ui-tests
+          username: ${{ secrets.QUAYIO_OCPMETAL_USERNAME }}
+          password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
+          registry: quay.io
+          dockerfile: Dockerfile.cypress
+          tags: '${{ env.GIT_TAG }},${{ github.sha }}'
