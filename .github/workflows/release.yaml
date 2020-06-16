@@ -21,7 +21,7 @@ jobs:
           cmd: lint
       - name: Get tag
         id: get_tag
-        run: echo ::set-env name=GIT_TAG::${GITHUB_REF/refs\/tags\//}
+        run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/tags/}
       - name: Build code
         uses: borales/actions-yarn@v2.0.0
         env:
@@ -38,7 +38,7 @@ jobs:
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile
-          tags: '${{ env.GIT_TAG }},${{ github.sha }}'
+          tags: 'latest,${{ env.GIT_TAG }},${{ github.sha }}'
       - name: Publish integration tests to quay.io
         uses: elgohr/Publish-Docker-Github-Action@2.14
         with:
@@ -47,4 +47,4 @@ jobs:
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile.cypress
-          tags: '${{ env.GIT_TAG }},${{ github.sha }}'
+          tags: 'latest,${{ env.GIT_TAG }},${{ github.sha }}'
