@@ -1,4 +1,4 @@
-name: Build and push
+name: Build and push on merge to master
 
 on:
   push:
