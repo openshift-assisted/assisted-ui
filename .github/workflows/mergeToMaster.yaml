@@ -38,7 +38,7 @@ jobs:
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile
-          tags: 'latest,${{ github.sha }}'
+          tags: 'latestdev,${{ github.sha }}'
       - name: Publish integration tests to quay.io
         uses: elgohr/Publish-Docker-Github-Action@2.14
         with:
@@ -47,4 +47,4 @@ jobs:
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile.cypress
-          tags: 'latest,${{ github.sha }}'
+          tags: 'latestdev,${{ github.sha }}'
