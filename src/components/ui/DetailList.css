@@ -1,7 +1,0 @@
-.detail-list {
-  display: block !important;
-}
-
-.detail-list dd {
-  margin-bottom: var(--pf-global--spacer--sm);
-}

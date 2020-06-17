@@ -1,8 +1,7 @@
 import React from 'react';
 import { TextContent, Text, TextInputTypes } from '@patternfly/react-core';
 
-import ExternalLink from '../ui/ExternalLink';
-import { InputField } from '../ui/formik';
+import { InputField, ExternalLink } from 'facet-lib';
 
 interface RedHatAccountFieldsProps {
   onProvidePullSecret: () => void;
