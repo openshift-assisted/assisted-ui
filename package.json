@@ -66,6 +66,7 @@
     "yup": "^0.28.3"
   },
   "scripts": {
+    "prepare": "./hacks/patch-react-scripts.sh",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
