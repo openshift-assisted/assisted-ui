@@ -9,7 +9,9 @@ import {
 } from '@patternfly/react-core';
 import { GIT_SHA, VERSION, SERVICE_LABELS } from '../config/standalone';
 import redHatLogo from '../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
-import { getVersions, handleApiError } from 'facet-lib';
+import { Api } from 'facet-lib';
+
+const { getVersions, handleApiError } = Api;
 
 export const AboutModalButton: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
