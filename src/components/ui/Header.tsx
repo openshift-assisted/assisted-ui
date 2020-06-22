@@ -1,10 +1,12 @@
 import React from 'react';
 import { Brand, PageHeader, PageHeaderTools, Button, ButtonVariant } from '@patternfly/react-core';
-import { getProductBrandingCode, FEEDBACK_FORM_LINK } from 'facet-lib';
+import { Config } from 'facet-lib';
 import metal3FacetLogo from '../../images/metal3_facet-whitetext.png';
 import redhatLogo from '../../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import AboutModalButton from '../AboutModal';
+
+const { getProductBrandingCode, FEEDBACK_FORM_LINK } = Config;
 
 const getBrandingDetails = () => {
   switch (getProductBrandingCode()) {
