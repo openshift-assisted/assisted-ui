@@ -59,7 +59,6 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
-    "sw2dts": "^2.6.2",
     "typescript": "^3.8.3",
     "unique-names-generator": "^4.2.0",
     "uuid": "^8.1.0",
