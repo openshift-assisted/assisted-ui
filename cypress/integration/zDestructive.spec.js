@@ -7,7 +7,7 @@ import {
 
 // Theese tests changes state of the cluster permanently.
 // If enabled, they are called at last.
-describe('Destructive tests need to be enabled manually', () => {
+describe('Destructive tests at the end', () => {
   // TODO: add more thorough checks for field-validations
   it('Cluster can be installed', () => {
     const installClusterButtonSelector = '.pf-c-toolbar__content-section > :nth-child(1) > button';
