@@ -6,6 +6,8 @@ export const withValueOf = (cy, selector, handler) => {
 };
 
 const clusterNameLinkSelector = '[data-label="Name"] > a'; // on '/clusters' page
+const testClusterLinkSelector = `#cluster-link-${testInfraClusterName}`;
+const testClusterStatusSelector = `#button-cluster-status-${testInfraClusterName}`;
 
 export const createDummyCluster = (cy, clusterName) => {
   cy.get('.pf-l-toolbar__item > .pf-c-button').click();
@@ -42,6 +44,13 @@ export const assertSingleClusterOnly = (cy) => {
     expect(['Ready']).to.include(val.trim());
   });
   cy.get('tbody > tr > [data-label="Version"]').contains('4.4'); // fail to raise attention when source data changes
+};
+
+export const assertTestClusterPresence = (cy) => {
+  cy.visit('/clusters');
+  cy.get(testClusterLinkSelector).contains(testInfraClusterName);
+  cy.get(testClusterStatusSelector).contains('Ready');
+  cy.get('tbody > tr > [data-label="Version"]').contains('4.5'); // fail to raise attention when source data changes
 };
 
 export const visitOneAndOnlyCluster = (cy) => {

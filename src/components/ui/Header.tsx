@@ -37,6 +37,7 @@ const Header: React.FC = () => {
           <Button
             variant={ButtonVariant.plain}
             onClick={() => window.open(FEEDBACK_FORM_LINK, '_blank', 'noopener noreferrer')}
+            id="button-feedback"
           >
             Provide feedback <ExternalLinkAltIcon />
           </Button>
