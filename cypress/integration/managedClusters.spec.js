@@ -1,14 +1,19 @@
 import {
   createDummyCluster,
   deleteDummyCluster,
-  assertSingleClusterOnly,
   testInfraClusterName,
-  testInfraClusterHostsCount,
+  assertTestClusterPresence,
+  clusterTableCellSelector,
 } from './shared';
 
+const clustersTableHeaders = ['Name', 'Base domain', 'Version', 'Status', 'Hosts'];
+
 describe('Managed Clusters list', () => {
+  const clusterName = 'test-dummy-cluster';
+  const clusterColHeaderSelector = (label) => `[data-label="${label}"] > .pf-c-table__button`;
+
   beforeEach(() => {
-    assertSingleClusterOnly(cy);
+    assertTestClusterPresence(cy);
     cy.visit('/clusters');
   });
 
@@ -16,23 +21,13 @@ describe('Managed Clusters list', () => {
     cy.get('h1').contains('Managed Clusters');
   });
 
-  it('has list of clusters with visible columns', () => {
-    cy.get('th > button.pf-m-plain').first().contains('Name');
-    cy.get('th > button.pf-m-plain').last().contains('Hosts');
-    cy.get('[data-label="ID"] > .pf-c-button');
-    cy.get('[data-label="Version"] > .pf-c-button');
-    cy.get('[data-label="Status"] > .pf-c-button');
-  });
-
-  it('has single cluster with correct details', () => {
-    cy.get('tbody > tr > [data-label="ID"]').should('not.be.empty');
-    cy.get('tbody > tr > [data-label="Version"]').should('not.be.empty');
-    cy.get('tbody > tr > [data-label="Hosts"]').contains(testInfraClusterHostsCount);
+  it('has test-infra-cluster with visible columns', () => {
+    clustersTableHeaders.forEach((header) =>
+      cy.get(clusterColHeaderSelector(header)).contains(header),
+    );
   });
 
   it('can create and delete dummy cluster', () => {
-    const clusterName = 'test-dummy-cluster';
-
     // still single cluster in the list
     cy.get('#pf-toggle-id-0').click(); // open kebab
     cy.get('.pf-c-dropdown__menu-item').should('have.length', 1);
@@ -42,25 +37,38 @@ describe('Managed Clusters list', () => {
 
     // Managed Clusters list
     cy.get('[data-label="Name"] > a').should('have.length', 2);
-    cy.get(':nth-child(1) > [data-label="Name"]').contains(clusterName);
-    cy.get(':nth-child(1) > [data-label="Version"]').contains('4.4');
-    cy.get(':nth-child(1) > [data-label="Status"]').contains('Draft'); // insufficient ~ Draft
-    cy.get(':nth-child(1) > [data-label="Hosts"]').contains(0);
+    cy.get(clusterTableCellSelector(1, 'Name')).contains(clusterName);
+    cy.get(clusterTableCellSelector(2, 'Name')).contains(testInfraClusterName); // other cells of the test-infra-cluster are tested within assertTestClusterPresence()
+    cy.get(clusterTableCellSelector(1, 'Base domain')).contains('-');
+    cy.get(clusterTableCellSelector(1, 'Version')).contains('4.5');
+    cy.get(clusterTableCellSelector(1, 'Status')).contains('Draft'); // insufficient ~ Draft
+    cy.get(clusterTableCellSelector(1, 'Hosts')).contains(0);
 
     // sorting
-    cy.get(':nth-child(2) > [data-label="Name"] > a').contains(testInfraClusterName);
-    cy.get(':nth-child(1) > [data-label="Name"] > a').contains(clusterName);
-    cy.get('.pf-m-selected > .pf-c-button').click();
-    cy.get(':nth-child(1) > [data-label="Name"] > a').contains(testInfraClusterName);
-    cy.get(':nth-child(2) > [data-label="Name"] > a').contains(clusterName);
-    cy.get('.pf-m-selected > .pf-c-button').click();
-    cy.get(':nth-child(2) > [data-label="Name"] > a').contains(testInfraClusterName);
-    cy.get(':nth-child(1) > [data-label="Name"] > a').contains(clusterName);
+    cy.log('1');
+    cy.get(clusterTableCellSelector(1, 'Name')).contains(clusterName); // initial state, before sorting
+    cy.get(clusterTableCellSelector(2, 'Name')).contains(testInfraClusterName);
+    cy.get(clusterColHeaderSelector('Name')).click();
+    cy.log('2');
+    cy.get(clusterTableCellSelector(2, 'Name')).contains(clusterName); // clusters are flipped
+    cy.get(clusterTableCellSelector(1, 'Name')).contains(testInfraClusterName);
+    cy.get(clusterColHeaderSelector('Name')).click();
+    cy.log('3');
+    cy.get(clusterTableCellSelector(1, 'Name')).contains(clusterName); // back to initial state
+    cy.get(clusterTableCellSelector(2, 'Name')).contains(testInfraClusterName);
+
+    // does it fail?
+    clustersTableHeaders.forEach((header) => {
+      cy.get(clusterColHeaderSelector(header)).click();
+      cy.get(clusterColHeaderSelector(header)).click();
+    });
 
     // Delete
-    deleteDummyCluster(cy, '#pf-toggle-id-20');
+    deleteDummyCluster(cy, 2, clusterName);
 
     // we are back to inital state with just a single cluster
-    assertSingleClusterOnly(cy); // fail fast here to verify that just the dummy cluster is deleted
+    assertTestClusterPresence(cy); // fail fast here to verify that just the dummy cluster is deleted
   });
+
+  // TODO(mlibra): add testcase for filtering of clusters
 });

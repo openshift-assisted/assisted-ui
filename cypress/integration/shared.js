@@ -9,9 +9,10 @@ export const withValueOf = (cy, selector, handler) => {
   cy.get(selector).then((elem) => handler(elem[0].innerText));
 };
 
-const clusterNameLinkSelector = '[data-label="Name"] > a'; // on '/clusters' page
 export const testClusterLinkSelector = `#cluster-link-${testInfraClusterName}`;
-const testClusterStatusSelector = `#button-cluster-status-${testInfraClusterName}`;
+const clusterNameLinkSelector = '[data-label="Name"] > a'; // on '/clusters' page
+// const singleClusterCellSelector = (column) => `tbody > tr > [data-label="${column}"]`;
+export const clusterTableCellSelector = (row, column) => `tbody > tr:nth-child(${row}) > [data-label="${column}"]`;
 
 export const createDummyCluster = (cy, clusterName) => {
   cy.get('#button-create-new-cluster').click();
@@ -52,8 +53,10 @@ export const deleteDummyCluster = (cy, tableRow, clusterName) => {
 export const assertTestClusterPresence = (cy) => {
   cy.visit('/clusters');
   cy.get(testClusterLinkSelector).contains(testInfraClusterName);
-  cy.get(testClusterStatusSelector).contains('Ready');
-  cy.get('tbody > tr > [data-label="Version"]').contains('4.5'); // fail to raise attention when source data changes
+  cy.get(clusterTableCellSelector(1, 'Base domain')).contains('redhat.com');
+  cy.get(clusterTableCellSelector(1, 'Version')).contains('4.5'); // fail to raise attention when source data changes
+  cy.get(clusterTableCellSelector(1, 'Status')).contains('Ready');
+  cy.get(clusterTableCellSelector(1, 'Hosts')).contains(3);
 };
 
 export const visitTestCluster = (cy) => {
