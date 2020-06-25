@@ -36,6 +36,7 @@ export const deleteDummyCluster = (cy, kebabSelector) => {
   cy.get(clusterNameLinkSelector).contains(testInfraClusterName); // validate that just one cluster remains
 };
 
+// TODO(mlibra): remove
 export const assertSingleClusterOnly = (cy) => {
   cy.visit('/clusters');
   cy.get(clusterNameLinkSelector).should('have.length', 1);
@@ -43,7 +44,7 @@ export const assertSingleClusterOnly = (cy) => {
   withValueOf(cy, 'tbody > tr > [data-label="Status"]', (val) => {
     expect(['Ready']).to.include(val.trim());
   });
-  cy.get('tbody > tr > [data-label="Version"]').contains('4.4'); // fail to raise attention when source data changes
+  cy.get('tbody > tr > [data-label="Version"]').contains('4.5'); // fail to raise attention when source data changes
 };
 
 export const assertTestClusterPresence = (cy) => {
@@ -53,8 +54,8 @@ export const assertTestClusterPresence = (cy) => {
   cy.get('tbody > tr > [data-label="Version"]').contains('4.5'); // fail to raise attention when source data changes
 };
 
-export const visitOneAndOnlyCluster = (cy) => {
-  assertSingleClusterOnly(cy);
+export const visitTestCluster = (cy) => {
+  assertTestClusterPresence(cy);
   cy.visit('/clusters');
-  cy.get(clusterNameLinkSelector).click();
+  cy.get(testClusterLinkSelector).click();
 };
