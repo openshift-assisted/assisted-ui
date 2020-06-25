@@ -12,8 +12,18 @@ const DISCOVERING_TIMEOUT = 2 * 60 * 1000; // 2 mins
 describe('Cluster Detail', () => {
   const hostDetailSelector = (row, label) =>
     `:nth-child(${row}) > :nth-child(1) > [data-label="${label}"]`;
-  const hostsTableHeaderSelector = (label) => `[data-label="${label}"] > .pf-c-button`;
+  const hostsTableHeaderSelector = (label) => `[data-label="${label}"] > .pf-c-table__button`;
 
+  const hostTableColHeaders = [
+    'Hostname',
+    'Role',
+    'Status',
+    'Discovered At',
+    'CPU Cores',
+    'Memory',
+    'Disk',
+  ];
+  
   beforeEach(() => {
     visitTestCluster(cy);
   });
@@ -30,13 +40,7 @@ describe('Cluster Detail', () => {
     // Column headers
     cy.get('table.hosts-table > thead > tr > td').should('have.length', 2);
     cy.get('table.hosts-table > thead > tr > th').should('have.length', 7);
-    cy.get(colHeaderSelector('Hostname')).contains('Hostname');
-    cy.get(colHeaderSelector('Role')).contains('Role');
-    cy.get(colHeaderSelector('Status')).contains('Status');
-    cy.get(colHeaderSelector('Discovered At')).contains('Discovered At');
-    cy.get(colHeaderSelector('CPU Cores')).contains('CPU Cores');
-    cy.get(colHeaderSelector('Memory')).contains('Memory');
-    cy.get(colHeaderSelector('Disk')).contains('Disk');
+    hostTableColHeaders.forEach((header) => cy.get(colHeaderSelector(header)).contains(header));
   });
 
   // existing cluster
@@ -49,14 +53,13 @@ describe('Cluster Detail', () => {
   });
 
   xit('has correct row-details for a host', () => {
-    cy.get(hostDetailSelector(2, 'ID')).should('not.be.empty');
+    cy.get(hostDetailSelector(2, 'Hostname')).contains('test-infra-cluster-master-0');
     cy.get(hostDetailSelector(2, 'Role')).contains('master');
-    cy.get(hostDetailSelector(2, 'Serial Number')).should('not.be.empty');
     cy.get(hostDetailSelector(2, 'Status')).contains('Known');
-    cy.get(hostDetailSelector(2, 'Created At')).should('not.be.empty');
+    cy.get(hostDetailSelector(2, 'Discovered At')).should('not.be.empty');
     cy.get(hostDetailSelector(2, 'CPU Cores')).contains('4');
-    cy.get(hostDetailSelector(2, 'Memory')).contains(' GB'); // value can vary over time
-    cy.get(hostDetailSelector(2, 'Disk')).contains(' GB');
+    cy.get(hostDetailSelector(2, 'Memory')).contains('16.59 GB'); // value can vary over time
+    cy.get(hostDetailSelector(2, 'Disk')).contains('20.00 GB');
   });
 
   // TODO(mlibra): Read particular details from fixtures
@@ -156,33 +159,32 @@ describe('Cluster Detail', () => {
   });
 
   xit('can be sorted', () => {
-    const serialNumberSelector = (row) =>
-      `:nth-child(${row}) > :nth-child(1) > [data-label="Serial Number"]`;
-    const serialNumberHeaderSelector = hostsTableHeaderSelector('Serial Number');
+    const hostnameSelector = (row) =>
+      `:nth-child(${row}) > :nth-child(1) > [data-label="Hostname"]`;
+    const hostnameHeaderSelector = hostsTableHeaderSelector('Hostname');
+    const actualSorterSelector = '.pf-m-selected > .pf-c-table__button';
 
-    cy.get('.pf-m-selected > .pf-c-button').contains('Role'); // default sorting by Role
-    cy.get('.pf-m-selected > .pf-c-button').click();
-    cy.get('.pf-m-selected > .pf-c-button').click(); // Did it fall?
+    cy.get(actualSorterSelector).contains('Hostname'); // default sorting by Hostname
+    cy.get(actualSorterSelector).click();
+    cy.get(actualSorterSelector).click(); // Did it fall?
+    hostTableColHeaders.forEach((header) => {
+      cy.get(hostsTableHeaderSelector(header)).click();
+      cy.get(hostsTableHeaderSelector('Role')).click();
+    });
 
-    cy.get(serialNumberHeaderSelector).click(); // ASC sort by Serial Number
-
-    withValueOf(cy, serialNumberSelector(2), (val1) => {
-      withValueOf(cy, serialNumberSelector(3), (val2) => {
+    cy.log('ASC sort by hostname');
+    cy.get(hostnameHeaderSelector).click();
+    withValueOf(cy, hostnameSelector(2), (val1) => {
+      withValueOf(cy, hostnameSelector(3), (val2) => {
         expect(val1.localeCompare(val2)).to.be.lessThan(0);
       });
     });
 
-    cy.get(serialNumberHeaderSelector).click(); // DESC sort by Serial Number
-    withValueOf(cy, serialNumberSelector(2), (val1) => {
-      withValueOf(cy, serialNumberSelector(3), (val2) => {
+    cy.log('DESC sort by hostname');
+    cy.get(hostnameHeaderSelector).click();
+    withValueOf(cy, hostnameSelector(2), (val1) => {
+      withValueOf(cy, hostnameSelector(3), (val2) => {
         expect(val1.localeCompare(val2)).to.be.greaterThan(0);
-      });
-    });
-
-    cy.get(serialNumberHeaderSelector).click(); // ASC sort by Serial Number
-    withValueOf(cy, serialNumberSelector(2), (val1) => {
-      withValueOf(cy, serialNumberSelector(3), (val2) => {
-        expect(val1.localeCompare(val2)).to.be.lessThan(0);
       });
     });
   });
