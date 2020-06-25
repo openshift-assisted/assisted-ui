@@ -6,6 +6,7 @@ import {
   withValueOf,
   visitTestCluster,
   testInfraClusterHostnames,
+  checkValidationMessage,
 } from './shared';
 
 const DISCOVERING_TIMEOUT = 2 * 60 * 1000; // 2 mins
@@ -218,13 +219,9 @@ describe('Cluster Detail', () => {
     cy.get(hostDetailSelector(3, 'Role')).click();
     cy.get('#worker > .pf-c-dropdown__menu-item').click();
     cy.get(hostDetailSelector(3, 'Role')).contains('worker');
-    cy.get(':nth-child(5) > [data-pf-content="true"] > .pf-c-button').contains(
-      'The cluster is not ready to be installed yet',
-    );
-    cy.get('.pf-c-alert').should('not.be.visible');
-    cy.get(':nth-child(5) > [data-pf-content="true"] > .pf-c-button').click();
-    cy.get('.pf-c-alert').should('be.visible');
-    cy.get('.pf-c-alert__description').contains(
+
+    checkValidationMessage(
+      cy,
       'Cluster with 2 masters is not supported. Please choose at least 3 master hosts.',
     );
 

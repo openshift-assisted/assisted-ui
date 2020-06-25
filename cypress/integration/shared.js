@@ -12,7 +12,8 @@ export const withValueOf = (cy, selector, handler) => {
 export const testClusterLinkSelector = `#cluster-link-${testInfraClusterName}`;
 const clusterNameLinkSelector = '[data-label="Name"] > a'; // on '/clusters' page
 // const singleClusterCellSelector = (column) => `tbody > tr > [data-label="${column}"]`;
-export const clusterTableCellSelector = (row, column) => `tbody > tr:nth-child(${row}) > [data-label="${column}"]`;
+export const clusterTableCellSelector = (row, column) =>
+  `tbody > tr:nth-child(${row}) > [data-label="${column}"]`;
 
 export const createDummyCluster = (cy, clusterName) => {
   cy.get('#button-create-new-cluster').click();
@@ -63,4 +64,19 @@ export const visitTestCluster = (cy) => {
   assertTestClusterPresence(cy);
   cy.visit('/clusters');
   cy.get(testClusterLinkSelector).click();
+};
+
+export const checkValidationMessage = (cy, expectedMsg) => {
+  cy.get(':nth-child(5) > [data-pf-content="true"] > .pf-c-button').contains(
+    'The cluster is not ready to be installed yet',
+  );
+
+  cy.get('.pf-c-alert').should('not.be.visible');
+  cy.get(':nth-child(5) > [data-pf-content="true"] > .pf-c-button').click();
+  cy.get('.pf-c-alert').should('be.visible');
+  cy.get('.pf-c-alert__description').contains(expectedMsg);
+
+  // Close
+  cy.get('.pf-l-split > :nth-child(2) > .pf-c-button').click(); // close alerts
+  cy.get('.pf-c-alert').should('not.be.visible');
 };
