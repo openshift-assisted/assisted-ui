@@ -2,9 +2,10 @@ import {
   createDummyCluster,
   deleteDummyCluster,
   testInfraClusterName,
-  testInfraClusterHostsCount,
+  testClusterLinkSelector,
   withValueOf,
   visitTestCluster,
+  testInfraClusterHostnames,
 } from './shared';
 
 const DISCOVERING_TIMEOUT = 2 * 60 * 1000; // 2 mins
@@ -13,6 +14,7 @@ describe('Cluster Detail', () => {
   const hostDetailSelector = (row, label) =>
     `:nth-child(${row}) > :nth-child(1) > [data-label="${label}"]`;
   const hostsTableHeaderSelector = (label) => `[data-label="${label}"] > .pf-c-table__button`;
+  const actualSorterSelector = '.pf-m-selected > .pf-c-table__button';
 
   const hostTableColHeaders = [
     'Hostname',
@@ -23,12 +25,12 @@ describe('Cluster Detail', () => {
     'Memory',
     'Disk',
   ];
-  
+
   beforeEach(() => {
     visitTestCluster(cy);
   });
 
-  xit('can render', () => {
+  it('can render', () => {
     const colHeaderSelector = (label) =>
       `[data-label="${label}"] > .pf-c-table__button > .pf-c-table__button-content > .pf-c-table__text`;
 
@@ -44,16 +46,17 @@ describe('Cluster Detail', () => {
   });
 
   // existing cluster
-  xit('has all hosts', () => {
-    cy.get('table.hosts-table > tbody').should('have.length', testInfraClusterHostsCount);
+  it('has all hosts', () => {
+    cy.get('table.hosts-table > tbody').should('have.length', testInfraClusterHostnames.length);
     cy.get('table.hosts-table > tbody > tr.pf-c-table__expandable-row:hidden').should(
       'have.length',
-      testInfraClusterHostsCount,
+      testInfraClusterHostnames.length,
     );
   });
 
-  xit('has correct row-details for a host', () => {
-    cy.get(hostDetailSelector(2, 'Hostname')).contains('test-infra-cluster-master-0');
+  it('has correct row-details for a host', () => {
+    cy.get(hostDetailSelector(2, 'Hostname')).contains(testInfraClusterHostnames[0]);
+    cy.get(hostDetailSelector(3, 'Hostname')).contains(testInfraClusterHostnames[1]);
     cy.get(hostDetailSelector(2, 'Role')).contains('master');
     cy.get(hostDetailSelector(2, 'Status')).contains('Known');
     cy.get(hostDetailSelector(2, 'Discovered At')).should('not.be.empty');
@@ -63,7 +66,7 @@ describe('Cluster Detail', () => {
   });
 
   // TODO(mlibra): Read particular details from fixtures
-  xit('has correct expandable-details for a host', () => {
+  it('has correct expandable-details for a host', () => {
     const sectionTitleSelector = (index) =>
       `#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-grid > :nth-child(${index}) > .pf-c-content > h3`;
     const hostDetailsSelector = (column, row) =>
@@ -158,11 +161,10 @@ describe('Cluster Detail', () => {
     cy.get('#expandable-toggle0').should('not.have.class', 'pf-m-expanded');
   });
 
-  xit('can be sorted', () => {
+  it('can be sorted', () => {
     const hostnameSelector = (row) =>
       `:nth-child(${row}) > :nth-child(1) > [data-label="Hostname"]`;
     const hostnameHeaderSelector = hostsTableHeaderSelector('Hostname');
-    const actualSorterSelector = '.pf-m-selected > .pf-c-table__button';
 
     cy.get(actualSorterSelector).contains('Hostname'); // default sorting by Hostname
     cy.get(actualSorterSelector).click();
@@ -189,74 +191,99 @@ describe('Cluster Detail', () => {
     });
   });
 
-  xit('renders empty cluster', () => {
+  it('renders empty cluster', () => {
     const dummyClusterName = 'empty-cluster';
     cy.visit('/clusters');
     createDummyCluster(cy, dummyClusterName);
-    cy.get(':nth-child(1) > [data-label="Name"] > a').click();
+    cy.get(`#cluster-link-${dummyClusterName}`).click();
     cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(dummyClusterName);
     cy.get('#form-input-name-field').should('have.value', dummyClusterName);
     cy.get('.pf-c-title').contains('Waiting for hosts...'); // empty state
 
-    cy.get(':nth-child(3) > .pf-l-toolbar__item > .pf-c-button').click(); // Close button
+    cy.get(':nth-child(4) > .pf-c-button').click(); // Close button
 
-    deleteDummyCluster(cy, '#pf-toggle-id-18');
+    deleteDummyCluster(cy, 1, dummyClusterName);
   });
 
-  xit("changes host's role", () => {
+  it("changes host's role", () => {
     const clusterListStatusSelector = ':nth-child(1) > [data-label="Status"]';
 
-    cy.get(hostsTableHeaderSelector('Serial Number')).click(); // ASC sort by Serial Number
+    // The cluster is in Ready state, already checked by assertTestClusterPresence()
+
+    // Hosts are sorted by Hostname by default
+    cy.get(actualSorterSelector).contains('Hostname'); // default sorting by Hostname
+
+    //cy.get(hostsTableHeaderSelector('Serial Number')).click(); // ASC sort by Serial Number
     cy.get(hostDetailSelector(3, 'Role')).contains('master'); // 2nd host in the list
     cy.get(hostDetailSelector(3, 'Role')).click();
     cy.get('#worker > .pf-c-dropdown__menu-item').click();
     cy.get(hostDetailSelector(3, 'Role')).contains('worker');
+    cy.get(':nth-child(5) > [data-pf-content="true"] > .pf-c-button').contains(
+      'The cluster is not ready to be installed yet',
+    );
+    cy.get('.pf-c-alert').should('not.be.visible');
+    cy.get(':nth-child(5) > [data-pf-content="true"] > .pf-c-button').click();
+    cy.get('.pf-c-alert').should('be.visible');
+    cy.get('.pf-c-alert__description').contains(
+      'Cluster with 2 masters is not supported. Please choose at least 3 master hosts.',
+    );
 
     // check cluster validation
     cy.visit('/clusters');
-    cy.get(clusterListStatusSelector).contains('insufficient');
-    cy.get('[data-label="Name"] > a').click();
+    cy.get(clusterListStatusSelector).contains('Draft');
+    cy.get(testClusterLinkSelector).click();
 
     // revert change
-    cy.get(hostsTableHeaderSelector('Serial Number')).click(); // ASC sort by Serial Number
+    // assumption: hosts are sorted by Hostname by default
     cy.get(hostDetailSelector(3, 'Role')).contains('worker'); // 2nd host in the list
     cy.get(hostDetailSelector(3, 'Role')).click();
     cy.get('#master > .pf-c-dropdown__menu-item').click();
     cy.get(hostDetailSelector(3, 'Role')).contains('master');
 
+    // Still missing pull secret
+    cy.get(':nth-child(5) > [data-pf-content="true"] > .pf-c-button').contains(
+      'The cluster is not ready to be installed yet',
+    );
+
     // check cluster validation
     cy.visit('/clusters');
-    cy.get(clusterListStatusSelector).contains('ready');
+    cy.get(clusterListStatusSelector).contains('Ready');
   });
 
-  xit('disables and enables host in a cluster', () => {
-    const kebabMenuSelector =
-      ':nth-child(2) > :nth-child(1) > .pf-c-table__action button.pf-c-dropdown__toggle';
+  it('disables and enables host in a cluster', () => {
+    const hostRow = 2; // conforms first table-row
+    const kebabMenuSelector = `div:nth-child(2) > table > tbody:nth-child(${hostRow}) > tr:nth-child(1) > td.pf-c-table__action > div > button`;
+
     cy.get(kebabMenuSelector).click(); // first host kebab menu
-    cy.get('.pf-c-dropdown__menu-item').contains('Disable in cluster');
-    cy.get('.pf-c-dropdown__menu-item').click();
+    cy.get(`#button-disable-in-cluster-${testInfraClusterHostnames[0]}`).contains(
+      'Disable in cluster',
+    );
+    cy.get(`#button-disable-in-cluster-${testInfraClusterHostnames[0]}`).click();
     cy.get(hostDetailSelector(2, 'Status')).contains('Disabled');
 
     cy.get(kebabMenuSelector).click(); // first host kebab menu
-    cy.get('.pf-c-dropdown__menu-item').contains('Enable in cluster');
-    cy.get('.pf-c-dropdown__menu-item').click();
+    cy.get(`#button-enable-in-cluster-${testInfraClusterHostnames[0]}`).contains(
+      'Enable in cluster',
+    );
+    cy.get(`#button-enable-in-cluster-${testInfraClusterHostnames[0]}`).click();
     cy.get(hostDetailSelector(2, 'Status')).contains('Discovering');
     cy.get(hostDetailSelector(2, 'Status')).contains('Known', { timeout: DISCOVERING_TIMEOUT });
   });
 
-  xit('downloads ISO', () => {
-    const proxyURLSelector = '#form-input-proxyURL-field';
-    const proxyURLSelectorHelper = '#form-input-proxyURL-field-helper';
-    const sshPublicKeySelector = ':nth-child(3) > #form-input-sshPublicKey-field';
+  it('downloads ISO', () => {
+    const proxyURLSelector = '#form-input-proxyUrl-field';
+    const proxyURLSelectorHelper = '#form-input-proxyUrl-field-helper';
+    const sshPublicKeySelector =
+      ':nth-child(3) > .pf-c-form__group-control > #form-input-sshPublicKey-field';
 
-    cy.get(':nth-child(2) > :nth-child(1) > :nth-child(2) > .pf-c-button').click(); // Download ISO button
+    cy.get('#button-download-discovery-iso').click(); // Download ISO button
     cy.get('.pf-c-modal-box'); // modal visible
-    cy.get('.pf-c-title').contains('Download discovery ISO');
+    cy.get('.pf-c-modal-box__title').contains('Download discovery ISO');
     cy.get('.pf-c-modal-box__footer > .pf-m-link').click(); // cancel
     cy.get('.pf-c-modal-box').should('not.be.visible'); // modal closed
 
-    cy.get(':nth-child(2) > :nth-child(1) > :nth-child(2) > .pf-c-button').click(); // Download ISO button
-    cy.get('.pf-c-title').contains('Download discovery ISO');
+    cy.get('#button-download-discovery-iso').click();
+    cy.get('.pf-c-modal-box__title').contains('Download discovery ISO');
     cy.get(proxyURLSelector).type('{selectall}{backspace}foobar');
     cy.get(sshPublicKeySelector).focus();
     cy.get(proxyURLSelectorHelper).contains('Provide a valid URL.'); // validation error
@@ -264,10 +291,10 @@ describe('Cluster Detail', () => {
     cy.get(sshPublicKeySelector).focus();
     cy.get(proxyURLSelectorHelper).contains('HTTP proxy URL'); // correct
 
-    cy.get(sshPublicKeySelector).type('ssh-rsa AAAAAAAAdummykey');
+    cy.get(sshPublicKeySelector).type('{selectall}{backspace}ssh-rsa AAAAAAAAdummykey');
 
     cy.get('.pf-c-modal-box__footer > .pf-m-primary').click(); // in-modal DOwnload ISO button
-    cy.get('.pf-c-title').contains('Download discovery ISO');
+    cy.get('.pf-c-modal-box__title').contains('Download discovery ISO');
     cy.get('.pf-c-empty-state__body').contains('Discovery image is being prepared');
 
     // TODO(mlibra): verify actual file download
