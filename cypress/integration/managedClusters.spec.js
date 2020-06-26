@@ -2,8 +2,10 @@ import {
   createDummyCluster,
   deleteDummyCluster,
   testInfraClusterName,
+  testClusterLinkSelector,
   assertTestClusterPresence,
   clusterTableCellSelector,
+  getClusterNameLinkSelector,
 } from './shared';
 
 const clustersTableHeaders = ['Name', 'Base domain', 'Version', 'Status', 'Hosts'];
@@ -45,15 +47,12 @@ describe('Managed Clusters list', () => {
     cy.get(clusterTableCellSelector(1, 'Hosts')).contains(0);
 
     // sorting
-    cy.log('1');
     cy.get(clusterTableCellSelector(1, 'Name')).contains(clusterName); // initial state, before sorting
     cy.get(clusterTableCellSelector(2, 'Name')).contains(testInfraClusterName);
     cy.get(clusterColHeaderSelector('Name')).click();
-    cy.log('2');
     cy.get(clusterTableCellSelector(2, 'Name')).contains(clusterName); // clusters are flipped
     cy.get(clusterTableCellSelector(1, 'Name')).contains(testInfraClusterName);
     cy.get(clusterColHeaderSelector('Name')).click();
-    cy.log('3');
     cy.get(clusterTableCellSelector(1, 'Name')).contains(clusterName); // back to initial state
     cy.get(clusterTableCellSelector(2, 'Name')).contains(testInfraClusterName);
 
@@ -70,5 +69,64 @@ describe('Managed Clusters list', () => {
     assertTestClusterPresence(cy); // fail fast here to verify that just the dummy cluster is deleted
   });
 
-  // TODO(mlibra): add testcase for filtering of clusters
+  it('can filter clusters', () => {
+    // create
+    createDummyCluster(cy, 'cluster-aa-0');
+    createDummyCluster(cy, 'cluster-bb-0');
+
+    // all visible
+    cy.get(testClusterLinkSelector);
+    cy.get(getClusterNameLinkSelector('cluster-aa-0'));
+    cy.get(getClusterNameLinkSelector('cluster-bb-0'));
+
+    // search name
+    cy.get('#search-name').type('NONSENS');
+    cy.get(testClusterLinkSelector).should('not.exist');
+    cy.get(getClusterNameLinkSelector('cluster-aa-0')).should('not.exist');
+    cy.get(getClusterNameLinkSelector('cluster-bb-0')).should('not.exist');
+
+    // clear search name
+    cy.get('#search-name').type('{selectall}{backspace}');
+    cy.get(testClusterLinkSelector);
+    cy.get(getClusterNameLinkSelector('cluster-aa-0'));
+    cy.get(getClusterNameLinkSelector('cluster-bb-0'));
+
+    cy.get('#search-name').type('aa');
+    cy.get(testClusterLinkSelector).should('not.exist');
+    cy.get(getClusterNameLinkSelector('cluster-bb-0')).should('not.exist');
+    cy.get(getClusterNameLinkSelector('cluster-aa-0')); // exists
+
+    cy.get('#search-name').type('{selectall}{backspace}');
+    cy.get(testClusterLinkSelector);
+
+    // switch status
+    cy.get('.pf-c-toolbar__item .pf-c-select__toggle').click();
+    cy.get('#Draft').click();
+    cy.get(testClusterLinkSelector).should('not.exist');
+    cy.get(getClusterNameLinkSelector('cluster-aa-0'));
+    cy.get(getClusterNameLinkSelector('cluster-bb-0'));
+
+    cy.get('#Ready').click();
+    cy.get(testClusterLinkSelector);
+    cy.get(getClusterNameLinkSelector('cluster-aa-0'));
+    cy.get(getClusterNameLinkSelector('cluster-bb-0'));
+
+    cy.get('#Draft').click();
+    cy.get(testClusterLinkSelector);
+    cy.get(getClusterNameLinkSelector('cluster-aa-0')).should('not.exist');
+    cy.get(getClusterNameLinkSelector('cluster-bb-0')).should('not.exist');
+
+    // clear all filters
+    cy.get('#clusters-filter-toolbar > :nth-child(2) > :nth-child(2) > .pf-c-button').click();
+    cy.get(testClusterLinkSelector);
+    cy.get(getClusterNameLinkSelector('cluster-aa-0'));
+    cy.get(getClusterNameLinkSelector('cluster-bb-0'));
+
+    // Delete
+    deleteDummyCluster(cy, 1, 'cluster-aa-0');
+    deleteDummyCluster(cy, 1, 'cluster-bb-0');
+
+    // we are back to inital state with just a single cluster
+    assertTestClusterPresence(cy); // fail fast here to verify that just the dummy cluster is deleted
+  });
 });

@@ -9,8 +9,9 @@ export const withValueOf = (cy, selector, handler) => {
   cy.get(selector).then((elem) => handler(elem[0].innerText));
 };
 
-export const testClusterLinkSelector = `#cluster-link-${testInfraClusterName}`;
-const clusterNameLinkSelector = '[data-label="Name"] > a'; // on '/clusters' page
+export const getClusterNameLinkSelector = (clusterName) => `#cluster-link-${clusterName}`;
+export const testClusterLinkSelector = getClusterNameLinkSelector(testInfraClusterName);
+export const clusterNameLinkSelector = '[data-label="Name"] > a'; // on '/clusters' page
 // const singleClusterCellSelector = (column) => `tbody > tr > [data-label="${column}"]`;
 export const clusterTableCellSelector = (row, column) =>
   `tbody > tr:nth-child(${row}) > [data-label="${column}"]`;
@@ -18,7 +19,7 @@ export const clusterTableCellSelector = (row, column) =>
 export const createDummyCluster = (cy, clusterName) => {
   cy.get('#button-create-new-cluster').click();
   cy.get('.pf-c-modal-box'); // modal visible
-  cy.get('#pf-modal-part-1').contains('New Bare Metal OpenShift Cluster');
+  cy.get('.pf-c-modal-box__header').contains('New Bare Metal OpenShift Cluster');
   cy.get('.pf-m-secondary').click(); // cancel
 
   cy.get('.pf-c-modal-box').should('not.be.visible'); // modal closed
@@ -47,8 +48,9 @@ export const deleteDummyCluster = (cy, tableRow, clusterName) => {
   cy.get(kebabSelector).click(); // open kebab menu
   cy.get(`#button-delete-${clusterName}`).click(); // Delete & validate correct kebab from previous step
   cy.get('[data-test-id="delete-cluster-submit"]').click();
-  cy.get(clusterNameLinkSelector).should('have.length', 1);
-  cy.get(clusterNameLinkSelector).contains(testInfraClusterName); // validate that just one cluster remains
+
+  cy.get(getClusterNameLinkSelector(clusterName)).should('not.exist');
+  cy.get(testClusterLinkSelector); // validate that the test-infra-cluster is still present
 };
 
 export const assertTestClusterPresence = (cy) => {
