@@ -1,4 +1,4 @@
-import { assertSingleClusterOnly, testInfraClusterName } from './shared';
+import { testInfraClusterName, assertTestClusterPresence } from './shared';
 
 describe('Application', () => {
   it('loads', () => {
@@ -7,19 +7,25 @@ describe('Application', () => {
     cy.visit('');
   });
 
-  it('has navigation burger bar menu', () => {
+  it('has basic structure', () => {
     cy.visit('/');
-    cy.get('#page-sidebar').should('have.class', 'pf-m-collapsed');
-    cy.get('#nav-toggle').click();
-    cy.get('#page-sidebar').should('have.class', 'pf-m-expanded');
-    cy.get('#nav-toggle').click();
-    cy.get('#page-sidebar').should('not.have.class', 'pf-m-expanded');
-    cy.get('#page-sidebar').should('have.class', 'pf-m-collapsed');
+
+    cy.get('h1').contains('Managed Clusters');
+    cy.get('.pf-c-brand').should(
+      'have.attr',
+      'alt',
+      'OpenShift Container Platform Assisted Installer',
+    );
+    cy.get('#button-feedback').contains('Provide feedback'); // TODO(mlibra): check link
+
+    cy.get('#button-about').contains('About');
+
+    cy.get('#button-create-new-cluster').contains('Create New Cluster');
   });
 
   describe('makes sure about expected initial state before testing', () => {
-    it(`just a single "${testInfraClusterName}" cluster is present`, () => {
-      assertSingleClusterOnly(cy);
+    it(`one of the present clusters is "${testInfraClusterName}"`, () => {
+      assertTestClusterPresence(cy);
     });
     // TODO(mlibra): verify additional presumptions about initial state prior running other tests
   });
