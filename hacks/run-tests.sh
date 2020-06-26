@@ -20,7 +20,8 @@ ${CONTAINER_COMMAND} run -it \
   --security-opt label=disable \
   --mount type=bind,source=${VIDEO_DIR},target=/e2e/cypress/videos \
   --mount type=bind,source=${SCREENSHOT_DIR},target=/e2e/cypress/screenshots \
-   "${TESTS_IMAGE}"
+  --pull always \
+  "${TESTS_IMAGE}"
 
 echo Screenshots and videos can be found in ${BASE_DIR}
 
