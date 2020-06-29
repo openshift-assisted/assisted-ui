@@ -15,6 +15,8 @@ const clusterNameLinkSelector = '[data-label="Name"] > a'; // on '/clusters' pag
 export const clusterTableCellSelector = (row, column) =>
   `tbody > tr:nth-child(${row}) > [data-label="${column}"]`;
 
+export const PULL_SECRET = Cypress.env('PULL_SECRET');
+
 export const createDummyCluster = (cy, clusterName) => {
   cy.get('#button-create-new-cluster').click();
   cy.get('.pf-c-modal-box'); // modal visible
