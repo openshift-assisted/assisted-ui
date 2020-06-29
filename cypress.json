@@ -1,5 +1,6 @@
 {
   "baseUrl": "http://localhost:3000",
   "viewportWidth": 1440,
-  "viewportHeight": 1080
+  "viewportHeight": 1080,
+  "PULL_SECRET": ""
 }

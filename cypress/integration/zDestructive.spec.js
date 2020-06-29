@@ -3,6 +3,7 @@ import {
   testInfraClusterName,
   withValueOf,
   checkValidationMessage,
+  PULL_SECRET,
 } from './shared';
 
 // Theese tests changes state of the cluster permanently.
@@ -19,6 +20,7 @@ describe('Destructive tests at the end', () => {
     cy.get(installClusterButtonSelector).contains('Install Cluster');
 
     // Fill-in form
+    cy.log('Fill-in form');
     cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(testInfraClusterName);
     cy.get('#form-input-name-field').should('have.value', testInfraClusterName);
 
@@ -36,6 +38,7 @@ describe('Destructive tests at the end', () => {
     cy.get('#form-input-serviceNetworkCidr-field').should('not.be.visible');
 
     // switch view
+    cy.log('Switch view');
     cy.get('#networkConfigurationTypeAdvanced').check();
     cy.get('#form-input-clusterNetworkCidr-field').should('be.visible');
     cy.get('#form-input-clusterNetworkHostPrefix-field').should('be.visible');
@@ -45,6 +48,7 @@ describe('Destructive tests at the end', () => {
     cy.get('#form-input-serviceNetworkCidr-field').should('have.value', '172.30.0.0/16');
 
     // validators
+    cy.log('Verify validators');
     cy.get('#form-input-clusterNetworkCidr-field').type('{selectall}{backspace}11.11.11.0');
     cy.get('#form-input-clusterNetworkHostPrefix-field').focus(); // to execute validation
     cy.get('#form-input-clusterNetworkCidr-field-helper').contains('is not valid IP block address'); // validation error
@@ -92,16 +96,32 @@ describe('Destructive tests at the end', () => {
     cy.get('#form-input-pullSecret-field').focus();
 
     // Save & validate
+    cy.log('Save & validate');
     cy.get(validateSaveButtonSelector).should('not.be.disabled');
     cy.get(installClusterButtonSelector).should('be.disabled'); // backend validation required
     cy.get(validateSaveButtonSelector).click();
     cy.get('.pf-c-alert__description').contains('Pull-secret has invalid format');
+    cy.get(validateSaveButtonSelector).should('be.disabled');
+    cy.get('.pf-c-alert__action > .pf-c-button').click(); // close alert section
 
-    // TODO(mlibra): Pass valid pull-secret and finish installation
+    if (!PULL_SECRET) {
+      cy.log(
+        'The CYPRESS_PULL_SECRET environment variable is not defined. Skipping rest of the cluster-installation flow.',
+      );
+      return;
+    }
 
     // Install
-    // cy.get(installClusterButtonSelector).should('not.be.disabled');
-    // cy.get(installClusterButtonSelector).click();
+    cy.log('Install');
+    // Pass PULL_SECRET from CYPRESS_PULL_SECRET environment variable
+    cy.get('#form-input-pullSecret-field').type(`{selectall}{backspace}${PULL_SECRET}`);
+    cy.get('#form-input-sshPublicKey-field').focus();
+    cy.get(validateSaveButtonSelector).should('not.be.disabled');
+    cy.get(installClusterButtonSelector).should('be.disabled');
+    cy.get(validateSaveButtonSelector).click();
+    cy.get(installClusterButtonSelector).should('not.be.disabled');
+    cy.get(installClusterButtonSelector).click();
+
     // TODO(mlibra): next steps (not working ATM)
   });
 });
