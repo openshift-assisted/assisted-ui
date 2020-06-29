@@ -1,3 +1,5 @@
+const DEFAULT_API_REQUEST_TIMEOUT = 10 * 1000;
+
 export const testInfraClusterName = 'test-infra-cluster';
 export const testInfraClusterHostnames = [
   'test-infra-cluster-master-0',
@@ -58,7 +60,9 @@ export const assertTestClusterPresence = (cy) => {
   cy.get(testClusterLinkSelector).contains(testInfraClusterName);
   cy.get(clusterTableCellSelector(1, 'Base domain')).contains('redhat.com');
   cy.get(clusterTableCellSelector(1, 'Version')).contains('4.5'); // fail to raise attention when source data changes
-  cy.get(clusterTableCellSelector(1, 'Status')).contains('Ready');
+  cy.get(clusterTableCellSelector(1, 'Status')).contains('Ready', {
+    timeout: DEFAULT_API_REQUEST_TIMEOUT,
+  });
   cy.get(clusterTableCellSelector(1, 'Hosts')).contains(3);
 };
 
