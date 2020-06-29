@@ -37,9 +37,10 @@ describe('Destructive tests at the end', () => {
     cy.get('#form-input-clusterNetworkHostPrefix-field').should('not.be.visible');
     cy.get('#form-input-serviceNetworkCidr-field').should('not.be.visible');
 
-    // switch view
-    cy.log('Switch view');
+    // switch network view
+    cy.log('Switch network view');
     cy.get('#networkConfigurationTypeAdvanced').check();
+    cy.get('#form-input-baseDnsDomain-field').should('be.visible');
     cy.get('#form-input-clusterNetworkCidr-field').should('be.visible');
     cy.get('#form-input-clusterNetworkHostPrefix-field').should('be.visible');
     cy.get('#form-input-serviceNetworkCidr-field').should('be.visible');
