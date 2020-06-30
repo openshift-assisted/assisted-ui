@@ -33,16 +33,17 @@ describe('Destructive tests at the end', () => {
     cy.get('#form-input-apiVip-field').should('have.value', '192.168.126.100');
     cy.get('#form-input-ingressVip-field').should('have.value', '192.168.126.101');
     withValueOf(cy, '#form-input-sshPublicKey-field', (value) => value.startsWith('sshrsa '));
-    cy.get('#form-input-clusterNetworkCidr-field').should('not.be.visible');
-    cy.get('#form-input-clusterNetworkHostPrefix-field').should('not.be.visible');
-    cy.get('#form-input-serviceNetworkCidr-field').should('not.be.visible');
+    cy.get('#form-input-clusterNetworkCidr-field').should('not.exist');
+    cy.get('#form-input-clusterNetworkHostPrefix-field').should('not.exist');
+    cy.get('#form-input-serviceNetworkCidr-field').should('not.exist');
 
-    // switch view
-    cy.log('Switch view');
+    // switch network view
+    cy.log('Switch network view');
     cy.get('#networkConfigurationTypeAdvanced').check();
-    cy.get('#form-input-clusterNetworkCidr-field').should('be.visible');
-    cy.get('#form-input-clusterNetworkHostPrefix-field').should('be.visible');
-    cy.get('#form-input-serviceNetworkCidr-field').should('be.visible');
+    cy.get('#form-input-baseDnsDomain-field').should('be.visible');
+    cy.get('#form-input-clusterNetworkCidr-field');
+    cy.get('#form-input-clusterNetworkHostPrefix-field');
+    cy.get('#form-input-serviceNetworkCidr-field');
     cy.get('#form-input-clusterNetworkCidr-field').should('have.value', '10.128.0.0/14');
     cy.get('#form-input-clusterNetworkHostPrefix-field').should('have.value', '23');
     cy.get('#form-input-serviceNetworkCidr-field').should('have.value', '172.30.0.0/16');
