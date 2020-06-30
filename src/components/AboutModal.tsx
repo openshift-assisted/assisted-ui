@@ -3,13 +3,11 @@ import {
   Button,
   AboutModal as PFAboutModal,
   TextContent,
-  TextList,
-  TextListItem,
   ButtonVariant,
 } from '@patternfly/react-core';
 import { GIT_SHA, VERSION, SERVICE_LABELS } from '../config/standalone';
 import redHatLogo from '../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
-import { Api } from 'facet-lib';
+import { Api, DetailList, DetailItem } from 'facet-lib';
 
 const { getVersions, handleApiError } = Api;
 
@@ -58,18 +56,21 @@ const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
       brandImageAlt="Assisted Installer Logo"
     >
       <TextContent>
-        <TextList component="dl">
-          <TextListItem component="dt">Assisted Installer UI version</TextListItem>
-          <TextListItem component="dd">
-            {VERSION} {GIT_SHA ? `(${GIT_SHA})` : ''}
-          </TextListItem>
-          {Object.keys(versions).map((version) => (
-            <>
-              <TextListItem component="dt">{SERVICE_LABELS[version] || version}</TextListItem>
-              <TextListItem component="dd">{versions[version]}</TextListItem>
-            </>
-          ))}
-        </TextList>
+        <DetailList>
+          <>
+            <DetailItem
+              title="Assisted Installer UI version"
+              value={`${VERSION} ${GIT_SHA ? `(${GIT_SHA})` : ''}`}
+            />
+            {Object.keys(versions).map((version) => (
+              <DetailItem
+                key={version}
+                title={SERVICE_LABELS[version] || version}
+                value={versions[version]}
+              />
+            ))}
+          </>
+        </DetailList>
       </TextContent>
     </PFAboutModal>
   );
