@@ -8,7 +8,7 @@ usage() {
 }
 
 BM_INVENTORY_URL="http://bm-inventory.assisted-installer.svc.cluster.local:8090"
-INPUT_TEMPLATE="deploy/ocp-metal-ui-template.yaml"
+INPUT_TEMPLATE="/deploy/ocp-metal-ui-template.yaml"
 IMAGE="quay.io/ocpmetal/ocp-metal-ui:latest"
 NAMESPACE="assisted-installer"
 
