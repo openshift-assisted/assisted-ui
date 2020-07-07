@@ -5,9 +5,10 @@ import {
   TextContent,
   ButtonVariant,
 } from '@patternfly/react-core';
+import { Api, DetailList, DetailItem } from 'facet-lib';
+import { ListVersions } from 'facet-lib/dist/api/types';
 import { GIT_SHA, VERSION, SERVICE_LABELS } from '../config/standalone';
 import redHatLogo from '../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
-import { Api, DetailList, DetailItem } from 'facet-lib';
 
 const { getVersions, handleApiError } = Api;
 
@@ -31,7 +32,10 @@ type AboutModalProps = {
 };
 
 const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
-  const [versions, setVersions] = React.useState<{ [key in string]: string }>({});
+  const [{ versions, releaseTag }, setVersions] = React.useState<ListVersions>({
+    versions: {},
+    releaseTag: undefined,
+  });
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -58,15 +62,16 @@ const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
       <TextContent>
         <DetailList>
           <>
+            <DetailItem title="Release tag" value={releaseTag || ''} />
             <DetailItem
               title="Assisted Installer UI version"
               value={`${VERSION} ${GIT_SHA ? `(${GIT_SHA})` : ''}`}
             />
-            {Object.keys(versions).map((version) => (
+            {Object.keys(versions || {}).map((version) => (
               <DetailItem
                 key={version}
                 title={SERVICE_LABELS[version] || version}
-                value={versions[version]}
+                value={versions ? versions[version] : ''}
               />
             ))}
           </>
