@@ -4,14 +4,15 @@
 # UI Image that were supplied in the command line
 
 usage() {
-  echo "Usage: $0 [ -t deploy-confing-template ] [ -u BM-INVENTORY-URL ] [ -i UI_IMAGE_NAME ]" 1>&2
+  echo "Usage: $0 [ -t deploy-confing-template ] [ -u BM-INVENTORY-URL ] [ -i UI_IMAGE_NAME ] [ -n NAMESPACE ]" 1>&2
 }
 
 BM_INVENTORY_URL="http://bm-inventory.assisted-installer.svc.cluster.local:8090"
-INPUT_TEMPLATE="/deploy/ocp-metal-ui-template.yaml"
+INPUT_TEMPLATE="deploy/ocp-metal-ui-template.yaml"
 IMAGE="quay.io/ocpmetal/ocp-metal-ui:latest"
+NAMESPACE="assisted-installer"
 
-while getopts ":u:i:t:h" opt; do
+while getopts ":u:i:t:n:h" opt; do
   case $opt in
     u)
       BM_INVENTORY_URL="$OPTARG"
@@ -21,6 +22,9 @@ while getopts ":u:i:t:h" opt; do
       ;;
     i)
       IMAGE="$OPTARG"
+      ;;
+    n)
+      NAMESPACE="$OPTARG"
       ;;
     h)
       usage
@@ -39,6 +43,8 @@ while getopts ":u:i:t:h" opt; do
   esac
 done
 
-sed "s#__IMAGE__#${IMAGE}#g;s#__BM_INVENTORY_URL__#${BM_INVENTORY_URL}#g" ${INPUT_TEMPLATE}
+sed "s#__IMAGE__#${IMAGE}#g;
+     s#__BM_INVENTORY_URL__#${BM_INVENTORY_URL}#g;
+     s#__NAMESPACE__#${NAMESPACE}#g" ${INPUT_TEMPLATE}
 
 
