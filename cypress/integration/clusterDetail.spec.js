@@ -305,4 +305,14 @@ describe('Cluster Detail', () => {
     cy.get('.pf-c-empty-state__secondary > .pf-c-button').click(); // Cancel
     cy.get('.pf-c-modal-box').should('not.be.visible'); // modal closed
   });
+
+  it('shows list of cluster events', () => {
+    cy.get('#cluster-events-button').click();
+    cy.get('.pf-c-modal-box');
+    cy.get('.pf-c-modal-box__title').contains('Cluster Events');
+    cy.get('.pf-c-table').find('tr').should('have.length.greaterThan', 0);
+    cy.get('.pf-c-table').find('tr').last().find('td').last().should('equal', 'Registered cluster');
+    cy.get('.pf-c-modal-box__footer > .pf-m-link').click(); // cancel
+    cy.get('.pf-c-modal-box').should('not.be.visible'); // modal closed
+  });
 });
