@@ -1,4 +1,9 @@
-const DEFAULT_API_REQUEST_TIMEOUT = 10 * 1000;
+import {
+  DEFAULT_API_REQUEST_TIMEOUT,
+  VALIDATE_CHANGES_TIMEOUT,
+  INSTALL_PREPARATION_TIMEOUT,
+  CLUSTER_CREATION_TIMEOUT,
+} from './constants';
 
 export const testInfraClusterName = 'test-infra-cluster';
 export const testInfraClusterHostnames = [
@@ -17,8 +22,18 @@ export const clusterNameLinkSelector = '[data-label="Name"] > a'; // on '/cluste
 // const singleClusterCellSelector = (column) => `tbody > tr > [data-label="${column}"]`;
 export const clusterTableCellSelector = (row, column) =>
   `tbody > tr:nth-child(${row}) > [data-label="${column}"]`;
+export const hostDetailSelector = (row, label) =>
+  // NOTE: The first row is number 2! Shift your indexes...
+  `table > tbody:nth-child(${row}) > tr:nth-child(1) > [data-label="${label}"]`;
 
 export const PULL_SECRET = Cypress.env('PULL_SECRET');
+export const SSH_PUB_KEY = Cypress.env('SSH_PUB_KEY');
+export const CLUSTER_NAME = Cypress.env('CLUSTER_NAME');
+export const DNS_DOMAIN_NAME = Cypress.env('DNS_DOMAIN_NAME');
+export const API_VIP = Cypress.env('API_VIP');
+export const INGRESS_VIP = Cypress.env('INGRESS_VIP');
+export const NUM_MASTERS = parseInt(Cypress.env('NUM_MASTERS'));
+export const NUM_WORKERS = parseInt(Cypress.env('NUM_WORKERS'));
 
 // workaround for long text, expected to be copy&pasted by the user
 export const pasteText = (cy, selector, text) => {
@@ -27,6 +42,30 @@ export const pasteText = (cy, selector, text) => {
     elem.val(text);
     cy.get(selector).type(' {backspace}');
   });
+};
+
+export const openCluster = (clusterName) => {
+  // Click the cluster name from the clusters list
+  cy.visit('');
+  cy.get(getClusterNameLinkSelector(clusterName)).click();
+  // Cluster configuration - name
+  cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(clusterName);
+  cy.get('#form-input-name-field').should('have.value', clusterName);
+};
+
+export const createCluster = (clusterName, pullSecret) => {
+  cy.visit('');
+  cy.get('#button-create-new-cluster').click();
+  cy.get('#form-input-name-field').should('be.visible');
+  cy.get('#form-input-name-field').clear();
+  cy.get('#form-input-name-field').type(clusterName);
+  cy.get('#form-input-name-field').should('have.value', clusterName);
+  // feed in the pull secret
+  cy.get('#form-input-pullSecret-field').clear();
+  pasteText(cy, '#form-input-pullSecret-field', pullSecret);
+  cy.get('form').submit();
+  cy.get('#button-download-discovery-iso').should('be.visible');
+  cy.get('#form-input-name-field').should('have.value', clusterName);
 };
 
 export const createDummyCluster = (cy, clusterName) => {
@@ -68,6 +107,41 @@ export const deleteDummyCluster = (cy, tableRow, clusterName) => {
   cy.get(testClusterLinkSelector); // validate that the test-infra-cluster is still present
 };
 
+export const generateIso = (sshPubKey) => {
+  // click to download the discovery iso
+  cy.get('#button-download-discovery-iso').click();
+  // see that the modal popped up
+  cy.get('h1#pf-modal-part-8').should('be.visible');
+  // feed in the public ssh key
+  pasteText(cy, '#form-input-sshPublicKey-discovery-field', sshPubKey);
+  let aborted = false;
+  cy.server({
+    onAnyAbort: (...args) => {
+      aborted = true;
+      console.log('-- onAnyAbort: ', ...args);
+    },
+  });
+  cy.get('.pf-c-modal-box__footer > .pf-m-primary').contains('Get Discovery ISO');
+  cy.get('.pf-c-modal-box__footer > .pf-m-primary').click();
+  // cy.get('.pf-c-modal-box__footer > .pf-m-primary', { timeout: 5 * 60 * 1000 });
+  // bug: cy.get() timeout is ignored since former inner XHR is aborted by Cypress
+  cy.wait(90 * 1000).then(() => {
+    // yield potentially onAnyAbort()
+    if (aborted) {
+      cy.log('Long-running XHR was aborted');
+      cy.get('.pf-c-alert').contains('Failed to download');
+      cy.get('.pf-c-modal-box__footer > .pf-m-primary').contains('Get Discovery ISO', {
+        timeout: 5 * 60 * 1000,
+      });
+      cy.get('.pf-c-modal-box__footer > .pf-m-primary').click();
+    } else {
+      cy.log('Waiting for ISO was successful');
+    }
+    cy.get('.pf-c-modal-box__footer > .pf-m-primary').contains('Download Discovery ISO');
+  });
+  cy.get('#pf-modal-part-7 > footer > button.pf-c-button.pf-m-secondary').click(); // now close the dialog
+};
+
 export const assertTestClusterPresence = (cy) => {
   cy.visit('/clusters');
   cy.get(testClusterLinkSelector).contains(testInfraClusterName);
@@ -98,4 +172,21 @@ export const checkValidationMessage = (cy, expectedMsg) => {
   // Close
   cy.get('.pf-l-split > :nth-child(2) > .pf-c-button').click(); // close alerts
   cy.get('.pf-c-alert').should('not.be.visible');
+};
+
+export const startClusterInstallation = () => {
+  // wait up to 10 seconds for the install button to be enabled
+  cy.get('button[name="install"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should(($elem) => {
+    expect($elem).to.be.enabled;
+  });
+  cy.get('button[name="install"]').click();
+  // wait for the progress description to say "Installing"
+  cy.contains('div.pf-c-progress__description', 'Installing', {
+    timeout: INSTALL_PREPARATION_TIMEOUT,
+  });
+};
+
+export const waitForClusterInstallation = () => {
+  // wait up to 1 hour for the progress description to say "Installed"
+  cy.contains('div.pf-c-progress__description', 'Installed', { timeout: CLUSTER_CREATION_TIMEOUT });
 };
