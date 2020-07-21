@@ -38,7 +38,7 @@ describe('Cluster Detail', () => {
     cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(testInfraClusterName);
     cy.get('#form-input-name-field').should('have.value', testInfraClusterName);
     cy.get('#form-input-baseDnsDomain-field').should('have.value', 'redhat.com');
-    cy.get(':nth-child(2) > :nth-child(1) > h2').contains('Bare Metal Inventory');
+    cy.get(':nth-child(2) > .pf-c-form > :nth-child(1) > h2').contains('Bare Metal Inventory');
 
     // Column headers
     cy.get('table.hosts-table > thead > tr > td').should('have.length', 2);
@@ -249,7 +249,7 @@ describe('Cluster Detail', () => {
 
   it('disables and enables host in a cluster', () => {
     const hostRow = 2; // conforms first table-row
-    const kebabMenuSelector = `div:nth-child(2) > table > tbody:nth-child(${hostRow}) > tr:nth-child(1) > td.pf-c-table__action > div > button`;
+    const kebabMenuSelector = `.hosts-table > tbody:nth-child(${hostRow}) > tr:nth-child(1) > td.pf-c-table__action > div > button`;
 
     cy.get(kebabMenuSelector).click(); // first host kebab menu
     cy.get(`#button-disable-in-cluster-${testInfraClusterHostnames[0]}`).contains(
@@ -269,9 +269,10 @@ describe('Cluster Detail', () => {
 
   it('downloads ISO', () => {
     const proxyURLSelector = '#form-input-proxyUrl-field';
+    const enableProxyCheckboxSelector = '#form-input-enableProxy-field';
     const proxyURLSelectorHelper = '#form-input-proxyUrl-field-helper';
     const sshPublicKeySelector =
-      ':nth-child(3) > .pf-c-form__group-control > #form-input-sshPublicKey-field';
+      ':nth-child(4) > .pf-c-form__group-control > #form-input-sshPublicKey-field';
 
     cy.get('#button-download-discovery-iso').click(); // Download ISO button
     cy.get('.pf-c-modal-box'); // modal visible
@@ -281,6 +282,11 @@ describe('Cluster Detail', () => {
 
     cy.get('#button-download-discovery-iso').click();
     cy.get('.pf-c-modal-box__title').contains('Download discovery ISO');
+    cy.get(enableProxyCheckboxSelector).should('not.have.attr', 'checked');
+    cy.get(proxyURLSelector).should('not.be.visible');
+    cy.get(enableProxyCheckboxSelector).check();
+    cy.get(proxyURLSelector).should('be.visible');
+
     cy.get(proxyURLSelector).type('{selectall}{backspace}foobar');
     cy.get(sshPublicKeySelector).focus();
     cy.get(proxyURLSelectorHelper).contains('Provide a valid URL.'); // validation error
