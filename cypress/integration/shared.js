@@ -88,3 +88,15 @@ export const checkValidationMessage = (cy, expectedMsg) => {
   cy.get('.pf-l-split > :nth-child(2) > .pf-c-button').click(); // close alerts
   cy.get('.pf-c-alert').should('not.be.visible');
 };
+
+// workaround for long text, expected to be copy&pasted by the user
+export const pasteText = (cy, selector, text) => {
+  const subString = text.substr(0, text.length - 1);
+  const lastChar = text.slice(-1);
+
+  cy.get(selector).then((elem) => {
+    elem.text(text);
+    elem.val(text);
+    cy.get(selector).type(' {backspace}');
+  });
+};

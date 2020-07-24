@@ -4,6 +4,7 @@ import {
   withValueOf,
   checkValidationMessage,
   PULL_SECRET,
+  pasteText,
 } from './shared';
 
 // Theese tests changes state of the cluster permanently.
@@ -40,7 +41,7 @@ describe('Destructive tests at the end', () => {
     // switch network view
     cy.log('Switch network view');
     cy.get('#networkConfigurationTypeAdvanced').check();
-    cy.get('#form-input-baseDnsDomain-field').should('be.visible');
+    cy.get('#form-input-baseDnsDomain-field'); // should be present but must not be visible (limitation of the viewport)
     cy.get('#form-input-clusterNetworkCidr-field');
     cy.get('#form-input-clusterNetworkHostPrefix-field');
     cy.get('#form-input-serviceNetworkCidr-field');
@@ -102,7 +103,6 @@ describe('Destructive tests at the end', () => {
     cy.get(installClusterButtonSelector).should('be.disabled'); // backend validation required
     cy.get(validateSaveButtonSelector).click();
     cy.get('.pf-c-alert__description').contains('Pull-secret has invalid format');
-    cy.get(validateSaveButtonSelector).should('be.disabled');
     cy.get('.pf-c-alert__action > .pf-c-button').click(); // close alert section
 
     if (!PULL_SECRET) {
@@ -115,13 +115,14 @@ describe('Destructive tests at the end', () => {
     // Install
     cy.log('Install');
     // Pass PULL_SECRET from CYPRESS_PULL_SECRET environment variable
-    cy.get('#form-input-pullSecret-field').type(`{selectall}{backspace}${PULL_SECRET}`);
+    cy.get('#form-input-pullSecret-field').type('{selectall}{backspace}');
+    pasteText(cy, '#form-input-pullSecret-field', PULL_SECRET);
     cy.get('#form-input-sshPublicKey-field').focus();
     cy.get(validateSaveButtonSelector).should('not.be.disabled');
     cy.get(installClusterButtonSelector).should('be.disabled');
     cy.get(validateSaveButtonSelector).click();
     cy.get(installClusterButtonSelector).should('not.be.disabled');
-    cy.get(installClusterButtonSelector).click();
+    cy.get(installClusterButtonSelector).click(); // Start the installation
 
     // TODO(mlibra): next steps (not working ATM)
   });

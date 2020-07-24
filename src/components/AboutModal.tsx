@@ -7,7 +7,7 @@ import {
 } from '@patternfly/react-core';
 import { Api, DetailList, DetailItem } from 'facet-lib';
 import { ListVersions } from 'facet-lib/dist/api/types';
-import { GIT_SHA, VERSION, SERVICE_LABELS } from '../config/standalone';
+import { GIT_SHA, VERSION, SERVICE_LABELS, IMAGE_REPO } from '../config/standalone';
 import redHatLogo from '../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
 
 const { getVersions, handleApiError } = Api;
@@ -51,6 +51,27 @@ const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
+  const getUIVersion = () => {
+    const link = (
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href={GIT_SHA ? `https://${IMAGE_REPO}:${GIT_SHA}` : `https://${IMAGE_REPO}`}
+      >
+        {GIT_SHA ? `${IMAGE_REPO}:${GIT_SHA}` : `${IMAGE_REPO}`}
+      </a>
+    );
+    // Display UI tag (VERSION) only if releaseTag is not populated
+    if (releaseTag) {
+      return link;
+    }
+    return (
+      <>
+        {VERSION} ({link})
+      </>
+    );
+  };
+
   return (
     <PFAboutModal
       isOpen={isOpen}
@@ -62,18 +83,22 @@ const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
       <TextContent>
         <DetailList>
           <>
-            <DetailItem title="Release tag" value={releaseTag || ''} />
-            <DetailItem
-              title="Assisted Installer UI version"
-              value={`${VERSION} ${GIT_SHA ? `(${GIT_SHA})` : ''}`}
-            />
-            {Object.keys(versions || {}).map((version) => (
-              <DetailItem
-                key={version}
-                title={SERVICE_LABELS[version] || version}
-                value={versions ? versions[version] : ''}
-              />
-            ))}
+            {releaseTag && <DetailItem title="Release tag" value={releaseTag} />}
+            <DetailItem title="Assisted Installer UI version" value={getUIVersion()} />
+            {Object.keys(versions || {}).map((key) => {
+              const version = versions ? versions[key] : '';
+              return (
+                <DetailItem
+                  key={key}
+                  title={SERVICE_LABELS[key] || key}
+                  value={
+                    <a target="_blank" rel="noopener noreferrer" href={`https://${version}`}>
+                      {version}
+                    </a>
+                  }
+                />
+              );
+            })}
           </>
         </DetailList>
       </TextContent>
