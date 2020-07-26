@@ -14,9 +14,6 @@ NAMESPACE="assisted-installer"
 
 while getopts ":u:i:t:n:h" opt; do
   case $opt in
-    u)
-      BM_INVENTORY_URL="$OPTARG"
-      ;;
     t)
       INPUT_TEMPLATE="$OPTARG"
       ;;
@@ -25,6 +22,10 @@ while getopts ":u:i:t:n:h" opt; do
       ;;
     n)
       NAMESPACE="$OPTARG"
+      BM_INVENTORY_URL="http://bm-inventory.${NAMESPACE}.svc.cluster.local:8090"
+      ;;
+    u)
+      BM_INVENTORY_URL="$OPTARG"
       ;;
     h)
       usage
