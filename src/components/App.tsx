@@ -1,8 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router, Switch, Route, Redirect } from 'react-router-dom';
+import { Router, Route } from 'react-router-dom';
 import { Page } from '@patternfly/react-core';
-import { Store, Clusters, ClusterPage } from 'facet-lib';
+import { Store, Router as LibRouter } from 'facet-lib';
 import history from '../history';
 import Header from './ui/Header';
 // import Sidebar from './Sidebar';
@@ -24,12 +24,9 @@ const App: React.FC = () => (
         isManagedSidebar // enable this to automatically hide sidebar in mobile
         defaultManagedSidebarIsOpen={false}
       >
-        <Switch>
-          <Route path={`/clusters/:clusterId`} component={ClusterPage} />
-          <Route path="/clusters" component={Clusters} />
+        <LibRouter>
           <Route path="/login" component={LoginForm} />
-          <Redirect to="/clusters" />
-        </Switch>
+        </LibRouter>
       </Page>
     </Router>
   </Provider>
