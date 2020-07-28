@@ -7,7 +7,7 @@ usage() {
   echo "Usage: $0 [ -t deploy-confing-template ] [ -u BM-INVENTORY-URL ] [ -i UI_IMAGE_NAME ] [ -n NAMESPACE ]" 1>&2
 }
 
-BM_INVENTORY_URL="http://bm-inventory.assisted-installer.svc.cluster.local:8090"
+BM_INVENTORY_URL="http://bm-inventory.__NAMESPACE__.svc.cluster.local:8090"
 INPUT_TEMPLATE="/deploy/ocp-metal-ui-template.yaml"
 IMAGE="quay.io/ocpmetal/ocp-metal-ui:latest"
 NAMESPACE="assisted-installer"
@@ -42,6 +42,8 @@ while getopts ":u:i:t:n:h" opt; do
       ;;
   esac
 done
+
+BM_INVENTORY_URL=$(echo ${BM_INVENTORY_URL} | sed "s#__NAMESPACE__#${NAMESPACE}#g;")
 
 sed "s#__IMAGE__#${IMAGE}#g;
      s#__BM_INVENTORY_URL__#${BM_INVENTORY_URL}#g;
