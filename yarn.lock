@@ -2273,14 +2273,6 @@
   resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-7.2.1.tgz#2ad4e844175a3738cb9e7064be5ea070b8863a1c"
   integrity sha512-oZ0Ib5I4Z2pUEcoo95cT1cr6slco9WY7yiPpG+RGNkj8YcYgJnM7pXmYmorNOReh8MIGcKSqXyeGjxnr8YiZbA==
 
-"@tippy.js/react@^3.1.1":
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/@tippy.js/react/-/react-3.1.1.tgz#027e4595e55f31430741fe8e0d92aaddfbe47efd"
-  integrity sha512-KF45vW/jKh/nBXk/2zzTFslv/T46zOMkIoDJ56ymZ+M00yHttk58J5wZ29oqGqDIUnobWSZD+cFpbR4u/UUvgw==
-  dependencies:
-    prop-types "^15.6.2"
-    tippy.js "^5.1.1"
-
 "@types/babel__core@^7.1.0":
   version "7.1.6"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.6.tgz#16ff42a5ae203c9af1c6e190ed1f30f83207b610"
@@ -6075,10 +6067,10 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
-facet-lib@^1.0.22:
-  version "1.0.22"
-  resolved "https://registry.yarnpkg.com/facet-lib/-/facet-lib-1.0.22.tgz#222107974bb382a1b48256d48a761e17a307079f"
-  integrity sha512-64NB0+7KCwajF6kge4oj+CpXLs78ZRaJARgHiB3Z+TLKk5fFcAIk/7UOCK6zoXQHEMCpMkbNOXbNH6NTod7ckg==
+facet-lib@^1.0.23:
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/facet-lib/-/facet-lib-1.0.23.tgz#29b0f090eee909cd29594de62be6ef488e3de3d8"
+  integrity sha512-JU7TsHlEAtN29Pk2ep9gnDKNYj7caruF4YKchqd6ecggePBGj5Bq4M/90PcXgM1kQN9HHqlta2WXj0goMLlfmQ==
   dependencies:
     axios-case-converter "^0.6.0"
     unique-names-generator "^4.2.0"
@@ -13157,13 +13149,6 @@ tippy.js@5.1.2:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/tippy.js/-/tippy.js-5.1.2.tgz#5ac91233c59ab482ef5988cffe6e08bd26528e66"
   integrity sha512-Qtrv2wqbRbaKMUb6bWWBQWPayvcDKNrGlvihxtsyowhT7RLGEh1STWuy6EMXC6QLkfKPB2MLnf8W2mzql9VDAw==
-  dependencies:
-    popper.js "^1.16.0"
-
-tippy.js@^5.1.1:
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/tippy.js/-/tippy.js-5.2.1.tgz#e08d7332c103a15e427124d710d881fca82365d6"
-  integrity sha512-66UT6JRVn3dXNCORE+0UvUK3JZqV/VhLlU6HTDm3FmrweUUFUxUGvT8tUQ7ycMp+uhuLAwQw6dBabyC+iKf/MA==
   dependencies:
     popper.js "^1.16.0"
 
