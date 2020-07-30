@@ -307,7 +307,6 @@ describe('Cluster Detail', () => {
     cy.get('.pf-c-modal-box');
     cy.get('.pf-c-modal-box__title').contains('Cluster Events');
     cy.get('.pf-c-table').find('tr').should('have.length.greaterThan', 0);
-    // this fails... I tried with should('have.text', 'Registered cluster "test-infra-cluster"') but it also fails
     cy.get('.pf-c-modal-box__body').scrollTo('bottom');
     cy.get('.pf-c-table').find('tr').last().find('td').last().contains('Registered cluster');
     cy.get('.pf-c-modal-box__footer > .pf-c-button').click(); // close
