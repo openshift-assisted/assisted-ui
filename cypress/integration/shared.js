@@ -20,6 +20,15 @@ export const clusterTableCellSelector = (row, column) =>
 
 export const PULL_SECRET = Cypress.env('PULL_SECRET');
 
+// workaround for long text, expected to be copy&pasted by the user
+export const pasteText = (cy, selector, text) => {
+  cy.get(selector).then((elem) => {
+    elem.text(text);
+    elem.val(text);
+    cy.get(selector).type(' {backspace}');
+  });
+};
+
 export const createDummyCluster = (cy, clusterName) => {
   cy.get('#button-create-new-cluster').click();
   cy.get('.pf-c-modal-box'); // modal visible
@@ -89,16 +98,4 @@ export const checkValidationMessage = (cy, expectedMsg) => {
   // Close
   cy.get('.pf-l-split > :nth-child(2) > .pf-c-button').click(); // close alerts
   cy.get('.pf-c-alert').should('not.be.visible');
-};
-
-// workaround for long text, expected to be copy&pasted by the user
-export const pasteText = (cy, selector, text) => {
-  const subString = text.substr(0, text.length - 1);
-  const lastChar = text.slice(-1);
-
-  cy.get(selector).then((elem) => {
-    elem.text(text);
-    elem.val(text);
-    cy.get(selector).type(' {backspace}');
-  });
 };
