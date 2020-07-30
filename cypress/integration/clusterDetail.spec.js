@@ -237,11 +237,6 @@ describe('Cluster Detail', () => {
     cy.get('#master > .pf-c-dropdown__menu-item').click();
     cy.get(hostDetailSelector(3, 'Role')).contains('master');
 
-    // Still missing pull secret
-    cy.get(':nth-child(5) > [data-pf-content="true"] > .pf-c-button').contains(
-      'The cluster is not ready to be installed yet',
-    );
-
     // check cluster validation
     cy.visit('/clusters');
     cy.get(clusterListStatusSelector).contains('Ready');
@@ -271,8 +266,7 @@ describe('Cluster Detail', () => {
     const proxyURLSelector = '#form-input-proxyUrl-field';
     const enableProxyCheckboxSelector = '#form-input-enableProxy-field';
     const proxyURLSelectorHelper = '#form-input-proxyUrl-field-helper';
-    const sshPublicKeySelector =
-      ':nth-child(4) > .pf-c-form__group-control > #form-input-sshPublicKey-field';
+    const sshPublicKeySelector = '#form-input-sshPublicKey-discovery-field';
 
     cy.get('#button-download-discovery-iso').click(); // Download ISO button
     cy.get('.pf-c-modal-box'); // modal visible
@@ -311,6 +305,7 @@ describe('Cluster Detail', () => {
     cy.get('.pf-c-modal-box');
     cy.get('.pf-c-modal-box__title').contains('Cluster Events');
     cy.get('.pf-c-table').find('tr').should('have.length.greaterThan', 0);
+    // this fails... I tried with should('have.text', 'Registered cluster "test-infra-cluster"') but it also fails
     cy.get('.pf-c-table').find('tr').last().find('td').last().should('equal', 'Registered cluster');
     cy.get('.pf-c-modal-box__footer > .pf-m-link').click(); // cancel
     cy.get('.pf-c-modal-box').should('not.be.visible'); // modal closed

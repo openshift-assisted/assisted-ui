@@ -32,6 +32,8 @@ export const createDummyCluster = (cy, clusterName) => {
 
   // do not allow two clusters of the same name
   cy.get('#form-input-name-field').type(`{selectall}{backspace}${testInfraClusterName}`);
+  cy.get('#form-input-pullSecret-field').clear();
+  pasteText(cy, '#form-input-pullSecret-field', PULL_SECRET);
   cy.get('.pf-c-modal-box__footer > .pf-m-primary').click();
   cy.get('#form-input-name-field-helper').contains('is already taken');
 
