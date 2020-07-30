@@ -148,13 +148,13 @@ describe('Cluster Detail', () => {
     cy.get(nicsTableHeader('Speed')).contains('Speed');
 
     // NICs values
-    cy.get(nicsTableCell(1, 'Name')).contains('eth0');
+    cy.get(nicsTableCell(1, 'Name')).contains('ens3');
     cy.get(nicsTableCell(1, 'MAC address')).should('not.be.empty');
     cy.get(nicsTableCell(1, 'MAC address')).contains(':'); // value can vary
     cy.log('Is IP address stable?');
     cy.get(nicsTableCell(1, 'IPv4 address')).contains('192.168.126.10/24');
     cy.get(nicsTableCell(1, 'IPv6 address')).contains('/64');
-    cy.get(nicsTableCell(1, 'Speed')).contains('Mbps'); // TODO(mlibra): value is about to be changed
+    cy.get(nicsTableCell(1, 'Speed')).contains('N/A');
 
     // Collapse
     cy.get('#expandable-toggle0').should('have.class', 'pf-m-expanded');
@@ -276,7 +276,9 @@ describe('Cluster Detail', () => {
 
     cy.get('#button-download-discovery-iso').click();
     cy.get('.pf-c-modal-box__title').contains('Download discovery ISO');
-    cy.get(enableProxyCheckboxSelector).should('not.have.attr', 'checked');
+    cy.get(enableProxyCheckboxSelector).should('have.attr', 'checked');
+    cy.get(proxyURLSelector).should('be.visible');
+    cy.get(enableProxyCheckboxSelector).uncheck();
     cy.get(proxyURLSelector).should('not.be.visible');
     cy.get(enableProxyCheckboxSelector).check();
     cy.get(proxyURLSelector).should('be.visible');
@@ -306,8 +308,9 @@ describe('Cluster Detail', () => {
     cy.get('.pf-c-modal-box__title').contains('Cluster Events');
     cy.get('.pf-c-table').find('tr').should('have.length.greaterThan', 0);
     // this fails... I tried with should('have.text', 'Registered cluster "test-infra-cluster"') but it also fails
-    cy.get('.pf-c-table').find('tr').last().find('td').last().should('equal', 'Registered cluster');
-    cy.get('.pf-c-modal-box__footer > .pf-m-link').click(); // cancel
+    cy.get('.pf-c-modal-box__body').scrollTo('bottom');
+    cy.get('.pf-c-table').find('tr').last().find('td').last().contains('Registered cluster');
+    cy.get('.pf-c-modal-box__footer > .pf-c-button').click(); // close
     cy.get('.pf-c-modal-box').should('not.be.visible'); // modal closed
   });
 });
