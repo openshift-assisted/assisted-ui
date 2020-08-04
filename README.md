@@ -57,13 +57,13 @@ For further details about the Metal³ architecture, see [http://github.com/metal
   - Command:
 
   ```
-  REACT_APP_API_URL=[YOUR_BM-INVENTORY_URL] yarn start
+  REACT_APP_API_URL=[YOUR_ASSISTED-SERVICE_URL] yarn start
   ```
 
   - Example:
 
   ```
-  REACT_APP_API_URL=`minikube service bm-inventory --url` BROWSER=chromium-browser yarn start
+  REACT_APP_API_URL=`minikube service assisted-service --url` BROWSER=chromium-browser yarn start
   ```
 
 - Open the UI at `http://localhost:3000`
