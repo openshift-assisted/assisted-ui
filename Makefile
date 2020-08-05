@@ -2,8 +2,8 @@
 
 IMAGE := $(or ${IMAGE},quay.io/ocpmetal/ocp-metal-ui:latest)
 TESTS_IMAGE := $(or ${TESTS_IMAGE},quay.io/ocpmetal/ocp-metal-ui-tests:latest)
-BM_INVENTORY_URL := $(or ${BM_INVENTORY_URL},http://bm-inventory.assisted-installer.svc.cluster.local:8090)
 NAMESPACE := $(or ${NAMESPACE},assisted-installer)
+ASSISTED_SERVICE_URL := $(or ${ASSISTED_SERVICE_URL},http://assisted-service.${NAMESPACE}.svc.cluster.local:8090)
 DEPLOY_FILE="deploy/ocp-metal-ui.yaml"
 
 all: build deploy
@@ -17,7 +17,7 @@ build:
 
 deploy:
 	mkdir -p build/deploy/
-	deploy/deploy_config.sh -u "${BM_INVENTORY_URL}" -i "${IMAGE}" -t deploy/ocp-metal-ui-template.yaml -n "${NAMESPACE}" > ${DEPLOY_FILE}
+	deploy/deploy_config.sh -u "${ASSISTED_SERVICE_URL}" -i "${IMAGE}" -t deploy/ocp-metal-ui-template.yaml -n "${NAMESPACE}" > ${DEPLOY_FILE}
 	kubectl apply -f ${DEPLOY_FILE}
 
 # TODO(mlibra): Run tests: get UI URL, run run-tests.sh
