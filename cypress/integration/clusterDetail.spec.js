@@ -7,13 +7,12 @@ import {
   visitTestCluster,
   testInfraClusterHostnames,
   checkValidationMessage,
+  hostDetailSelector,
 } from './shared';
 
 const DISCOVERING_TIMEOUT = 2 * 60 * 1000; // 2 mins
 
 describe('Cluster Detail', () => {
-  const hostDetailSelector = (row, label) =>
-    `:nth-child(${row}) > :nth-child(1) > [data-label="${label}"]`;
   const hostsTableHeaderSelector = (label) => `[data-label="${label}"] > .pf-c-table__button`;
   const actualSorterSelector = '.pf-m-selected > .pf-c-table__button';
 
