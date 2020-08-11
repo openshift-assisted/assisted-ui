@@ -100,7 +100,7 @@ describe('Run install', () => {
     startClusterInstallation();
   });
 
-  it('wait for cluster installation...', () => {
-    waitForClusterInstallation();
-  });
+  // it('wait for cluster installation...', () => {
+  //   waitForClusterInstallation();
+  // });
 });
