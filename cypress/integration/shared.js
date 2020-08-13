@@ -191,3 +191,9 @@ export const waitForClusterInstallation = () => {
   // wait up to 1 hour for the progress description to say "Installed"
   cy.contains('div.pf-c-progress__description', 'Installed', { timeout: CLUSTER_CREATION_TIMEOUT });
 };
+
+export const saveClusterDetails = (cy) => {
+  // click the 'save' button in order to save changes in the cluster info
+  cy.get('button[name="save"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should('be.enabled');
+  cy.get('button[name="save"]').click();
+};
