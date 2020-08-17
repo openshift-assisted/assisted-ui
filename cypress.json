@@ -9,6 +9,12 @@
     "API_VIP": "192.168.126.100",
     "INGRESS_VIP": "192.168.126.101",
     "NUM_MASTERS": 3,
-    "NUM_WORKERS": 0
+    "NUM_WORKERS": 0,
+    "INTEGRATION_API_BASE_URL": "https://api-integration.6943.hive-integration.openshiftapps.com/",
+    "STAGING_API_BASE_URL": "https://api.stage.openshift.com/",
+    "PRODUCTION_API_BASE_URL": "https://api.stage.openshift.com/",
+    "HOSTED_ENV": "",
+    "OCM_USER": "",
+    "OCM_USER_PASSWORD": ""
   }
 }

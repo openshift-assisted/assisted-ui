@@ -34,6 +34,12 @@ export const API_VIP = Cypress.env('API_VIP');
 export const INGRESS_VIP = Cypress.env('INGRESS_VIP');
 export const NUM_MASTERS = parseInt(Cypress.env('NUM_MASTERS'));
 export const NUM_WORKERS = parseInt(Cypress.env('NUM_WORKERS'));
+export const INTEGRATION_API_BASE_URL = Cypress.env('INTEGRATION_API_BASE_URL');
+export const STAGING_API_BASE_URL = Cypress.env('STAGING_API_BASE_URL');
+export const PRODUCTION_API_BASE_URL = Cypress.env('PRODUCTION_API_BASE_URL');
+export const HOSTED_ENV = Cypress.env('HOSTED_ENV');
+export const OCM_USER = Cypress.env('OCM_USER');
+export const OCM_USER_PASSWORD = Cypress.env('OCM_USER_PASSWORD');
 
 // workaround for long text, expected to be copy&pasted by the user
 export const pasteText = (cy, selector, text) => {
@@ -190,4 +196,110 @@ export const startClusterInstallation = () => {
 export const waitForClusterInstallation = () => {
   // wait up to 1 hour for the progress description to say "Installed"
   cy.contains('div.pf-c-progress__description', 'Installed', { timeout: CLUSTER_CREATION_TIMEOUT });
+};
+
+export const loginOCM = (userName, password) => {
+  //Login to ocm
+  cy.visit('');
+  cy.get('#username').should('be.visible');
+  cy.get('#username').type(userName);
+  cy.get('#username').should('have.value', userName);
+  cy.get('#login-show-step2').click();
+  cy.get('#password').should('be.visible');
+  cy.get('#password').type(password);
+  cy.get('#password').should('have.value', password);
+  cy.get('#kc-form-login').submit();
+
+  // visit ocm environment specified by CYPRESS_HOST_ENV
+  switch (HOSTED_ENV) {
+    case 'staging':
+      cy.visit('');
+      break;
+    case 'integration':
+      cy.visit('', {
+        qs: {
+          env: 'integration',
+        },
+      });
+      break;
+    case 'production':
+      break;
+  }
+};
+
+export const makeApiCall = (apiPostfix, method, responseHandler, requestBody = {}) => {
+  let apiBaseURL = '';
+  // determine ocm api to request user pull secret for comparison
+  switch (HOSTED_ENV) {
+    case 'staging':
+      apiBaseURL = STAGING_API_BASE_URL;
+      break;
+    case 'integration':
+      apiBaseURL = INTEGRATION_API_BASE_URL;
+      break;
+    case 'production':
+      apiBaseURL = PRODUCTION_API_BASE_URL;
+      break;
+  }
+
+  // get ocm api token from cookies
+  cy.getCookie('cs_jwt').then((cookie) => {
+    const token = cookie.value;
+    const authHeader = {
+      Authorization: `Bearer ${token}`,
+    };
+    const requestOptions = {
+      method: method,
+      url: `${apiBaseURL}${apiPostfix}`,
+      headers: authHeader,
+      body: requestBody,
+    };
+
+    // request user pull secret
+    cy.request(requestOptions).then(responseHandler); 
+  });
+};
+
+// verifies auto-filled pull secret matches loged in user's pull secret
+export const verifyPullSecret = () => {
+  // response handler for makeApiCall
+  const comparePullSecret = (response) => {
+    const userPullSecret = JSON.stringify(response.body);
+    cy.get('#form-input-pullSecret-field').should('have.value', userPullSecret);
+  };
+
+  makeApiCall('api/accounts_mgmt/v1/access_token', 'post', comparePullSecret);
+};
+
+export const createClusterHosted = (clusterName) => {
+  // navigate from ocm portal to assisted installer
+  cy.get('button').contains('Create cluster').click();
+  cy.get('[href="/openshift/install"').click();
+  cy.get('[href="/openshift/install/metal"').click();
+  cy.get('[data-testid="ai-button"]').click();
+  verifyPullSecret();
+  cy.get('#form-input-name-field').clear();
+  cy.get('#form-input-name-field').type(clusterName);
+  cy.get('form').submit();
+  cy.get('#button-download-discovery-iso').should('be.visible');
+  cy.get('#form-input-name-field').should('have.value', clusterName);
+};
+
+export const logOutOCM = () => {
+  cy.get('#UserMenu').as('userMenu');
+  cy.get('@userMenu').click();
+  cy.contains('Log out').click();
+};
+
+// verifies cluster was created and associated to user
+export const verifyClusterCreation = (clusterName) => {
+  // response handler for makeApiCall
+  const findClusterInList = (response) => {
+    const clusters = response.body;
+    const checkClusterName = (cluster) => clusterName.localeCompare(cluster.name) === 0;
+
+    cy.expect(clusters.some(checkClusterName)).to.be.true;
+  };
+
+  makeApiCall('api/assisted-install/v1/clusters', 'get', findClusterInList);
 };
