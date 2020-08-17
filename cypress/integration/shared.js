@@ -302,4 +302,9 @@ export const verifyClusterCreation = (clusterName) => {
   };
 
   makeApiCall('api/assisted-install/v1/clusters', 'get', findClusterInList);
+  
+export const saveClusterDetails = (cy) => {
+  // click the 'save' button in order to save changes in the cluster info
+  cy.get('button[name="save"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should('be.enabled');
+  cy.get('button[name="save"]').click();
 };
