@@ -1,4 +1,11 @@
-import { CLUSTER_NAME, API_VIP, INGRESS_VIP, openCluster, saveClusterDetails } from './shared';
+import {
+  CLUSTER_NAME,
+  API_VIP,
+  INGRESS_VIP,
+  openCluster,
+  saveClusterDetails,
+  setClusterDnsDomain,
+} from './shared';
 
 // Start condition: Theese tests assume that the cluster is Ready to install.
 
@@ -21,8 +28,7 @@ describe('Cluster Base DNS Domain validation', () => {
   });
 
   it('set invalid DNS: IP instead of DNS', () => {
-    cy.get('#form-input-baseDnsDomain-field').clear();
-    cy.get('#form-input-baseDnsDomain-field').type(VIP_OUT_CIDR);
+    setClusterDnsDomain(VIP_OUT_CIDR);
     cy.get('#form-input-baseDnsDomain-field-helper').contains(
       'is not valid DNS name. Example: basedomain.example.com',
     );
@@ -30,13 +36,13 @@ describe('Cluster Base DNS Domain validation', () => {
   });
 
   it('set invalid DNS: empty DNS', () => {
-    cy.get('#form-input-baseDnsDomain-field').clear();
+    setClusterDnsDomain('', true);
     cy.get('#form-input-baseDnsDomain-field-helper').contains('The value is required.');
     cy.get('button[name="save"]').should('be.disabled');
   });
 
   it('set invalid DNS: single word', () => {
-    cy.get('#form-input-baseDnsDomain-field').clear().type('invalidDns');
+    setClusterDnsDomain('invalidDns');
     cy.get('#form-input-baseDnsDomain-field-helper').contains(
       'is not valid DNS name. Example: basedomain.example.com',
     );

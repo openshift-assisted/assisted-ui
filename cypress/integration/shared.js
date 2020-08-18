@@ -3,6 +3,8 @@ import {
   VALIDATE_CHANGES_TIMEOUT,
   INSTALL_PREPARATION_TIMEOUT,
   CLUSTER_CREATION_TIMEOUT,
+  HOST_DISCOVERY_TIMEOUT,
+  HOST_REGISTRATION_TIMEOUT,
 } from './constants';
 
 export const testInfraClusterName = 'test-infra-cluster';
@@ -190,6 +192,72 @@ export const startClusterInstallation = () => {
 export const waitForClusterInstallation = () => {
   // wait up to 1 hour for the progress description to say "Installed"
   cy.contains('div.pf-c-progress__description', 'Installed', { timeout: CLUSTER_CREATION_TIMEOUT });
+};
+
+export const waitForHostTablePopulation = (cy) => {
+  // wait for hosts to boot and populated in table
+  cy.get('table.hosts-table > tbody', { timeout: HOST_REGISTRATION_TIMEOUT }).should(($els) => {
+    expect($els.length).to.be.eq(NUM_MASTERS + NUM_WORKERS);
+  });
+};
+
+export const waitForPendingInputState = (cy) => {
+  // wait until hosts are getting to pending input state
+  for (let i = 2; i <= NUM_MASTERS + NUM_WORKERS + 1; i++) {
+    cy.contains(hostDetailSelector(i, 'Status'), 'Pending input', {
+      timeout: HOST_DISCOVERY_TIMEOUT,
+    });
+  }
+};
+
+export const waitForHostsSubnet = (cy) => {
+  // wait until hosts subnet populated in the cluster details
+  cy.get('#form-input-hostSubnet-field')
+    .find('option', { timeout: HOST_DISCOVERY_TIMEOUT })
+    .should(($els) => {
+      expect($els.length).to.be.gt(0);
+    })
+    .and(($els) => {
+      expect($els[0]).not.to.have.text('No subnets available');
+    });
+};
+
+export const waitForHostsToBeKnown = () => {
+  // wait until hosts are getting to pending input state
+  for (let i = 2; i <= NUM_MASTERS + NUM_WORKERS + 1; i++) {
+    cy.contains(hostDetailSelector(i, 'Status'), 'Known', {
+      timeout: HOST_DISCOVERY_TIMEOUT,
+    });
+  }
+};
+
+export const setClusterDnsDomain = (dnsDomain = DNS_DOMAIN_NAME, isEmpty = false) => {
+  // set the cluster DNS domain name
+  cy.get('#form-input-baseDnsDomain-field').clear();
+  if (isEmpty == false) {
+    cy.get('#form-input-baseDnsDomain-field').type(dnsDomain);
+    cy.get('#form-input-baseDnsDomain-field').should('have.value', dnsDomain);
+  }
+};
+
+export const setClusterSubnetCidr = (cy) => {
+  // select the first subnet from list
+  cy.get('#form-input-hostSubnet-field')
+    .find('option')
+    .then(($els) => $els.get(0).setAttribute('selected', 'selected'))
+    .parent()
+    .trigger('change');
+};
+
+export const setHostsRole = () => {
+  // set hosts role
+  cy.get('#form-input-name-field').click().type('{end}{home}');
+  for (let i = 2; i < 2 + NUM_MASTERS; i++) {
+    cy.get(hostDetailSelector(i, 'Role')).click().find('li#master').click();
+  }
+  for (let i = 2 + NUM_MASTERS; i < 2 + NUM_MASTERS + NUM_WORKERS; i++) {
+    cy.get(hostDetailSelector(i, 'Role')).click().find('li#worker').click();
+  }
 };
 
 export const saveClusterDetails = (cy) => {
