@@ -37,6 +37,7 @@ export const API_VIP = Cypress.env('API_VIP');
 export const INGRESS_VIP = Cypress.env('INGRESS_VIP');
 export const NUM_MASTERS = parseInt(Cypress.env('NUM_MASTERS'));
 export const NUM_WORKERS = parseInt(Cypress.env('NUM_WORKERS'));
+export const API_BASE_URL = Cypress.env('API_BASE_URL');
 
 // workaround for long text, expected to be copy&pasted by the user
 export const pasteText = (cy, selector, text) => {
@@ -288,4 +289,44 @@ export const saveClusterDetails = (cy) => {
   // click the 'save' button in order to save changes in the cluster info
   cy.get('button[name="save"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should('be.enabled');
   cy.get('button[name="save"]').click();
+};
+
+export const makeApiCall = (
+  apiPostfix,
+  method,
+  responseHandler,
+  requestBody = {},
+  failOnStatusCode = true,
+) => {
+  // get ocm api token from cookies
+  cy.getCookie('cs_jwt').then((cookie) => {
+    const requestOptions = {
+      method: method,
+      url: `${API_BASE_URL}${apiPostfix}`,
+      body: requestBody,
+      failOnStatusCode: failOnStatusCode,
+    };
+
+    // if token cookie is set attach to request
+    if (cookie) {
+      cy.log('using cookie');
+      requestOptions.headers = {
+        Authorization: `Bearer ${cookie.value}`,
+      };
+    }
+
+    cy.request(requestOptions).then(responseHandler);
+  });
+};
+
+export const verifyClusterCreationApi = (clusterName) => {
+  // response handler for makeApiCall
+  const findClusterInList = (response) => {
+    const clusters = response.body;
+    const checkClusterName = (cluster) => clusterName.localeCompare(cluster.name) === 0;
+
+    expect(clusters.some(checkClusterName)).to.be.true;
+  };
+
+  makeApiCall('/api/assisted-install/v1/clusters', 'get', findClusterInList);
 };
