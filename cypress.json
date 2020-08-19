@@ -12,6 +12,7 @@
     "NUM_WORKERS": 0,
     "API_BASE_URL": "",
     "INTEGRATION_ENV": "",
+    "LOGIN": "",
     "OCM_USER": "",
     "OCM_USER_PASSWORD": ""
   }

@@ -266,3 +266,36 @@ export const saveClusterDetails = (cy) => {
   cy.get('button[name="save"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should('be.enabled');
   cy.get('button[name="save"]').click();
 };
+
+export const makeApiCall = (apiPostfix, method, responseHandler, requestBody = {}) => {
+  // get ocm api token from cookies
+  cy.getCookie('cs_jwt').then((cookie) => {
+    const requestOptions = {
+      method: method,
+      url: `${API_BASE_URL}${apiPostfix}`,
+      body: requestBody,
+    };
+
+    // if token cookie is set attach to request
+    if (cookie) {
+      cy.log('using cookie');
+      requestOptions.headers = {
+        Authorization: `Bearer ${cookie.value}`,
+      };
+    }
+
+    cy.request(requestOptions).then(responseHandler);
+  });
+};
+
+export const verifyClusterCreationApi = (clusterName) => {
+  // response handler for makeApiCall
+  const findClusterInList = (response) => {
+    const clusters = response.body;
+    const checkClusterName = (cluster) => clusterName.localeCompare(cluster.name) === 0;
+
+    expect(clusters.some(checkClusterName)).to.be.true;
+  };
+
+  makeApiCall('api/assisted-install/v1/clusters', 'get', findClusterInList);
+};
