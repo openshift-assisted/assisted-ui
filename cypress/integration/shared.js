@@ -1,7 +1,6 @@
 import {
   DEFAULT_API_REQUEST_TIMEOUT,
   VALIDATE_CHANGES_TIMEOUT,
-  INSTALL_PREPARATION_TIMEOUT,
   CLUSTER_CREATION_TIMEOUT,
   HOST_DISCOVERY_TIMEOUT,
   HOST_REGISTRATION_TIMEOUT,
@@ -27,6 +26,8 @@ export const clusterTableCellSelector = (row, column) =>
 export const hostDetailSelector = (row, label) =>
   // NOTE: The first row is number 2! Shift your indexes...
   `table > tbody:nth-child(${row}) > tr:nth-child(1) > [data-label="${label}"]`;
+export const kebabSelector = (clusterName) =>
+  `#cluster-row-${clusterName} > td.pf-c-table__action > div > button`;
 
 export const PULL_SECRET = Cypress.env('PULL_SECRET');
 export const SSH_PUB_KEY = Cypress.env('SSH_PUB_KEY');
@@ -36,6 +37,7 @@ export const API_VIP = Cypress.env('API_VIP');
 export const INGRESS_VIP = Cypress.env('INGRESS_VIP');
 export const NUM_MASTERS = parseInt(Cypress.env('NUM_MASTERS'));
 export const NUM_WORKERS = parseInt(Cypress.env('NUM_WORKERS'));
+export const API_ENDPOINT = Cypress.env('API_ENDPOINT');
 
 // workaround for long text, expected to be copy&pasted by the user
 export const pasteText = (cy, selector, text) => {
@@ -68,6 +70,12 @@ export const createCluster = (clusterName, pullSecret) => {
   cy.get('form').submit();
   cy.get('#button-download-discovery-iso').should('be.visible');
   cy.get('#form-input-name-field').should('have.value', clusterName);
+};
+
+export const deleteCluster = (clusterName) => {
+  cy.get(kebabSelector(clusterName)).click();
+  cy.get('#button-delete-' + clusterName).click();
+  cy.get('button[data-test-id="delete-cluster-submit"]').click();
 };
 
 export const createDummyCluster = (cy, clusterName) => {
