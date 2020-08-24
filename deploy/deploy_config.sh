@@ -8,7 +8,8 @@ usage() {
 }
 
 ASSISTED_SERVICE_URL="http://assisted-service.__NAMESPACE__.svc.cluster.local:8090"
-INPUT_TEMPLATE="/deploy/ocp-metal-ui-template.yaml"
+DIRECTORY=$(dirname "$0")
+INPUT_TEMPLATE="${DIRECTORY}/ocp-metal-ui-template.yaml"
 IMAGE="quay.io/ocpmetal/ocp-metal-ui:latest"
 NAMESPACE="assisted-installer"
 
