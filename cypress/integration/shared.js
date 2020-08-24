@@ -191,7 +191,7 @@ export const startClusterInstallation = () => {
 
 export const waitForClusterInstallation = () => {
   // wait up to 1 hour for the progress description to say "Installed"
-  cy.contains('div.pf-c-progress__description', 'Installed', { timeout: CLUSTER_CREATION_TIMEOUT });
+  cy.contains('#cluster-progress-status-value', 'Installed', { timeout: CLUSTER_CREATION_TIMEOUT });
 };
 
 export const waitForHostTablePopulation = (cy) => {
