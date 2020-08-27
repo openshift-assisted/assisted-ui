@@ -5,6 +5,7 @@ import {
   CLUSTER_CREATION_TIMEOUT,
   HOST_DISCOVERY_TIMEOUT,
   HOST_REGISTRATION_TIMEOUT,
+  FILE_DOWNLOAD_TIMEOUT,
 } from './constants';
 
 export const testInfraClusterName = 'test-infra-cluster';
@@ -127,7 +128,8 @@ export const generateIso = (sshPubKey) => {
   cy.get('.pf-c-modal-box__footer > .pf-m-primary').click();
   // cy.get('.pf-c-modal-box__footer > .pf-m-primary', { timeout: 5 * 60 * 1000 });
   // bug: cy.get() timeout is ignored since former inner XHR is aborted by Cypress
-  cy.wait(90 * 1000).then(() => {
+  // using constant GENERATE_ISO_TIMEOUT causes a lint crash https://github.com/cypress-io/eslint-plugin-cypress/issues/43
+  cy.wait(2 * 60 * 1000).then(() => {
     // yield potentially onAnyAbort()
     if (aborted) {
       cy.log('Long-running XHR was aborted');
@@ -139,9 +141,30 @@ export const generateIso = (sshPubKey) => {
     } else {
       cy.log('Waiting for ISO was successful');
     }
-    cy.get('.pf-c-modal-box__footer > .pf-m-primary').contains('Download Discovery ISO');
   });
-  cy.get('#pf-modal-part-7 > footer > button.pf-c-button.pf-m-secondary').click(); // now close the dialog
+  cy.get('button[data-test-id="download-iso-btn"]', { timeout: 2 * 60 * 1000 }).contains(
+    'Download Discovery ISO',
+  );
+  cy.get('button[data-test-id="close-iso-btn"]').click(); // now close the dialog
+};
+
+export const downloadFileWithChrome = (downloadButton, resultantFilename) => {
+  // NOTE: This works only with Chrome, where the default behavior is:
+  //  1) It starts the download without popping up a save dialog (which would require automating native windows)
+  //  2) It caches to a temporary location, and when the download is complete it moves the file to ~/Downloads
+
+  // first delete old downloads
+  cy.exec(`[ -f ${resultantFilename} ] && rm -rf ${resultantFilename}`, {
+    failOnNonZeroExit: false,
+  });
+  cy.get(downloadButton).click();
+
+  // wait until the file shows up, to know that the download finshed
+  cy.exec(`while [ ! -f ${resultantFilename} ]; do sleep 1; done`, {
+    timeout: FILE_DOWNLOAD_TIMEOUT,
+  }).should((result) => {
+    expect(result.code).to.be.eq(0);
+  });
 };
 
 export const assertTestClusterPresence = (cy) => {

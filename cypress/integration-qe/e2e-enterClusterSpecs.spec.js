@@ -9,6 +9,7 @@ import {
   openCluster,
   startClusterInstallation,
   waitForClusterInstallation,
+  downloadFileWithChrome,
 } from './shared';
 
 import {
@@ -102,5 +103,15 @@ describe('Run install', () => {
 
   it('wait for cluster installation...', () => {
     waitForClusterInstallation();
+  });
+});
+
+describe('Donwload kubeconfig', () => {
+  it('download kubeconfig', () => {
+    downloadFileWithChrome(
+      'div.pf-l-grid__item > button.pf-c-button.pf-m-secondary',
+      '~/Downloads/kubeconfig',
+    );
+    cy.exec('mv -f ~/Downloads/kubeconfig ~');
   });
 });
