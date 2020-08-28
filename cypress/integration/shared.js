@@ -58,7 +58,7 @@ export const openCluster = (clusterName) => {
 
 export const createCluster = (clusterName, pullSecret) => {
   cy.visit('');
-  cy.get('#button-create-new-cluster').click();
+  cy.get('button[data-ouia-id="button-create-new-cluster"]').click();
   cy.get('#form-input-name-field').should('be.visible');
   cy.get('#form-input-name-field').clear();
   cy.get('#form-input-name-field').type(clusterName);
@@ -72,13 +72,13 @@ export const createCluster = (clusterName, pullSecret) => {
 };
 
 export const createDummyCluster = (cy, clusterName) => {
-  cy.get('#button-create-new-cluster').click();
+  cy.get('button[data-ouia-id="button-create-new-cluster"]').click();
   cy.get('.pf-c-modal-box'); // modal visible
   cy.get('.pf-c-modal-box__header').contains('New Bare Metal OpenShift Cluster');
   cy.get('.pf-m-secondary').click(); // cancel
 
   cy.get('.pf-c-modal-box').should('not.be.visible'); // modal closed
-  cy.get('#button-create-new-cluster').click();
+  cy.get('button[data-ouia-id="button-create-new-cluster"]').click();
   cy.get('.pf-c-modal-box'); // modal visible again
 
   // do not allow two clusters of the same name
