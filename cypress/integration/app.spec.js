@@ -20,7 +20,7 @@ describe('Application', () => {
 
     cy.get('#button-about').contains('About');
 
-    cy.get('#button-create-new-cluster').contains('Create New Cluster');
+    cy.get('button[data-ouia-id="button-create-new-cluster"]').contains('Create New Cluster');
   });
 
   describe('makes sure about expected initial state before testing', () => {
