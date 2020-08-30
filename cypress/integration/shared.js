@@ -66,7 +66,7 @@ export const createCluster = (clusterName, pullSecret) => {
   // feed in the pull secret
   cy.get('#form-input-pullSecret-field').clear();
   pasteText(cy, '#form-input-pullSecret-field', pullSecret);
-  cy.get('form').submit();
+  cy.get('button[name="save"]').click();
   cy.get('#button-download-discovery-iso').should('be.visible');
   cy.get('#form-input-name-field').should('have.value', clusterName);
 };
@@ -114,9 +114,9 @@ export const generateIso = (sshPubKey) => {
   // click to download the discovery iso
   cy.get('#button-download-discovery-iso').click();
   // see that the modal popped up
-  cy.get('h1#pf-modal-part-8').should('be.visible');
+  cy.get('#pf-modal-part-6').should('be.visible');
   // feed in the public ssh key
-  pasteText(cy, '#form-input-sshPublicKey-discovery-field', sshPubKey);
+  cy.get('#form-input-sshPublicKey-discovery-field').type(sshPubKey);
   let aborted = false;
   cy.server({
     onAnyAbort: (...args) => {
@@ -124,7 +124,8 @@ export const generateIso = (sshPubKey) => {
       console.log('-- onAnyAbort: ', ...args);
     },
   });
-  cy.get('.pf-c-modal-box__footer > .pf-m-primary').contains('Get Discovery ISO');
+  cy.get('.pf-c-modal-box__footer > .pf-m-primary').should('be.visible');
+  cy.get('.pf-c-modal-box__footer > .pf-m-primary').contains('Generate Discovery ISO');
   cy.get('.pf-c-modal-box__footer > .pf-m-primary').click();
   // cy.get('.pf-c-modal-box__footer > .pf-m-primary', { timeout: 5 * 60 * 1000 });
   // bug: cy.get() timeout is ignored since former inner XHR is aborted by Cypress
