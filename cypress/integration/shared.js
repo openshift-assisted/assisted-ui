@@ -135,7 +135,7 @@ export const generateIso = (sshPubKey) => {
     if (aborted) {
       cy.log('Long-running XHR was aborted');
       cy.get('.pf-c-alert').contains('Failed to download');
-      cy.get('.pf-c-modal-box__footer > .pf-m-primary').contains('Get Discovery ISO', {
+      cy.get('.pf-c-modal-box__footer > .pf-m-primary').contains('Generate Discovery ISO', {
         timeout: 5 * 60 * 1000,
       });
       cy.get('.pf-c-modal-box__footer > .pf-m-primary').click();
