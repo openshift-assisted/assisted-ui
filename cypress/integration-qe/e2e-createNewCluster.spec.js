@@ -23,6 +23,9 @@ describe('Flow', () => {
   });
 
   it('download the ISO', () => {
+    // waiting for the backend to complete the images.
+    // it seems that via Cypress, there are 2 images built at the same time (BZ1874461)
+    cy.wait(2 * 60 * 1000);
     cy.get('#button-download-discovery-iso').click(); // open the dialog
     cy.get('.pf-c-modal-box__footer > .pf-m-primary').click(); // "Get Discovery ISO"
     downloadFileWithChrome('button[data-test-id="download-iso-btn"]', ' ~/Downloads/cluster-*.iso');
