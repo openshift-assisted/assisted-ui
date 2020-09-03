@@ -12,16 +12,10 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v1
       - name: Install dependencies
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: install
+        run: npm install
       - name: Call linter
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: lint
+        run: npm run lint
       - name: Build code
-        uses: borales/actions-yarn@v2.0.0
         env:
           NODE_OPTIONS: '--max-old-space-size=8192'
-        with:
-          cmd: build
+        run: npm build

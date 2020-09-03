@@ -12,24 +12,18 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v1
       - name: Install dependencies
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: install
+        run: npm install
       - name: Call linter
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: lint
+        run: npm run lint
       - name: Get tag
         id: get_tag
         run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/tags/}
       - name: Build code
-        uses: borales/actions-yarn@v2.0.0
         env:
           NODE_OPTIONS: '--max-old-space-size=8192'
           REACT_APP_GIT_SHA: ${{ github.sha }}
           REACT_APP_VERSION: ${{ env.GIT_TAG }}
-        with:
-          cmd: build
+        run: npm build
       - name: Publish to quay.io
         uses: elgohr/Publish-Docker-Github-Action@2.14
         with:
