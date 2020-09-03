@@ -11,11 +11,11 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v1
-      - name: Install dependencies
+      - name: Install NPM dependencies
         run: npm install
       - name: Call linter
         run: npm run lint
       - name: Build code
         env:
           NODE_OPTIONS: '--max-old-space-size=8192'
-        run: npm build
+        run: npm run build

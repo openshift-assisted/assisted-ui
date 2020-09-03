@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v1
-      - name: Install dependencies
+      - name: Install NPM dependencies
         run: npm install
       - name: Call linter
         run: npm run lint
@@ -23,7 +23,7 @@ jobs:
           NODE_OPTIONS: '--max-old-space-size=8192'
           REACT_APP_GIT_SHA: ${{ github.sha }}
           REACT_APP_VERSION: ${{ env.GIT_TAG }}
-        run: npm build
+        run: npm run build
       - name: Publish to quay.io
         uses: elgohr/Publish-Docker-Github-Action@2.14
         with:
