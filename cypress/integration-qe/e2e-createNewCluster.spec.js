@@ -30,6 +30,5 @@ describe('Flow', () => {
     cy.get('.pf-c-modal-box__footer > .pf-m-primary').click(); // "Get Discovery ISO"
     downloadFileWithChrome('button[data-test-id="download-iso-btn"]', ' ~/Downloads/cluster-*.iso');
     cy.get('button[data-test-id="close-iso-btn"]').click(); // now close the dialog
-    cy.exec('mv -f ~/Downloads/cluster-*.iso /var/lib/libvirt/images/cluster-discovery.iso');
   });
 });
