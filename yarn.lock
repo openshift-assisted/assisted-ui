@@ -6034,10 +6034,10 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
-facet-lib@^1.0.35:
-  version "1.0.35"
-  resolved "https://registry.yarnpkg.com/facet-lib/-/facet-lib-1.0.35.tgz#dd7bd21c3ca0896033b3167cff94662de2cf5e9e"
-  integrity sha512-HGyS9+MyvksyhbL2OIFoVyA+awrLhgwFmWx+gPqi5cW22pnpkCzWWnwxtggDu065RPOGKsY4ORAzmZ7//EKYUQ==
+facet-lib@^1.0.37:
+  version "1.0.37"
+  resolved "https://registry.yarnpkg.com/facet-lib/-/facet-lib-1.0.37.tgz#14765aac500038d32c5365ea4469bc6b04330538"
+  integrity sha512-xEk53dNwqHQBrtAKLdFrZ0iBXEoj2nAtV/fu3+StSLeI0Kam5Va2NE++6bFJq2JVv6LmD/DM35lukEwQL3WRaw==
   dependencies:
     axios-case-converter "^0.6.0"
     unique-names-generator "^4.2.0"
