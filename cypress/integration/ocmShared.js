@@ -4,6 +4,8 @@ import { DEFAULT_API_REQUEST_TIMEOUT } from './constants';
 export const INTEGRATION_ENV = Cypress.env('INTEGRATION_ENV');
 export const OCM_USER = Cypress.env('OCM_USER');
 export const OCM_USER_PASSWORD = Cypress.env('OCM_USER_PASSWORD');
+export const OCM_COOKIE_NAME = Cypress.env('OCM_COOKIE_NAME');
+export const OCM_TOKEN_DEST = Cypress.env('OCM_TOKEN_DEST');
 
 export const loginOCM = (userName, password) => {
   // visit ocm environemnt based on INTEGRATION_ENV (true/false)
@@ -25,6 +27,13 @@ export const loginOCM = (userName, password) => {
   });
 };
 
+export const writeCookieToDisk = async () => {
+  cy.getCookie(OCM_COOKIE_NAME).then((cookie) => {
+    // dumping cookie to disk
+    cy.exec(`echo '${cookie.value}' > ${OCM_TOKEN_DEST}`);
+  });
+};
+
 // verifies auto-filled pull secret matches loged in user's pull secret
 export const verifyPullSecretHosted = () => {
   // response handler for makeApiCall
@@ -37,7 +46,7 @@ export const verifyPullSecretHosted = () => {
 };
 
 export const logOutOCM = () => {
-  cy.get('userMenu').click();
+  cy.get('button[id="UserMenu"]').click();
   cy.contains('Log out').click();
 };
 
@@ -57,7 +66,7 @@ export const loginAndPreserveEnvironment = () => {
   beforeEach(() => {
     // cookies and local storage are cleared between it() blocks
     // preserving cs_jwt keeps the user logged in between tests
-    Cypress.Cookies.preserveOnce('cs_jwt');
+    Cypress.Cookies.preserveOnce(OCM_COOKIE_NAME);
     // seting ocmOverridenEnvironment preserves integration/staging environments between tests
     localStorage.setItem('ocmOverridenEnvironment', INTEGRATION_ENV ? 'integration' : '');
   });
