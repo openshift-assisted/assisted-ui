@@ -6,7 +6,6 @@ import {
   ButtonVariant,
 } from '@patternfly/react-core';
 import { Api, DetailList, DetailItem } from 'facet-lib';
-import { ListVersions } from 'facet-lib/dist/api/types';
 import { GIT_SHA, VERSION, SERVICE_LABELS, IMAGE_REPO } from '../config/standalone';
 import redHatLogo from '../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
 
@@ -32,7 +31,7 @@ type AboutModalProps = {
 };
 
 const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
-  const [{ versions, releaseTag }, setVersions] = React.useState<ListVersions>({
+  const [{ versions, releaseTag }, setVersions] = React.useState<Api.ListVersions>({
     versions: {},
     releaseTag: undefined,
   });
