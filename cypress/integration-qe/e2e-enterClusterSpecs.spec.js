@@ -58,7 +58,7 @@ describe('Enter cluster details', () => {
   it('can select the first subnet CIDR', () => {
     cy.get('#form-input-hostSubnet-field')
       .find('option')
-      .then(($els) => $els.get(0).setAttribute('selected', 'selected'))
+      .then(($els) => $els.get(1).setAttribute('selected', 'selected'))
       .parent()
       .trigger('change');
   });
@@ -106,7 +106,7 @@ describe('Run install', () => {
   });
 });
 
-describe('Donwload kubeconfig', () => {
+describe('Download kubeconfig', () => {
   it('download kubeconfig', () => {
     downloadFileWithChrome(
       'div.pf-l-grid__item > button.pf-c-button.pf-m-secondary',
