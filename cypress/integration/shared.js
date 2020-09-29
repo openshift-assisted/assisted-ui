@@ -37,6 +37,9 @@ export const API_VIP = Cypress.env('API_VIP');
 export const INGRESS_VIP = Cypress.env('INGRESS_VIP');
 export const NUM_MASTERS = parseInt(Cypress.env('NUM_MASTERS'));
 export const NUM_WORKERS = parseInt(Cypress.env('NUM_WORKERS'));
+export const API_BASE_URL = Cypress.env('API_BASE_URL');
+export const OCM_USER = Cypress.env('OCM_USER');
+export const ISO_PATTERN = Cypress.env('ISO_PATTERN');
 
 // workaround for long text, expected to be copy&pasted by the user
 export const pasteText = (cy, selector, text) => {
@@ -64,8 +67,11 @@ export const createCluster = (clusterName, pullSecret) => {
   cy.get('#form-input-name-field').type(clusterName);
   cy.get('#form-input-name-field').should('have.value', clusterName);
   // feed in the pull secret
-  cy.get('#form-input-pullSecret-field').clear();
-  pasteText(cy, '#form-input-pullSecret-field', pullSecret);
+  // for hosted cloud use the existing one
+  if (!OCM_USER) {
+    cy.get('#form-input-pullSecret-field').clear();
+    pasteText(cy, '#form-input-pullSecret-field', pullSecret);
+  }
   cy.get('button[name="save"]').click();
   cy.get('#button-download-discovery-iso').should('be.visible');
   cy.get('#form-input-name-field').should('have.value', clusterName);
@@ -143,9 +149,7 @@ export const generateIso = (sshPubKey) => {
       cy.log('Waiting for ISO was successful');
     }
   });
-  cy.get('button[data-test-id="download-iso-btn"]', { timeout: 2 * 60 * 1000 }).contains(
-    'Download Discovery ISO',
-  );
+  cy.get('button[data-test-id="download-iso-btn"]').contains('Download Discovery ISO');
   cy.get('button[data-test-id="close-iso-btn"]').click(); // now close the dialog
 };
 
@@ -288,4 +292,44 @@ export const saveClusterDetails = (cy) => {
   // click the 'save' button in order to save changes in the cluster info
   cy.get('button[name="save"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should('be.enabled');
   cy.get('button[name="save"]').click();
+};
+
+export const makeApiCall = (
+  apiPostfix,
+  method,
+  responseHandler,
+  requestBody = {},
+  failOnStatusCode = true,
+) => {
+  // get ocm api token from cookies
+  cy.getCookie('cs_jwt').then((cookie) => {
+    const requestOptions = {
+      method: method,
+      url: `${API_BASE_URL}${apiPostfix}`,
+      body: requestBody,
+      failOnStatusCode: failOnStatusCode,
+    };
+
+    // if token cookie is set attach to request
+    if (cookie) {
+      cy.log('using cookie');
+      requestOptions.headers = {
+        Authorization: `Bearer ${cookie.value}`,
+      };
+    }
+
+    cy.request(requestOptions).then(responseHandler);
+  });
+};
+
+export const verifyClusterCreationApi = (clusterName) => {
+  // response handler for makeApiCall
+  const findClusterInList = (response) => {
+    const clusters = response.body;
+    const checkClusterName = (cluster) => clusterName.localeCompare(cluster.name) === 0;
+
+    expect(clusters.some(checkClusterName)).to.be.true;
+  };
+
+  makeApiCall('/api/assisted-install/v1/clusters', 'get', findClusterInList);
 };
