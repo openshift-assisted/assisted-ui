@@ -1,7 +1,6 @@
 import {
   DEFAULT_API_REQUEST_TIMEOUT,
   VALIDATE_CHANGES_TIMEOUT,
-  INSTALL_PREPARATION_TIMEOUT,
   CLUSTER_CREATION_TIMEOUT,
   HOST_DISCOVERY_TIMEOUT,
   HOST_REGISTRATION_TIMEOUT,
@@ -35,6 +34,9 @@ export const CLUSTER_NAME = Cypress.env('CLUSTER_NAME');
 export const DNS_DOMAIN_NAME = Cypress.env('DNS_DOMAIN_NAME');
 export const API_VIP = Cypress.env('API_VIP');
 export const INGRESS_VIP = Cypress.env('INGRESS_VIP');
+export const NETWORK_CIDR = Cypress.env('NETWORK_CIDR');
+export const NETWORK_HOST_PREFIX = Cypress.env('NETWORK_HOST_PREFIX');
+export const SERVICE_NETWORK_CIDR = Cypress.env('SERVICE_NETWORK_CIDR');
 export const NUM_MASTERS = parseInt(Cypress.env('NUM_MASTERS'));
 export const NUM_WORKERS = parseInt(Cypress.env('NUM_WORKERS'));
 export const API_BASE_URL = Cypress.env('API_BASE_URL');
@@ -288,12 +290,6 @@ export const setHostsRole = () => {
   }
 };
 
-export const saveClusterDetails = (cy) => {
-  // click the 'save' button in order to save changes in the cluster info
-  cy.get('button[name="save"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should('be.enabled');
-  cy.get('button[name="save"]').click();
-};
-
 export const makeApiCall = (
   apiPostfix,
   method,
@@ -320,6 +316,85 @@ export const makeApiCall = (
 
     cy.request(requestOptions).then(responseHandler);
   });
+};
+
+export const clusterIdFromUrl = (cy) => {
+  return new Cypress.Promise((resolve, reject) => {
+    cy.url().then((url) => {
+      resolve(url.split('/clusters/')[1]);
+    });
+  });
+};
+
+export const getDhcpVipState = (cy) => {
+  return new Cypress.Promise((resolve, reject) => {
+    clusterIdFromUrl(cy).then((id) => {
+      const readDhcpAllocation = (response) => {
+        resolve(response.body.vip_dhcp_allocation);
+      };
+
+      makeApiCall(`/api/assisted-install/v1/clusters/${id}`, 'GET', readDhcpAllocation);
+    });
+  });
+};
+
+export const disableDhcpVip = (cy, apiVip = null, ingressVip = null) => {
+  getDhcpVipState(cy).then((state) => {
+    if (state) {
+      cy.get('#form-input-vipDhcpAllocation-field-on').click();
+    }
+  });
+  if (apiVip) {
+    cy.get('#form-input-apiVip-field').clear();
+    cy.get('#form-input-apiVip-field').type(apiVip);
+  }
+  if (ingressVip) {
+    cy.get('#form-input-ingressVip-field').clear();
+    cy.get('#form-input-ingressVip-field').type(ingressVip);
+  }
+};
+
+export const enableDhcpVip = (cy) => {
+  getDhcpVipState(cy).then((state) => {
+    if (!state) {
+      cy.get('#form-input-vipDhcpAllocation-field-off').click();
+    }
+  });
+};
+
+export const enableAdvancedNetworking = (
+  cy,
+  clusterCidr = null,
+  networkPrefix = null,
+  serviceCidr = null,
+) => {
+  cy.get('#networkConfigurationTypeAdvanced').click();
+  cy.get('#form-input-serviceNetworkCidr-field').click(); // just to scroll to it
+  cy.get('#form-input-clusterNetworkCidr-field').should('be.visible');
+  cy.get('#form-input-clusterNetworkHostPrefix-field').should('be.visible');
+  cy.get('#form-input-serviceNetworkCidr-field').should('be.visible');
+
+  if (clusterCidr) {
+    cy.get('#form-input-clusterNetworkCidr-field').clear();
+    cy.get('#form-input-clusterNetworkCidr-field').type(clusterCidr);
+  }
+
+  if (serviceCidr) {
+    cy.get('#form-input-serviceNetworkCidr-field').clear();
+    cy.get('#form-input-serviceNetworkCidr-field').type(serviceCidr);
+  }
+
+  if (networkPrefix) {
+    // cy.get('#form-input-clusterNetworkHostPrefix-field').dblclick();
+    cy.get('#form-input-clusterNetworkHostPrefix-field').clear();
+    cy.get('#form-input-clusterNetworkHostPrefix-field').type(networkPrefix);
+  }
+};
+
+export const saveClusterDetails = (cy) => {
+  // click the 'save' button in order to save changes in the cluster info
+  cy.get('button[name="save"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should('be.enabled');
+  cy.get('button[name="save"]').click();
 };
 
 export const verifyClusterCreationApi = (clusterName) => {

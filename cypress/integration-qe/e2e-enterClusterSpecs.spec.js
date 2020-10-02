@@ -7,9 +7,7 @@ import {
   NUM_WORKERS,
   hostDetailSelector,
   openCluster,
-  startClusterInstallation,
-  waitForClusterInstallation,
-  downloadFileWithChrome,
+  disableDhcpVip,
 } from './shared';
 
 import {
@@ -63,14 +61,8 @@ describe('Enter cluster details', () => {
       .trigger('change');
   });
 
-  it('can set API VIP', () => {
-    cy.get('#form-input-apiVip-field').clear();
-    cy.get('#form-input-apiVip-field').type(API_VIP);
-  });
-
-  it('can set ingress VIP', () => {
-    cy.get('#form-input-ingressVip-field').clear();
-    cy.get('#form-input-ingressVip-field').type(INGRESS_VIP);
+  it('can set API VIP and ingress VIP', () => {
+    disableDhcpVip(cy, API_VIP, INGRESS_VIP);
   });
 
   it('can save cluster details', () => {
@@ -93,25 +85,5 @@ describe('Set roles', () => {
     for (let i = 2 + NUM_MASTERS; i < 2 + NUM_MASTERS + NUM_WORKERS; i++) {
       cy.get(hostDetailSelector(i, 'Role')).click().find('li#worker').click();
     }
-  });
-});
-
-describe('Run install', () => {
-  it('start installation', () => {
-    startClusterInstallation();
-  });
-
-  it('wait for cluster installation...', () => {
-    waitForClusterInstallation();
-  });
-});
-
-describe('Download kubeconfig', () => {
-  it('download kubeconfig', () => {
-    downloadFileWithChrome(
-      'div.pf-l-grid__item > button.pf-c-button.pf-m-secondary',
-      '~/Downloads/kubeconfig',
-    );
-    cy.exec('mv -f ~/Downloads/kubeconfig ~');
   });
 });
