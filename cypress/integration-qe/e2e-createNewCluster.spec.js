@@ -9,6 +9,8 @@ import {
   OCM_USER,
 } from './shared';
 
+import { ISO_DOWNLOAD_TIMEOUT } from './constants';
+
 import { writeCookieToDisk } from './ocmShared';
 
 describe('Flow', () => {
@@ -30,7 +32,11 @@ describe('Flow', () => {
     cy.get('#button-download-discovery-iso').click(); // open the dialog
     cy.wait(10 * 1000); // wait few seconds otherwise HTTP 409 will be raised
     cy.get('.pf-c-modal-box__footer > .pf-m-primary').click(); // "Get Discovery ISO"
-    downloadFileWithChrome('button[data-test-id="download-iso-btn"]', ISO_PATTERN);
+    downloadFileWithChrome(
+      'button[data-test-id="download-iso-btn"]',
+      ISO_PATTERN,
+      ISO_DOWNLOAD_TIMEOUT,
+    );
     cy.get('button[data-test-id="close-iso-btn"]').click(); // now close the dialog
   });
 

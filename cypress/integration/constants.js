@@ -10,7 +10,9 @@ export const VALIDATE_CHANGES_TIMEOUT = 10 * 1000;
 export const INSTALL_PREPARATION_TIMEOUT = 60 * 1000;
 // timeout for generating ISO
 export const GENERATE_ISO_TIMEOUT = 2 * 60 * 1000;
-// timeout for downloading files (such as ISO images)
-export const FILE_DOWNLOAD_TIMEOUT = 30 * 60 * 1000;
+// timeout for downloading files
+export const FILE_DOWNLOAD_TIMEOUT = 60 * 1000;
+// timeout for downloading the ISO image
+export const ISO_DOWNLOAD_TIMEOUT = 30 * 60 * 1000;
 // timeout for cluster instation to finish - 1 hour
 export const CLUSTER_CREATION_TIMEOUT = 60 * 60 * 1000;

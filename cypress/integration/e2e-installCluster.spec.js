@@ -21,11 +21,8 @@ describe('Run install', () => {
     openCluster(CLUSTER_NAME);
   });
 
-  it('start installation', () => {
+  it('run installation', () => {
     startClusterInstallation();
-  });
-
-  it('wait for cluster installation...', () => {
     waitForClusterInstallation();
   });
 });
