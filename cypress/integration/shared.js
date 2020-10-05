@@ -4,6 +4,7 @@ import {
   CLUSTER_CREATION_TIMEOUT,
   HOST_DISCOVERY_TIMEOUT,
   HOST_REGISTRATION_TIMEOUT,
+  INSTALL_PREPARATION_TIMEOUT,
   FILE_DOWNLOAD_TIMEOUT,
 } from './constants';
 
@@ -155,7 +156,11 @@ export const generateIso = (sshPubKey) => {
   cy.get('button[data-test-id="close-iso-btn"]').click(); // now close the dialog
 };
 
-export const downloadFileWithChrome = (downloadButton, resultantFilename) => {
+export const downloadFileWithChrome = (
+  downloadButton,
+  resultantFilename,
+  timeout = FILE_DOWNLOAD_TIMEOUT,
+) => {
   // NOTE: This works only with Chrome, where the default behavior is:
   //  1) It starts the download without popping up a save dialog (which would require automating native windows)
   //  2) It caches to a temporary location, and when the download is complete it moves the file to ~/Downloads
@@ -168,7 +173,7 @@ export const downloadFileWithChrome = (downloadButton, resultantFilename) => {
 
   // wait until the file shows up, to know that the download finshed
   cy.exec(`while [ ! -f ${resultantFilename} ]; do sleep 1; done`, {
-    timeout: FILE_DOWNLOAD_TIMEOUT,
+    timeout: timeout,
   }).should((result) => {
     expect(result.code).to.be.eq(0);
   });
@@ -212,11 +217,10 @@ export const startClusterInstallation = () => {
     expect($elem).to.be.enabled;
   });
   cy.get('button[name="install"]').click();
-  // wait for the progress description to say "Installing" [temporarily comented out because
-  // there is no div.pf-c-progress__description any more...]
-  // cy.contains('div.pf-c-progress__description', 'Installing', {
-  //   timeout: INSTALL_PREPARATION_TIMEOUT,
-  // });
+  // wait for the progress description to say "Installing"
+  cy.contains('#cluster-progress-status-value', 'Installing', {
+    timeout: INSTALL_PREPARATION_TIMEOUT,
+  });
 };
 
 export const waitForClusterInstallation = () => {
