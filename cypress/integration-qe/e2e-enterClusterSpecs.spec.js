@@ -3,18 +3,17 @@ import {
   DNS_DOMAIN_NAME,
   API_VIP,
   INGRESS_VIP,
-  NUM_MASTERS,
-  NUM_WORKERS,
-  hostDetailSelector,
   openCluster,
   disableDhcpVip,
+  waitForHostTablePopulation,
+  waitForHostsSubnet,
+  waitForPendingInputState,
+  setClusterDnsDomain,
+  setClusterSubnetCidr,
+  setHostsRole,
+  saveClusterDetails,
+  waitForHostsToBeKnown,
 } from './shared';
-
-import {
-  HOST_REGISTRATION_TIMEOUT,
-  HOST_DISCOVERY_TIMEOUT,
-  VALIDATE_CHANGES_TIMEOUT,
-} from './constants';
 
 describe('Enter cluster details', () => {
   it('can open the cluster details', () => {
@@ -22,43 +21,23 @@ describe('Enter cluster details', () => {
   });
 
   it('wait for the hosts table to be populated', () => {
-    cy.get('table.hosts-table > tbody', { timeout: HOST_REGISTRATION_TIMEOUT }).should(($els) => {
-      expect($els.length).to.be.eq(NUM_MASTERS + NUM_WORKERS);
-    });
+    waitForHostTablePopulation(cy);
   });
 
   it('wait for the subnets options to be populated', () => {
-    cy.get('#form-input-hostSubnet-field')
-      .find('option', { timeout: HOST_DISCOVERY_TIMEOUT })
-      .should(($els) => {
-        expect($els.length).to.be.gt(0);
-      })
-      .and(($els) => {
-        expect($els[0]).not.to.have.text('No subnets available');
-      });
+    waitForHostsSubnet(cy);
   });
 
   it('wait for all hosts to reach pending input state', () => {
-    for (let i = 2; i <= NUM_MASTERS + NUM_WORKERS + 1; i++) {
-      cy.contains(hostDetailSelector(i, 'Status'), 'Pending input', {
-        timeout: HOST_DISCOVERY_TIMEOUT,
-      });
-    }
+    waitForPendingInputState(cy);
   });
 
   it('can set the base domain name', () => {
-    // Cluster configuration - base domain
-    cy.get('#form-input-baseDnsDomain-field').clear();
-    cy.get('#form-input-baseDnsDomain-field').type(DNS_DOMAIN_NAME);
-    cy.get('#form-input-baseDnsDomain-field').should('have.value', DNS_DOMAIN_NAME);
+    setClusterDnsDomain(DNS_DOMAIN_NAME);
   });
 
   it('can select the first subnet CIDR', () => {
-    cy.get('#form-input-hostSubnet-field')
-      .find('option')
-      .then(($els) => $els.get(1).setAttribute('selected', 'selected'))
-      .parent()
-      .trigger('change');
+    setClusterSubnetCidr(cy);
   });
 
   it('can set API VIP and ingress VIP', () => {
@@ -66,24 +45,16 @@ describe('Enter cluster details', () => {
   });
 
   it('can save cluster details', () => {
-    cy.get('button[name="save"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should(($elem) => {
-      expect($elem).to.be.enabled;
-    });
-    cy.get('button[name="save"]').click();
+    saveClusterDetails(cy);
   });
 });
 
 describe('Set roles', () => {
-  it('set the masters', () => {
-    cy.get('#form-input-name-field').click().type('{end}{home}');
-    for (let i = 2; i < 2 + NUM_MASTERS; i++) {
-      cy.get(hostDetailSelector(i, 'Role')).click().find('li#master').click();
-    }
+  it('set the masters and worker roles', () => {
+    setHostsRole();
   });
 
-  it('set the workers', () => {
-    for (let i = 2 + NUM_MASTERS; i < 2 + NUM_MASTERS + NUM_WORKERS; i++) {
-      cy.get(hostDetailSelector(i, 'Role')).click().find('li#worker').click();
-    }
+  it('wait for all hosts to be known', () => {
+    waitForHostsToBeKnown(cy);
   });
 });

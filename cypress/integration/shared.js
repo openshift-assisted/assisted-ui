@@ -6,6 +6,7 @@ import {
   HOST_REGISTRATION_TIMEOUT,
   INSTALL_PREPARATION_TIMEOUT,
   FILE_DOWNLOAD_TIMEOUT,
+  START_INSTALLATION_TIMEOUT,
 } from './constants';
 
 export const testInfraClusterName = 'test-infra-cluster';
@@ -213,7 +214,7 @@ export const checkValidationMessage = (cy, expectedMsg) => {
 
 export const startClusterInstallation = () => {
   // wait up to 10 seconds for the install button to be enabled
-  cy.get('button[name="install"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should(($elem) => {
+  cy.get('button[name="install"]', { timeout: START_INSTALLATION_TIMEOUT }).should(($elem) => {
     expect($elem).to.be.enabled;
   });
   cy.get('button[name="install"]').click();
@@ -228,16 +229,24 @@ export const waitForClusterInstallation = () => {
   cy.contains('#cluster-progress-status-value', 'Installed', { timeout: CLUSTER_CREATION_TIMEOUT });
 };
 
-export const waitForHostTablePopulation = (cy) => {
+export const waitForHostTablePopulation = (
+  cy,
+  numMasters = NUM_MASTERS,
+  numWorkers = NUM_WORKERS,
+) => {
   // wait for hosts to boot and populated in table
   cy.get('table.hosts-table > tbody', { timeout: HOST_REGISTRATION_TIMEOUT }).should(($els) => {
-    expect($els.length).to.be.eq(NUM_MASTERS + NUM_WORKERS);
+    expect($els.length).to.be.eq(numMasters + numWorkers);
   });
 };
 
-export const waitForPendingInputState = (cy) => {
+export const waitForPendingInputState = (
+  cy,
+  numMasters = NUM_MASTERS,
+  numWorkers = NUM_WORKERS,
+) => {
   // wait until hosts are getting to pending input state
-  for (let i = 2; i <= NUM_MASTERS + NUM_WORKERS + 1; i++) {
+  for (let i = 2; i <= numMasters + numWorkers + 1; i++) {
     cy.contains(hostDetailSelector(i, 'Status'), 'Pending input', {
       timeout: HOST_DISCOVERY_TIMEOUT,
     });
@@ -256,9 +265,9 @@ export const waitForHostsSubnet = (cy) => {
     });
 };
 
-export const waitForHostsToBeKnown = () => {
+export const waitForHostsToBeKnown = (numMasters = NUM_MASTERS, numWorkers = NUM_WORKERS) => {
   // wait until hosts are getting to pending input state
-  for (let i = 2; i <= NUM_MASTERS + NUM_WORKERS + 1; i++) {
+  for (let i = 2; i <= numMasters + numWorkers + 1; i++) {
     cy.contains(hostDetailSelector(i, 'Status'), 'Known', {
       timeout: HOST_DISCOVERY_TIMEOUT,
     });
@@ -278,18 +287,18 @@ export const setClusterSubnetCidr = (cy) => {
   // select the first subnet from list
   cy.get('#form-input-hostSubnet-field')
     .find('option')
-    .then(($els) => $els.get(0).setAttribute('selected', 'selected'))
+    .then(($els) => $els.get(1).setAttribute('selected', 'selected'))
     .parent()
     .trigger('change');
 };
 
-export const setHostsRole = () => {
+export const setHostsRole = (numMasters = NUM_MASTERS, numWorkers = NUM_WORKERS) => {
   // set hosts role
   cy.get('#form-input-name-field').click().type('{end}{home}');
-  for (let i = 2; i < 2 + NUM_MASTERS; i++) {
+  for (let i = 2; i < 2 + numMasters; i++) {
     cy.get(hostDetailSelector(i, 'Role')).click().find('li#master').click();
   }
-  for (let i = 2 + NUM_MASTERS; i < 2 + NUM_MASTERS + NUM_WORKERS; i++) {
+  for (let i = 2 + numMasters; i < 2 + numMasters + numWorkers; i++) {
     cy.get(hostDetailSelector(i, 'Role')).click().find('li#worker').click();
   }
 };

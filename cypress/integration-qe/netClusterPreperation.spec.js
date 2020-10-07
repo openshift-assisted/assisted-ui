@@ -1,26 +1,24 @@
 import {
   CLUSTER_NAME,
-  DNS_DOMAIN_NAME,
   API_VIP,
   INGRESS_VIP,
   openCluster,
   waitForHostTablePopulation,
   waitForHostsSubnet,
   waitForPendingInputState,
-  setClusterDnsDomain,
   setClusterSubnetCidr,
   setHostsRole,
   saveClusterDetails,
   waitForHostsToBeKnown,
+  checkValidationMessage,
 } from './shared';
-
-import { VALIDATE_CHANGES_TIMEOUT } from './constants';
 
 // Start condition: Theese tests assume that:
 // 1. new cluster created,
 // 2. ISO already generated
 // 3. Nodes are booted with generated ISO
-// End: In the end of this test, all hosts will be Known, and cluster is ready to install.
+// End: In the end of this test, all hosts will be Known, and cluster is not ready to install,
+//      due to missing DNS name.
 
 describe('Enter cluster details', () => {
   it('open the cluster details', () => {
@@ -31,16 +29,16 @@ describe('Enter cluster details', () => {
     waitForHostTablePopulation(cy);
   });
 
+  it("set host's role", () => {
+    setHostsRole();
+  });
+
   it('wait for the subnets options to be populated', () => {
     waitForHostsSubnet(cy);
   });
 
   it('wait for all hosts to reach pending input state', () => {
     waitForPendingInputState(cy);
-  });
-
-  it('set the base domain name', () => {
-    setClusterDnsDomain(DNS_DOMAIN_NAME);
   });
 
   it('select the first subnet CIDR', () => {
@@ -65,10 +63,11 @@ describe('Enter cluster details', () => {
     setHostsRole();
   });
 
-  it('check that cluster is ready to install', () => {
+  it('check that all hosts are known', () => {
     waitForHostsToBeKnown();
-    cy.get('button[name="install"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should(($elem) => {
-      expect($elem).to.be.enabled;
-    });
+  });
+
+  it('check alert message due to missing DNS', () => {
+    checkValidationMessage(cy, 'Base DNS Domain is undefined');
   });
 });
