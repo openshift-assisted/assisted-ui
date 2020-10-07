@@ -6,6 +6,7 @@ import {
   HOST_REGISTRATION_TIMEOUT,
   INSTALL_PREPARATION_TIMEOUT,
   FILE_DOWNLOAD_TIMEOUT,
+  START_INSTALLATION_TIMEOUT,
 } from './constants';
 
 export const testInfraClusterName = 'test-infra-cluster';
@@ -213,7 +214,7 @@ export const checkValidationMessage = (cy, expectedMsg) => {
 
 export const startClusterInstallation = () => {
   // wait up to 10 seconds for the install button to be enabled
-  cy.get('button[name="install"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should(($elem) => {
+  cy.get('button[name="install"]', { timeout: START_INSTALLATION_TIMEOUT }).should(($elem) => {
     expect($elem).to.be.enabled;
   });
   cy.get('button[name="install"]').click();
