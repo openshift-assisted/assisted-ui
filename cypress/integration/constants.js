@@ -7,7 +7,7 @@ export const HOST_DISCOVERY_TIMEOUT = 30 * 1000;
 // timeout for validate changes - 10 seconds
 export const VALIDATE_CHANGES_TIMEOUT = 10 * 1000;
 // timeout for install preparation - 1 minute
-export const INSTALL_PREPARATION_TIMEOUT = 60 * 1000;
+export const INSTALL_PREPARATION_TIMEOUT = 2 * 60 * 1000;
 // timeout for generating ISO
 export const GENERATE_ISO_TIMEOUT = 2 * 60 * 1000;
 // timeout for downloading files
