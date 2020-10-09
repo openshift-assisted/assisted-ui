@@ -9,11 +9,11 @@ import {
   START_INSTALLATION_TIMEOUT,
 } from './constants';
 
-export const testInfraClusterName = 'test-infra-cluster';
+export const testInfraClusterName = 'test-infra-cluster-assisted-installer';
 export const testInfraClusterHostnames = [
-  'test-infra-cluster-master-0',
-  'test-infra-cluster-master-1',
-  'test-infra-cluster-master-2',
+  'test-infra-cluster-assisted-installer-master-0',
+  'test-infra-cluster-assisted-installer-master-1',
+  'test-infra-cluster-assisted-installer-master-2',
 ];
 
 export const withValueOf = (cy, selector, handler) => {
@@ -23,7 +23,8 @@ export const withValueOf = (cy, selector, handler) => {
 export const getClusterNameLinkSelector = (clusterName) => `#cluster-link-${clusterName}`;
 export const testClusterLinkSelector = getClusterNameLinkSelector(testInfraClusterName);
 export const clusterNameLinkSelector = '[data-label="Name"] > a'; // on '/clusters' page
-// const singleClusterCellSelector = (column) => `tbody > tr > [data-label="${column}"]`;
+export const kebabSelector = (tableRow) =>
+  `tbody > tr:nth-child(${tableRow}) > td.pf-c-table__action > div`;
 export const clusterTableCellSelector = (row, column) =>
   `tbody > tr:nth-child(${row}) > [data-label="${column}"]`;
 export const hostDetailSelector = (row, label) =>
@@ -63,56 +64,40 @@ export const openCluster = (clusterName) => {
   cy.get('#form-input-name-field').should('have.value', clusterName);
 };
 
-export const createCluster = (clusterName, pullSecret) => {
-  cy.visit('');
+export const createDummyCluster = (cy, clusterName, pullSecret) => {
   cy.get('button[data-ouia-id="button-create-new-cluster"]').click();
   cy.get('#form-input-name-field').should('be.visible');
-  cy.get('#form-input-name-field').clear();
-  cy.get('#form-input-name-field').type(clusterName);
+  cy.get('h1').contains('Install OpenShift on Bare Metal with the Assisted Installer');
+
+  // type correct dummy cluster name
+  cy.get('#form-input-name-field').type(`{selectall}{backspace}${clusterName}`);
   cy.get('#form-input-name-field').should('have.value', clusterName);
-  // feed in the pull secret
-  // for hosted cloud use the existing one
   if (!OCM_USER) {
     cy.get('#form-input-pullSecret-field').clear();
     pasteText(cy, '#form-input-pullSecret-field', pullSecret);
   }
+};
+
+export const createCluster = (cy, clusterName, pullSecret) => {
+  cy.visit('');
+  createDummyCluster(cy, clusterName, pullSecret);
   cy.get('button[name="save"]').click();
+
+  // Cluster configuration
+  // cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(clusterName);
   cy.get('#button-download-discovery-iso').should('be.visible');
   cy.get('#form-input-name-field').should('have.value', clusterName);
 };
 
-export const createDummyCluster = (cy, clusterName) => {
-  cy.get('button[data-ouia-id="button-create-new-cluster"]').click();
-  cy.get('.pf-c-modal-box'); // modal visible
-  cy.get('.pf-c-modal-box__header').contains('New Bare Metal OpenShift Cluster');
-  cy.get('.pf-m-secondary').click(); // cancel
-
-  cy.get('.pf-c-modal-box').should('not.be.visible'); // modal closed
-  cy.get('button[data-ouia-id="button-create-new-cluster"]').click();
-  cy.get('.pf-c-modal-box'); // modal visible again
-
-  // do not allow two clusters of the same name
-  cy.get('#form-input-name-field').type(`{selectall}{backspace}${testInfraClusterName}`);
-  cy.get('#form-input-pullSecret-field').clear();
-  pasteText(cy, '#form-input-pullSecret-field', PULL_SECRET);
-  cy.get('.pf-c-modal-box__footer > .pf-m-primary').click();
-  cy.get('#form-input-name-field-helper').contains('is already taken');
-
-  // type correct dummy cluster name
-  cy.get('#form-input-name-field').type(`{selectall}{backspace}${clusterName}`);
-  cy.get('.pf-c-modal-box__footer > .pf-m-primary').click();
-
-  // Cluster configuration
-  cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(clusterName);
-  cy.get('#form-input-name-field').should('have.value', clusterName);
-
-  // Close
-  cy.get(':nth-child(4) > .pf-c-button').click();
+export const cancelDummyCluster = (cy) => {
+  cy.get('.pf-c-button.pf-m-link').click(); // cancel
+  cy.get('#form-input-name-field').should('not.exist');
+  cy.get('#form-input-openshiftVersion-field').should('not.exist');
+  cy.get('#form-input-pullSecret-field').should('not.exist');
 };
 
 export const deleteDummyCluster = (cy, tableRow, clusterName) => {
-  const kebabSelector = `tbody > tr:nth-child(${tableRow}) > td.pf-c-table__action > div`;
-  cy.get(kebabSelector).click(); // open kebab menu
+  cy.get(kebabSelector(tableRow)).click(); // open kebab menu
   cy.get(`#button-delete-${clusterName}`).click(); // Delete & validate correct kebab from previous step
   cy.get('[data-test-id="delete-cluster-submit"]').click();
 
@@ -184,7 +169,7 @@ export const assertTestClusterPresence = (cy) => {
   cy.visit('/clusters');
   cy.get(testClusterLinkSelector).contains(testInfraClusterName);
   cy.get(clusterTableCellSelector(1, 'Base domain')).contains('redhat.com');
-  cy.get(clusterTableCellSelector(1, 'Version')).contains('4.5'); // fail to raise attention when source data changes
+  cy.get(clusterTableCellSelector(1, 'Version')).contains('4.6'); // fail to raise attention when source data changes
   cy.get(clusterTableCellSelector(1, 'Status')).contains('Ready', {
     timeout: DEFAULT_API_REQUEST_TIMEOUT,
   });
@@ -348,6 +333,28 @@ export const getDhcpVipState = (cy) => {
 
       makeApiCall(`/api/assisted-install/v1/clusters/${id}`, 'GET', readDhcpAllocation);
     });
+  });
+};
+
+export const getClusterState = (cy) => {
+  return new Cypress.Promise((resolve, reject) => {
+    clusterIdFromUrl(cy).then((id) => {
+      const readClusterStatus = (response) => {
+        resolve(response.body.status);
+      };
+
+      makeApiCall(`/api/assisted-install/v1/clusters/${id}`, 'GET', readClusterStatus);
+    });
+  });
+};
+
+export const waitForClusterState = (cy, desiredState, retries = 10) => {
+  getClusterState(cy).then((state) => {
+    assert.isTrue(retries > 0);
+    if (state !== desiredState) {
+      cy.exec('sleep 1');
+      waitForClusterState(cy, desiredState, retries - 1);
+    }
   });
 };
 
