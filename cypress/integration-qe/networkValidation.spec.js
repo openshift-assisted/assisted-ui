@@ -5,6 +5,7 @@ import {
   openCluster,
   saveClusterDetails,
   setClusterDnsDomain,
+  DNS_DOMAIN_NAME,
 } from './shared';
 
 // Start condition: Theese tests assume that the cluster is Ready to install.
@@ -36,7 +37,9 @@ describe('Cluster Base DNS Domain validation', () => {
   });
 
   it('set invalid DNS: empty DNS', () => {
-    setClusterDnsDomain('', true);
+    setClusterDnsDomain(DNS_DOMAIN_NAME);
+    saveClusterDetails(cy);
+    cy.get('#form-input-baseDnsDomain-field').clear();
     cy.get('#form-input-baseDnsDomain-field-helper').contains('The value is required.');
     cy.get('button[name="save"]').should('be.disabled');
   });
@@ -129,7 +132,7 @@ describe('Cluster Ingress IP Validation', () => {
     cy.get('#form-input-ingressVip-field').clear();
     cy.get('#form-input-ingressVip-field').type(API_VIP);
     cy.get('#form-input-ingressVip-field-helper').contains(
-      'Ingress and API IP addresses can not be the same.',
+      'The Ingress and API Virtual IP addresses cannot be the same.',
     );
   });
 
@@ -137,8 +140,5 @@ describe('Cluster Ingress IP Validation', () => {
     cy.get('#form-input-ingressVip-field').clear();
     cy.get('#form-input-ingressVip-field').type(INGRESS_VIP);
     cy.get('button[name="save"]').should('be.disabled');
-    cy.get('#form-input-ingressVip-field-helper').contains(
-      'Virtual IP used for cluster ingress traffic.',
-    );
   });
 });
