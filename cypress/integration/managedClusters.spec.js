@@ -80,23 +80,23 @@ describe('Managed Clusters list', () => {
     cy.get(getClusterNameLinkSelector('cluster-bb-0'));
 
     // search name
-    cy.get('#search-name').type('NONSENS');
+    cy.get('#search-string').type('NONSENS');
     cy.get(testClusterLinkSelector).should('not.exist');
     cy.get(getClusterNameLinkSelector('cluster-aa-0')).should('not.exist');
     cy.get(getClusterNameLinkSelector('cluster-bb-0')).should('not.exist');
 
     // clear search name
-    cy.get('#search-name').type('{selectall}{backspace}');
+    cy.get('#search-string').type('{selectall}{backspace}');
     cy.get(testClusterLinkSelector);
     cy.get(getClusterNameLinkSelector('cluster-aa-0'));
     cy.get(getClusterNameLinkSelector('cluster-bb-0'));
 
-    cy.get('#search-name').type('aa');
+    cy.get('#search-string').type('aa');
     cy.get(testClusterLinkSelector).should('not.exist');
     cy.get(getClusterNameLinkSelector('cluster-bb-0')).should('not.exist');
     cy.get(getClusterNameLinkSelector('cluster-aa-0')); // exists
 
-    cy.get('#search-name').type('{selectall}{backspace}');
+    cy.get('#search-string').type('{selectall}{backspace}');
     cy.get(testClusterLinkSelector);
 
     // switch status
