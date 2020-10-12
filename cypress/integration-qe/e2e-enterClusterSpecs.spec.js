@@ -28,8 +28,8 @@ describe('Enter cluster details', () => {
     waitForHostsSubnet(cy);
   });
 
-  it('wait for all hosts to reach pending input state', () => {
-    waitForPendingInputState(cy);
+  it('wait for all hosts to reach known state', () => {
+    waitForHostsToBeKnown(cy);
   });
 
   it('can set the base domain name', () => {
