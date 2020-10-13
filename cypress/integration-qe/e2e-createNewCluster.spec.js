@@ -21,7 +21,7 @@ describe('Flow', () => {
   });
 
   it('create a cluster named ' + CLUSTER_NAME, () => {
-    createCluster(CLUSTER_NAME, PULL_SECRET);
+    createCluster(cy, CLUSTER_NAME, PULL_SECRET);
   });
 
   it('generate the ISO', () => {
