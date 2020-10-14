@@ -34,7 +34,7 @@
     "@typescript-eslint/parser": "^2.24.0",
     "axios": "^0.19.2",
     "axios-case-converter": "^0.6.0",
-    "facet-lib": "^1.0.46",
+    "facet-lib": "^1.0.47",
     "file-saver": "^2.0.2",
     "formik": "^2.1.4",
     "http-proxy-middleware": "^1.0.3",
