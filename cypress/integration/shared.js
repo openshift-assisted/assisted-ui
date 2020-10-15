@@ -8,6 +8,7 @@ import {
   FILE_DOWNLOAD_TIMEOUT,
   START_INSTALLATION_TIMEOUT,
 } from './constants';
+import { resolvePlugin } from '@babel/core';
 
 export const testInfraClusterName = 'test-infra-cluster-assisted-installer';
 export const testInfraClusterHostnames = [
@@ -384,6 +385,16 @@ export const getClusterState = (cy) => {
   });
 };
 
+export const getDomains = (cy) => {
+  return new Cypress.Promise((resolve, reject) => {
+    const readDomains = (response) => {
+      resolve(response.body[0].provider);
+    };
+
+    makeApiCall(`/api/assisted-install/v1/domains`, 'GET', readDomains);
+  });
+};
+
 export const waitForClusterState = (cy, desiredState, retries = 10) => {
   getClusterState(cy).then((state) => {
     assert.isTrue(retries > 0);
@@ -451,6 +462,16 @@ export const saveClusterDetails = (cy) => {
   // click the 'save' button in order to save changes in the cluster info
   cy.get('button[name="save"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should('be.enabled');
   cy.get('button[name="save"]').click();
+  cy.wait(2 * 1000);
+};
+
+export const enableRoute53 = (cy) => {
+  cy.get('#form-input-useRedHatDnsService-field').click();
+  getDomains(cy).then((provider) => {
+    if (provider) {
+      cy.get('#form-input-baseDnsDomain-field').contains(provider);
+    }
+  });
 };
 
 export const verifyClusterCreationApi = (clusterName) => {
