@@ -45,6 +45,9 @@ export const NUM_WORKERS = parseInt(Cypress.env('NUM_WORKERS'));
 export const API_BASE_URL = Cypress.env('API_BASE_URL');
 export const OCM_USER = Cypress.env('OCM_USER');
 export const ISO_PATTERN = Cypress.env('ISO_PATTERN');
+export const HTTP_PROXY = Cypress.env('HTTP_PROXY');
+export const HTTPS_PROXY = Cypress.env('HTTPS_PROXY');
+export const NO_PROXY = Cypress.env('NO_PROXY');
 
 // workaround for long text, expected to be copy&pasted by the user
 export const pasteText = (cy, selector, text) => {
@@ -105,7 +108,35 @@ export const deleteDummyCluster = (cy, tableRow, clusterName) => {
   cy.get(testClusterLinkSelector); // validate that the test-infra-cluster is still present
 };
 
-export const generateIso = (sshPubKey) => {
+export const setProxyValues = (httpProxy = null, httpsProxy = null, noProxy = null) => {
+  cy.get('#form-input-enableProxy-field').click();
+  cy.get('#form-input-httpProxy-field').should('be.visible');
+  cy.get('#form-input-httpsProxy-field').should('be.visible');
+  cy.get('#form-input-noProxy-field').click(); //just to scroll down to it
+  cy.get('#form-input-noProxy-field').should('be.visible');
+
+  if (httpProxy) {
+    cy.get('#form-input-httpProxy-field').clear();
+    cy.get('#form-input-httpProxy-field').type(httpProxy);
+  }
+
+  if (httpsProxy) {
+    cy.get('#form-input-httpsProxy-field').clear();
+    cy.get('#form-input-httpsProxy-field').type(httpsProxy);
+  }
+
+  if (noProxy) {
+    cy.get('#form-input-noProxy-field').clear();
+    cy.get('#form-input-noProxy-field').type(noProxy);
+  }
+};
+
+export const generateIso = (
+  sshPubKey,
+  httpProxy = HTTP_PROXY,
+  httpsProxy = HTTPS_PROXY,
+  noProxy = NO_PROXY,
+) => {
   // click to download the discovery iso
   cy.get('#button-download-discovery-iso').click();
   // see that the modal popped up
@@ -119,6 +150,11 @@ export const generateIso = (sshPubKey) => {
       console.log('-- onAnyAbort: ', ...args);
     },
   });
+
+  if (httpProxy || httpsProxy || noProxy) {
+    setProxyValues(httpProxy, httpsProxy, noProxy);
+  }
+
   cy.get('.pf-c-modal-box__footer > .pf-m-primary').should('be.visible');
   cy.get('.pf-c-modal-box__footer > .pf-m-primary').contains('Generate Discovery ISO');
   cy.get('.pf-c-modal-box__footer > .pf-m-primary').click();
