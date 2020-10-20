@@ -5,7 +5,7 @@ import {
   TextContent,
   ButtonVariant,
 } from '@patternfly/react-core';
-import { Api, DetailList, DetailItem } from 'facet-lib';
+import { Api, DetailList, DetailItem, Config } from 'facet-lib';
 import { GIT_SHA, VERSION, SERVICE_LABELS, IMAGE_REPO } from '../config/standalone';
 import redHatLogo from '../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
 
@@ -84,6 +84,10 @@ const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
           <>
             {releaseTag && <DetailItem title="Release tag" value={releaseTag} />}
             <DetailItem title="Assisted Installer UI version" value={getUIVersion()} />
+            <DetailItem
+              title="Assisted Installer UI library version"
+              value={Config.getFacetLibVersion()}
+            />
             {Object.keys(versions || {}).map((key) => {
               const version = versions ? versions[key] : '';
               return (

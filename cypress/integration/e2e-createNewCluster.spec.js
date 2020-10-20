@@ -5,7 +5,13 @@ import {
   createCluster,
   generateIso,
   downloadFileWithChrome,
+  ISO_PATTERN,
+  OCM_USER,
 } from './shared';
+
+import { ISO_DOWNLOAD_TIMEOUT } from './constants';
+
+import { writeCookieToDisk } from './ocmShared';
 
 describe('Flow', () => {
   it('start from the /clusters page', () => {
@@ -15,7 +21,7 @@ describe('Flow', () => {
   });
 
   it('create a cluster named ' + CLUSTER_NAME, () => {
-    createCluster(CLUSTER_NAME, PULL_SECRET);
+    createCluster(cy, CLUSTER_NAME, PULL_SECRET);
   });
 
   it('generate the ISO', () => {
@@ -23,12 +29,20 @@ describe('Flow', () => {
   });
 
   it('download the ISO', () => {
-    // waiting for the backend to complete the images.
-    // it seems that via Cypress, there are 2 images built at the same time (BZ1874461)
-    cy.wait(2 * 60 * 1000);
     cy.get('#button-download-discovery-iso').click(); // open the dialog
+    cy.wait(10 * 1000); // wait few seconds otherwise HTTP 409 will be raised
     cy.get('.pf-c-modal-box__footer > .pf-m-primary').click(); // "Get Discovery ISO"
-    downloadFileWithChrome('button[data-test-id="download-iso-btn"]', ' ~/Downloads/cluster-*.iso');
+    downloadFileWithChrome(
+      'button[data-test-id="download-iso-btn"]',
+      ISO_PATTERN,
+      ISO_DOWNLOAD_TIMEOUT,
+    );
     cy.get('button[data-test-id="close-iso-btn"]').click(); // now close the dialog
+  });
+
+  it('refresh cookie', () => {
+    if (OCM_USER) {
+      writeCookieToDisk();
+    }
   });
 });

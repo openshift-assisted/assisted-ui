@@ -10,7 +10,7 @@ describe('Application', () => {
   it('has basic structure', () => {
     cy.visit('/');
 
-    cy.get('h1').contains('Managed Clusters');
+    cy.get('h1').contains('Assisted Bare Metal Clusters');
     cy.get('.pf-c-brand').should(
       'have.attr',
       'alt',
