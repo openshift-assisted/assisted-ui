@@ -105,6 +105,13 @@ You can compile the production executable by running:
 $ yarn build
 ```
 
+Optionally, set `REACT_APP_BUILD_MODE=single-cluster` environment variable to disable multi-cluster features.
+Example:
+
+```
+$ REACT_APP_BUILD_MODE=single-cluster yarn build
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
