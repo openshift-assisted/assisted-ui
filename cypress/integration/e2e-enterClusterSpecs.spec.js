@@ -1,14 +1,11 @@
 import {
   CLUSTER_NAME,
-  DNS_DOMAIN_NAME,
   API_VIP,
   INGRESS_VIP,
   openCluster,
   disableDhcpVip,
   waitForHostTablePopulation,
   waitForHostsSubnet,
-  waitForPendingInputState,
-  setClusterDnsDomain,
   setClusterSubnetCidr,
   setHostsRole,
   saveClusterDetails,
@@ -30,10 +27,6 @@ describe('Enter cluster details', () => {
 
   it('wait for all hosts to reach known state', () => {
     waitForHostsToBeKnown(cy);
-  });
-
-  it('can set the base domain name', () => {
-    setClusterDnsDomain(DNS_DOMAIN_NAME);
   });
 
   it('can select the first subnet CIDR', () => {
