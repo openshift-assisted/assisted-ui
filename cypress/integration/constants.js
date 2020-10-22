@@ -15,6 +15,6 @@ export const GENERATE_ISO_TIMEOUT = 2 * 60 * 1000;
 // timeout for downloading files
 export const FILE_DOWNLOAD_TIMEOUT = 60 * 1000;
 // timeout for downloading the ISO image
-export const ISO_DOWNLOAD_TIMEOUT = 30 * 60 * 1000;
+export const ISO_DOWNLOAD_TIMEOUT = 60 * 60 * 1000;
 // timeout for cluster installation to finish - 1.5 hour
 export const CLUSTER_CREATION_TIMEOUT = 90 * 60 * 1000;
