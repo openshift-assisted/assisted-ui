@@ -64,7 +64,7 @@ export const openCluster = (clusterName) => {
   cy.visit('');
   cy.get(getClusterNameLinkSelector(clusterName)).click();
   // Cluster configuration - name
-  cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(clusterName);
+  cy.get('.pf-c-breadcrumb__list > :nth-child(3)').contains(clusterName);
   cy.get('#form-input-name-field').should('have.value', clusterName);
 };
 
@@ -408,7 +408,7 @@ export const waitForClusterState = (cy, desiredState, retries = 10) => {
 export const disableDhcpVip = (cy, apiVip = null, ingressVip = null) => {
   getDhcpVipState(cy).then((state) => {
     if (state) {
-      cy.get('#form-input-vipDhcpAllocation-field-on').click();
+      cy.get('#form-input-vipDhcpAllocation-field').click();
     }
   });
   if (apiVip) {
