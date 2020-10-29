@@ -5,7 +5,7 @@ export FACET_UPSTREAM_REPO=${FACET_UPSTREAM_REPO:-'https://github.com/openshift-
 echo FACET_UPSTREAM_REPO: ${FACET_UPSTREAM_REPO}
 
 # this is more handy than yarn-upgrade
-export FACET_LIB_VERSION=${FACET_LIB_VERSION:-"`npm search facet-lib --parseable|grep '^facet-lib'|cut -f 5`"}
+export FACET_LIB_VERSION=${FACET_LIB_VERSION:-"`npm cache clean --force ; npm search facet-lib --parseable|grep '^facet-lib'|cut -f 5`"}
 echo FACET_LIB_VERSION: $FACET_LIB_VERSION
 
 export TAG=${TAG:-"facet-lib-${FACET_LIB_VERSION}"}
