@@ -29,3 +29,5 @@ git tag -a ${TAG} -m "facet-lib updated to version ${FACET_LIB_VERSION}"
 echo A commit right to ${FACET_UPSTREAM_REPO} master will be pushed
 git push --follow-tags
 
+xdg-open "https://github.com/openshift-metal3/facet/releases/new?tag=v${FACET_LIB_VERSION}&title=v${FACET_LIB_VERSION}&body=${TAG}: https://github.com/mareklibra/facet-lib/releases/tag/v${FACET_LIB_VERSION}" &
+
