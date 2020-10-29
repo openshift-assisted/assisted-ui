@@ -5,7 +5,7 @@ export FACET_UPSTREAM_REPO=${FACET_UPSTREAM_REPO:-'https://github.com/openshift-
 echo FACET_UPSTREAM_REPO: ${FACET_UPSTREAM_REPO}
 
 # this is more handy than yarn-upgrade
-export FACET_LIB_VERSION=${FACET_LIB_VERSION:-"`npm search facet-lib --parseable|grep '^facet-lib'|cut -f 5`"}
+export FACET_LIB_VERSION=${FACET_LIB_VERSION:-"`npm cache clean --force ; npm search facet-lib --parseable|grep '^facet-lib'|cut -f 5`"}
 echo FACET_LIB_VERSION: $FACET_LIB_VERSION
 
 export TAG=${TAG:-"facet-lib-${FACET_LIB_VERSION}"}
@@ -28,4 +28,6 @@ git tag -a ${TAG} -m "facet-lib updated to version ${FACET_LIB_VERSION}"
 
 echo A commit right to ${FACET_UPSTREAM_REPO} master will be pushed
 git push --follow-tags
+
+xdg-open "https://github.com/openshift-metal3/facet/releases/new?tag=v${FACET_LIB_VERSION}&title=v${FACET_LIB_VERSION}&body=${TAG}: https://github.com/mareklibra/facet-lib/releases/tag/v${FACET_LIB_VERSION}" &
 
