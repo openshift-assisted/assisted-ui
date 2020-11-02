@@ -424,7 +424,7 @@ export const disableDhcpVip = (cy, apiVip = null, ingressVip = null) => {
 export const enableDhcpVip = (cy) => {
   getDhcpVipState(cy).then((state) => {
     if (!state) {
-      cy.get('#form-input-vipDhcpAllocation-field-off').click();
+      cy.get('#form-input-vipDhcpAllocation-field').click();
     }
   });
 };
