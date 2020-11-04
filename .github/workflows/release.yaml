@@ -3,12 +3,17 @@ name: Build and push on release (new tag)
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Get tag
+        id: get_tag
+        run: echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - run: |
+          echo Detected GIT_TAG: ${GIT_TAG}
       - name: Check out code
         uses: actions/checkout@v1
       - name: Install dependencies
@@ -19,13 +24,10 @@ jobs:
         uses: borales/actions-yarn@v2.0.0
         with:
           cmd: lint
-      - name: Get tag
-        id: get_tag
-        run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/tags/}
       - name: Build code
         uses: borales/actions-yarn@v2.0.0
         env:
-          NODE_OPTIONS: '--max-old-space-size=8192'
+          NODE_OPTIONS: "--max-old-space-size=8192"
           REACT_APP_GIT_SHA: ${{ github.sha }}
           REACT_APP_VERSION: ${{ env.GIT_TAG }}
         with:
@@ -38,7 +40,7 @@ jobs:
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile
-          tags: 'stable,${{ env.GIT_TAG }},${{ github.sha }}'
+          tags: "stable,${{ env.GIT_TAG }},${{ github.sha }}"
       - name: Publish integration tests to quay.io
         uses: elgohr/Publish-Docker-Github-Action@2.14
         with:
@@ -47,4 +49,4 @@ jobs:
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile.cypress
-          tags: 'stable,${{ env.GIT_TAG }},${{ github.sha }}'
+          tags: "stable,${{ env.GIT_TAG }},${{ github.sha }}"
