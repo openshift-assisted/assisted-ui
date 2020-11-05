@@ -17,7 +17,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: ocp-metal-ui
-  namespace: __NAMESPACE__
+  namespace: "__NAMESPACE__"
 data:
   nginx.conf: |
     server {
