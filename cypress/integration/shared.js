@@ -141,7 +141,7 @@ export const generateIso = (
   // click to download the discovery iso
   cy.get('#button-download-discovery-iso').click();
   // see that the modal popped up
-  cy.get('#pf-modal-part-6').should('be.visible');
+  cy.get('#pf-modal-part-13').should('be.visible');
   // feed in the public ssh key
   cy.get('#sshPublicKey').type(sshPubKey);
   let aborted = false;
