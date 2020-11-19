@@ -9,6 +9,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Set environment variables
+        run: |
+          echo "NODE_OPTIONS=--max-old-space-size=8192" >> $GITHUB_ENV
+          echo "REACT_APP_GIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
+          echo "REACT_APP_VERSION=${{ env.GIT_TAG }}" >> $GITHUB_ENV
+      - run: |
+          echo NODE_OPTIONS: ${NODE_OPTIONS}
+          echo REACT_APP_GIT_SHA: ${REACT_APP_GIT_SHA}
+          echo REACT_APP_VERSION: ${REACT_APP_VERSION}
       - name: Get tag
         id: get_tag
         run: echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
@@ -26,10 +35,6 @@ jobs:
           cmd: lint
       - name: Build code
         uses: borales/actions-yarn@v2.0.0
-        env:
-          NODE_OPTIONS: "--max-old-space-size=8192"
-          REACT_APP_GIT_SHA: ${{ github.sha }}
-          REACT_APP_VERSION: ${{ env.GIT_TAG }}
         with:
           cmd: build
       - name: Publish to quay.io
