@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+set -e
 
 # Creates a VM from given ISO to simplify cluster creation or adding Day 2 hosts
 #
@@ -7,7 +7,7 @@ set -x
 #
 # Example for day 2 host:
 #   - download generated Day 2 iso under /var/lib/libvirt/images/
-#   $ ISO=/var/lib/libvirt/images/discovery_image_scale-up-mlibra11.iso NAME=mlibra11_worker_5 curl https://raw.githubusercontent.com/openshift-metal3/facet/master/hacks/create-test-vm.sh | sh -
+#   $ curl https://raw.githubusercontent.com/openshift-metal3/facet/master/hacks/create-test-vm.sh | ISO=/var/lib/libvirt/images/discovery_image_scale-up-mlibra11.iso NAME=mlibra11_worker_7 sh -
 #
 # Provide additional parameters for day 1 masters (at least set MEMGIB and CPUS env variables)
  
@@ -16,7 +16,7 @@ export ISO=${ISO:-missing_iso_file_path}
 export MEMGIB=${MEMGIB:-8}
 export CPUS=${CPUS:-4}
 export DISKGIB=${DISKGIB:-25}
-export MAC=${MAC:-"`openssl rand -hex 6 | sed 's/\(..\)/\1:/g; s/:$//'`"}
+export MAC=${MAC:-"`echo f6:$(openssl rand -hex 5 | sed 's/\(..\)/\1:/g; s/:$//')`"}
 
 export TEMPLATE=${TEMPLATE:-"https://raw.githubusercontent.com/openshift-metal3/facet/master/hacks/vm-test-template.xml"}
 
