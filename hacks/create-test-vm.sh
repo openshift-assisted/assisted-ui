@@ -13,29 +13,22 @@ set -e
  
 export NAME=${NAME:-"vm-`mktemp -uq XXXXXXXXXX`"}
 export ISO=${ISO:-missing_iso_file_path}
-export MEMGIB=${MEMGIB:-8}
+export MEMMIB=${MEMGIB:-8192}
 export CPUS=${CPUS:-4}
 export DISKGIB=${DISKGIB:-25}
-export MAC=${MAC:-"`echo f6:$(openssl rand -hex 5 | sed 's/\(..\)/\1:/g; s/:$//')`"}
-
-export TEMPLATE=${TEMPLATE:-"https://raw.githubusercontent.com/openshift-metal3/facet/master/hacks/vm-test-template.xml"}
 
 echo NAME: $NAME
 echo ISO: $ISO
-echo MEMGIB: $MEMGIB
+echo MEMMIB: $MEMMIB
 echo CPUS: $CPUS
-echo MAC: $MAC
-echo TEMPLATE: $TEMPLATE
 
-qemu-img create -f qcow2 /var/lib/libvirt/images/$NAME.qcow2 ${DISKGIB}G
-
-curl "$TEMPLATE" | \
-  sed -e "s/__NAME__/$NAME/g" | \
-  sed -e "s/__MEM_GIB__/$MEMGIB/g" | \
-  sed -e "s/__CPUS__/$CPUS/g" | \
-  sed -e "s~__ISO__~$ISO~g" | \
-  sed -e "s/__MAC__/$MAC/g" \
-  > ${NAME}.xml
-
-virsh create ${NAME}.xml
+virt-install --name="${NAME}" \
+  --vcpus=${CPUS} \
+  --ram=${MEMMIB}\
+  --network=bridge=virbr0 \
+  --graphics=none \
+  --os-variant=rhel7 \
+  --disk=size=${DISKGIB},backing_store="/var/lib/libvirt/images/${NAME}.qcow2" \
+  --cdrom=${ISO} \
+  --noautoconsole
 
