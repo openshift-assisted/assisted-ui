@@ -89,7 +89,7 @@ export const createCluster = (cy, clusterName, pullSecret) => {
 
   // Cluster configuration
   // cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(clusterName);
-  cy.get('#button-download-discovery-iso').should('be.visible');
+  cy.get('#bare-metal-inventory-button-download-discovery-iso').should('be.visible');
   cy.get('#form-input-name-field').should('have.value', clusterName);
 };
 
@@ -139,9 +139,11 @@ export const generateIso = (
   noProxy = NO_PROXY,
 ) => {
   // click to download the discovery iso
-  cy.get('#button-download-discovery-iso').click();
+  cy.get('#bare-metal-inventory-button-download-discovery-iso').click();
   // see that the modal popped up
-  cy.get('#pf-modal-part-6').should('be.visible');
+  // TODO waiting on new release to uncomment the below
+  // cy.get('#generate-discovery-iso-modal').should('be.visible');
+  cy.get('[id^=pf-modal-part]').should('be.visible');
   // feed in the public ssh key
   cy.get('#sshPublicKey').type(sshPubKey);
   let aborted = false;
