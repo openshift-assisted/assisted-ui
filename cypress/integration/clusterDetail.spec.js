@@ -270,7 +270,7 @@ describe('Cluster Detail', () => {
     const proxyURLSelectorHelper = '#form-input-proxyUrl-field-helper';
     const sshPublicKeySelector = '#form-input-sshPublicKey-discovery-field';
 
-    cy.get('#button-download-discovery-iso').click(); // Download ISO button
+    cy.get('#bare-metal-inventory-button-download-discovery-iso').click(); // Download ISO button
     cy.get('.pf-c-modal-box'); // modal visible
     cy.get('.pf-c-modal-box__title').contains('Generate Discovery ISO');
     cy.get('.pf-c-modal-box__footer > .pf-m-link').click(); // cancel
