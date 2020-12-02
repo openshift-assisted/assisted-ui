@@ -29,7 +29,7 @@ describe('Flow', () => {
   });
 
   it('download the ISO', () => {
-    cy.get('#button-download-discovery-iso').click(); // open the dialog
+    cy.get('#bare-metal-inventory-button-download-discovery-iso').click(); // open the dialog
     cy.wait(10 * 1000); // wait few seconds otherwise HTTP 409 will be raised
     cy.get('.pf-c-modal-box__footer > .pf-m-primary').click(); // "Get Discovery ISO"
     downloadFileWithChrome(
