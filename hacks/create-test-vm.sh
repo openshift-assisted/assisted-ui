@@ -16,19 +16,21 @@ export ISO=${ISO:-missing_iso_file_path}
 export MEMMIB=${MEMGIB:-8192}
 export CPUS=${CPUS:-4}
 export DISKGIB=${DISKGIB:-25}
+export POOL=${POOL:-default}
 
 echo NAME: $NAME
 echo ISO: $ISO
 echo MEMMIB: $MEMMIB
 echo CPUS: $CPUS
+echo Storage POOL: $POOL
 
 virt-install --name="${NAME}" \
   --vcpus=${CPUS} \
   --ram=${MEMMIB}\
   --network=bridge=virbr0 \
   --graphics=none \
-  --os-variant=rhel7 \
-  --disk=size=${DISKGIB},backing_store="/var/lib/libvirt/images/${NAME}.qcow2" \
+  --os-variant=rhel7.0 \
+  --disk=size=${DISKGIB},pool=${POOL} \
   --cdrom=${ISO} \
   --noautoconsole
 
