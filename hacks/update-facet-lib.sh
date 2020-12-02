@@ -13,6 +13,8 @@ export FACET_UPSTREAM_REPO=${FACET_UPSTREAM_REPO:-'https://github.com/openshift-
 echo FACET_UPSTREAM_REPO: ${FACET_UPSTREAM_REPO}
 
 export GITLAB_USER=${GITLAB_USER:-"`whoami`"}
+echo GITLAB_USER: $GITLAB_USER
+
 export UHC_PORTAL_REPO=${UHC_PORTAL_REPO:-"https://gitlab.cee.redhat.com/${GITLAB_USER}/uhc-portal.git"}
 echo UHC_PORTAL_REPO: ${UHC_PORTAL_REPO}
 
@@ -58,16 +60,16 @@ git commit -m "Update facet-lib to ${FACET_LIB_VERSION}"
 # All remote changes at the end
 echo -e "${GREEN_COLOR}Pushing changes to remote${NC}"
 
-cd ${TMPDIR}/facet
-echo "A commit right to ${FACET_UPSTREAM_REPO} master will be pushed (wihout PR)"
-git push --follow-tags
-
 cd ${TMPDIR}/uhc-portal
 echo Pushing to ${UHC_PORTAL_REPO} to create a merge request there
 git push --set-upstream origin ${UHC_PORTAL_BRANCH}
 
+cd ${TMPDIR}/facet
+echo "A commit right to ${FACET_UPSTREAM_REPO} master will be pushed (wihout PR)"
+git push --follow-tags
+
 # The last mile in a browser for convenience
-xdg-open https://gitlab.cee.redhat.com/mlibra/uhc-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=${UHC_PORTAL_BRANCH} &
+xdg-open https://gitlab.cee.redhat.com/${GITLAB_USER}/uhc-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=${UHC_PORTAL_BRANCH} &
 xdg-open "https://github.com/openshift-metal3/facet/releases/new?tag=v${FACET_LIB_VERSION}&title=v${FACET_LIB_VERSION}&body=${TAG}: https://github.com/mareklibra/facet-lib/releases/tag/v${FACET_LIB_VERSION}" &
 xdg-open "https://github.com/mareklibra/facet-lib/pulls" & # to close/re-open generated PR (optional)
 
