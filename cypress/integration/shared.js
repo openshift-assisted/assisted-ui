@@ -437,7 +437,7 @@ export const enableAdvancedNetworking = (
   networkPrefix = null,
   serviceCidr = null,
 ) => {
-  cy.get('#networkConfigurationTypeAdvanced').click();
+  cy.get('#useAdvancedNetworking').click();
   cy.get('#form-input-serviceNetworkCidr-field').click(); // just to scroll to it
   cy.get('#form-input-clusterNetworkCidr-field').should('be.visible');
   cy.get('#form-input-clusterNetworkHostPrefix-field').should('be.visible');
