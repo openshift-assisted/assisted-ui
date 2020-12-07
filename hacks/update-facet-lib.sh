@@ -70,7 +70,7 @@ echo Pushing to ${UHC_PORTAL_REPO} to create a merge request there
 git push --set-upstream origin ${UPDATE_BRANCH}
 
 cd ${TMPDIR}/facet
-echo Pushing to ${FACTE_USER_REPO} to create a pull request there
+echo Pushing to ${FACET_USER_REPO} to create a pull request there
 git push --set-upstream origin ${UPDATE_BRANCH} --follow-tags
 
 # The last mile in a browser for convenience
