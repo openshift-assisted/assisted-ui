@@ -5201,13 +5201,14 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
-facet-lib@^1.4.8-3:
-  version "1.4.8-3"
-  resolved "https://registry.yarnpkg.com/facet-lib/-/facet-lib-1.4.8-3.tgz#817d71ea33b916f07be19956d48da7794073e077"
-  integrity sha512-rMaYFJehdlCkPif02BKIsdrVclCbUJzevQanGh+FmiGv0gJIqiq5tchf0MBxeB/W56mIJc+fHJaFBEJCTh0Mcw==
+facet-lib@^1.4.8-4:
+  version "1.4.8-4"
+  resolved "https://registry.yarnpkg.com/facet-lib/-/facet-lib-1.4.8-4.tgz#a0b672f01ef5dd86de687121ba181f66b0c5f33a"
+  integrity sha512-DQhtw31MDYi11aUbGFMuN+209WnNbjBiypCoTbv2qeKON6t8WbLsrGkstw3Gt8NEhsA/wfDKf6oCL98/ewHt0w==
   dependencies:
     axios-case-converter "^0.6.0"
     ip-address "^7.1.0"
+    is-in-subnet "^3.1.0"
     unique-names-generator "^4.2.0"
 
 fast-deep-equal@^3.1.1:
@@ -6604,6 +6605,11 @@ is-glob@^4.0.0, is-glob@^4.0.1, is-glob@~4.0.1:
   integrity sha512-5G0tKtBTFImOqDnLB2hG6Bp2qcKEFduo4tZu9MT/H6NQv/ghhy30o55ufafxJ/LdH79LLs2Kfrn85TLKyA7BUg==
   dependencies:
     is-extglob "^2.1.1"
+
+is-in-subnet@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/is-in-subnet/-/is-in-subnet-3.1.0.tgz#ae6fa5f29f953de5c5c3c3fb2ce2e70b9378458c"
+  integrity sha512-UpHSoZ+S53dhiM5q48atdahm6GmaTFlZaelKTdtBQeSihWZdToE7b8hlTzWVVLghntGlCK97c1JTIdzV5Q+Vcw==
 
 is-installed-globally@^0.3.2:
   version "0.3.2"
