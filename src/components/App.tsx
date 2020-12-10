@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import { Page } from '@patternfly/react-core';
-import { Store, Router as LibRouter } from 'facet-lib';
+import { Store, Router as LibRouter } from 'openshift-assisted-ui-lib';
 import history from '../history';
 import Header from './ui/Header';
 // import Sidebar from './Sidebar';
