@@ -5201,16 +5201,6 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
-facet-lib@^1.4.9:
-  version "1.4.9"
-  resolved "https://registry.yarnpkg.com/facet-lib/-/facet-lib-1.4.9.tgz#c2857c2aa342c8b6ca8e06c8d3c64d31d41a8592"
-  integrity sha512-AitZN/a5zZoFb6sl7fjrZ+ZACnEc/wx4AHF0t7B3KTVbexeO+dfCN3sl8bFgvD2mqNOrV7e68ZEd2B3i12pHZQ==
-  dependencies:
-    axios-case-converter "^0.6.0"
-    ip-address "^7.1.0"
-    is-in-subnet "^3.1.0"
-    unique-names-generator "^4.2.0"
-
 fast-deep-equal@^3.1.1:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
@@ -8630,6 +8620,16 @@ open@^7.0.2:
   dependencies:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
+
+openshift-assisted-ui-lib@^1.5.0-pre2:
+  version "1.5.0-pre2"
+  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-1.5.0-pre2.tgz#2197c469151df53f2639bd4e74f98a7aabc7ce22"
+  integrity sha512-4Eb5KyaPqUWKX50rhqtNL3uBL/a3TR513PslsnpKFHkb2iavzdo7W7gForbGt08+i3iWPzxTI6EdagpzQXUG6Q==
+  dependencies:
+    axios-case-converter "^0.6.0"
+    ip-address "^7.1.0"
+    is-in-subnet "^3.1.0"
+    unique-names-generator "^4.2.0"
 
 opn@^5.5.0:
   version "5.5.0"

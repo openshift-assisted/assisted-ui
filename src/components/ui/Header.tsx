@@ -1,6 +1,6 @@
 import React from 'react';
 import { Brand, PageHeader, PageHeaderTools, Button, ButtonVariant } from '@patternfly/react-core';
-import { Config } from 'facet-lib';
+import { Config } from 'openshift-assisted-ui-lib';
 import metal3FacetLogo from '../../images/metal3_facet-whitetext.png';
 import redhatLogo from '../../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
