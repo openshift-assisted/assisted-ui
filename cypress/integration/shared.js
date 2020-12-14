@@ -89,7 +89,9 @@ export const createCluster = (cy, clusterName, pullSecret) => {
 
   // Cluster configuration
   // cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(clusterName);
-  cy.get('#bare-metal-inventory-button-download-discovery-iso').should('be.visible');
+  cy.get('#bare-metal-inventory-button-download-discovery-iso', { timeout: 10 * 1000 }).should(
+    'be.visible',
+  );
   cy.get('#form-input-name-field').should('have.value', clusterName);
 };
 
