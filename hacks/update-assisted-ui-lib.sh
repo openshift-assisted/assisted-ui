@@ -75,7 +75,7 @@ git push --set-upstream origin ${UPDATE_BRANCH} --follow-tags
 
 # The last mile in a browser for convenience
 xdg-open "https://github.com/openshift-assisted/assisted-ui-lib/pulls" & # to close/re-open generated PR (optional)
-xdg-open https://gitlab.cee.redhat.com/${GITLAB_USER}/uhc-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=${UPDATE_BRANCH} &
+xdg-open "https://gitlab.cee.redhat.com/${GITLAB_USER}/uhc-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=${UPDATE_BRANCH}&merge_request%5Btitle%5D=WIP: Update openshift-assisted-ui-lib to ${ASSISTED_UI_LIB_VERSION}&merge_request%5Bdescription%5D=TODO: Removae WIP when phase1 testing passed to unblock review and merge here" &
 xdg-open "https://github.com/openshift-metal3/facet/releases/new?tag=v${ASSISTED_UI_LIB_VERSION}&title=v${ASSISTED_UI_LIB_VERSION}&body=REMOVE THIS REMINDER: Do not forget to merge pull-request with openshift-assisted-ui-lib update BEFORE creating new release here.%0A%0A${TAG}: https://github.com/openshift-assisted/assisted-ui-lib/releases/tag/v${ASSISTED_UI_LIB_VERSION}" &
 xdg-open https://github.com/${GITHUB_USER}/facet/pull/new/${UPDATE_BRANCH} & # <--- Pay attention to this before creating a new release in facet!
 
