@@ -3,9 +3,9 @@
 These scripts simplify builds, deployments or development.
 
 ## update-assisted-ui-lib
-Can be executed right after `assisted-ui-lib` release to update it's version in
-- the facet application
-- the uhc-portal (OCM)
+Can be executed right after creating a new `assisted-ui-lib` [release](https://github.com/openshift-assisted/assisted-ui-lib/releases) to update it's version in the
+- assisted-ui application
+- uhc-portal (OCM)
 
 **Please see `The Release Process` section bellow before using it.**
 
@@ -28,9 +28,9 @@ Used to create a virtual machine from an ISO (like a discovery iso), tested in o
 See comments inside the script for further details.
 
 # The Release Process
-Please note, the `facet` application features heavily depend on the `openshift-assisted-ui-lib` JavaSript library which needs to be released along the `facet` application.
+Please note, the `assisted-ui` application features heavily depend on the `openshift-assisted-ui-lib` JavaSript library. So both projects need to be released in sync.
 
-Recently release versions of both project are alligned to simplify testing.
+To simplify testing, release versions of both projects are alligned recently.
 
 ## Prerequisities
 - Have [uhc-portal](https://gitlab.cee.redhat.com/service/uhc-portal) fork
@@ -39,8 +39,8 @@ Recently release versions of both project are alligned to simplify testing.
 ## Steps
 
 When releasing new version, following steps are executed:
-- **Approve and merge** open PRs in both
-  - [facet pull requests](https://github.com/openshift-metal3/facet/pulls)
+- **Approve and merge** open PRs intended to be part of the new release in both
+  - [assisted-ui pull requests](https://github.com/openshift-assisted/assisted-ui/pulls)
   - [assisted-ui-lib pull requests](https://github.com/openshift-assisted/assisted-ui-lib/pulls)
 
 - **Release** [openshift-assisted-ui-lib via GitHub](https://github.com/openshift-assisted/assisted-ui-lib/releases/new)
@@ -59,18 +59,18 @@ When releasing new version, following steps are executed:
     - *Note:* It is a GitHub's feature that an action can not trigger execution of another action. So without close/reopen the CI will not be executed on this PR.
   - **Wait till** new `openshift-assisted-ui-lib` version is automatically published to [npmjs.com](https://www.npmjs.com/package/openshift-assisted-ui-lib)
 
-- **Update** `openshift-assisted-ui-lib` in the `facet` and `uhc-portal` via
+- **Update** `openshift-assisted-ui-lib` in the `assisted-ui` and `uhc-portal` via
   - ```
-     $ curl https://raw.githubusercontent.com/openshift-metal3/facet/master/hacks/update-assisted-ui-lib.sh | sh -
+     $ curl https://raw.githubusercontent.com/openshift-assisted/assisted-ui/master/hacks/update-assisted-ui-lib.sh | sh -
     ```
     - Watch output of the script. It might happen in rare cases that new `openshift-assisted-ui-lib` version is not automatically found (i.e. due to short delay), so you can force it by:
       ```
-      $ curl https://raw.githubusercontent.com/openshift-metal3/facet/master/hacks/update-assisted-ui-lib.sh | ASSISTED_UI_LIB_VERSION=1.5.0 sh -
+      $ curl https://raw.githubusercontent.com/openshift-assisted/assisted-ui/master/hacks/update-assisted-ui-lib.sh | ASSISTED_UI_LIB_VERSION=1.5.0 sh -
       ```
 - New browser tabs are opened, **finish the process** there by:
   - merge `assisted-ui-lib` version update (if you missed that in the steps above)
   - open a merge request to `uhc-portal`
-  - confirm new `facet` project release - **append** description if needed
+  - confirm new `assisted-ui` project release - **append** description if needed
 - Pass through all Jira and Bugzilla tickets and **fill `Fixed in version`**
   - use [assisted-ui-lib's release notes](https://github.com/openshift-assisted/assisted-ui-lib/releases) to guide you
   - *Note:* We are working on automating this step

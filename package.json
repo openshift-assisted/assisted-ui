@@ -1,10 +1,10 @@
 {
-  "name": "metal3-facet",
+  "name": "openshift-assisted-ui",
   "version": "0.1.4",
   "private": false,
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/openshift-metal3/facet/issues"
+    "url": "https://github.com/openshift-assisted/assisted-ui/issues"
   },
   "dependencies": {
     "@patternfly/react-core": "^4.63.3",

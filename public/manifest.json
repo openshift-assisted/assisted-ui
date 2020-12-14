@@ -1,6 +1,6 @@
 {
-  "short_name": "Facet",
-  "name": "Metal³ Facet - user interface to drive bare metal Kubernetes cluster deployment",
+  "short_name": "Assisted Installer UI",
+  "name": "Assisted Installer UI - user interface to drive bare metal OpenShift cluster deployment",
   "icons": [
     {
       "src": "favicon.ico",
