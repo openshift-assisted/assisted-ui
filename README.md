@@ -1,29 +1,14 @@
-![](https://github.com/openshift-metal3/facet/workflows/Build%20and%20push/badge.svg)
+![](https://github.com/openshift-assisted/assisted-ui/workflows/Build%20and%20push/badge.svg)
 
-# Facet
+# The Assisted Installer User Insterface
 
-OpenShift Metal³ installer UI.
+The Assisted Installer makes IPI (Installer-Provisioned Infrastructure) OpenShift cluster deployments on bare metal easy.
 
-Facet is the central integration point for doing a Metal³ deployment of OpenShift. It’s the one
-command you run on a provisioning host to kick off the deployment. It performs the following
-functions:
+Hosts building the cluster are discovered by booting an ISO image downloaded from the Assisted Installer.
 
-- Implements the day 1 provisioning API. In other words, this API provides what is necessary to get
-  the masters providing the control plane up and running. From that point, the Machine API and the
-  corresponding Metal³ components will take over provisioning the rest of the cluster.
+By entering a few neccessary configuration details (like cluster name, base domain, SSH public keys or netowrk specifics), the Assisted Installer handles all the deployement and configuration automatically, resulting in a ready-to-use cluster.
 
-- Will do provisioning host configuration validation at startup.
-
-- Will launch the Ironic containers using podman on the provisioning host.
-
-- Will download the current images of RHCOS that are needed for deployment. (for the bootstrap VM
-  and bare metal hosts)
-
-- Will run the installer, launch the bootstrap VM, and drive Ironic APIs.
-
-Here's a diagram of the Facet architecture: ![Facet Architecture](/images/Facet_Architecture.png)
-
-For further details about the Metal³ architecture, see [http://github.com/metal3-io/metal3-docs].
+This project is a user interface backed by Assisted Installer API.
 
 ## Getting started
 
@@ -35,8 +20,8 @@ For further details about the Metal³ architecture, see [http://github.com/metal
   ```
 - Clone repo:
   ```
-  git clone https://github.com/openshift-metal3/facet.git
-  cd facet
+  git clone https://github.com/openshift-assisted/assisted-ui.git
+  cd assisted-ui
   ```
 
 ### Build and run in DEV-mode
@@ -115,20 +100,6 @@ $ REACT_APP_BUILD_MODE=single-cluster yarn build
 ## Available Scripts
 
 In the project directory, you can run:
-
-### `hacks/npm-publish.sh`
-
-Increases `patch` version (`.z`) of the package, opens PR with this change and **publishes** the
-package to the [npmjs.com](https://www.npmjs.com/package/metal3-facet) repository.
-
-New tag conforming the version is created.
-
-Prior running this script, please be sure you
-
-- are logged in npmjs.com (call `yarn login`)
-
-- can create branches and open PRs in
-  [https://github.com/openshift-metal3/facet](https://github.com/openshift-metal3/facet)
 
 ### `yarn install`
 

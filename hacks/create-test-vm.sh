@@ -7,7 +7,7 @@ set -e
 #
 # Example for day 2 host:
 #   - download generated Day 2 iso under /var/lib/libvirt/images/
-#   $ curl https://raw.githubusercontent.com/openshift-metal3/facet/master/hacks/create-test-vm.sh | ISO=/var/lib/libvirt/images/discovery_image_scale-up-mlibra11.iso NAME=mlibra11_worker_7 sh -
+#   $ curl https://raw.githubusercontent.com/openshift-assisted/assisted-ui/master/hacks/create-test-vm.sh | ISO=/var/lib/libvirt/images/discovery_image_scale-up-mlibra11.iso NAME=mlibra11_worker_7 sh -
 #
 # Provide additional parameters for day 1 masters (at least set MEMGIB and CPUS env variables)
  
