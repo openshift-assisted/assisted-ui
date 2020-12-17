@@ -17,7 +17,7 @@ echo GITLAB_USER: $GITLAB_USER
 export ASSISTED_UI_USER_REPO=${ASSISTED_UI_USER_REPO:-"https://github.com/${GITHUB_USER}/assisted-ui.git"}
 echo ASSISTED_UI_USER_REPO: $ASSISTED_UI_USER_REPO
 
-export UHC_PORTAL_REPO=${UHC_PORTAL_REPO:-"https://gitlab.cee.redhat.com/${GITLAB_USER}/uhc-portal.git"}
+export UHC_PORTAL_REPO=${UHC_PORTAL_REPO:-"git@gitlab.cee.redhat.com/${GITLAB_USER}/uhc-portal.git"}
 echo UHC_PORTAL_REPO: ${UHC_PORTAL_REPO}
 
 export TAG=${TAG:-"assisted-ui-lib-${ASSISTED_UI_LIB_VERSION}"}
