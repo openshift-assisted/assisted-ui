@@ -1,5 +1,5 @@
 import { makeApiCall, API_BASE_URL } from './shared';
-import { DEFAULT_API_REQUEST_TIMEOUT } from './constants';
+import { DEFAULT_CREATE_CLUSTER_BUTTON_SHOW_TIMEOUT } from './constants';
 
 export const INTEGRATION_ENV = Cypress.env('INTEGRATION_ENV');
 export const OCM_USER = Cypress.env('OCM_USER');
@@ -23,7 +23,7 @@ export const loginOCM = (userName, password) => {
   cy.get('#kc-form-login').submit();
 
   cy.get('#button-create-new-cluster', {
-    timeout: DEFAULT_API_REQUEST_TIMEOUT,
+    timeout: DEFAULT_CREATE_CLUSTER_BUTTON_SHOW_TIMEOUT,
   });
 };
 

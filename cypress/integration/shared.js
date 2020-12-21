@@ -7,6 +7,7 @@ import {
   INSTALL_PREPARATION_TIMEOUT,
   FILE_DOWNLOAD_TIMEOUT,
   START_INSTALLATION_TIMEOUT,
+  DEFAULT_CREATE_CLUSTER_BUTTON_SHOW_TIMEOUT,
 } from './constants';
 import { resolvePlugin } from '@babel/core';
 
@@ -62,14 +63,18 @@ export const pasteText = (cy, selector, text) => {
 export const openCluster = (clusterName) => {
   // Click the cluster name from the clusters list
   cy.visit('');
-  cy.get(getClusterNameLinkSelector(clusterName)).click();
+  cy.get(getClusterNameLinkSelector(clusterName), {
+    timeout: DEFAULT_CREATE_CLUSTER_BUTTON_SHOW_TIMEOUT,
+  }).click();
   // Cluster configuration - name
   cy.get('.pf-c-breadcrumb__list > :nth-child(3)').contains(clusterName);
   cy.get('#form-input-name-field').should('have.value', clusterName);
 };
 
 export const createDummyCluster = (cy, clusterName, pullSecret) => {
-  cy.get('button[data-ouia-id="button-create-new-cluster"]').click();
+  cy.get('button[data-ouia-id="button-create-new-cluster"]', {
+    timeout: DEFAULT_CREATE_CLUSTER_BUTTON_SHOW_TIMEOUT,
+  }).click();
   cy.get('#form-input-name-field').should('be.visible');
   cy.get('h1').contains('Install OpenShift on Bare Metal with the Assisted Installer');
 
