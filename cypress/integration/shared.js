@@ -7,6 +7,8 @@ import {
   INSTALL_PREPARATION_TIMEOUT,
   FILE_DOWNLOAD_TIMEOUT,
   START_INSTALLATION_TIMEOUT,
+  DEFAULT_CREATE_CLUSTER_BUTTON_SHOW_TIMEOUT,
+  DEFAULT_SAVE_BUTTON_TIMEOUT,
 } from './constants';
 import { resolvePlugin } from '@babel/core';
 
@@ -62,14 +64,18 @@ export const pasteText = (cy, selector, text) => {
 export const openCluster = (clusterName) => {
   // Click the cluster name from the clusters list
   cy.visit('');
-  cy.get(getClusterNameLinkSelector(clusterName)).click();
+  cy.get(getClusterNameLinkSelector(clusterName), {
+    timeout: DEFAULT_CREATE_CLUSTER_BUTTON_SHOW_TIMEOUT,
+  }).click();
   // Cluster configuration - name
   cy.get('.pf-c-breadcrumb__list > :nth-child(3)').contains(clusterName);
   cy.get('#form-input-name-field').should('have.value', clusterName);
 };
 
 export const createDummyCluster = (cy, clusterName, pullSecret) => {
-  cy.get('button[data-ouia-id="button-create-new-cluster"]').click();
+  cy.get('button[data-ouia-id="button-create-new-cluster"]', {
+    timeout: DEFAULT_CREATE_CLUSTER_BUTTON_SHOW_TIMEOUT,
+  }).click();
   cy.get('#form-input-name-field').should('be.visible');
   cy.get('h1').contains('Install OpenShift on Bare Metal with the Assisted Installer');
 
@@ -465,7 +471,16 @@ export const enableAdvancedNetworking = (
 export const saveClusterDetails = (cy) => {
   // click the 'save' button in order to save changes in the cluster info
   cy.get('button[name="save"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should('be.enabled');
+  cy.server();
+  cy.route({
+    method: 'PATCH',
+    url: '/api/assisted-install/v1/clusters/**',
+  }).as('patchCheck');
   cy.get('button[name="save"]').click();
+
+  cy.wait('@patchCheck', { timeout: DEFAULT_SAVE_BUTTON_TIMEOUT }).should((xhr) => {
+    expect(xhr.status, 'successful PATCH').to.equal(201);
+  });
   cy.wait(2 * 1000);
 };
 
