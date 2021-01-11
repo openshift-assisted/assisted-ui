@@ -18,7 +18,3 @@ import './commands';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
-
-// Login into OCM if on hosted environment
-import { loginAndPreserveEnvironment } from '../integration/ocmShared';
-loginAndPreserveEnvironment();

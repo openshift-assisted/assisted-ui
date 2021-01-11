@@ -272,31 +272,6 @@ export const waitForHostTablePopulation = (
   });
 };
 
-export const waitForPendingInputState = (
-  cy,
-  numMasters = NUM_MASTERS,
-  numWorkers = NUM_WORKERS,
-) => {
-  // wait until hosts are getting to pending input state
-  for (let i = 2; i <= numMasters + numWorkers + 1; i++) {
-    cy.contains(hostDetailSelector(i, 'Status'), 'Pending input', {
-      timeout: HOST_DISCOVERY_TIMEOUT,
-    });
-  }
-};
-
-export const waitForHostsSubnet = (cy) => {
-  // wait until hosts subnet populated in the cluster details
-  cy.get('#form-input-hostSubnet-field')
-    .find('option', { timeout: HOST_DISCOVERY_TIMEOUT })
-    .should(($els) => {
-      expect($els.length).to.be.gt(0);
-    })
-    .and(($els) => {
-      expect($els[0]).not.to.have.text('No subnets available');
-    });
-};
-
 export const waitForHostsToBeKnown = (numMasters = NUM_MASTERS, numWorkers = NUM_WORKERS) => {
   // wait until hosts are getting to pending input state
   for (let i = 2; i <= numMasters + numWorkers + 1; i++) {
@@ -415,59 +390,6 @@ export const waitForClusterState = (cy, desiredState, retries = 10) => {
   });
 };
 
-export const disableDhcpVip = (cy, apiVip = null, ingressVip = null) => {
-  getDhcpVipState(cy).then((state) => {
-    if (state) {
-      cy.get('#form-input-vipDhcpAllocation-field').click();
-    }
-  });
-  if (apiVip) {
-    cy.get('#form-input-apiVip-field').clear();
-    cy.get('#form-input-apiVip-field').type(apiVip);
-  }
-  if (ingressVip) {
-    cy.get('#form-input-ingressVip-field').clear();
-    cy.get('#form-input-ingressVip-field').type(ingressVip);
-  }
-};
-
-export const enableDhcpVip = (cy) => {
-  getDhcpVipState(cy).then((state) => {
-    if (!state) {
-      cy.get('#form-input-vipDhcpAllocation-field').click();
-    }
-  });
-};
-
-export const enableAdvancedNetworking = (
-  cy,
-  clusterCidr = null,
-  networkPrefix = null,
-  serviceCidr = null,
-) => {
-  cy.get('#useAdvancedNetworking').click();
-  cy.get('#form-input-serviceNetworkCidr-field').click(); // just to scroll to it
-  cy.get('#form-input-clusterNetworkCidr-field').should('be.visible');
-  cy.get('#form-input-clusterNetworkHostPrefix-field').should('be.visible');
-  cy.get('#form-input-serviceNetworkCidr-field').should('be.visible');
-
-  if (clusterCidr) {
-    cy.get('#form-input-clusterNetworkCidr-field').clear();
-    cy.get('#form-input-clusterNetworkCidr-field').type(clusterCidr);
-  }
-
-  if (serviceCidr) {
-    cy.get('#form-input-serviceNetworkCidr-field').clear();
-    cy.get('#form-input-serviceNetworkCidr-field').type(serviceCidr);
-  }
-
-  if (networkPrefix) {
-    // cy.get('#form-input-clusterNetworkHostPrefix-field').dblclick();
-    cy.get('#form-input-clusterNetworkHostPrefix-field').clear();
-    cy.get('#form-input-clusterNetworkHostPrefix-field').type(networkPrefix);
-  }
-};
-
 export const saveClusterDetails = (cy) => {
   // click the 'save' button in order to save changes in the cluster info
   cy.get('button[name="save"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should('be.enabled');
@@ -482,15 +404,6 @@ export const saveClusterDetails = (cy) => {
     expect(xhr.status, 'successful PATCH').to.equal(201);
   });
   cy.wait(2 * 1000);
-};
-
-export const enableRoute53 = (cy) => {
-  cy.get('#form-input-useRedHatDnsService-field').click();
-  getDomains(cy).then((provider) => {
-    if (provider) {
-      cy.get('#form-input-baseDnsDomain-field').contains(provider);
-    }
-  });
 };
 
 export const verifyClusterCreationApi = (clusterName) => {
