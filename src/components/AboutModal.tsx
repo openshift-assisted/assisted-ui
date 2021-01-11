@@ -83,7 +83,11 @@ const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
         <DetailList>
           <>
             {releaseTag && <DetailItem title="Release tag" value={releaseTag} />}
-            <DetailItem title="Assisted Installer UI version" value={getUIVersion()} />
+            <DetailItem
+              title="Assisted Installer UI version"
+              value={getUIVersion()}
+              idPrefix="ui-lib-version"
+            />
             <DetailItem
               title="Assisted Installer UI library version"
               value={Config.getAssistedUiLibVersion()}
