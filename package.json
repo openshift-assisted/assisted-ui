@@ -41,7 +41,7 @@
     "lodash": "^4.17.15",
     "netmask": "^1.0.6",
     "node-sass": "^4.13.1",
-    "openshift-assisted-ui-lib": "^1.5.3-1",
+    "openshift-assisted-ui-lib": "^1.5.4",
     "prettier": "^2.0.1",
     "prism-react-renderer": "^1.1.1",
     "react": "^16.13.0",
