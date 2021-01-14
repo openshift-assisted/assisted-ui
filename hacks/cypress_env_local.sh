@@ -9,7 +9,7 @@
 unset ${!CYPRESS@}
 
 # Minikube
-export CYPRESS_API_BASE_URL=http://10.19.130.1:6000
+export CYPRESS_API_BASE_URL=http://10.19.130.2:6000
 export CYPRESS_BASE_URL=http://localhost:3000
 export CYPRESS_SSH_PUB_KEY=$(cat ~/.ssh/id_rsa.pub)
 
