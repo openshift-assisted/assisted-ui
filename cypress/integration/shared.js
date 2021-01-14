@@ -9,9 +9,10 @@ import {
   START_INSTALLATION_TIMEOUT,
   DEFAULT_CREATE_CLUSTER_BUTTON_SHOW_TIMEOUT,
   DEFAULT_SAVE_BUTTON_TIMEOUT,
-} from './constants';
+} from './shared/constants';
 import { resolvePlugin } from '@babel/core';
 
+/*
 export const testInfraClusterName = 'test-infra-cluster-assisted-installer';
 export const testInfraClusterHostnames = [
   'test-infra-cluster-assisted-installer-master-0',
@@ -22,18 +23,16 @@ export const testInfraClusterHostnames = [
 export const withValueOf = (cy, selector, handler) => {
   cy.get(selector).then((elem) => handler(elem[0].innerText));
 };
-
-export const getClusterNameLinkSelector = (clusterName) => `#cluster-link-${clusterName}`;
-export const testClusterLinkSelector = getClusterNameLinkSelector(testInfraClusterName);
+*/
 export const clusterNameLinkSelector = '[data-label="Name"] > a'; // on '/clusters' page
 export const kebabSelector = (tableRow) =>
   `tbody > tr:nth-child(${tableRow}) > td.pf-c-table__action > div`;
-export const clusterTableCellSelector = (row, column) =>
-  `tbody > tr:nth-child(${row}) > [data-label="${column}"]`;
-export const hostDetailSelector = (row, label) =>
-  // NOTE: The first row is number 2! Shift your indexes...
-  `table > tbody:nth-child(${row}) > tr:nth-child(1) > [data-label="${label}"]`;
-
+// export const clusterTableCellSelector = (row, column) =>
+//  `tbody > tr:nth-child(${row}) > [data-label="${column}"]`;
+//export const hostDetailSelector = (row, label) =>
+// NOTE: The first row is number 2! Shift your indexes...
+//  `table > tbody:nth-child(${row}) > tr:nth-child(1) > [data-label="${label}"]`;
+/*
 export const PULL_SECRET = Cypress.env('PULL_SECRET');
 export const SSH_PUB_KEY = Cypress.env('SSH_PUB_KEY');
 export const CLUSTER_NAME = Cypress.env('CLUSTER_NAME');
@@ -60,7 +59,7 @@ export const pasteText = (cy, selector, text) => {
     cy.get(selector).type(' {backspace}');
   });
 };
-
+*/
 export const openCluster = (clusterName) => {
   // Click the cluster name from the clusters list
   cy.visit('');
@@ -71,7 +70,7 @@ export const openCluster = (clusterName) => {
   cy.get('.pf-c-breadcrumb__list > :nth-child(3)').contains(clusterName);
   cy.get('#form-input-name-field').should('have.value', clusterName);
 };
-
+/*
 export const createDummyCluster = (cy, clusterName, pullSecret) => {
   cy.get('button[data-ouia-id="button-create-new-cluster"]', {
     timeout: DEFAULT_CREATE_CLUSTER_BUTTON_SHOW_TIMEOUT,
@@ -100,14 +99,14 @@ export const createCluster = (cy, clusterName, pullSecret) => {
   );
   cy.get('#form-input-name-field').should('have.value', clusterName);
 };
-
+*/
 export const cancelDummyCluster = (cy) => {
   cy.get('.pf-c-button.pf-m-link').click(); // cancel
   cy.get('#form-input-name-field').should('not.exist');
   cy.get('#form-input-openshiftVersion-field').should('not.exist');
   cy.get('#form-input-pullSecret-field').should('not.exist');
 };
-
+/*
 export const deleteDummyCluster = (cy, tableRow, clusterName) => {
   cy.get(kebabSelector(tableRow)).click(); // open kebab menu
   cy.get(`#button-delete-${clusterName}`).click(); // Delete & validate correct kebab from previous step
@@ -116,7 +115,7 @@ export const deleteDummyCluster = (cy, tableRow, clusterName) => {
   cy.get(getClusterNameLinkSelector(clusterName)).should('not.exist');
   cy.get(testClusterLinkSelector); // validate that the test-infra-cluster is still present
 };
-
+*/
 export const setProxyValues = (httpProxy = null, httpsProxy = null, noProxy = null) => {
   cy.get('#form-input-enableProxy-field').click();
   cy.get('#form-input-httpProxy-field').should('be.visible');
@@ -211,24 +210,7 @@ export const downloadFileWithChrome = (
     expect(result.code).to.be.eq(0);
   });
 };
-
-export const assertTestClusterPresence = (cy) => {
-  cy.visit('/clusters');
-  cy.get(testClusterLinkSelector).contains(testInfraClusterName);
-  cy.get(clusterTableCellSelector(1, 'Base domain')).contains('redhat.com');
-  cy.get(clusterTableCellSelector(1, 'Version')).contains('4.6'); // fail to raise attention when source data changes
-  cy.get(clusterTableCellSelector(1, 'Status')).contains('Ready', {
-    timeout: DEFAULT_API_REQUEST_TIMEOUT,
-  });
-  cy.get(clusterTableCellSelector(1, 'Hosts')).contains(3);
-};
-
-export const visitTestCluster = (cy) => {
-  assertTestClusterPresence(cy);
-  cy.visit('/clusters');
-  cy.get(testClusterLinkSelector).click();
-};
-
+/*
 export const checkValidationMessage = (cy, expectedMsg) => {
   cy.get(':nth-child(5) > [data-pf-content="true"] > .pf-c-button').contains(
     'The cluster is not ready to be installed yet',
@@ -243,7 +225,7 @@ export const checkValidationMessage = (cy, expectedMsg) => {
   cy.get('.pf-l-split > :nth-child(2) > .pf-c-button').click(); // close alerts
   cy.get('.pf-c-alert').should('not.be.visible');
 };
-
+*/
 export const startClusterInstallation = () => {
   // wait up to 10 seconds for the install button to be enabled
   cy.get('button[name="install"]', { timeout: START_INSTALLATION_TIMEOUT }).should(($elem) => {
@@ -309,7 +291,7 @@ export const setHostsRole = (numMasters = NUM_MASTERS, numWorkers = NUM_WORKERS)
     cy.get(hostDetailSelector(i, 'Role')).click().find('li#worker').click();
   }
 };
-
+/*
 export const makeApiCall = (
   apiPostfix,
   method,
@@ -345,7 +327,7 @@ export const clusterIdFromUrl = (cy) => {
     });
   });
 };
-
+*/
 export const getDhcpVipState = (cy) => {
   return new Cypress.Promise((resolve, reject) => {
     clusterIdFromUrl(cy).then((id) => {
@@ -357,7 +339,7 @@ export const getDhcpVipState = (cy) => {
     });
   });
 };
-
+/*
 export const getClusterState = (cy) => {
   return new Cypress.Promise((resolve, reject) => {
     clusterIdFromUrl(cy).then((id) => {
@@ -369,7 +351,7 @@ export const getClusterState = (cy) => {
     });
   });
 };
-
+*/
 export const getDomains = (cy) => {
   return new Cypress.Promise((resolve, reject) => {
     const readDomains = (response) => {
@@ -379,7 +361,7 @@ export const getDomains = (cy) => {
     makeApiCall(`/api/assisted-install/v1/domains`, 'GET', readDomains);
   });
 };
-
+/*
 export const waitForClusterState = (cy, desiredState, retries = 10) => {
   getClusterState(cy).then((state) => {
     assert.isTrue(retries > 0);
@@ -389,10 +371,11 @@ export const waitForClusterState = (cy, desiredState, retries = 10) => {
     }
   });
 };
-
+*/
 export const saveClusterDetails = (cy) => {
   // click the 'save' button in order to save changes in the cluster info
   cy.get('button[name="save"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should('be.enabled');
+  // TODO: use Cypress interceptors - see createCluster() for example
   cy.server();
   cy.route({
     method: 'PATCH',

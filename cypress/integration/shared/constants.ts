@@ -22,3 +22,5 @@ export const FILE_DOWNLOAD_TIMEOUT = 60 * 1000;
 export const ISO_DOWNLOAD_TIMEOUT = 60 * 60 * 1000;
 // timeout for cluster installation to finish - 1.5 hour
 export const CLUSTER_CREATION_TIMEOUT = 90 * 60 * 1000;
+// searching for majority group can take up to 2 minutes
+export const HOSTS_DISCOVERY_TIMEOUT = 2.5 * 60 * 1000;
