@@ -1,10 +1,4 @@
-import { mockAfter, mockBeforeEach, createMockContext } from './mocks';
-
 describe('Application', () => {
-  const mockContext = createMockContext();
-  beforeEach(mockBeforeEach(mockContext));
-  after(mockAfter(mockContext));
-
   it('loads', () => {
     // Set CYPRESS_BASE_URL environemnt variable
     // Example: export CYPRESS_BASE_URL=http://localhost:3000

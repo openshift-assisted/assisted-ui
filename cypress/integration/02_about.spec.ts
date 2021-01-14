@@ -1,10 +1,4 @@
-import { mockAfter, mockBeforeEach, createMockContext } from './mocks';
-
 describe('About modal', () => {
-  const mockContext = createMockContext();
-  beforeEach(mockBeforeEach(mockContext));
-  after(mockAfter(mockContext));
-
   it('is rendered', () => {
     cy.visit('/');
     cy.get('h1').contains('Assisted Bare Metal Clusters');
