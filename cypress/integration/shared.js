@@ -99,14 +99,14 @@ export const createCluster = (cy, clusterName, pullSecret) => {
   );
   cy.get('#form-input-name-field').should('have.value', clusterName);
 };
-*/
+
 export const cancelDummyCluster = (cy) => {
   cy.get('.pf-c-button.pf-m-link').click(); // cancel
   cy.get('#form-input-name-field').should('not.exist');
   cy.get('#form-input-openshiftVersion-field').should('not.exist');
   cy.get('#form-input-pullSecret-field').should('not.exist');
 };
-/*
+
 export const deleteDummyCluster = (cy, tableRow, clusterName) => {
   cy.get(kebabSelector(tableRow)).click(); // open kebab menu
   cy.get(`#button-delete-${clusterName}`).click(); // Delete & validate correct kebab from previous step

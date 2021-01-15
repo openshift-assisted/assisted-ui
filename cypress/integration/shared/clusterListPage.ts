@@ -14,6 +14,9 @@ export const getClusterNameLinkSelector = (clusterName: string) => `#cluster-lin
 export const clusterTableCellSelector = (clusterName: string, columnName: string) =>
   `#cluster-row-${clusterName} > [data-label="${columnName}"]`;
 
+export const clusterTableCellSelectorByRowIndex = (index: number, columnName: string) =>
+  `table > tbody > tr:nth-child(${index}) > td[data-label="${columnName}"]`;
+
 // Asserts
 export const assertClusterPresence = (cy: Cypress.cy, clusterName: string) => {
   cy.visit('/clusters');
@@ -33,7 +36,7 @@ export const openCluster = (cy: Cypress.cy, clusterName: string) => {
   cy.get('h1').contains('Install OpenShift on Bare Metal with the Assisted Installer'); // Make sure the page is loaded
 };
 
-export const createCluster = (cy: Cypress.cy, clusterName: string, pullSecret: string) => {
+export const createClusterFillForm = (cy: Cypress.cy, clusterName: string, pullSecret: string) => {
   cy.visit('');
 
   cy.get('button[data-ouia-id="button-create-new-cluster"]', {
@@ -50,17 +53,30 @@ export const createCluster = (cy: Cypress.cy, clusterName: string, pullSecret: s
     cy.get('#form-input-pullSecret-field').clear();
     pasteText(cy, '#form-input-pullSecret-field', pullSecret);
   }
+};
 
-  // cy.intercept('GET', '**/api/assisted-install/v1/host_requirements').as('hostRequirements'); // requested from the subsequent Cluster configuratin page
+export const cancelCreateCluster = (cy: Cypress.cy) => {
+  // double-check we are on the create-cluster page
+  cy.get('h1').contains('Install OpenShift on Bare Metal with the Assisted Installer');
+
+  // cancel
+  cy.get('#new-cluster-page-cancel').click(); // cancel
+  cy.get('#form-input-name-field').should('not.exist');
+  cy.get('#form-input-openshiftVersion-field').should('not.exist');
+  cy.get('#form-input-pullSecret-field').should('not.exist');
+
+  // we should be navigated back to cluster-list page
+  cy.get('h1').contains('Assisted Bare Metal Clusters');
+};
+
+export const createCluster = (cy: Cypress.cy, clusterName: string, pullSecret: string) => {
+  createClusterFillForm(cy, clusterName, pullSecret);
+
   cy.get('button[name="save"]').click();
   cy.get('#bare-metal-inventory-button-download-discovery-iso', {
     timeout: DEFAULT_SAVE_BUTTON_TIMEOUT,
   });
-  /*
-  cy.wait('@hostRequirements', { timeout: DEFAULT_SAVE_BUTTON_TIMEOUT })
-    .its('response.statusCode')
-    .should('eq', 200);
-  */
+
   // Assert in Cluster configuration
   cy.get('.pf-c-breadcrumb__list > :nth-child(3)', {
     timeout: DEFAULT_API_REQUEST_TIMEOUT,
