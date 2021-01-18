@@ -66,9 +66,7 @@
     "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,scss,yaml,yml}'",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --color .",
     "cypress-open": "yarn run cypress open",
-    "cypress-run": "yarn run cypress run",
-    "cypress-mock-run": "yarn run cypress run --env MOCK_REPLAY=1",
-    "cypress-mock-record": "yarn run cypress run --env MOCK_RECORD=1"
+    "cypress-run": "yarn run cypress run"
   },
   "browserslist": [
     ">0.2%",
