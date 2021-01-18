@@ -1,6 +1,8 @@
 export const PULL_SECRET = Cypress.env('PULL_SECRET');
 export const SSH_PUB_KEY = Cypress.env('SSH_PUB_KEY');
 export const CLUSTER_NAME = Cypress.env('CLUSTER_NAME');
+export const CYPRESS_CLUSTER_HOSTNAME_MASTER_PREFIX = Cypress.env('CLUSTER_HOSTNAME_MASTER_PREFIX');
+export const CYPRESS_CLUSTER_HOSTNAME_WORKER_PREFIX = Cypress.env('CLUSTER_HOSTNAME_WORKER_PREFIX');
 export const DNS_DOMAIN_NAME = Cypress.env('DNS_DOMAIN_NAME');
 export const API_VIP = Cypress.env('API_VIP');
 export const INGRESS_VIP = Cypress.env('INGRESS_VIP');

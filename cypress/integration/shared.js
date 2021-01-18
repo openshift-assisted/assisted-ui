@@ -242,7 +242,7 @@ export const waitForClusterInstallation = () => {
   // wait up to 1 hour for the progress description to say "Installed"
   cy.contains('#cluster-progress-status-value', 'Installed', { timeout: CLUSTER_CREATION_TIMEOUT });
 };
-
+/*
 export const waitForHostTablePopulation = (
   cy,
   numMasters = NUM_MASTERS,
@@ -253,7 +253,7 @@ export const waitForHostTablePopulation = (
     expect($els.length).to.be.eq(numMasters + numWorkers);
   });
 };
-
+*/
 export const waitForHostsToBeKnown = (numMasters = NUM_MASTERS, numWorkers = NUM_WORKERS) => {
   // wait until hosts are getting to pending input state
   for (let i = 2; i <= numMasters + numWorkers + 1; i++) {
@@ -280,7 +280,7 @@ export const setClusterSubnetCidr = (cy) => {
     .parent()
     .trigger('change');
 };
-
+/*
 export const setHostsRole = (numMasters = NUM_MASTERS, numWorkers = NUM_WORKERS) => {
   // set hosts role
   cy.get('#form-input-name-field').click().type('{end}{home}');
@@ -291,7 +291,7 @@ export const setHostsRole = (numMasters = NUM_MASTERS, numWorkers = NUM_WORKERS)
     cy.get(hostDetailSelector(i, 'Role')).click().find('li#worker').click();
   }
 };
-/*
+
 export const makeApiCall = (
   apiPostfix,
   method,

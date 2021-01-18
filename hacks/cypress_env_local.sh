@@ -14,6 +14,8 @@ export CYPRESS_BASE_URL=http://localhost:3000
 export CYPRESS_SSH_PUB_KEY=$(cat ~/.ssh/id_rsa.pub)
 
 export CYPRESS_CLUSTER_NAME=test-infra-cluster-assisted-installer
+export CYPRESS_CLUSTER_HOSTNAME_MASTER_PREFIX=test-infra-cluster-assisted-installer-master
+export CYPRESS_CLUSTER_HOSTNAME_WORKER_PREFIX=test-infra-cluster-assisted-installer-worker
 export CYPRESS_PULL_SECRET=$(cat ~/pull-secret)
 export CYPRESS_ISO_PATTERN="~/Downloads/cluster-*-discovery.iso"
 #export CYPRESS_OCM_COOKIE_NAME=cs_jwt

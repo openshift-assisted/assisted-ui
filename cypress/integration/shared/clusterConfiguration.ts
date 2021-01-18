@@ -1,5 +1,9 @@
-import { DEFAULT_SAVE_BUTTON_TIMEOUT, VALIDATE_CHANGES_TIMEOUT } from './constants';
-import { DNS_DOMAIN_NAME } from './variables';
+import {
+  DEFAULT_SAVE_BUTTON_TIMEOUT,
+  HOST_REGISTRATION_TIMEOUT,
+  VALIDATE_CHANGES_TIMEOUT,
+} from './constants';
+import { DNS_DOMAIN_NAME, NUM_MASTERS, NUM_WORKERS } from './variables';
 
 export const hostDetailSelector = (shiftedRowIndex: number, label: string) =>
   // NOTE: The first row is number 2! Shift your indexes...
@@ -61,4 +65,38 @@ export const saveClusterDetails = (cy: Cypress.cy) => {
 
   cy.wait('@patchCheck', { timeout: DEFAULT_SAVE_BUTTON_TIMEOUT });
   cy.wait(2 * 1000);
+};
+
+export const waitForHostTablePopulation = (
+  cy: Cypress.cy,
+  numMasters = NUM_MASTERS,
+  numWorkers = NUM_WORKERS,
+) => {
+  // wait for hosts to boot and populated in table
+  cy.get('table.hosts-table > tbody', { timeout: HOST_REGISTRATION_TIMEOUT }).should(($els) => {
+    expect($els.length).to.be.eq(numMasters + numWorkers);
+  });
+};
+
+export const setHostsRole = (
+  cy: Cypress.cy,
+  masterHostnamePrefix: string,
+  workerHostnamePrefix: string,
+  numMasters = NUM_MASTERS,
+  numWorkers = NUM_WORKERS,
+) => {
+  // set hosts role
+  cy.get('#form-input-name-field').click().type('{end}{home}');
+  for (let i = 2; i < 2 + numMasters; i++) {
+    const toggleSelector = `role-${masterHostnamePrefix}-${i - 2}-dropdown-toggle-items`;
+    cy.get('#' + toggleSelector).click();
+    cy.get(`ul[aria-labelledby=${toggleSelector}] > li#master`).click();
+  }
+  for (let i = 2 + numMasters; i < 2 + numMasters + numWorkers; i++) {
+    const toggleSelector = `role-${workerHostnamePrefix}-${
+      i - numMasters - 2
+    }-dropdown-toggle-items`;
+    cy.get('#' + toggleSelector).click();
+    cy.get(`ul[aria-labelledby=${toggleSelector}] > li#worker`).click();
+  }
 };
