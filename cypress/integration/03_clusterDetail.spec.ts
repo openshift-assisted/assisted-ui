@@ -8,6 +8,10 @@ import {
   actualSorterSelector,
   hostDetailSelector,
   checkValidationMessage,
+  disksTableHeaderSelector,
+  disksTableCellSelector,
+  nicsTableHeaderSelector,
+  nicsTableCellSelector,
 } from './shared/clusterConfiguration';
 import { waitForClusterState, withValueOf } from './shared/common';
 import { PULL_SECRET } from './shared/variables';
@@ -173,14 +177,6 @@ describe('Cluster Detail', () => {
       `#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-grid > :nth-child(${index}) > .pf-c-content > h3`;
     const hostDetailsSelector = (column: number, row: number) =>
       `#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-grid > :nth-child(${column}) > .pf-c-content > .detail-list > :nth-child(${row})`;
-    const nicsTableHeader = (label: string) =>
-      `#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-grid > :nth-child(8) > .pf-c-table > thead > tr > [data-label="${label}"]`;
-    const nicsTableCell = (row: number, label: string) =>
-      `#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-grid > :nth-child(8) > .pf-c-table > tbody > tr:nth-child(${row}) > [data-label="${label}"]`;
-    const disksTableHeader = (label: string) =>
-      `#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-grid > :nth-child(6) > .pf-c-table > thead > tr > [data-label="${label}"]`;
-    const disksTableCell = (row: number, label: string) =>
-      `#expanded-content1 > .pf-c-table__expandable-row-content > .pf-l-grid > :nth-child(6) > .pf-c-table > tbody > tr:nth-child(${row}) > [data-label="${label}"]`;
 
     // Expand detail
     cy.get('#expandable-toggle0').should('not.have.class', 'pf-m-expanded');
@@ -226,26 +222,26 @@ describe('Cluster Detail', () => {
       'have.length',
       6,
     ); // Disks table column count
-    cy.get(disksTableHeader('Name')).contains('Name');
-    cy.get(disksTableHeader('Drive type')).contains('Drive type');
-    cy.get(disksTableHeader('Size')).contains('Size');
-    cy.get(disksTableHeader('Serial')).contains('Serial');
-    cy.get(disksTableHeader('Model')).contains('Model');
-    cy.get(disksTableHeader('WWN')).contains('WWN');
+    cy.get(disksTableHeaderSelector(1, 'Name')).contains('Name');
+    cy.get(disksTableHeaderSelector(1, 'Drive type')).contains('Drive type');
+    cy.get(disksTableHeaderSelector(1, 'Size')).contains('Size');
+    cy.get(disksTableHeaderSelector(1, 'Serial')).contains('Serial');
+    cy.get(disksTableHeaderSelector(1, 'Model')).contains('Model');
+    cy.get(disksTableHeaderSelector(1, 'WWN')).contains('WWN');
 
     // Disks values
-    cy.get(disksTableCell(1, 'Name')).contains('sr0 (boot)');
-    cy.get(disksTableCell(1, 'Drive type')).contains('ODD');
-    cy.get(disksTableCell(1, 'Size')).contains(' MB'); // can vary
-    cy.get(disksTableCell(1, 'Serial')).should('not.be.empty');
-    cy.get(disksTableCell(1, 'Model')).contains('QEMU_DVD-ROM');
-    cy.get(disksTableCell(1, 'WWN')).should('be.empty');
-    cy.get(disksTableCell(2, 'Name')).contains('vda');
-    cy.get(disksTableCell(2, 'Drive type')).contains('HDD');
-    cy.get(disksTableCell(2, 'Size')).contains('120.00 GB');
-    cy.get(disksTableCell(2, 'Serial')).should('be.empty');
-    cy.get(disksTableCell(2, 'Model')).should('be.empty');
-    cy.get(disksTableCell(2, 'WWN')).should('be.empty');
+    cy.get(disksTableCellSelector(1, 1, 'Name')).contains('sr0 (boot)');
+    cy.get(disksTableCellSelector(1, 1, 'Drive type')).contains('ODD');
+    cy.get(disksTableCellSelector(1, 1, 'Size')).contains(' MB'); // can vary
+    cy.get(disksTableCellSelector(1, 1, 'Serial')).should('not.be.empty');
+    cy.get(disksTableCellSelector(1, 1, 'Model')).contains('QEMU_DVD-ROM');
+    cy.get(disksTableCellSelector(1, 1, 'WWN')).should('be.empty');
+    cy.get(disksTableCellSelector(1, 2, 'Name')).contains('vda');
+    cy.get(disksTableCellSelector(1, 2, 'Drive type')).contains('HDD');
+    cy.get(disksTableCellSelector(1, 2, 'Size')).contains('120.00 GB');
+    cy.get(disksTableCellSelector(1, 2, 'Serial')).should('be.empty');
+    cy.get(disksTableCellSelector(1, 2, 'Model')).should('be.empty');
+    cy.get(disksTableCellSelector(1, 2, 'WWN')).should('be.empty');
 
     // Nics table format
     cy.log('NICs');
@@ -254,20 +250,20 @@ describe('Cluster Detail', () => {
       'have.length',
       5,
     ); // NICs table column count
-    cy.get(nicsTableHeader('Name')).contains('Name');
-    cy.get(nicsTableHeader('MAC address')).contains('MAC address');
-    cy.get(nicsTableHeader('IPv4 address')).contains('IPv4 address');
-    cy.get(nicsTableHeader('IPv6 address')).contains('IPv6 address');
-    cy.get(nicsTableHeader('Speed')).contains('Speed');
+    cy.get(nicsTableHeaderSelector(1, 'Name')).contains('Name');
+    cy.get(nicsTableHeaderSelector(1, 'MAC address')).contains('MAC address');
+    cy.get(nicsTableHeaderSelector(1, 'IPv4 address')).contains('IPv4 address');
+    cy.get(nicsTableHeaderSelector(1, 'IPv6 address')).contains('IPv6 address');
+    cy.get(nicsTableHeaderSelector(1, 'Speed')).contains('Speed');
 
     // NICs values
-    cy.get(nicsTableCell(1, 'Name')).contains('ens3');
-    cy.get(nicsTableCell(1, 'MAC address')).should('not.be.empty');
-    cy.get(nicsTableCell(1, 'MAC address')).contains(':'); // value can vary
+    cy.get(nicsTableCellSelector(1, 1, 'Name')).contains('ens3');
+    cy.get(nicsTableCellSelector(1, 1, 'MAC address')).should('not.be.empty');
+    cy.get(nicsTableCellSelector(1, 1, 'MAC address')).contains(':'); // value can vary
     cy.log('Is IP address stable?');
-    cy.get(nicsTableCell(1, 'IPv4 address')).contains('192.168.126.10/24');
-    cy.get(nicsTableCell(1, 'IPv6 address')).contains('/64');
-    cy.get(nicsTableCell(1, 'Speed')).contains('N/A');
+    cy.get(nicsTableCellSelector(1, 1, 'IPv4 address')).contains('192.168.126.10/24');
+    cy.get(nicsTableCellSelector(1, 1, 'IPv6 address')).contains('/64');
+    cy.get(nicsTableCellSelector(1, 1, 'Speed')).contains('N/A');
 
     // Collapse
     cy.get('#expandable-toggle0').should('have.class', 'pf-m-expanded');

@@ -262,7 +262,7 @@ export const waitForHostsToBeKnown = (numMasters = NUM_MASTERS, numWorkers = NUM
     });
   }
 };
-
+/*
 export const setClusterDnsDomain = (dnsDomain = DNS_DOMAIN_NAME, isEmpty = false) => {
   // set the cluster DNS domain name
   cy.get('#form-input-baseDnsDomain-field').clear();
@@ -271,7 +271,7 @@ export const setClusterDnsDomain = (dnsDomain = DNS_DOMAIN_NAME, isEmpty = false
     cy.get('#form-input-baseDnsDomain-field').should('have.value', dnsDomain);
   }
 };
-
+*/
 export const setClusterSubnetCidr = (cy) => {
   // select the first subnet from list
   cy.get('#form-input-hostSubnet-field')
@@ -371,7 +371,7 @@ export const waitForClusterState = (cy, desiredState, retries = 10) => {
     }
   });
 };
-*/
+
 export const saveClusterDetails = (cy) => {
   // click the 'save' button in order to save changes in the cluster info
   cy.get('button[name="save"]', { timeout: VALIDATE_CHANGES_TIMEOUT }).should('be.enabled');
@@ -388,7 +388,7 @@ export const saveClusterDetails = (cy) => {
   });
   cy.wait(2 * 1000);
 };
-
+*/
 export const verifyClusterCreationApi = (clusterName) => {
   // response handler for makeApiCall
   const findClusterInList = (response) => {
