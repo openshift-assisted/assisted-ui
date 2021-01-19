@@ -57,26 +57,37 @@ This project is a user interface backed by Assisted Installer API.
 
 Integration tests are based on [Cypress](https://www.cypress.io/).
 
-**Please make sure the application** is running prior starting E2E tests (see
-[Getting started](#2-getting-started))
+### Assumptions
+- The upstream tests assume environment provided by [Assisted Test-Infra](https://github.com/openshift/assisted-test-infra), namely result of the `make run_full_flow` which provides API and `test-infra-cluster-assisted-installer` cluster with it's hosts.
 
+- **Please make sure the application** is running prior starting E2E tests (see [Getting started](#2-getting-started)).
+
+- Please review `hacks/cypress_env_local.sh` and tweak variables based on your environment. Their recent version conforms development setup.
+
+### Running tests with a graphical console
 To open console for integration tests (Cypress Test Runner), run
 
 ```
-$ CYPRESS_BASE_URL=http://localhost:3000 yarn cypress-open
+$ source hacks/cypress_env_local.sh ; yarn cypress-open
+```
+This mode is probably the best option to develop the tests.
+
+### Head-less tests
+The same set of tests can be executed in a head-less mode:
+
+```
+$ source hacks/cypress_env_local.sh ; yarn cypress-run
 ```
 
-To run E2E tests in headless mode:
-
-```
-$ CYPRESS_BASE_URL=http://localhost:3000 yarn cypress-run
-```
-
+### Zero-installation execution via pre-built container
 To run E2E tests via pre-built container:
 
 ```
-$ CYPRESS_BASE_URL=http://localhost:3000 hacks/run-tests.sh
+$ source hacks/cypress_env_local.sh ; hacks/run-tests.sh
 ```
+This mode is good for automated testing after [test-infra](https://github.com/openshift/assisted-test-infra) redeployment.
+
+It pulls image referenced by the `TESTS_IMAGE` env variable or `quay.io/ocpmetal/ocp-metal-ui-tests:latest` by default. These images are recently built for every commit merged to the assisted-ui master branch.
 
 ## Running the production server
 
