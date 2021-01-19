@@ -220,9 +220,11 @@ describe('Cluster Detail', () => {
     cy.get(sectionTitleSelector(5)).contains('2 Disks');
     cy.get('#expanded-content1 > div > div > div:nth-child(6) > table > thead > tr > th').should(
       'have.length',
-      6,
-    ); // Disks table column count
+      8, // Disks table column count
+    );
     cy.get(disksTableHeaderSelector(1, 'Name')).contains('Name');
+    cy.get(disksTableHeaderSelector(1, 'Role')).contains('Role');
+    cy.get(disksTableHeaderSelector(1, 'Limitations')).contains('Limitations');
     cy.get(disksTableHeaderSelector(1, 'Drive type')).contains('Drive type');
     cy.get(disksTableHeaderSelector(1, 'Size')).contains('Size');
     cy.get(disksTableHeaderSelector(1, 'Serial')).contains('Serial');
@@ -230,13 +232,16 @@ describe('Cluster Detail', () => {
     cy.get(disksTableHeaderSelector(1, 'WWN')).contains('WWN');
 
     // Disks values
-    cy.get(disksTableCellSelector(1, 1, 'Name')).contains('sr0 (boot)');
+    cy.get(disksTableCellSelector(1, 1, 'Name')).contains('sr0 (bootable)');
+    cy.get(disksTableCellSelector(1, 1, 'Role')).contains('None');
+    cy.get(disksTableCellSelector(1, 1, 'Limitations')).contains('3');
     cy.get(disksTableCellSelector(1, 1, 'Drive type')).contains('ODD');
     cy.get(disksTableCellSelector(1, 1, 'Size')).contains(' MB'); // can vary
     cy.get(disksTableCellSelector(1, 1, 'Serial')).should('not.be.empty');
     cy.get(disksTableCellSelector(1, 1, 'Model')).contains('QEMU_DVD-ROM');
     cy.get(disksTableCellSelector(1, 1, 'WWN')).should('be.empty');
     cy.get(disksTableCellSelector(1, 2, 'Name')).contains('vda');
+    cy.get(disksTableCellSelector(1, 2, 'Role')).contains('Installation disk');
     cy.get(disksTableCellSelector(1, 2, 'Drive type')).contains('HDD');
     cy.get(disksTableCellSelector(1, 2, 'Size')).contains('120.00 GB');
     cy.get(disksTableCellSelector(1, 2, 'Serial')).should('be.empty');
