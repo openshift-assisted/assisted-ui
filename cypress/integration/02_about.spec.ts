@@ -1,18 +1,17 @@
 describe('About modal', () => {
   it('is rendered', () => {
     cy.visit('/');
+    cy.get('h1').contains('Assisted Bare Metal Clusters');
 
-    // open
-    cy.get('div.pf-c-about-modal-box').should('not.be.visible');
+    // open About dialog
     cy.get('#button-about').contains('About');
     cy.get('#button-about').click();
     cy.get('div.pf-c-about-modal-box').should('be.visible');
 
     // structure
-    // TODO(mlibra): test content of the modal
+    cy.get('#ui-lib-version-title').contains('Assisted Installer UI version');
 
     // close
     cy.get('.pf-c-about-modal-box__close > .pf-c-button').click();
-    cy.get('div.pf-c-about-modal-box').should('not.be.visible');
   });
 });

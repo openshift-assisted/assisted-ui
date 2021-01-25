@@ -1,29 +1,27 @@
-import {
-  visitTestCluster,
-  testInfraClusterName,
-  withValueOf,
-  checkValidationMessage,
-  PULL_SECRET,
-  pasteText,
-} from './shared';
+// TODO(mlibra): These tests are outdated and need to be adapted to latest app state
+
+import { checkValidationMessage } from './shared/clusterConfiguration';
+import { pasteText, withValueOf } from './shared/common';
+import { TEST_INFRA_CLUSTER_NAME, visitTestInfraCluster } from './shared/testInfraCluster';
+import { PULL_SECRET } from './shared/variables';
 
 // Theese tests changes state of the cluster permanently.
 // If enabled, they are called at last.
-describe('Destructive tests at the end', () => {
+xdescribe(`Destructive ${TEST_INFRA_CLUSTER_NAME} tests at the end`, () => {
   // TODO: add more thorough checks for field-validations
   it('Cluster can be installed', () => {
     const installClusterButtonSelector = '.pf-c-toolbar__content-section > :nth-child(1) > button';
     const validateSaveButtonSelector = '.pf-c-toolbar__content-section > :nth-child(2) > button';
 
-    visitTestCluster(cy);
+    visitTestInfraCluster(cy);
 
     // double-check assumptions
     cy.get(installClusterButtonSelector).contains('Install Cluster');
 
     // Fill-in form
     cy.log('Fill-in form');
-    cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(testInfraClusterName);
-    cy.get('#form-input-name-field').should('have.value', testInfraClusterName);
+    cy.get('.pf-c-breadcrumb__list > :nth-child(2)').contains(TEST_INFRA_CLUSTER_NAME);
+    cy.get('#form-input-name-field').should('have.value', TEST_INFRA_CLUSTER_NAME);
 
     cy.get('#form-input-baseDnsDomain-field').type('{selectall}{backspace}foobardomain.com');
 

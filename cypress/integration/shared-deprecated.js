@@ -1,3 +1,11 @@
+/*
+ * TODO(mlibra): This file is deprecated, left for backward compatibility with downstream builds.
+ * All functions are being transferred under cypress/integration/shared folder.
+ *
+ * Please migrate all code to be depend on the new folder structure, so this file can be removed.
+ *
+ * DO NOT ADD OR MODIFY ANYTHING HERE.
+ */
 import {
   DEFAULT_API_REQUEST_TIMEOUT,
   VALIDATE_CHANGES_TIMEOUT,
@@ -9,8 +17,7 @@ import {
   START_INSTALLATION_TIMEOUT,
   DEFAULT_CREATE_CLUSTER_BUTTON_SHOW_TIMEOUT,
   DEFAULT_SAVE_BUTTON_TIMEOUT,
-} from './constants';
-import { resolvePlugin } from '@babel/core';
+} from './shared/constants';
 
 export const testInfraClusterName = 'test-infra-cluster-assisted-installer';
 export const testInfraClusterHostnames = [
