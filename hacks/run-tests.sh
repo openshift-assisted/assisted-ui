@@ -6,6 +6,7 @@ BASE_DIR=${BASE_DIR:-"`pwd`"/`date +%D_%T|sed 's/\//_/g'|sed 's/:/-/g'`}
 CONTAINER_COMMAND=${CONTAINER_COMMAND:-podman}
 
 echo Connecting to UI at: ${CYPRESS_BASE_URL}
+echo "    ^^^ If failing, check that the URL can be accessed from inside of the container (i.e. avoid 'localhost')"
 echo Test image: ${TESTS_IMAGE}
 
 VIDEO_DIR=${BASE_DIR}/videos
