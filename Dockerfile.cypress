@@ -1,4 +1,17 @@
 FROM cypress/included:6.3.0
 
 RUN mkdir /e2e
-COPY . /e2e
+
+COPY LICENSE /e2e/
+COPY package.json /e2e/
+COPY yarn.lock /e2e/
+COPY cypress.json /e2e/
+COPY tsconfig.json /e2e/
+
+COPY cypress /e2e/cypress
+COPY hacks /e2e/hacks
+
+RUN cd /e2e && yarn install
+
+## ENTRYPOINT /bin/bash
+
