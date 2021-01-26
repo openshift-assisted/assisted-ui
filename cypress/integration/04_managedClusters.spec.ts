@@ -8,6 +8,7 @@ import {
   deleteClusterByName,
   getClusterNameLinkSelector,
 } from './shared/clusterListPage';
+import { withValueOf } from './shared/common';
 import { TEST_INFRA_CLUSTER_NAME } from './shared/testInfraCluster';
 import { PULL_SECRET } from './shared/variables';
 
@@ -57,7 +58,7 @@ describe('Managed Clusters list', () => {
     cy.get('#cluster-configuration-back-to-all-clusters').click();
 
     // Managed Clusters list
-    cy.get('[data-label="Name"] > a').should('have.length', 2);
+    // cy.get('[data-label="Name"] > a').should('have.length', 2);
     cy.get(clusterTableCellSelector(clusterName, 'Name')).contains(clusterName);
     cy.get(clusterTableCellSelector(TEST_INFRA_CLUSTER_NAME, 'Name')).contains(
       TEST_INFRA_CLUSTER_NAME,
@@ -68,14 +69,23 @@ describe('Managed Clusters list', () => {
     cy.get(clusterTableCellSelector(clusterName, 'Hosts')).contains(0);
 
     // sorting
-    cy.get(clusterTableCellSelectorByRowIndex(1, 'Name')).contains(clusterName); // initial state, before sorting
-    cy.get(clusterTableCellSelectorByRowIndex(2, 'Name')).contains(TEST_INFRA_CLUSTER_NAME);
+    withValueOf(cy, clusterTableCellSelectorByRowIndex(1, 'Name'), (value1) => {
+      withValueOf(cy, clusterTableCellSelectorByRowIndex(2, 'Name'), (value2) => {
+        expect(value1.localeCompare(value2) < 0);
+      });
+    });
     cy.get(clusterColHeaderSelector('Name')).click();
-    cy.get(clusterTableCellSelectorByRowIndex(2, 'Name')).contains(clusterName); // clusters are flipped
-    cy.get(clusterTableCellSelectorByRowIndex(1, 'Name')).contains(TEST_INFRA_CLUSTER_NAME);
+    withValueOf(cy, clusterTableCellSelectorByRowIndex(1, 'Name'), (value1) => {
+      withValueOf(cy, clusterTableCellSelectorByRowIndex(2, 'Name'), (value2) => {
+        expect(value1.localeCompare(value2) > 0);
+      });
+    });
     cy.get(clusterColHeaderSelector('Name')).click();
-    cy.get(clusterTableCellSelectorByRowIndex(1, 'Name')).contains(clusterName); // back to initial state
-    cy.get(clusterTableCellSelectorByRowIndex(2, 'Name')).contains(TEST_INFRA_CLUSTER_NAME);
+    withValueOf(cy, clusterTableCellSelectorByRowIndex(1, 'Name'), (value1) => {
+      withValueOf(cy, clusterTableCellSelectorByRowIndex(2, 'Name'), (value2) => {
+        expect(value1.localeCompare(value2) < 0);
+      });
+    });
 
     // does it fail?
     clustersTableHeaders.forEach((header) => {
