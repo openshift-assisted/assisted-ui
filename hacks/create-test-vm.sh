@@ -10,7 +10,7 @@ set -e
 #   $ curl https://raw.githubusercontent.com/openshift-assisted/assisted-ui/master/hacks/create-test-vm.sh | ISO=/var/lib/libvirt/images/discovery_image_scale-up-mlibra11.iso NAME=mlibra11_worker_7 sh -
 #
 # Provide additional parameters for day 1 masters (at least set MEMMIB and CPUS env variables)
- 
+
 export NAME=${NAME:-"vm-`mktemp -uq XXXXXXXXXX`"}
 export ISO=${ISO:-missing_iso_file_path}
 export MEMMIB=${MEMMIB:-8192}
@@ -28,6 +28,7 @@ virt-install --name="${NAME}" \
   --vcpus=${CPUS} \
   --ram=${MEMMIB}\
   --network=bridge=virbr0 \
+  --events on_reboot=restart \
   --graphics=none \
   --os-variant=rhel7.0 \
   --disk=size=${DISKGIB},pool=${POOL} \
