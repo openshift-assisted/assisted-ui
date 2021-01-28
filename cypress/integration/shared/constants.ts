@@ -12,7 +12,9 @@ export const HOST_DISCOVERY_TIMEOUT = 30 * 1000;
 export const VALIDATE_CHANGES_TIMEOUT = 10 * 1000;
 // timeout for start installation to be enabled
 export const START_INSTALLATION_TIMEOUT = 2.5 * 60 * 1000;
-// timeout for install preparation - 1 minute
+// timeout for dhcp vip allocation - 2 minutes
+export const DYNAMIC_ADDRESSES_TIMEOUT = 2 * 60 * 1000;
+// timeout for install preparation - 2 minutes
 export const INSTALL_PREPARATION_TIMEOUT = 2 * 60 * 1000;
 // timeout for generating ISO
 export const GENERATE_ISO_TIMEOUT = 2 * 60 * 1000;
