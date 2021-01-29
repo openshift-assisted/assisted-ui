@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Branch name
-        run: echo running on branch ${GITHUB_REF##*/}
+        run: echo running on branch ${GITHUB_REF#refs/heads/}
       - name: Set environment variables
         run: |
           echo "NODE_OPTIONS=--max-old-space-size=8192" >> $GITHUB_ENV
@@ -47,7 +47,7 @@ jobs:
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile
-          tags: 'latest,${{ github.sha }},${{ GITHUB_REF##*/ }}-${{ github.sha }}'
+          tags: 'latest,${{ github.sha }},${{ GITHUB_REF#refs/heads/ }}-${{ github.sha }}'
       - name: Publish integration tests to quay.io
         uses: elgohr/Publish-Docker-Github-Action@2.14
         with:
@@ -56,4 +56,4 @@ jobs:
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile.cypress
-          tags: 'latest,${{ github.sha }},${{ GITHUB_REF##*/ }}-${{ github.sha }}'
+          tags: 'latest,${{ github.sha }},${{ GITHUB_REF#refs/heads/ }}-${{ github.sha }}'
