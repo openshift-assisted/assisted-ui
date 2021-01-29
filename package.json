@@ -1,6 +1,6 @@
 {
   "name": "openshift-assisted-ui",
-  "version": "0.0.1-wizard",
+  "version": "0.0.2-wizard",
   "private": false,
   "license": "Apache-2.0",
   "bugs": {
@@ -41,7 +41,7 @@
     "lodash": "^4.17.15",
     "netmask": "^1.0.6",
     "node-sass": "^4.13.1",
-    "openshift-assisted-ui-lib": "v0.0.1-wizard",
+    "openshift-assisted-ui-lib": "v0.0.2-wizard",
     "prettier": "^2.0.1",
     "prism-react-renderer": "^1.1.1",
     "react": "^16.13.0",
