@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import { Page } from '@patternfly/react-core';
-import { Store, Router as LibRouter } from 'openshift-assisted-ui-lib';
+import { Store, Router as LibRouter, Features } from 'openshift-assisted-ui-lib';
 import history from '../history';
 import Header from './ui/Header';
 // import Sidebar from './Sidebar';
@@ -23,7 +23,7 @@ const App: React.FC = () => (
         isManagedSidebar // enable this to automatically hide sidebar in mobile
         defaultManagedSidebarIsOpen={false}
       >
-        <LibRouter />
+        <LibRouter features={Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES} />
       </Page>
     </Router>
   </Provider>
