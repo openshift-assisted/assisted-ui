@@ -8690,10 +8690,10 @@ open@^7.0.2:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
-openshift-assisted-ui-lib@v0.0.2-wizard:
-  version "0.0.2-wizard"
-  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-0.0.2-wizard.tgz#d06890c7689aa1749ee31a10bac3014c3b4ee409"
-  integrity sha512-Wlxg88cvuGWOYnwnKYOW2X0zGsobc+Nl30nEMui9AvuIC42nNZLpYHm5J+xXkwArNDOGPtTB9SvVpOLd1bzfLg==
+openshift-assisted-ui-lib@v0.0.3-wizard:
+  version "0.0.3-wizard"
+  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-0.0.3-wizard.tgz#54f652454661ca067072dbf2a042c88544c978b2"
+  integrity sha512-xFlH8Iz8crR2bULC9SmPrn4eG3rkpP1rQT/dgAhMCYcimUba/T3qE97LCy1gPYK5kezHdnrQX++5gpQSIos3Qg==
   dependencies:
     axios-case-converter "^0.6.0"
     ip-address "^7.1.0"
