@@ -14,10 +14,19 @@ jobs:
           echo "NODE_OPTIONS=--max-old-space-size=8192" >> $GITHUB_ENV
           echo "REACT_APP_GIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
           echo "REACT_APP_VERSION=${{ env.GIT_TAG }}" >> $GITHUB_ENV
+      - name: Set IMAGE_TAGS env variable
+        if: github.ref == 'refs/heads/master'
+        run: |
+          echo "IMAGE_TAGS=stable,${{ github.sha }},${{ env.GIT_TAG }}" >> $GITHUB_ENV
+      - name: Set IMAGE_TAGS env variable
+        if: github.ref != 'refs/heads/master'
+        run: |
+          echo "IMAGE_TAGS=${{ github.sha }},${{ env.GIT_TAG }}" >> $GITHUB_ENV
       - run: |
           echo NODE_OPTIONS: ${NODE_OPTIONS}
           echo REACT_APP_GIT_SHA: ${REACT_APP_GIT_SHA}
           echo REACT_APP_VERSION: ${REACT_APP_VERSION}
+          echo IMAGE_TAGS: ${IMAGE_TAGS}
       - name: Get tag
         id: get_tag
         run: echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
@@ -45,7 +54,7 @@ jobs:
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile
-          tags: "stable,${{ env.GIT_TAG }},${{ github.sha }}"
+          tags: '${{ env.IMAGE_TAGS }}'
       - name: Publish integration tests to quay.io
         uses: elgohr/Publish-Docker-Github-Action@2.14
         with:
@@ -54,4 +63,5 @@ jobs:
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile.cypress
-          tags: "stable,${{ env.GIT_TAG }},${{ github.sha }}"
+          tags: '${{ env.IMAGE_TAGS }}'
+
