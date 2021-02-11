@@ -148,8 +148,8 @@ export const generateIso = (
       cy.log('Waiting for ISO was successful');
     }
   });
-  cy.get('button[data-test-id="download-iso-btn"]').contains('Download Discovery ISO');
-  cy.get('button[data-test-id="close-iso-btn"]').click(); // now close the dialog
+  cy.byDataTestID('download-iso-btn').contains('Download Discovery ISO');
+  cy.byDataTestID('close-iso-btn').click(); // now close the dialog
 };
 
 export const downloadFileWithChrome = (
@@ -181,7 +181,7 @@ export const downloadFileWithChrome = (
 };
 
 export const logAssistedUIVersion = (cy: Cypress.cy) => {
-  cy.get('[data-test-id="assisted-ui-lib-version"]')
+  cy.byDataTestID('assisted-ui-lib-version')
     .invoke('text')
     .then((uiVersion) => {
       if (uiVersion) {

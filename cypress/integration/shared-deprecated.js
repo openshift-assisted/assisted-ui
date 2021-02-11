@@ -118,7 +118,7 @@ export const cancelDummyCluster = (cy) => {
 export const deleteDummyCluster = (cy, tableRow, clusterName) => {
   cy.get(kebabSelector(tableRow)).click(); // open kebab menu
   cy.get(`#button-delete-${clusterName}`).click(); // Delete & validate correct kebab from previous step
-  cy.get('[data-test-id="delete-cluster-submit"]').click();
+  cy.byDataTestID('delete-cluster-submit').click();
 
   cy.get(getClusterNameLinkSelector(clusterName)).should('not.exist');
   cy.get(testClusterLinkSelector); // validate that the test-infra-cluster is still present
@@ -192,8 +192,8 @@ export const generateIso = (
       cy.log('Waiting for ISO was successful');
     }
   });
-  cy.get('button[data-test-id="download-iso-btn"]').contains('Download Discovery ISO');
-  cy.get('button[data-test-id="close-iso-btn"]').click(); // now close the dialog
+  cy.byDataTestID('download-iso-btn').contains('Download Discovery ISO');
+  cy.byDataTestID('close-iso-btn').click(); // now close the dialog
 };
 
 export const downloadFileWithChrome = (

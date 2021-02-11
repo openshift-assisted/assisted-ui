@@ -92,7 +92,7 @@ export const deleteClusterByName = (cy: Cypress.cy, clusterName: string) => {
   cy.visit('');
   cy.get(kebabSelectorByRowId(`cluster-row-${clusterName}`)).click(); // open kebab menu
   cy.get(`#button-delete-${clusterName}`).click(); // Delete & validate correct kebab from previous step
-  cy.get('[data-test-id="delete-cluster-submit"]').click();
+  cy.byDataTestID('delete-cluster-submit').click();
 
   cy.get(getClusterNameLinkSelector(clusterName)).should('not.exist');
   if (clusterName !== TEST_INFRA_CLUSTER_NAME) {
