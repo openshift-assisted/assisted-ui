@@ -1,9 +1,10 @@
-name: Build and push on merge to master
+name: Build and push on merge to selected branches
 
 on:
   push:
     branches:
       - master
+      - wizard
 
 jobs:
   build:
@@ -12,13 +13,23 @@ jobs:
       - name: Set environment variables
         run: |
           echo "NODE_OPTIONS=--max-old-space-size=8192" >> $GITHUB_ENV
+          echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
           echo "REACT_APP_GIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
           echo "REACT_APP_VERSION=${{ env.GIT_TAG }}" >> $GITHUB_ENV
-      - name: Get tag
-        id: get_tag
-        run: echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-      - run: |
-          echo Detected GIT_TAG: ${GIT_TAG}
+      - name: Set IMAGE_TAGS env variable
+        if: github.ref == 'refs/heads/master'
+        run: |
+          echo "IMAGE_TAGS=latest,${{ github.sha }},${GITHUB_REF#refs/heads/}-${{ github.sha }}" >> $GITHUB_ENV
+      - name: Set IMAGE_TAGS env variable
+        if: github.ref != 'refs/heads/master'
+        run: |
+          echo "IMAGE_TAGS=${{ github.sha }},${GITHUB_REF#refs/heads/}-${{ github.sha }}" >> $GITHUB_ENV
+      - name: Read environment variables
+        run: |
+          echo BRANCH: ${BRANCH}
+          echo GIT_TAG: ${GIT_TAG}
+          echo IMAGE_TAGS: ${IMAGE_TAGS}
           echo NODE_OPTIONS: ${NODE_OPTIONS}
           echo REACT_APP_GIT_SHA: ${REACT_APP_GIT_SHA}
           echo REACT_APP_VERSION: ${REACT_APP_VERSION}
@@ -44,7 +55,7 @@ jobs:
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile
-          tags: 'latest,${{ github.sha }}'
+          tags: '${{ env.IMAGE_TAGS }}'
       - name: Publish integration tests to quay.io
         uses: elgohr/Publish-Docker-Github-Action@2.14
         with:
@@ -53,4 +64,4 @@ jobs:
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile.cypress
-          tags: 'latest,${{ github.sha }}'
+          tags: '${{ env.IMAGE_TAGS }}'

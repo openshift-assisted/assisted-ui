@@ -6,7 +6,7 @@ import {
   HOSTS_DISCOVERY_TIMEOUT,
 } from './constants';
 import { TEST_INFRA_CLUSTER_NAME } from './testInfraCluster';
-import { OCM_USER } from './variables';
+import { OCM_USER, OPENSHIFT_VERSION } from './variables';
 
 // Selectors
 export const getClusterNameLinkSelector = (clusterName: string) => `#cluster-link-${clusterName}`;
@@ -49,6 +49,7 @@ export const createClusterFillForm = (cy: Cypress.cy, clusterName: string, pullS
   // type correct dummy cluster name
   cy.get('#form-input-name-field').type(`{selectall}{backspace}${clusterName}`);
   cy.get('#form-input-name-field').should('have.value', clusterName);
+  cy.get('#form-input-openshiftVersion-field').select(OPENSHIFT_VERSION);
   if (!OCM_USER) {
     cy.get('#form-input-pullSecret-field').clear();
     pasteText(cy, '#form-input-pullSecret-field', pullSecret);

@@ -4136,6 +4136,11 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
+cypress-wait-until@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/cypress-wait-until/-/cypress-wait-until-1.7.1.tgz#3789cd18affdbb848e3cfc1f918353c7ba1de6f8"
+  integrity sha512-8DL5IsBTbAxBjfYgCzdbohPq/bY+IKc63fxtso1C8RWhLnQkZbVESyaclNr76jyxfId6uyzX8+Xnt0ZwaXNtkA==
+
 cypress@^6.2.1:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-6.2.1.tgz#27d5fbcf008c698c390fdb0c03441804176d06c4"
@@ -8690,10 +8695,10 @@ open@^7.0.2:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
-openshift-assisted-ui-lib@^1.5.5:
-  version "1.5.5"
-  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-1.5.5.tgz#78e62acc50f9bc35368dadb5f212a1c425e9c4e3"
-  integrity sha512-PXnwuIAtI8lHCFFOQuAyBiT63pPolQckOODoQjY7Xz0ftrbJsaSLX+ELFm+SVaFFOcvmB5TiJBmNEzVOLMDFdw==
+openshift-assisted-ui-lib@^1.5.8:
+  version "1.5.8"
+  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-1.5.8.tgz#73c20f18105b84edfa6bc04ec6c809ddeaed460b"
+  integrity sha512-h7++ivmimTMA/KZ7GdKoIVtBzeCbSvgb0Fb6mioidbXTMqXkrNQMEUmS0N3rFfomrbxy6GTzgEyj2DuwnuO0Fw==
   dependencies:
     axios-case-converter "^0.6.0"
     ip-address "^7.1.0"
