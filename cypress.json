@@ -2,6 +2,7 @@
   "baseUrl": "http://localhost:3000",
   "viewportWidth": 1440,
   "viewportHeight": 1080,
+  "testFiles": "*.spec.ts",
   "env": {
     "PULL_SECRET": "{}",
     "SSH_PUB_KEY": "",
