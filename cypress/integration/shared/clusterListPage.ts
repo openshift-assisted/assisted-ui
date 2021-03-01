@@ -7,6 +7,7 @@ import {
 } from './constants';
 import { TEST_INFRA_CLUSTER_NAME } from './testInfraCluster';
 import { OCM_USER, OPENSHIFT_VERSION } from './variables';
+import { setClusterDnsDomain, pressNext } from './clusterConfiguration';
 
 // Selectors
 export const getClusterNameLinkSelector = (clusterName: string) => `#cluster-link-${clusterName}`;
@@ -86,6 +87,12 @@ export const createCluster = (cy: Cypress.cy, clusterName: string, pullSecret: s
     'be.visible',
   );
   cy.get('#form-input-name-field').should('have.value', clusterName);
+};
+
+export const createClusterWizard = (cy: Cypress.cy, clusterName: string, pullSecret: string) => {
+  createClusterFillForm(cy, clusterName, pullSecret);
+  setClusterDnsDomain(cy);
+  pressNext(cy);
 };
 
 export const deleteClusterByName = (cy: Cypress.cy, clusterName: string) => {

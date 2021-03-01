@@ -26,3 +26,7 @@ export const ISO_DOWNLOAD_TIMEOUT = 60 * 60 * 1000;
 export const CLUSTER_CREATION_TIMEOUT = 90 * 60 * 1000;
 // searching for majority group can take up to 2 minutes
 export const HOSTS_DISCOVERY_TIMEOUT = 2.5 * 60 * 1000;
+// time for "Next" to be enabled
+export const PRESS_NEXT_TIMEOUT = 60 * 1000;
+// time for the newly registered host to have a "role" column
+export const HOST_ROLE_COLUMN = 15 * 1000;
