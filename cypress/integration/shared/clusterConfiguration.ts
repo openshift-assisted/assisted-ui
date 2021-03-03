@@ -104,7 +104,7 @@ export const waitForHostsToBeReady = (
 ) => {
   // wait until hosts are getting to pending input state
   for (let i = 2; i <= numMasters + numWorkers + 1; i++) {
-    cy.contains(hostDetailSelector(i, 'Status'), 'Ready', {
+    cy.contains(hostDetailSelector(i, 'Hardware Status'), 'Ready', {
       timeout: HOSTS_DISCOVERY_TIMEOUT,
     });
   }
