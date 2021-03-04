@@ -40,7 +40,7 @@
     "humanize-plus": "^1.8.2",
     "lodash": "^4.17.15",
     "netmask": "^1.0.6",
-    "openshift-assisted-ui-lib": "^1.5.10-3",
+    "openshift-assisted-ui-lib": "^1.5.11",
     "prettier": "^2.0.1",
     "prism-react-renderer": "^1.1.1",
     "react": "^16.14.0",
