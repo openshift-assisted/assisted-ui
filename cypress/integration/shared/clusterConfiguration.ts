@@ -111,6 +111,10 @@ export const waitForHostsToBeReady = (
 };
 
 export const setClusterSubnetCidr = (cy: Cypress.cy) => {
+  // it can take time for changes in the previous step to be saved
+  cy.get('#form-input-hostSubnet-field', { timeout: DEFAULT_SAVE_BUTTON_TIMEOUT }).should(
+    'be.visible',
+  );
   // select the first subnet from list
   cy.get('#form-input-hostSubnet-field')
     .find('option')
@@ -258,4 +262,9 @@ export const enableRoute53 = (cy: Cypress.cy) => {
 export const pressNext = (cy: Cypress.cy) => {
   cy.get('button[name="next"]', { timeout: PRESS_NEXT_TIMEOUT }).should('be.enabled');
   cy.get('button[name="next"]').click();
+};
+
+export const pressBack = (cy: Cypress.cy) => {
+  cy.get('button[name="back"]', { timeout: PRESS_NEXT_TIMEOUT }).should('be.enabled');
+  cy.get('button[name="back"]').click();
 };

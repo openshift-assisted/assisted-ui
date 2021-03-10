@@ -2,7 +2,7 @@
 export const DEFAULT_API_REQUEST_TIMEOUT = 20 * 1000;
 // create cluster button timeout
 export const DEFAULT_CREATE_CLUSTER_BUTTON_SHOW_TIMEOUT = 60 * 1000;
-// save buttone timeout - 30 seconds
+// save button timeout - 30 seconds
 export const DEFAULT_SAVE_BUTTON_TIMEOUT = 30 * 1000;
 // timeout for hosts to boot and register - 10 minutes
 export const HOST_REGISTRATION_TIMEOUT = 20 * 60 * 1000;
