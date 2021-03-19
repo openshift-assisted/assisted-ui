@@ -15,7 +15,7 @@ export const START_INSTALLATION_TIMEOUT = 2.5 * 60 * 1000;
 // timeout for dhcp vip allocation - 2 minutes
 export const DYNAMIC_ADDRESSES_TIMEOUT = 2 * 60 * 1000;
 // timeout for install preparation - 2 minutes
-export const INSTALL_PREPARATION_TIMEOUT = 2 * 60 * 1000;
+export const INSTALL_PREPARATION_TIMEOUT = 4 * 60 * 1000;
 // timeout for generating ISO
 export const GENERATE_ISO_TIMEOUT = 2 * 60 * 1000;
 // timeout for downloading files
