@@ -14,6 +14,7 @@ export const NUM_MASTERS = parseInt(Cypress.env('NUM_MASTERS'));
 export const NUM_WORKERS = parseInt(Cypress.env('NUM_WORKERS'));
 export const API_BASE_URL = Cypress.env('API_BASE_URL');
 export const OCM_USER = Cypress.env('OCM_USER');
+export const OCM_USER_PASSWORD = Cypress.env('OCM_USER_PASSWORD');
 export const ISO_PATTERN = Cypress.env('ISO_PATTERN');
 export const HTTP_PROXY = Cypress.env('HTTP_PROXY');
 export const HTTPS_PROXY = Cypress.env('HTTPS_PROXY');
