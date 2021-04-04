@@ -160,7 +160,7 @@ export const getDhcpVipState = (cy: Cypress.cy) => {
 export const disableDhcpVip = (cy: Cypress.cy, apiVip = null, ingressVip = null) => {
   getDhcpVipState(cy).then((state) => {
     if (state) {
-      cy.get('#form-input-vipDhcpAllocation-field').click();
+      cy.get('#form-checkbox-vipDhcpAllocation-field').click();
     }
   });
 
@@ -177,7 +177,7 @@ export const disableDhcpVip = (cy: Cypress.cy, apiVip = null, ingressVip = null)
 export const enableDhcpVip = (cy: Cypress.cy) => {
   getDhcpVipState(cy).then((state) => {
     if (!state) {
-      cy.get('#form-input-vipDhcpAllocation-field').click();
+      cy.get('#form-checkbox-vipDhcpAllocation-field').click();
     }
   });
 };
