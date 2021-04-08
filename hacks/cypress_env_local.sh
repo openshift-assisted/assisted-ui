@@ -2,8 +2,7 @@
 # Intended use:
 #   $ cd [ROOT]
 #   $ source hacks/cypress_env_local.sh
-#   $ yarn cypress-open --project=...[TODO]...
-# TODO: refer to instruction how to setup local dev environment
+#   $ yarn cypress-open --project=...[CYPRESS_PROJECT]...
 
 # CLEANUP
 unset ${!CYPRESS@}
@@ -30,5 +29,7 @@ export CYPRESS_NUM_MASTERS=3
 export CYPRESS_NUM_WORKERS=0
 
 # Print all
-env | grep CYPRESS_ | sort
+if [ x${SKIP_ENV_OUTPUT} != xyes  ]; then
+  env | grep CYPRESS_ | sort
+fi
 

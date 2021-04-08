@@ -83,8 +83,15 @@ $ source hacks/cypress_env_local.sh ; yarn cypress-run
 To run E2E tests via pre-built container:
 
 ```
-$ source hacks/cypress_env_local.sh ; hacks/run-tests.sh
+$ source hacks/cypress_env_container.sh ; hacks/run-tests.sh 
 ```
+
+or
+
+```
+$ source hacks/cypress_env_container.sh ; CONTAINER_COMMAND=docker TESTS_IMAGE=test:130 hacks/run-tests.sh -s /e2e/cypress/integration/03_clusterDetail.spec.ts
+```
+
 This mode is good for automated testing after [test-infra](https://github.com/openshift/assisted-test-infra) redeployment.
 
 It pulls image referenced by the `TESTS_IMAGE` env variable or `quay.io/ocpmetal/ocp-metal-ui-tests:latest` by default. These images are recently built for every commit merged to the assisted-ui master branch.
@@ -180,3 +187,4 @@ You can learn more in the
 [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+

@@ -4,6 +4,8 @@ import {
   VALIDATE_CHANGES_TIMEOUT,
   HOSTS_DISCOVERY_TIMEOUT,
   HOST_DISCOVERY_TIMEOUT,
+  HOST_ROLE_COLUMN,
+  PRESS_NEXT_TIMEOUT,
 } from './constants';
 
 import { makeApiCall, clusterIdFromUrl } from './common';
@@ -109,6 +111,10 @@ export const waitForHostsToBeReady = (
 };
 
 export const setClusterSubnetCidr = (cy: Cypress.cy) => {
+  // it can take time for changes in the previous step to be saved
+  cy.get('#form-input-hostSubnet-field', { timeout: DEFAULT_SAVE_BUTTON_TIMEOUT }).should(
+    'be.visible',
+  );
   // select the first subnet from list
   cy.get('#form-input-hostSubnet-field')
     .find('option')
@@ -125,10 +131,9 @@ export const setHostsRole = (
   numWorkers = NUM_WORKERS,
 ) => {
   // set hosts role
-  cy.get('#form-input-name-field').click().type('{end}{home}');
   for (let i = 2; i < 2 + numMasters; i++) {
     const toggleSelector = `role-${masterHostnamePrefix}-${i - 2}-dropdown-toggle-items`;
-    cy.get('#' + toggleSelector).click();
+    cy.get('#' + toggleSelector, { timeout: HOST_ROLE_COLUMN }).click();
     cy.get(`ul[aria-labelledby=${toggleSelector}] > li#master`).click();
   }
   for (let i = 2 + numMasters; i < 2 + numMasters + numWorkers; i++) {
@@ -155,7 +160,7 @@ export const getDhcpVipState = (cy: Cypress.cy) => {
 export const disableDhcpVip = (cy: Cypress.cy, apiVip = null, ingressVip = null) => {
   getDhcpVipState(cy).then((state) => {
     if (state) {
-      cy.get('#form-input-vipDhcpAllocation-field').click();
+      cy.get('#form-checkbox-vipDhcpAllocation-field').click();
     }
   });
 
@@ -172,7 +177,7 @@ export const disableDhcpVip = (cy: Cypress.cy, apiVip = null, ingressVip = null)
 export const enableDhcpVip = (cy: Cypress.cy) => {
   getDhcpVipState(cy).then((state) => {
     if (!state) {
-      cy.get('#form-input-vipDhcpAllocation-field').click();
+      cy.get('#form-checkbox-vipDhcpAllocation-field').click();
     }
   });
 };
@@ -252,4 +257,14 @@ export const enableRoute53 = (cy: Cypress.cy) => {
       cy.get('#form-input-baseDnsDomain-field').contains(provider);
     }
   });
+};
+
+export const pressNext = (cy: Cypress.cy) => {
+  cy.get('button[name="next"]', { timeout: PRESS_NEXT_TIMEOUT }).should('be.enabled');
+  cy.get('button[name="next"]').click();
+};
+
+export const pressBack = (cy: Cypress.cy) => {
+  cy.get('button[name="back"]', { timeout: PRESS_NEXT_TIMEOUT }).should('be.enabled');
+  cy.get('button[name="back"]').click();
 };
