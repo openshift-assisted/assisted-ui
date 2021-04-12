@@ -20,6 +20,12 @@ export const startClusterInstallation = (cy: Cypress.cy) => {
 };
 
 export const waitForClusterInstallation = (cy: Cypress.cy) => {
-  // wait up to 1 hour for the progress description to say "Installed"
-  cy.contains('#cluster-progress-status-value', 'Installed', { timeout: CLUSTER_CREATION_TIMEOUT });
+  // wait up to 1.5 hours for the progress description to say "Finalizing"
+  cy.contains('#cluster-progress-status-value', 'Finalizing', {
+    timeout: CLUSTER_CREATION_TIMEOUT,
+  });
+  // wait up to 1.5 hours for the progress description to say "Installed"
+  cy.contains('#cluster-progress-status-value', 'Installed', {
+    timeout: CLUSTER_CREATION_TIMEOUT,
+  });
 };
