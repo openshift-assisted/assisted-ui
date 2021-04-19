@@ -5,7 +5,8 @@ export const IMAGE_REPO = 'quay.io/ocpmetal/ocp-metal-ui';
 export const SERVICE_LABELS: { [key in string]: string } = {
   assistedInstaller: 'Assisted Installer',
   assistedInstallerController: 'Assisted Installer Controller',
-  assistedInstallerService: 'Assisted Installer Service',
+  assistedInstallerAgent: 'Assisted Installer Agent',
+  assistedService: 'Assisted Installer Service',
   discoveryAgent: 'Discovery Agent',
   ignitionManifestsAndKubeconfigGenerate: 'Ignition Manifests and Kubeconfig Generate',
   imageBuilder: 'Image Builder',
