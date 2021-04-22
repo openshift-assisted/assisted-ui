@@ -40,7 +40,7 @@ git remote add upstream https://github.com/openshift-assisted/assisted-ui.git
 git fetch --all && git reset --hard upstream/master
 git checkout -b ${UPDATE_BRANCH}
 
-sed -i "s/^    \"openshift-assisted-ui-lib\": \".*\",$/    \"openshift-assisted-ui-lib\": \"^${ASSISTED_UI_LIB_VERSION}\",/g" package.json
+sed -i "s/^    \"openshift-assisted-ui-lib\": \".*\",$/    \"openshift-assisted-ui-lib\": \"${ASSISTED_UI_LIB_VERSION}\",/g" package.json
 yarn install
 git status
 git diff
@@ -58,7 +58,7 @@ git remote add upstream git@gitlab.cee.redhat.com:service/uhc-portal.git
 git fetch --all && git reset --hard upstream/master
 git checkout -b ${UPDATE_BRANCH}
 
-sed -i "s/^    \"openshift-assisted-ui-lib\": \".*\",$/    \"openshift-assisted-ui-lib\": \"^${ASSISTED_UI_LIB_VERSION}\",/g" package.json
+sed -i "s/^    \"openshift-assisted-ui-lib\": \".*\",$/    \"openshift-assisted-ui-lib\": \"${ASSISTED_UI_LIB_VERSION}\",/g" package.json
 yarn install
 git status
 git diff
