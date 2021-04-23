@@ -24,6 +24,8 @@ echo MEMMIB: $MEMMIB
 echo CPUS: $CPUS
 echo Storage POOL: $POOL
 
+set -x
+
 virt-install --name="${NAME}" \
   --vcpus=${CPUS} \
   --ram=${MEMMIB}\
