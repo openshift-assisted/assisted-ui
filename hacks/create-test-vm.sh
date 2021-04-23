@@ -24,6 +24,7 @@ echo ISO: $ISO
 echo MEMMIB: $MEMMIB
 echo CPUS: $CPUS
 echo Storage POOL: $POOL
+echo Disk count: $DISKCOUNT
 
 DISKS=""
 for ((i=0;i<DISKCOUNT;i++)) ; do
