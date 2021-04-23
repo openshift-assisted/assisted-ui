@@ -7,7 +7,7 @@ set -e
 #
 # Example for day 2 host:
 #   - download generated Day 2 iso under /var/lib/libvirt/images/
-#   $ curl https://raw.githubusercontent.com/openshift-assisted/assisted-ui/master/hacks/create-test-vm.sh | ISO=/var/lib/libvirt/images/discovery_image_scale-up-mlibra11.iso NAME=mlibra11_worker_7 sh -
+#   $ curl https://raw.githubusercontent.com/openshift-assisted/assisted-ui/master/hacks/create-test-vm.sh | DISKCOUNT=3 POOL=home_disks ISO=/var/lib/libvirt/images/discovery_image_scale-up-mlibra11.iso NAME=mlibra11_worker_7 sh -
 #
 # Provide additional parameters for day 1 masters (at least set MEMMIB and CPUS env variables)
 
@@ -16,6 +16,7 @@ export ISO=${ISO:-missing_iso_file_path}
 export MEMMIB=${MEMMIB:-8192}
 export CPUS=${CPUS:-4}
 export DISKGIB=${DISKGIB:-25}
+export DISKCOUNT=${DISKCOUNT:-1}
 export POOL=${POOL:-default}
 
 echo NAME: $NAME
@@ -24,8 +25,12 @@ echo MEMMIB: $MEMMIB
 echo CPUS: $CPUS
 echo Storage POOL: $POOL
 
-set -x
+DISKS=""
+for ((i=0;i<DISKCOUNT;i++)) ; do
+  DISKS+="--disk=size=${DISKGIB},pool=${POOL} "
+done
 
+set -x
 virt-install --name="${NAME}" \
   --vcpus=${CPUS} \
   --ram=${MEMMIB}\
@@ -33,7 +38,6 @@ virt-install --name="${NAME}" \
   --events on_reboot=restart \
   --graphics=none \
   --os-variant=rhel7.0 \
-  --disk=size=${DISKGIB},pool=${POOL} \
+  ${DISKS} \
   --cdrom=${ISO} \
   --noautoconsole
-
