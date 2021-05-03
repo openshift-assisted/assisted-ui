@@ -38,7 +38,7 @@
     "human-date": "^1.4.0",
     "humanize-plus": "^1.8.2",
     "lodash": "^4.17.15",
-    "openshift-assisted-ui-lib": "1.5.17",
+    "openshift-assisted-ui-lib": "1.5.18",
     "prettier": "^2.0.1",
     "prism-react-renderer": "^1.1.1",
     "react": "^16.14.0",
