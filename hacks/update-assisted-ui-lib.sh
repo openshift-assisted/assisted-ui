@@ -14,7 +14,7 @@ echo GITHUB_USER: $GITHUB_USER
 export GITLAB_USER=${GITLAB_USER:-"`whoami`"}
 echo GITLAB_USER: $GITLAB_USER
 
-export ASSISTED_UI_USER_REPO=${ASSISTED_UI_USER_REPO:-"https://github.com/${GITHUB_USER}/assisted-ui.git"}
+export ASSISTED_UI_USER_REPO=${ASSISTED_UI_USER_REPO:-"git@github.com:${GITHUB_USER}/assisted-ui.git"}
 echo ASSISTED_UI_USER_REPO: $ASSISTED_UI_USER_REPO
 
 export UHC_PORTAL_REPO=${UHC_PORTAL_REPO:-"git@gitlab.cee.redhat.com:${GITLAB_USER}/uhc-portal.git"}
