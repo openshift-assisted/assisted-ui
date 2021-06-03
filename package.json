@@ -7,6 +7,7 @@
     "url": "https://github.com/openshift-assisted/assisted-ui/issues"
   },
   "dependencies": {
+    "@patternfly/react-code-editor": "^4.2.59",
     "@patternfly/react-core": "^4.97.2",
     "@patternfly/react-icons": "^4.9.2",
     "@patternfly/react-table": "^4.23.2",
@@ -35,9 +36,11 @@
     "prettier": "^2.0.1",
     "react": "^16.14.0",
     "react-dom": "^16.13.0",
+    "react-monaco-editor": "^0.43.0",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
+    "react-tagsinput": "^3.19.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
