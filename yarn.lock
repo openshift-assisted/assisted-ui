@@ -2453,6 +2453,11 @@ argparse@^1.0.7:
   dependencies:
     sprintf-js "~1.0.2"
 
+argparse@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/argparse/-/argparse-2.0.1.tgz#246f50f3ca78a3240f6c997e8a9bd1eac49e4b38"
+  integrity sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==
+
 aria-query@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/aria-query/-/aria-query-3.0.0.tgz#65b3fcc1ca1155a8c9ae64d6eee297f15d5133cc"
@@ -6128,11 +6133,6 @@ http-proxy-middleware@0.19.1:
   version "0.19.1"
   resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-0.19.1.tgz#183c7dc4aa1479150306498c210cdaf96080a43a"
   integrity sha512-yHYTgWMQO8VvwNS22eLLloAkvungsKdKTLO8AJlftYIKNfJr3GK3zK0ZCfzDDGUBttdGc8xFy1mCitvNKQtC3Q==
-  dependencies:
-    http-proxy "^1.17.0"
-    is-glob "^4.0.0"
-    lodash "^4.17.11"
-    micromatch "^3.1.10"
 
 http-proxy-middleware@^1.0.3:
   version "1.0.5"
@@ -7284,6 +7284,13 @@ js-yaml@^3.13.1:
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
+
+js-yaml@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.0.tgz#c1fb65f8f5017901cdd2c951864ba18458a10602"
+  integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
+  dependencies:
+    argparse "^2.0.1"
 
 jsbn@1.1.0:
   version "1.1.0"
@@ -8574,10 +8581,10 @@ open@^7.0.2:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
-openshift-assisted-ui-lib@1.5.22-1:
-  version "1.5.22-1"
-  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-1.5.22-1.tgz#90234344c6309db66ede3c5bf3498665c4da4c80"
-  integrity sha512-Ah0mUFlSfV8a+4OIu3lj2EXvQKAaqjy7tXDu1pYMjsMgP0wmLaKn4D+teLF8HRfol+xIY7uFmt9rwVNh88ggyA==
+openshift-assisted-ui-lib@1.5.23:
+  version "1.5.23"
+  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-1.5.23.tgz#6fdf93464e501a6b8ce14e32334401783a2e5205"
+  integrity sha512-upCZ5RyB/DA2TYyD8/51BTBNojSyJw5ocjwjN4fwKTGxL0zxvFvwTmVm72s+cdDL0JoBr6sr+1ro7yU6eK3okw==
   dependencies:
     axios-case-converter "^0.6.0"
     file-saver "^2.0.2"
@@ -8589,6 +8596,7 @@ openshift-assisted-ui-lib@1.5.22-1:
     ip-address "^7.1.0"
     is-cidr "^4.0.2"
     is-in-subnet "^3.1.0"
+    js-yaml "^4.1.0"
     prism-react-renderer "^1.1.1"
     unique-names-generator "^4.2.0"
 
