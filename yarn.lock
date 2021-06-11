@@ -6133,6 +6133,11 @@ http-proxy-middleware@0.19.1:
   version "0.19.1"
   resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-0.19.1.tgz#183c7dc4aa1479150306498c210cdaf96080a43a"
   integrity sha512-yHYTgWMQO8VvwNS22eLLloAkvungsKdKTLO8AJlftYIKNfJr3GK3zK0ZCfzDDGUBttdGc8xFy1mCitvNKQtC3Q==
+  dependencies:
+    http-proxy "^1.17.0"
+    is-glob "^4.0.0"
+    lodash "^4.17.11"
+    micromatch "^3.1.10"
 
 http-proxy-middleware@^1.0.3:
   version "1.0.5"
@@ -8581,10 +8586,10 @@ open@^7.0.2:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
-openshift-assisted-ui-lib@1.5.24:
-  version "1.5.24"
-  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-1.5.24.tgz#88c80a3c0cdaa15c11fca7fd8766709b19017bb3"
-  integrity sha512-WDUglIoKUkUHCL66Wks1yPAH2fU67nGsW5xNt1cfV2+MtbkhUA8eqKuFNmzoEC7aphs5vAMFW6sHjLsTRpFjrw==
+openshift-assisted-ui-lib@1.5.24-2:
+  version "1.5.24-2"
+  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-1.5.24-2.tgz#d9cd7b6327cba9a5d12c72ed4692c22412f096af"
+  integrity sha512-YKNUirNIoSMS4GcItGhgZmcYVIhM0d2VcF/fakSD1AK3olMM/Fwn+z2Sd6to06yIHCcXSoNAog40yqRIMbNaxg==
   dependencies:
     axios-case-converter "^0.6.0"
     file-saver "^2.0.2"
