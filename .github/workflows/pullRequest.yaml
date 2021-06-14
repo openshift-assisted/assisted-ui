@@ -16,15 +16,10 @@ jobs:
           echo NODE_OPTIONS: ${NODE_OPTIONS}
       - name: Check out code
         uses: actions/checkout@v1
-      - name: Install dependencies
-        uses: borales/actions-yarn@v2.0.0
+      - uses: actions/setup-node@v1
         with:
-          cmd: install
-      - name: Call linter
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: lint
-      - name: Build code
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: build
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: yarn install
+      - run: yarn lint
+      - run: yarn build
