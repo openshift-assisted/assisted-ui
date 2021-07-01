@@ -3421,6 +3421,11 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
+classnames@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
+  integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
+
 clean-css@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.2.3.tgz#507b5de7d97b48ee53d84adb0160ff6216380f78"
@@ -6133,11 +6138,6 @@ http-proxy-middleware@0.19.1:
   version "0.19.1"
   resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-0.19.1.tgz#183c7dc4aa1479150306498c210cdaf96080a43a"
   integrity sha512-yHYTgWMQO8VvwNS22eLLloAkvungsKdKTLO8AJlftYIKNfJr3GK3zK0ZCfzDDGUBttdGc8xFy1mCitvNKQtC3Q==
-  dependencies:
-    http-proxy "^1.17.0"
-    is-glob "^4.0.0"
-    lodash "^4.17.11"
-    micromatch "^3.1.10"
 
 http-proxy-middleware@^1.0.3:
   version "1.0.5"
@@ -8586,12 +8586,13 @@ open@^7.0.2:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
-openshift-assisted-ui-lib@1.5.25:
-  version "1.5.25"
-  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-1.5.25.tgz#5b9b30db504eb7f2f1f2480303328d17ebae7f39"
-  integrity sha512-OSYiMpjRX7IoL2BUstQCwx3ruXAE6ROq8htZ0wzUos9BvXkIg2cpa4iHT/IFtRo+evg5fvFmgntMmp5GXMfR0w==
+openshift-assisted-ui-lib@1.5.26:
+  version "1.5.26"
+  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-1.5.26.tgz#9b5456af47a338818e95466600fcef871abf5c29"
+  integrity sha512-/arBGbKQliNtZXXLRnGv+fwkY4cJUqREbwGslidd1UYyi6VS1sxSjDnbnQdkGqYB36c2dxOd/iepYADYQFBCrg==
   dependencies:
     axios-case-converter "^0.6.0"
+    classnames "^2.3.1"
     file-saver "^2.0.2"
     filesize.js "^2.0.0"
     formik "2.2.6"
