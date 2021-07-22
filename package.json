@@ -32,7 +32,7 @@
     "axios-case-converter": "^0.6.0",
     "http-proxy-middleware": "^1.0.3",
     "lodash": "^4.17.15",
-    "openshift-assisted-ui-lib": "1.5.28",
+    "openshift-assisted-ui-lib": "1.5.29",
     "prettier": "^2.0.1",
     "react": "^16.14.0",
     "react-dom": "^16.13.0",
