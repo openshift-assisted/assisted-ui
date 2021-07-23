@@ -7,11 +7,12 @@
     "url": "https://github.com/openshift-assisted/assisted-ui/issues"
   },
   "dependencies": {
-    "@patternfly/react-code-editor": "^4.2.59",
-    "@patternfly/react-core": "^4.97.2",
-    "@patternfly/react-icons": "^4.9.2",
-    "@patternfly/react-table": "^4.23.2",
-    "@patternfly/react-tokens": "^4.10.2",
+    "@patternfly/patternfly": "^4.115.2",
+    "@patternfly/react-code-editor": "^4.2.92",
+    "@patternfly/react-core": "^4.135.0",
+    "@patternfly/react-icons": "^4.11.0",
+    "@patternfly/react-table": "^4.29.0",
+    "@patternfly/react-tokens": "^4.12.0",
     "@reduxjs/toolkit": "1.5.x",
     "@sentry/browser": "5.19.1",
     "@testing-library/jest-dom": "^4.2.4",
@@ -47,7 +48,8 @@
     "typescript": "^3.8.3",
     "unique-names-generator": "^4.2.0",
     "uuid": "^8.1.0",
-    "yup": "^0.28.3"
+    "yup": "^0.28.3",
+    "classnames": "^2.3.1"
   },
   "scripts": {
     "postinstall": "sh ./hacks/patch-react-scripts.sh",
