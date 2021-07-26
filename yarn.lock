@@ -8562,10 +8562,10 @@ open@^7.0.2:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
-openshift-assisted-ui-lib@1.5.29:
-  version "1.5.29"
-  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-1.5.29.tgz#b40ba3bfc44117d4497ebf39db703257b7b1d218"
-  integrity sha512-zfbnoc6mIw1GLVmwJM1teDHjPmkpe5UFzbmZ9NVHq1hWDxOBSnKYfGzb7zEJgtev3ma98+pwx6WvbspkaJmb8Q==
+openshift-assisted-ui-lib@1.5.29-1:
+  version "1.5.29-1"
+  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-1.5.29-1.tgz#08fadf0e1dcf51d126ad97e37aa0d4ef6d18a690"
+  integrity sha512-cINjXCujlHbrIN6WzAAPpBnpTSD0XYYKxtpM0nVl8KSB+kNdLL0RZGNu2xdwWcUtOSiMEU8Dg08gaGtavzKjmw==
   dependencies:
     axios-case-converter "^0.6.0"
     classnames "^2.3.1"
