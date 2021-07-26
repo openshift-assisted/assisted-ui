@@ -6,7 +6,6 @@ import {
   ButtonVariant,
 } from '@patternfly/react-core';
 import { OCM } from 'openshift-assisted-ui-lib';
-// import { ListVersions } from 'openshift-assisted-ui-lib/dist/src/index-ocm';
 import { GIT_SHA, VERSION, SERVICE_LABELS, IMAGE_REPO } from '../config/standalone';
 import redHatLogo from '../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
 
