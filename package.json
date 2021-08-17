@@ -34,7 +34,7 @@
     "classnames": "^2.3.1",
     "http-proxy-middleware": "^1.0.3",
     "lodash": "^4.17.15",
-    "openshift-assisted-ui-lib": "1.5.31",
+    "openshift-assisted-ui-lib": "1.5.32",
     "prettier": "^2.0.1",
     "react": "^16.14.0",
     "react-dom": "^16.13.0",
