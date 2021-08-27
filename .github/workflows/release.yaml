@@ -46,12 +46,3 @@ jobs:
           registry: quay.io
           dockerfile: Dockerfile
           tags: "stable,${{ env.GIT_TAG }},${{ github.sha }}"
-      - name: Publish integration tests to quay.io
-        uses: elgohr/Publish-Docker-Github-Action@2.14
-        with:
-          name: ocpmetal/ocp-metal-ui-tests
-          username: ${{ secrets.QUAYIO_OCPMETAL_USERNAME }}
-          password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
-          registry: quay.io
-          dockerfile: Dockerfile.cypress
-          tags: "stable,${{ env.GIT_TAG }},${{ github.sha }}"

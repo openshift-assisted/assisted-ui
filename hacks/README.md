@@ -9,11 +9,6 @@ Can be executed right after creating a new `assisted-ui-lib` [release](https://g
 
 **Please see `The Release Process` section bellow before using it.**
 
-## run-tests.sh
-Executes containerized tests.
-
-Recently not used.
-
 ## patch-react-scripts.sh
 Called from the yarn's `postinstall` phase to watch changes under `node_modules` within `yarn start`.
 
@@ -26,9 +21,6 @@ Used by QE to check recent version deployed in the staging environment.
 Used to create a virtual machine from an ISO (like a discovery iso), tested in our development environments (no guarantee about other envs).
 
 See comments inside the script for further details.
-
-## cypress_env_local.sh
-Pre-defined environment variables to simplify execution of upstream tests in our development environment. They assume the aplication to be executed via dev-server on http://localhost:3000. See [README.md](../README.md) for more details.
 
 # The Release Process
 Please note, the `assisted-ui` application features heavily depend on the `openshift-assisted-ui-lib` JavaSript library. So both projects need to be released in sync.

@@ -30,7 +30,3 @@ bin
 # build output
 /main
 deploy/ocp-metal-ui.yaml
-
-# cypress
-/cypress/videos
-/cypress/screenshots
