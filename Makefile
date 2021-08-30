@@ -1,7 +1,6 @@
 .PHONY: all build deploy clean
 
 IMAGE := $(or ${IMAGE},quay.io/ocpmetal/ocp-metal-ui:latest)
-TESTS_IMAGE := $(or ${TESTS_IMAGE},quay.io/ocpmetal/ocp-metal-ui-tests:latest)
 NAMESPACE := $(or ${NAMESPACE},assisted-installer)
 ASSISTED_SERVICE_URL := $(or ${ASSISTED_SERVICE_URL},http://assisted-service.${NAMESPACE}.svc.cluster.local:8090)
 DEPLOY_FILE="deploy/ocp-metal-ui.yaml"
@@ -11,9 +10,7 @@ all: build deploy
 build:
 	yarn build
 	podman build -t $(IMAGE) .
-	podman build -f Dockerfile.cypress -t $(TESTS_IMAGE) .
 	podman push $(IMAGE)
-	podman push $(TESTS_IMAGE)
 
 deploy:
 	mkdir -p build/deploy/
