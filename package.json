@@ -43,7 +43,7 @@
   },
   "scripts": {
     "postinstall": "sh ./hacks/patch-react-scripts.sh",
-    "start": "react-scripts start",
+    "start": "react-app-rewired start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -82,7 +82,9 @@
     "eslint-plugin-react-hooks": "^2.5.0",
     "prettier": "^2.0.1",
     "prop-types": "^15.7.2",
-    "redux-devtools-extension": "^2.13.8"
+    "react-app-rewired": "^2.1.8",
+    "redux-devtools-extension": "^2.13.8",
+    "source-map-loader": "^3.0.0"
   },
   "resolutions": {
     "node-sass/node-gyp": "^6.0.0"
