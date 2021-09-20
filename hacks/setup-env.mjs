@@ -116,6 +116,13 @@ async function downloadISO(isoURL, clusterName) {
   return isoFilePath;
 }
 
+async function displayUUIDs(clusterName) {
+  const verboseInitialState = $.verbose
+  $.verbose = true;
+  await $`virsh list --uuid --name | grep ${clusterName}`;
+  $.verbose = verboseInitialState;
+}
+
 async function main() {
   if (argv.help || argv.h) {
     printUsage()
@@ -143,6 +150,8 @@ async function main() {
       await createHost(2, clusterName, 'worker', isoFilePath)
     }
   }
+
+  await displayUUIDs(clusterName);
 }
 
 main();
