@@ -2613,6 +2613,16 @@ axios-case-converter@^0.6.0:
     header-case "^2.0.3"
     snake-case "^3.0.3"
 
+axios-case-converter@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/axios-case-converter/-/axios-case-converter-0.8.1.tgz#4b40ce399ab9332e8a61d4035635c198284c2ec9"
+  integrity sha512-xbv9rFmPN02rkwXmbze5Hr9eVUeC4OXSrNd19UrGu4rT5+xh+A+SC/1syUtI+aax2E+3WO+uoWbmo1okzbupuQ==
+  dependencies:
+    camel-case "^4.1.1"
+    header-case "^2.0.3"
+    snake-case "^3.0.3"
+    tslib "^2.3.0"
+
 axios@^0.21.1:
   version "0.21.1"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
@@ -8091,16 +8101,17 @@ open@^7.0.2:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
-openshift-assisted-ui-lib@1.5.35:
-  version "1.5.35"
-  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-1.5.35.tgz#ab72b6046b0f8f3295f8724c5a13ae606dc4a41b"
-  integrity sha512-jHHZxlr1Dnk61iZwhoKc69BJ/qtKzPDnXDdmDzeRKHlqxKFcYDZlmudLyTKA8s+msfJZiXYmjJyBXOa0AjJVzQ==
+openshift-assisted-ui-lib@1.5.36:
+  version "1.5.36"
+  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-1.5.36.tgz#068ac1e70690118e79c9aa0297a69aa90d1dc7b6"
+  integrity sha512-ZCvYgPhwuJf5B1WnL+xV01W5UVN42LMiURSUL2DujuGoXudWxTjUx66oqt8cM4MAD7boEz02yG0yBKiDMVpKCQ==
   dependencies:
-    axios-case-converter "^0.6.0"
+    axios-case-converter "^0.8.1"
     classnames "^2.3.1"
     file-saver "^2.0.2"
     filesize.js "^2.0.0"
     formik "2.2.6"
+    fuse.js "^6.4.6"
     http-proxy-middleware "^1.0.3"
     human-date "^1.4.0"
     humanize-plus "^1.8.2"
@@ -11245,6 +11256,11 @@ tslib@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.1.tgz#410eb0d113e5b6356490eec749603725b021b43e"
   integrity sha512-SgIkNheinmEBgx1IUNirK0TUD4X9yjjBRTqqjggWCU3pUEqIk3/Uwl3yRixYKT6WjQuGiwDv4NomL3wqRCj+CQ==
+
+tslib@^2.3.0:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
+  integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
 
 tsutils@^3.17.1:
   version "3.17.1"
