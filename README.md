@@ -1,6 +1,6 @@
 ![](https://github.com/openshift-assisted/assisted-ui/workflows/Build%20and%20push/badge.svg)
 
-# The Assisted Installer User Insterface
+# The Assisted Installer User Interface
 
 The Assisted Installer makes IPI (Installer-Provisioned Infrastructure) OpenShift cluster deployments on bare metal easy.
 
