@@ -81,7 +81,7 @@ git push --set-upstream origin ${UPDATE_BRANCH} --follow-tags
 # The last mile in a browser for convenience
 xdg-open "https://github.com/openshift-assisted/assisted-ui-lib/pulls" & # to close/re-open generated PR (optional)
 
-xdg-open "https://gitlab.cee.redhat.com/${GITLAB_USER}/uhc-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=${UPDATE_BRANCH}&merge_request%5Btitle%5D=WIP: Update openshift-assisted-ui-lib to ${ASSISTED_UI_LIB_VERSION}&merge_request%5Bdescription%5D=TODO: Remove the WIP when phase1 testing passes overnight. Until then the review and merge is blocked here." &
+xdg-open "https://gitlab.cee.redhat.com/${GITLAB_USER}/uhc-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=${UPDATE_BRANCH}&merge_request%5Btitle%5D=WIP: Update openshift-assisted-ui-lib to ${ASSISTED_UI_LIB_VERSION}&merge_request%5Bdescription%5D=TODO: Remove the WIP when [phase1 testing]($(uriencode https://auto-jenkins-csb-kniqe.apps.ocp-c1.prod.psi.redhat.com/view/CI-Assisted-Installer/job/CI/job/assisted-saas-phase1-ui/)) passes overnight. Until then the review and merge is blocked here." &
 
 export LIB_RELEASE_URL=`uriencode "${TAG}: https://github.com/openshift-assisted/assisted-ui-lib/releases/tag/v${ASSISTED_UI_LIB_VERSION}"`
 export RELEASE_URL=`uriencode "https://github.com/openshift-assisted/assisted-ui/releases/new?tag=v${ASSISTED_UI_LIB_VERSION}&title=v${ASSISTED_UI_LIB_VERSION}&body=${LIB_RELEASE_URL}"`
