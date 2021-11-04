@@ -6,7 +6,7 @@ export GREEN_COLOR='\033[0;32m'
 export NC='\033[0m' # No Color
 
 # this is more handy than yarn-upgrade
-export ASSISTED_UI_LIB_VERSION=${ASSISTED_UI_LIB_VERSION:-"`npm cache clean --force ; npm search openshift-assisted-ui-lib --parseable|grep '^openshift-assisted-ui-lib'|cut -f 5`"}
+export ASSISTED_UI_LIB_VERSION=${ASSISTED_UI_LIB_VERSION:-"`npm cache clean --force ; npm view openshift-assisted-ui-lib version`"}
 echo -e "${GREEN_COLOR}ASSISTED_UI_LIB_VERSION: ${RED_COLOR}$ASSISTED_UI_LIB_VERSION${NC}"
 
 export GITHUB_USER=${GITHUB_USER:-"`whoami`"}
