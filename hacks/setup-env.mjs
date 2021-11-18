@@ -65,6 +65,7 @@ WORKER_CPUS     (default: ${workerCPUs})`
 async function createDomain(name, diskgb, memmb, cpus, isoFile) {
   return $
     `virt-install \
+  --wait -1 \
   --name=${name} \
   --cdrom=${isoFile} \
   --vcpus=${cpus} \
