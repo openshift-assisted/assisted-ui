@@ -5,16 +5,9 @@ import {
   TextContent,
   ButtonVariant,
 } from '@patternfly/react-core';
-import { OCM } from 'openshift-assisted-ui-lib';
+import { Api, Constants, DetailList, DetailItem } from 'openshift-assisted-ui-lib/ocm';
 import { GIT_SHA, VERSION, SERVICE_LABELS, IMAGE_REPO } from '../config/standalone';
 import redHatLogo from '../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
-
-const {
-  Api: { getVersions, handleApiError },
-  Constants,
-  DetailList,
-  DetailItem,
-} = OCM;
 
 export const AboutModalButton: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -44,10 +37,10 @@ const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await getVersions();
+        const { data } = await Api.getVersions();
         setVersions(data);
       } catch (e) {
-        handleApiError(e);
+        Api.handleApiError(e);
       }
     };
     if (isOpen) {

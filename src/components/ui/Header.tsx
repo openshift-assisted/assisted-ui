@@ -1,15 +1,13 @@
 import React from 'react';
 import { Brand, PageHeader, PageHeaderTools, Button, ButtonVariant } from '@patternfly/react-core';
-import { OCM } from 'openshift-assisted-ui-lib';
+import { Constants } from 'openshift-assisted-ui-lib/ocm';
 import upstreamLogo from '../../images/metal3_facet-whitetext.png';
 import redhatLogo from '../../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import AboutModalButton from '../AboutModal';
 
-const { getProductBrandingCode, FEEDBACK_FORM_LINK } = OCM.Constants;
-
 const getBrandingDetails = () => {
-  switch (getProductBrandingCode()) {
+  switch (Constants.getProductBrandingCode()) {
     case 'redhat':
       return {
         logo: redhatLogo,
@@ -36,7 +34,9 @@ const Header: React.FC = () => {
         <PageHeaderTools>
           <Button
             variant={ButtonVariant.plain}
-            onClick={() => window.open(FEEDBACK_FORM_LINK, '_blank', 'noopener noreferrer')}
+            onClick={() =>
+              window.open(Constants.FEEDBACK_FORM_LINK, '_blank', 'noopener noreferrer')
+            }
             id="button-feedback"
           >
             Provide feedback <ExternalLinkAltIcon />
