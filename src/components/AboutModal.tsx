@@ -10,7 +10,10 @@ import { GIT_SHA, VERSION, SERVICE_LABELS, IMAGE_REPO } from '../config/standalo
 import redHatLogo from '../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
 
 const {
-  Api: { getVersions, handleApiError },
+  Services: {
+    APIs: { ComponentVersionsAPI },
+  },
+  Api: { handleApiError },
   Constants,
   DetailList,
   DetailItem,
@@ -41,19 +44,20 @@ const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
     releaseTag: undefined,
   });
 
+  const fetchData = React.useCallback(async () => {
+    try {
+      const { data } = await ComponentVersionsAPI.list();
+      setVersions(data);
+    } catch (e) {
+      handleApiError(e);
+    }
+  }, []);
+
   React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await getVersions();
-        setVersions(data);
-      } catch (e) {
-        handleApiError(e);
-      }
-    };
     if (isOpen) {
       fetchData();
     }
-  }, [isOpen]);
+  }, [fetchData, isOpen]);
 
   const getUIVersion = () => {
     const link = (
