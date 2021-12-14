@@ -9,8 +9,8 @@ usage() {
 
 ASSISTED_SERVICE_URL="http://assisted-service.__NAMESPACE__.svc.cluster.local:8090"
 DIRECTORY=$(dirname "$0")
-INPUT_TEMPLATE="${DIRECTORY}/ocp-metal-ui-template.yaml"
-IMAGE="quay.io/ocpmetal/ocp-metal-ui:latest"
+INPUT_TEMPLATE="${DIRECTORY}/ui-deployment-template.yaml"
+IMAGE=${IMAGE:-"quay.io/edge-infrastructure/assisted-installer-ui:latest"}
 NAMESPACE="assisted-installer"
 
 while getopts ":u:i:t:n:h" opt; do
