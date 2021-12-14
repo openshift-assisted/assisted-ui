@@ -1,7 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: ocp-metal-ui
+  name: assisted-installer-ui
   namespace: "__NAMESPACE__"
 spec:
   type: LoadBalancer
@@ -11,12 +11,12 @@ spec:
       protocol: TCP
       # nodePort: 31000
   selector:
-    app: ocp-metal-ui
+    app: assisted-installer-ui
 ---
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: ocp-metal-ui
+  name: assisted-installer-ui
   namespace: "__NAMESPACE__"
 data:
   nginx.conf: |
@@ -48,20 +48,20 @@ data:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: ocp-metal-ui
+  name: assisted-installer-ui
   namespace: "__NAMESPACE__"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ocp-metal-ui
+      app: assisted-installer-ui
   template:
     metadata:
       labels:
-        app: ocp-metal-ui
+        app: assisted-installer-ui
     spec:
       containers:
-        - name: ocp-metal-ui
+        - name: assisted-installer-ui
           image: __IMAGE__
           imagePullPolicy: Always
           ports:
@@ -73,7 +73,7 @@ spec:
       volumes:
         - name: nginx-conf
           configMap:
-            name: ocp-metal-ui
+            name: assisted-installer-ui
             items:
               - key: nginx.conf
                 path: default.conf

@@ -36,10 +36,10 @@ jobs:
         run: yarn lint
       - name: Build code
         run: yarn build
-      - name: Publish to quay.io
+      - name: Publish to quay.io/edge-infrastructure
         uses: elgohr/Publish-Docker-Github-Action@2.14
         with:
-          name: ocpmetal/ocp-metal-ui
+          name: edge-infrastructure/assisted-installer-ui
           username: ${{ secrets.QUAYIO_OCPMETAL_USERNAME }}
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
