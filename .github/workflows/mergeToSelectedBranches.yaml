@@ -20,7 +20,7 @@ jobs:
       - name: Set IMAGE_TAGS env variable
         if: github.ref == 'refs/heads/master'
         run: |
-          echo "IMAGE_TAGS=latest,${{ github.sha }},${GITHUB_REF#refs/heads/}-${{ github.sha }}" >> $GITHUB_ENV
+          echo "IMAGE_TAGS=latest,latest-${{ github.sha }},${GITHUB_REF#refs/heads/}-${{ github.sha }}" >> $GITHUB_ENV
       - name: Set IMAGE_TAGS env variable
         if: github.ref != 'refs/heads/master'
         run: |

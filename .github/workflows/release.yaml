@@ -44,4 +44,4 @@ jobs:
           password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile
-          tags: "stable,${{ env.GIT_TAG }},${{ github.sha }}"
+          tags: "stable,${{ env.GIT_TAG }},latest-${{ github.sha }}"
