@@ -37,11 +37,11 @@ jobs:
       - name: Build code
         run: yarn build
       - name: Publish to quay.io/edge-infrastructure
-        uses: elgohr/Publish-Docker-Github-Action@2.14
+        uses: elgohr/Publish-Docker-Github-Action@3.04
         with:
           name: edge-infrastructure/assisted-installer-ui
-          username: ${{ secrets.QUAYIO_OCPMETAL_USERNAME }}
-          password: ${{ secrets.QUAYIO_OCPMETAL_PASSWORD }}
+          username: ${{ secrets.QUAYIO_EDGE_INFRA_USERNAME }}
+          password: ${{ secrets.QUAYIO_EDGE_INFRA_PASSWORD }}
           registry: quay.io
           dockerfile: Dockerfile
           tags: "stable,${{ env.GIT_TAG }},latest-${{ github.sha }}"

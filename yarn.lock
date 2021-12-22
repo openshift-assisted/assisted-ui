@@ -8113,10 +8113,10 @@ open@^7.0.2:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
-openshift-assisted-ui-lib@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-2.0.0.tgz#f36495ddce959dc948029720ac026ba8435c2cbf"
-  integrity sha512-roubKj0UnkTtSPBXTy4asg/+MjemFlL+uXCC05J1FuAd4d5AAFQoRougB4UeQcGgFbZaAGmGkgZAYjAFQHzdMg==
+openshift-assisted-ui-lib@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-2.0.3.tgz#bbe507b5126a612ffcfa55851965b6f89833ae28"
+  integrity sha512-c80Oz8gs93orhEYNsunNIFGnceSI45QMUsezbSQruYLAOSj7sgwf/GmfNWGUJ/pkYFDcr+JGKjV7TId/5DJZIg==
   dependencies:
     axios-case-converter "^0.8.1"
     classnames "^2.3.1"
@@ -8124,7 +8124,6 @@ openshift-assisted-ui-lib@2.0.0:
     filesize.js "^2.0.0"
     formik "2.2.6"
     fuse.js "^6.4.6"
-    http-proxy-middleware "^1.0.3"
     human-date "^1.4.0"
     humanize-plus "^1.8.2"
     ip-address "^7.1.0"
