@@ -76,6 +76,13 @@ Example:
 $ REACT_APP_BUILD_MODE=single-cluster yarn build
 ```
 
+## Container image build
+
+You can build the container image by running:
+```
+$ podman build -t quay.io/edge-infrastructure/assisted-ui:latest . --build-arg REACT_APP_GIT_SHA="$(git rev-parse HEAD)" --build-arg REACT_APP_VERSION=latest
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
