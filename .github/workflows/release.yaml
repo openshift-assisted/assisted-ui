@@ -9,20 +9,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Node.JS
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14.x'
       - name: Set environment variables
         run: |
-          echo "NODE_OPTIONS=--max-old-space-size=8192" >> $GITHUB_ENV
           echo "REACT_APP_GIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
           echo "REACT_APP_VERSION=${{ env.GIT_TAG }}" >> $GITHUB_ENV
       - run: |
-          echo NODE_OPTIONS: ${NODE_OPTIONS}
           echo REACT_APP_GIT_SHA: ${REACT_APP_GIT_SHA}
           echo REACT_APP_VERSION: ${REACT_APP_VERSION}
-          echo Node version: `node --version`
       - name: Get tag
         id: get_tag
         run: echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
@@ -30,12 +23,6 @@ jobs:
           echo Detected GIT_TAG: ${GIT_TAG}
       - name: Check out code
         uses: actions/checkout@v1
-      - name: Install dependencies
-        run: yarn install
-      - name: Call linter
-        run: yarn lint
-      - name: Build code
-        run: yarn build
       - name: Publish to quay.io/edge-infrastructure
         uses: elgohr/Publish-Docker-Github-Action@3.04
         with:
@@ -45,3 +32,4 @@ jobs:
           registry: quay.io
           dockerfile: Dockerfile
           tags: "stable,${{ env.GIT_TAG }},latest-${{ github.sha }}"
+          buildargs: REACT_APP_GIT_SHA,REACT_APP_VERSION
