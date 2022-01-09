@@ -1,6 +1,6 @@
 export const VERSION = process.env.REACT_APP_VERSION;
 export const GIT_SHA = process.env.REACT_APP_GIT_SHA;
-export const IMAGE_REPO = 'quay.io/ocpmetal/ocp-metal-ui';
+export const IMAGE_REPO = process.env.REACT_APP_IMAGE_REPO;
 
 export const SERVICE_LABELS: { [key in string]: string } = {
   assistedInstaller: 'Assisted Installer',
