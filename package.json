@@ -22,7 +22,7 @@
     "http-proxy-middleware": "^1.0.3",
     "i18next": "^20.4.0",
     "i18next-browser-languagedetector": "^6.1.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "openshift-assisted-ui-lib": "2.0.6-1",
     "react": "^16.14.0",
     "react-dom": "^16.13.1",
