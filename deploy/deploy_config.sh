@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# This tool prepares the UI deployment yaml, by taking in a template and replacing the Assisted-service URL and
-# UI Image that were supplied in the command line
+# This tool prepares the UI deployment yaml, by taking in a template and replacing the assisted-service URL and
+# UI image that were supplied in the command line
 
 usage() {
-  echo "Usage: $0 [ -t deploy-confing-template ] [ -u ASSISTED-SERVICE-URL ] [ -i UI_IMAGE_NAME ] [ -n NAMESPACE ]" 1>&2
+  echo "Usage: $0 [ -t deploy-config-template ] [ -u ASSISTED-SERVICE-URL ] [ -i UI_IMAGE_NAME ] [ -n NAMESPACE ]" 1>&2
 }
 
 ASSISTED_SERVICE_URL="http://assisted-service.__NAMESPACE__.svc.cluster.local:8090"
