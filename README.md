@@ -6,7 +6,7 @@ The Assisted Installer makes IPI (Installer-Provisioned Infrastructure) OpenShif
 
 Hosts building the cluster are discovered by booting an ISO image downloaded from the Assisted Installer.
 
-By entering a few necessary configuration details (like cluster name, base domain, SSH public keys or netowrk specifics), the Assisted Installer handles all the deployment and configuration automatically, resulting in a ready-to-use cluster.
+By entering a few necessary configuration details (like cluster name, base domain, SSH public keys or network specifics), the Assisted Installer handles all the deployment and configuration automatically, resulting in a ready-to-use cluster.
 
 This project is a user interface backed by Assisted Installer API.
 
