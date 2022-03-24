@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import { Page } from '@patternfly/react-core';
-import { OCM } from 'openshift-assisted-ui-lib';
+import * as OCM from 'openshift-assisted-ui-lib/dist/ocm';
 import history from '../history';
 import Header from './ui/Header';
 // import Sidebar from './Sidebar';
