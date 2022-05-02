@@ -23,11 +23,11 @@ Used to create a virtual machine from an ISO (like a discovery iso), tested in o
 See comments inside the script for further details.
 
 # The Release Process
-Please note, the `assisted-ui` application features heavily depend on the `openshift-assisted-ui-lib` JavaSript library. So both projects need to be released in sync.
+Please note, the `assisted-ui` application features heavily depend on the `openshift-assisted-ui-lib` JavaScript library. So both projects need to be released in sync.
 
-To simplify testing, release versions of both projects are alligned recently.
+To simplify testing, release versions of both projects are aligned recently.
 
-## Prerequisities
+## Prerequisites
 - Have [uhc-portal](https://gitlab.cee.redhat.com/service/uhc-portal) fork
 - Local username (`whoami`) is equal to the gitlab's username
   - if not, use `GITLAB_USER=` env variable when calling `update-assisted-ui-lib.sh` script bellow
@@ -47,8 +47,8 @@ When releasing new version, following steps are executed:
   - Description:
     - Unless automated in the future, copy&paste all PR titles since last release.
     - To do so, use this [sorted list of closed PRs](https://github.com/openshift-assisted/assisted-ui-lib/pulls?q=is%3Apr+is%3Aclosed+sort%3Aupdated-desc)
-  - *Note:* As a consequence, a GitHub action is trigerred on new tag created to build the library, publish to npmjs.com and generate a PR in the `assisted-ui-lib`
-  - *Note:* It is recommended to use GitHub web to compose a release to keep track of changes. However, the GitHub action doing majority of the work can be trigerred by a new tag only.
+  - *Note:* As a consequence, a GitHub action is triggered on new tag created to build the library, publish to npmjs.com and generate a PR in the `assisted-ui-lib`
+  - *Note:* It is recommended to use GitHub web to compose a release to keep track of changes. However, the GitHub action doing majority of the work can be triggered by a new tag only.
   - **Close/re-open** [a generated PR in the assisted-ui-lib](https://github.com/openshift-assisted/assisted-ui-lib/pulls) which is increasing project's version.
     - **Approve this PR and merge A.S.A.P.** to avoid other PRs slipping in
     - *Note:* It is a GitHub's feature that an action can not trigger execution of another action. So without close/reopen the CI will not be executed on this PR.
@@ -72,6 +72,6 @@ When releasing new version, following steps are executed:
 
 - **Announce** new release on `#forum-assisted-installer-qe` slack channel to trigger QA
 
-## To Be Docummented
-So far missigned from the docummentation above:
+## To Be Documented
+So far missing from the documentation above:
 - Downstream build
