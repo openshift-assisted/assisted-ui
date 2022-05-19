@@ -28,3 +28,7 @@ bin
 # build output
 /main
 deploy/ocp-metal-ui.yaml
+
+# yalc files
+.yalc/
+yalc.lock
