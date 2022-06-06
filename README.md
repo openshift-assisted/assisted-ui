@@ -40,6 +40,11 @@ This project is a user interface backed by Assisted Installer API.
 
   ```
   REACT_APP_API_URL: required, URL of the BM Inventory
+  REACT_APP_BUILD_MODE='single-cluster' to make it run in Single Cluster mode
+  REACT_APP_CLUSTER_PERMISSIONS=JSON to pass in permission restrictions
+    The JSON currently admits the `canEdit` parameter.
+    eg. REACT_APP_CLUSTER_PERMISSIONS={"canEdit": false}
+
   BROWSER: optional, locally installed browser used to open the web application in
   ```
 
@@ -73,8 +78,8 @@ You can compile the production executable by running:
 $ yarn build
 ```
 
-Optionally, set `REACT_APP_BUILD_MODE=single-cluster` environment variable to disable multi-cluster
-features. Example:
+Optionally, set the configuration environment variables which you want to use
+Example:
 
 ```
 $ REACT_APP_BUILD_MODE=single-cluster yarn build
