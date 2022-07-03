@@ -1,0 +1,43 @@
+name: Deploy to Quay.io
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --max-old-space-size=8192
+      QUAY_IO_REGISTRY: quay.io/jkilzi
+    steps:
+      - name: Define additional environment variables
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.exportVariable('REACT_APP_VERSION', '${{ github.ref_name }}');
+            core.exportVariable('REACT_APP_GIT_SHA', '${{ github.sha }}'.slice(0,8));
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Build the assisted-ui image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: assisted-installer-ui
+          tags: ${{ env.REACT_APP_VERSION }} stable
+          build-args: |
+            REACT_APP_GIT_SHA=${{ env.REACT_APP_GIT_SHA }}
+            REACT_APP_VERSION=${{ env.REACT_APP_VERSION }}
+          containerfiles: ./Dockerfile
+
+      - name: Push the assisted-ui image to Quay.io
+        uses: redhat-actions/push-to-registry@v2.6
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ${{ env.QUAY_IO_REGISTRY }}
+          username: ${{ secrets.QUAYIO_JKILZI_USERNAME }}
+          password: ${{ secrets.QUAYIO_JKILZI_PASSWORD }}
