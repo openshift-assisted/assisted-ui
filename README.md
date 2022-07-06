@@ -2,11 +2,15 @@
 
 # The Assisted Installer User Interface
 
-The Assisted Installer makes IPI (Installer-Provisioned Infrastructure) OpenShift cluster deployments on bare metal easy.
+The Assisted Installer makes IPI (Installer-Provisioned Infrastructure) OpenShift cluster
+deployments on bare metal easy.
 
-Hosts building the cluster are discovered by booting an ISO image downloaded from the Assisted Installer.
+Hosts building the cluster are discovered by booting an ISO image downloaded from the Assisted
+Installer.
 
-By entering a few necessary configuration details (like cluster name, base domain, SSH public keys or network specifics), the Assisted Installer handles all the deployment and configuration automatically, resulting in a ready-to-use cluster.
+By entering a few necessary configuration details (like cluster name, base domain, SSH public keys
+or network specifics), the Assisted Installer handles all the deployment and configuration
+automatically, resulting in a ready-to-use cluster.
 
 This project is a user interface backed by Assisted Installer API.
 
@@ -69,8 +73,8 @@ You can compile the production executable by running:
 $ yarn build
 ```
 
-Optionally, set `REACT_APP_BUILD_MODE=single-cluster` environment variable to disable multi-cluster features.
-Example:
+Optionally, set `REACT_APP_BUILD_MODE=single-cluster` environment variable to disable multi-cluster
+features. Example:
 
 ```
 $ REACT_APP_BUILD_MODE=single-cluster yarn build
@@ -79,6 +83,7 @@ $ REACT_APP_BUILD_MODE=single-cluster yarn build
 ## Container image build
 
 You can build the container image by running:
+
 ```
 $ podman build -t quay.io/edge-infrastructure/assisted-installer-ui:latest . --build-arg REACT_APP_GIT_SHA="$(git rev-parse HEAD)" --build-arg REACT_APP_VERSION=latest
 ```
@@ -142,4 +147,3 @@ You can learn more in the
 [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
-
