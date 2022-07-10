@@ -27,7 +27,10 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: assisted-installer-ui
-          tags: ${{ env.REACT_APP_VERSION }} ${{ env.REACT_APP_GIT_SHA }}
+          tags: >
+            ${{ env.REACT_APP_VERSION }}
+            ${{ env.REACT_APP_GIT_SHA }}
+            'latest-${{ github.sha }}'
           build-args: |
             REACT_APP_GIT_SHA=${{ env.REACT_APP_GIT_SHA }}
             REACT_APP_VERSION=${{ env.REACT_APP_VERSION }}
