@@ -30,7 +30,7 @@ jobs:
           tags: >
             ${{ env.REACT_APP_VERSION }}
             ${{ env.REACT_APP_GIT_SHA }}
-            'latest-${{ github.sha }}'
+            latest-${{ github.sha }}
           build-args: |
             REACT_APP_GIT_SHA=${{ env.REACT_APP_GIT_SHA }}
             REACT_APP_VERSION=${{ env.REACT_APP_VERSION }}
