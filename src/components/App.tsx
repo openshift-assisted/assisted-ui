@@ -7,7 +7,7 @@ import history from '../history';
 import Header from './ui/Header';
 // import Sidebar from './Sidebar';
 import BackgroundImage from './ui/BackgroundImage';
-
+import '../i18n.js';
 import '../styles/index.css';
 
 const {
