@@ -2,6 +2,14 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import enTranslation from 'openshift-assisted-ui-lib/dist/locales/en/translation.json';
 
+const dateTimeFormatter = new Intl.DateTimeFormat({
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  year: 'numeric',
+});
+
 i18n.use(initReactI18next).init({
   lng: 'en',
   resources: {
@@ -17,13 +25,26 @@ i18n.use(initReactI18next).init({
   nsSeparator: '~',
   keySeparator: false,
   debug: false,
+  interpolation: {
+    format(value, format, lng) {
+      if (format === 'number') {
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat#Browser_compatibility
+        return new Intl.NumberFormat(lng).format(value);
+      }
+      if (value instanceof Date) {
+        return dateTimeFormatter.format(value);
+      }
+      return value;
+    },
+    escapeValue: false, // not needed for react as it escapes by default
+  },
   react: {
     useSuspense: true,
     transSupportBasicHtmlNodes: true, // allow <br/> and simple html elements in translations
   },
-  missingKeyHandler: function (lng, ns, key) {
-    window.windowError = `Missing i18n key "${key}" in namespace "${ns}" and language "${lng}."`;
-    console.error(window.windowError);
+  missingKeyHandler(lng, ns, key) {
+    // eslint-disable-next-line no-console
+    console.error(`Missing i18n key '${key}' in namespace '${ns}' and language '${lng}.'`);
   },
 });
 
