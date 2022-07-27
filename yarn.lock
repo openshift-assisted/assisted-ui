@@ -3332,19 +3332,6 @@ cidr-regex@^3.1.1:
   dependencies:
     ip-regex "^4.1.0"
 
-cidr-tools@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.npmjs.org/cidr-tools/-/cidr-tools-4.3.0.tgz#e99dd323a99b9b1149e6ad52bd0ed89357796cf7"
-  integrity sha512-Conidfn8svry8txRhW63SkaRMYJWJSvCT5kRCovIzlD0A3wzaV3gVFNxmAFJo5rxx3KHeYnJxCe7bUKFr1wxHA==
-  dependencies:
-    ip-address "^8.1.0"
-    ip-cidr "^3.0.4"
-    ipv6-normalize "^1.0.1"
-    is-cidr "^4.0.2"
-    is-ip "^3.1.0"
-    jsbn "^1.1.0"
-    string-natural-compare "^3.0.1"
-
 cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/cipher-base/-/cipher-base-1.0.4.tgz#8760e4ecc272f4c363532f926d874aae2c1397de"
@@ -6156,28 +6143,12 @@ ip-address@^7.1.0:
     jsbn "1.1.0"
     sprintf-js "1.1.2"
 
-ip-address@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.npmjs.org/ip-address/-/ip-address-8.1.0.tgz#1fe9b4509b51ff7d2fbbef4d3d26994d9915a459"
-  integrity sha512-Wz91gZKpNKoXtqvY8ScarKYwhXoK4r/b5QuT+uywe/azv0/nUCo7Bh0IRRI7F9DHR06kJNWtzMGLIbXavngbKA==
-  dependencies:
-    jsbn "1.1.0"
-    sprintf-js "1.1.2"
-
-ip-cidr@^3.0.4:
-  version "3.0.10"
-  resolved "https://registry.npmjs.org/ip-cidr/-/ip-cidr-3.0.10.tgz#e1a039705196d84b43858f81a243fd70def9cefc"
-  integrity sha512-PXSsrRYirsuaCI1qBVyVXRLUIpNzxm76eHd3UvN5NXTMUG85GWGZpr6P+70mimc5e7Nfh/tShmjk0oSywErMWg==
-  dependencies:
-    ip-address "^7.1.0"
-    jsbn "^1.1.0"
-
 ip-regex@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/ip-regex/-/ip-regex-2.1.0.tgz#fa78bf5d2e6913c911ce9f819ee5146bb6d844e9"
   integrity sha1-+ni/XS5pE8kRzp+BnuUUa7bYROk=
 
-ip-regex@^4.0.0, ip-regex@^4.1.0:
+ip-regex@^4.1.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/ip-regex/-/ip-regex-4.3.0.tgz#687275ab0f57fa76978ff8f4dddc8a23d5990db5"
   integrity sha512-B9ZWJxHHOHUhUjCPrMpLD4xEq35bUTClHM1S6CBU5ixQnkZmwipwgc96vAd7AAGM9TGHvJR+Uss+/Ak6UphK+Q==
@@ -6191,11 +6162,6 @@ ipaddr.js@1.9.1, ipaddr.js@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.9.1.tgz#bff38543eeb8984825079ff3a2a8e6cbd46781b3"
   integrity sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==
-
-ipv6-normalize@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/ipv6-normalize/-/ipv6-normalize-1.0.1.tgz#1b3258290d365fa83239e89907dde4592e7620a8"
-  integrity sha512-Bm6H79i01DjgGTCWjUuCjJ6QDo1HB96PT/xCYuyJUP9WFbVDrLSbG4EZCvOCun2rNswZb0c3e4Jt/ws795esHA==
 
 is-absolute-url@^2.0.0:
   version "2.1.0"
@@ -6390,13 +6356,6 @@ is-in-subnet@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/is-in-subnet/-/is-in-subnet-3.1.0.tgz#ae6fa5f29f953de5c5c3c3fb2ce2e70b9378458c"
   integrity sha512-UpHSoZ+S53dhiM5q48atdahm6GmaTFlZaelKTdtBQeSihWZdToE7b8hlTzWVVLghntGlCK97c1JTIdzV5Q+Vcw==
-
-is-ip@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.npmjs.org/is-ip/-/is-ip-3.1.0.tgz#2ae5ddfafaf05cb8008a62093cf29734f657c5d8"
-  integrity sha512-35vd5necO7IitFPjd/YBeqwWnyDWbuLH9ZXQdMfDA8TEo7pv5X8yfrvVO3xbJbLUlERCMvf6X0hTUamQxCYJ9Q==
-  dependencies:
-    ip-regex "^4.0.0"
 
 is-negative-zero@^2.0.0:
   version "2.0.0"
@@ -7013,7 +6972,7 @@ js-yaml@^4.1.0:
   dependencies:
     argparse "^2.0.1"
 
-jsbn@1.1.0, jsbn@^1.1.0:
+jsbn@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-1.1.0.tgz#b01307cb29b618a1ed26ec79e911f803c4da0040"
   integrity sha1-sBMHyym2GKHtJux56RH4A8TaAEA=
@@ -8168,13 +8127,12 @@ open@^7.0.2:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
-openshift-assisted-ui-lib@2.7.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-2.7.0.tgz#c78feffdf79b6c0b2a0992b2ca645430971ae52b"
-  integrity sha512-XL2qG9CJCC90y/3H+CbWSg5LmHVtX+IsKJXJ1x2VKLdnn5BWeyZHDdQX3jCtdsJ/lijY52BXp85isLrxWKQSCw==
+openshift-assisted-ui-lib@2.5.1-CIM-2.5:
+  version "2.5.1-CIM-2.5"
+  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-2.5.1-CIM-2.5.tgz#3389ddcff9cca251081c143e7b210e9a5a3238d9"
+  integrity sha512-0Yb9iBcmgz0EUoNwO5s9MvlMamED58Z+UejD9iprarHi7YMCeDfRr3PF/KG2946DAGy+tbVsUvxAp9SuvPto5g==
   dependencies:
     axios-case-converter "^0.8.1"
-    cidr-tools "^4.3.0"
     classnames "^2.3.1"
     file-saver "^2.0.2"
     filesize.js "^2.0.0"
@@ -8187,7 +8145,6 @@ openshift-assisted-ui-lib@2.7.0:
     is-in-subnet "^3.1.0"
     js-yaml "^4.1.0"
     prism-react-renderer "^1.1.1"
-    react-error-boundary "^3.1.4"
     react-measure "^2.5.2"
     unique-names-generator "^4.2.0"
 
