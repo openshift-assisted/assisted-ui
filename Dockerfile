@@ -28,6 +28,7 @@ ENV VERSION=$REACT_APP_VERSION
 COPY deploy/deploy_config.sh /deploy/
 COPY deploy/ui-deployment-template.yaml /deploy/
 COPY deploy/nginx.conf /deploy/
+COPY deploy/nginx_ssl.conf /deploy/
 COPY deploy/start.sh /deploy/
 
 COPY --from=builder /src/build/ "${NGINX_APP_ROOT}/src/"
