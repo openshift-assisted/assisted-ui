@@ -45,6 +45,8 @@
   },
   "scripts": {
     "postinstall": "sh ./hacks/patch-react-scripts.sh",
+    "setup-env": "source ./hacks/setup-env.sh",
+    "prestart": "yarn run setup-env",
     "start": "react-app-rewired start",
     "build": "react-scripts build",
     "test": "react-scripts test",
