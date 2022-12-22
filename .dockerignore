@@ -1,2 +1,7 @@
+images
 node_modules
+.env*.local
 .git
+.github
+.idea
+.vscode

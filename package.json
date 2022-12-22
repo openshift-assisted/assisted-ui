@@ -1,10 +1,11 @@
 {
-  "name": "openshift-assisted-ui",
+  "name": "assisted-installer-ui",
   "version": "0.0.0",
-  "private": false,
+  "private": true,
   "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/openshift-assisted/assisted-ui/issues"
+  "engines": {
+    "node": "^14.6",
+    "pnpm": "^7.18"
   },
   "dependencies": {
     "@patternfly/patternfly": "^4.115.2",
@@ -20,6 +21,7 @@
     "axios-case-converter": "^0.6.0",
     "classnames": "^2.3.1",
     "fuse.js": "^6.4.6",
+    "history": "^4.9.0",
     "http-proxy-middleware": "^1.0.3",
     "i18next": "^20.4.0",
     "i18next-browser-languagedetector": "^6.1.2",
@@ -46,7 +48,7 @@
   "scripts": {
     "postinstall": "sh ./hacks/patch-react-scripts.sh",
     "setup-env": "source ./hacks/setup-env.sh",
-    "prestart": "yarn run setup-env",
+    "prestart": "pnpm run setup-env",
     "start": "react-app-rewired start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -89,8 +91,5 @@
     "react-app-rewired": "^2.1.8",
     "redux-devtools-extension": "^2.13.8",
     "source-map-loader": "^3.0.0"
-  },
-  "resolutions": {
-    "node-sass/node-gyp": "^6.0.0"
   }
 }

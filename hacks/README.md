@@ -15,8 +15,8 @@ the
 
 ## patch-react-scripts.sh
 
-Called from the yarn's `postinstall` phase to watch changes under `node_modules` within
-`yarn start`.
+Called from the pnpm's `postinstall` phase to watch changes under `node_modules` within
+`pnpm start`.
 
 With this change, the `openshift-assisted-ui-lib` dependency can be updated on-the-fly during
 development.

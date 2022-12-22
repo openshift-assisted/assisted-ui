@@ -8,7 +8,7 @@ DEPLOY_FILE="deploy/assisted-installer-ui.yaml"
 all: build deploy
 
 build:
-	yarn build
+	pnpm build
 	podman build -t $(IMAGE) .
 	podman push $(IMAGE)
 

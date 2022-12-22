@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/nodejs-14 as builder
+FROM registry.access.redhat.com/ubi8/nodejs-16 as builder
 
 ENV NODE_OPTIONS="--max-old-space-size=8192"
 
@@ -15,9 +15,12 @@ COPY --chown=1001:0 / /src/
 RUN chmod 775 /src/
 WORKDIR /src/
 
-RUN npx yarn install
-RUN npx yarn lint
-RUN npx yarn build
+RUN npm add -g corepack && \
+    corepack enable && \
+    corepack prepare pnpm@latest --activate
+
+RUN pnpm install && \
+    pnpm build
 
 FROM registry.access.redhat.com/ubi8/nginx-120 as app
 
@@ -26,6 +29,10 @@ ARG REACT_APP_GIT_SHA
 ENV GIT_SHA=$REACT_APP_GIT_SHA
 ARG REACT_APP_VERSION
 ENV VERSION=$REACT_APP_VERSION
+
+# forward request and error logs to docker log collector
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
+    ln -sf /dev/stderr /var/log/nginx/error.log
 
 COPY deploy/deploy_config.sh /deploy/
 COPY deploy/ui-deployment-template.yaml /deploy/
