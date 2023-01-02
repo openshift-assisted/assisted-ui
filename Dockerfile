@@ -27,6 +27,10 @@ ENV GIT_SHA=$REACT_APP_GIT_SHA
 ARG REACT_APP_VERSION
 ENV VERSION=$REACT_APP_VERSION
 
+# forward request and error logs to docker log collector
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
+    ln -sf /dev/stderr /var/log/nginx/error.log
+
 COPY deploy/deploy_config.sh /deploy/
 COPY deploy/ui-deployment-template.yaml /deploy/
 COPY deploy/nginx.conf /deploy/
