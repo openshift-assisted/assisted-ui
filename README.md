@@ -40,7 +40,6 @@ This project is a user interface backed by Assisted Installer API.
 
   ```
   REACT_APP_API_URL: required, URL of the BM Inventory
-  REACT_APP_BUILD_MODE='single-cluster' to make it run in Single Cluster mode
   REACT_APP_CLUSTER_PERMISSIONS=JSON to pass in permission restrictions
     The JSON currently admits the `canEdit` parameter.
     eg. REACT_APP_CLUSTER_PERMISSIONS={"canEdit": false}
@@ -82,7 +81,7 @@ Optionally, set the configuration environment variables which you want to use
 Example:
 
 ```
-$ REACT_APP_BUILD_MODE=single-cluster yarn build
+$ REACT_APP_API_URL='http://192.168.2.42:6008' yarn build
 ```
 
 ## Container image build
