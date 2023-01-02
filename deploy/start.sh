@@ -14,4 +14,4 @@ if grep 'ipv6.disable=1' /proc/cmdline; then
     sed -e 's/listen\s*\[::\].*//g' ~/nginx.conf.orig | dd of="${NGINX_CONF_PATH}"
 fi
 
-exec nginx -g "daemon off;"
+exec nginx -g "daemon off; error_log /dev/stderr warn;"
