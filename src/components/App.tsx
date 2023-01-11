@@ -14,7 +14,6 @@ const {
   Store: { store },
   Router: LibRouter,
   Features,
-  Config,
 } = OCM;
 
 const App: React.FC = () => (
@@ -28,13 +27,7 @@ const App: React.FC = () => (
         isManagedSidebar // enable this to automatically hide sidebar in mobile
         defaultManagedSidebarIsOpen={false}
       >
-        <LibRouter
-          features={
-            Config.isSingleClusterMode()
-              ? Features.SINGLE_CLUSTER_ENABLED_FEATURES
-              : Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES
-          }
-        />
+        <LibRouter features={Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES} />
       </Page>
     </Router>
   </Provider>
