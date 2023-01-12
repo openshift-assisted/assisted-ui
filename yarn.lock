@@ -2651,16 +2651,6 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.10.1.tgz#e1e82e4f3e999e2cfd61b161280d16a111f86428"
   integrity sha512-zg7Hz2k5lI8kb7U32998pRRFin7zJlkfezGJjUc2heaD4Pw2wObakCDVzkKztTm/Ln7eiVvYsjqak0Ed4LkMDA==
 
-axios-case-converter@^0.11.1:
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/axios-case-converter/-/axios-case-converter-0.11.1.tgz#69671f3adc435af8b61d86effd5f4a58f0559c51"
-  integrity sha512-i5hrkBg7SE9jsm2Q+ClznR5DsKcYXChH6Cc3Rhx2p4gdIfJwvvO5/ATcAg/vN2UVzGE2B1eR1O4VuEGkICdJdQ==
-  dependencies:
-    camel-case "^4.1.1"
-    header-case "^2.0.3"
-    snake-case "^3.0.3"
-    tslib "^2.3.0"
-
 axios-case-converter@^0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/axios-case-converter/-/axios-case-converter-0.6.0.tgz#7a99120138046ad6faaf1fc2b638fea0fe63f26f"
@@ -2669,6 +2659,16 @@ axios-case-converter@^0.6.0:
     camel-case "^4.1.1"
     header-case "^2.0.3"
     snake-case "^3.0.3"
+
+axios-case-converter@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/axios-case-converter/-/axios-case-converter-0.8.1.tgz#4b40ce399ab9332e8a61d4035635c198284c2ec9"
+  integrity sha512-xbv9rFmPN02rkwXmbze5Hr9eVUeC4OXSrNd19UrGu4rT5+xh+A+SC/1syUtI+aax2E+3WO+uoWbmo1okzbupuQ==
+  dependencies:
+    camel-case "^4.1.1"
+    header-case "^2.0.3"
+    snake-case "^3.0.3"
+    tslib "^2.3.0"
 
 "axios@>=0.22.0 <1.0.0":
   version "0.27.2"
@@ -8486,12 +8486,12 @@ open@^7.0.2:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
-openshift-assisted-ui-lib@2.14.0:
-  version "2.14.0"
-  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-2.14.0.tgz#458a1a319609f75d72c4bc53a10ca723f284c8c3"
-  integrity sha512-S+NNp9ds1ChKAGKm/EdESIDhGtUuoTXsazP28GkaXECgWNfbd55f6q6U5TJ5nwqdm+6sRGDa2z4aUeuowkXqpg==
+openshift-assisted-ui-lib@2.13.3:
+  version "2.13.3"
+  resolved "https://registry.yarnpkg.com/openshift-assisted-ui-lib/-/openshift-assisted-ui-lib-2.13.3.tgz#caa8943ff3eedec09990912cc0498255f6ccccec"
+  integrity sha512-45LMMA/4aCVPhAvrS2flB5Z5vnN7SyEom2hjJOeFhwAy7ij15fMAXyPx3qG6apo8z/kmCw8oVAQX53Ca0/1A6g==
   dependencies:
-    axios-case-converter "^0.11.1"
+    axios-case-converter "^0.8.1"
     cidr-tools "^4.3.0"
     classnames "^2.3.1"
     eslint-plugin-import "^2.26.0"
