@@ -1,3 +1,5 @@
+# THIS PROJECT HAS MOVED TO https://github.com/openshift-assisted/assisted-installer-ui
+
 ![](https://github.com/openshift-assisted/assisted-ui/workflows/Build%20and%20push/badge.svg)
 
 # The Assisted Installer User Interface
